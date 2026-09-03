@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { ChevronDown, Menu, X } from "lucide-react";
 
 const Navbar = () => {
   const [mobileMenu, setMobileMenu] = useState(false);
+  const [mobileAbout, setMobileAbout] = useState(false);
+  const [mobileNosa, setMobileNosa] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   // Detect page scroll
@@ -14,13 +16,40 @@ const Navbar = () => {
 
     window.addEventListener("scroll", handleScroll);
 
-    // Check initial scroll position
     handleScroll();
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  // Desktop nav link styling
+  const navLinkClass = ({ isActive }) =>
+    `text-sm font-medium transition-colors duration-500 ${
+      scrolled
+        ? isActive
+          ? "text-[var(--secondary)]"
+          : "text-[var(--primary)]"
+        : isActive
+          ? "text-[var(--secondary)]"
+          : "text-white"
+    }`;
+
+  // Dropdown parent styling
+  const dropdownNavLinkClass = ({ isActive }) =>
+    `flex items-center gap-1 text-sm font-medium transition-colors duration-500 ${
+      scrolled
+        ? isActive
+          ? "text-[var(--secondary)]"
+          : "text-[var(--primary)]"
+        : isActive
+          ? "text-[var(--secondary)]"
+          : "text-white"
+    }`;
+
+  // Dropdown item styling
+  const dropdownItemClass =
+    "block rounded-lg px-4 py-3 text-sm text-slate-600 transition-all duration-200 hover:bg-[var(--primary-light)] hover:text-[var(--primary)]";
 
   return (
     <nav className="mx-auto max-w-7xl">
@@ -40,16 +69,18 @@ const Navbar = () => {
         <Link to="/" className="flex items-center gap-3">
           {/* Logo Mark */}
           <div className="flex h-11 w-11 items-center justify-center rounded-xl text-[var(--primary-dark)] shadow-lg">
-            <img src="/images/olivetNOSA_logo.png" alt="" />
+            <img
+              src="/images/olivetNOSA_logo.png"
+              alt="Olivet NOSA"
+              className="h-full w-full object-contain"
+            />
           </div>
 
           {/* Logo Text */}
           <div className="leading-none">
             <p
               className={`text-lg font-bold tracking-wide transition-colors duration-500 ${
-                scrolled
-                  ? "text-[var(--primary-dark)]"
-                  : "text-white"
+                scrolled ? "text-[var(--primary-dark)]" : "text-white"
               }`}
             >
               OLIVET
@@ -57,9 +88,7 @@ const Navbar = () => {
 
             <p
               className={`mt-1 text-[9px] font-medium uppercase tracking-[0.22em] transition-colors duration-500 ${
-                scrolled
-                  ? "text-slate-500"
-                  : "text-white/60"
+                scrolled ? "text-slate-500" : "text-white/60"
               }`}
             >
               Baptist High School
@@ -72,78 +101,138 @@ const Navbar = () => {
         ========================== */}
         <div className="hidden items-center gap-8 lg:flex">
           {/* Home */}
-          <Link
-            to="/"
-            className={`text-sm font-medium transition-colors duration-500 ${
-              scrolled
-                ? "text-[var(--primary)]"
-                : "text-white"
-            }`}
-          >
+          <NavLink to="/" end className={navLinkClass}>
             Home
-          </Link>
+          </NavLink>
 
-          {/* About */}
-          <Link
-            to="/about-school"
-            className={`flex items-center gap-1 text-sm font-medium transition-colors duration-500 ${
-              scrolled
-                ? "text-slate-600 hover:text-[var(--primary)]"
-                : "text-white/70 hover:text-white"
-            }`}
-          >
-            About
-            <ChevronDown size={14} />
-          </Link>
+          {/* =========================
+              ABOUT DROPDOWN
+          ========================== */}
+          <div className="group relative">
+            <NavLink
+              to="/about-school"
+              className={dropdownNavLinkClass}
+            >
+              About
 
-          {/* NOSA */}
-          <Link
-            to="/about-nosa"
-            className={`flex items-center gap-1 text-sm font-medium transition-colors duration-500 ${
-              scrolled
-                ? "text-slate-600 hover:text-[var(--primary)]"
-                : "text-white/70 hover:text-white"
-            }`}
-          >
-            NOSA
-            <ChevronDown size={14} />
-          </Link>
+              <ChevronDown
+                size={14}
+                className="transition-transform duration-300 group-hover:rotate-180"
+              />
+            </NavLink>
+
+            {/* Dropdown */}
+            <div className="invisible absolute left-1/2 top-full z-50 w-60 -translate-x-1/2 translate-y-2 pt-4 opacity-0 transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+              <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl">
+                {/* About Olivet */}
+                <Link
+                  to="/about-school"
+                  className={dropdownItemClass}
+                >
+                  <span className="block font-semibold text-[var(--primary)]">
+                    About Olivet
+                  </span>
+
+                  <span className="mt-1 block text-xs text-slate-400">
+                    Discover the school
+                  </span>
+                </Link>
+
+                {/* History */}
+                <Link
+                  to="/about-school#history"
+                  className={dropdownItemClass}
+                >
+                  <span className="block font-semibold text-[var(--primary)]">
+                    History & Heritage
+                  </span>
+
+                  <span className="mt-1 block text-xs text-slate-400">
+                    Our story since 1945
+                  </span>
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* =========================
+              NOSA DROPDOWN
+          ========================== */}
+          <div className="group relative">
+            <NavLink
+              to="/about-nosa"
+              className={dropdownNavLinkClass}
+            >
+              NOSA
+
+              <ChevronDown
+                size={14}
+                className="transition-transform duration-300 group-hover:rotate-180"
+              />
+            </NavLink>
+
+            {/* Dropdown */}
+            <div className="invisible absolute left-1/2 top-full z-50 w-64 -translate-x-1/2 translate-y-2 pt-4 opacity-0 transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+              <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl">
+                {/* About NOSA */}
+                <Link
+                  to="/about-nosa"
+                  className={dropdownItemClass}
+                >
+                  <span className="block font-semibold text-[var(--primary)]">
+                    About NOSA
+                  </span>
+
+                  <span className="mt-1 block text-xs text-slate-400">
+                    Who we are & what we do
+                  </span>
+                </Link>
+
+                {/* Leadership */}
+                <Link
+                  to="/about/nosa/leadership"
+                  className={dropdownItemClass}
+                >
+                  <span className="block font-semibold text-[var(--primary)]">
+                    NOSA Leadership
+                  </span>
+
+                  <span className="mt-1 block text-xs text-slate-400">
+                    Leadership & service
+                  </span>
+                </Link>
+
+                {/* Chapters */}
+                <Link
+                  to="/about/nosa/chapters"
+                  className={dropdownItemClass}
+                >
+                  <span className="block font-semibold text-[var(--primary)]">
+                    Chapters
+                  </span>
+
+                  <span className="mt-1 block text-xs text-slate-400">
+                    Connect with Olivetians
+                  </span>
+                </Link>
+              </div>
+            </div>
+          </div>
 
           {/* Olivetians */}
-          <Link
-            to="/olivetians"
-            className={`text-sm font-medium transition-colors duration-500 ${
-              scrolled
-                ? "text-slate-600 hover:text-[var(--primary)]"
-                : "text-white/70 hover:text-white"
-            }`}
-          >
+          <NavLink to="/olivetians" className={navLinkClass}>
             Olivetians
-          </Link>
+          </NavLink>
 
           {/* News & Events */}
-          <Link
-            to="/news"
-            className={`text-sm font-medium transition-colors duration-500 ${
-              scrolled
-                ? "text-slate-600 hover:text-[var(--primary)]"
-                : "text-white/70 hover:text-white"
-            }`}
-          >
+          <NavLink to="/news" className={navLinkClass}>
             News & Events
-          </Link>
+          </NavLink>
 
           {/* Gallery */}
-          <Link
-            to="/gallery"
-            className={`text-sm font-medium transition-colors duration-500 ${
-              scrolled
-                ? "text-slate-600 hover:text-[var(--primary)]"
-                : "text-white/70 hover:text-white"
-            }`}
-          >
+          <NavLink to="/gallery" className={navLinkClass}>
             Gallery
-          </Link>
+          </NavLink>
         </div>
 
         {/* =========================
@@ -200,28 +289,203 @@ const Navbar = () => {
           }`}
         >
           <div className="flex flex-col gap-1">
-            {/* Mobile Links */}
-            {[
-              ["Home", "/"],
-              ["About", "/about-school"],
-              ["NOSA", "/about-nosa"],
-              ["Olivetians", "/olivetians"],
-              ["News & Events", "/news"],
-              ["Gallery", "/gallery"],
-            ].map(([label, path]) => (
-              <Link
-                key={label}
-                to={path}
-                onClick={() => setMobileMenu(false)}
-                className={`rounded-xl px-4 py-3 text-sm transition-all duration-300 ${
+
+            {/* =========================
+                HOME
+            ========================== */}
+            <NavLink
+              to="/"
+              end
+              onClick={() => setMobileMenu(false)}
+              className={({ isActive }) =>
+                `rounded-xl px-4 py-3 text-sm transition-all duration-300 ${
+                  scrolled
+                    ? isActive
+                      ? "bg-[var(--primary-light)] font-semibold text-[var(--secondary)]"
+                      : "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
+                    : isActive
+                      ? "bg-white/10 font-semibold text-[var(--secondary)]"
+                      : "text-white/80 hover:bg-white/10 hover:text-white"
+                }`
+              }
+            >
+              Home
+            </NavLink>
+
+            {/* =========================
+                MOBILE ABOUT
+            ========================== */}
+            <div>
+              <button
+                type="button"
+                onClick={() => setMobileAbout(!mobileAbout)}
+                className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-sm transition-all duration-300 ${
                   scrolled
                     ? "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
                     : "text-white/80 hover:bg-white/10 hover:text-white"
                 }`}
               >
-                {label}
-              </Link>
-            ))}
+                <span>About</span>
+
+                <ChevronDown
+                  size={16}
+                  className={`transition-transform duration-300 ${
+                    mobileAbout ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+
+              {mobileAbout && (
+                <div className="ml-3 mt-1 border-l border-slate-200 pl-3">
+                  <Link
+                    to="/about-school"
+                    onClick={() => setMobileMenu(false)}
+                    className={`block rounded-lg px-4 py-3 text-sm ${
+                      scrolled
+                        ? "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
+                        : "text-white/70 hover:bg-white/10 hover:text-white"
+                    }`}
+                  >
+                    About Olivet
+                  </Link>
+
+                  <Link
+                    to="/about-school#history"
+                    onClick={() => setMobileMenu(false)}
+                    className={`block rounded-lg px-4 py-3 text-sm ${
+                      scrolled
+                        ? "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
+                        : "text-white/70 hover:bg-white/10 hover:text-white"
+                    }`}
+                  >
+                    History & Heritage
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            {/* =========================
+                MOBILE NOSA
+            ========================== */}
+            <div>
+              <button
+                type="button"
+                onClick={() => setMobileNosa(!mobileNosa)}
+                className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-sm transition-all duration-300 ${
+                  scrolled
+                    ? "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
+                    : "text-white/80 hover:bg-white/10 hover:text-white"
+                }`}
+              >
+                <span>NOSA</span>
+
+                <ChevronDown
+                  size={16}
+                  className={`transition-transform duration-300 ${
+                    mobileNosa ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+
+              {mobileNosa && (
+                <div className="ml-3 mt-1 border-l border-slate-200 pl-3">
+                  <Link
+                    to="/about-nosa"
+                    onClick={() => setMobileMenu(false)}
+                    className={`block rounded-lg px-4 py-3 text-sm ${
+                      scrolled
+                        ? "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
+                        : "text-white/70 hover:bg-white/10 hover:text-white"
+                    }`}
+                  >
+                    About NOSA
+                  </Link>
+
+                  <Link
+                    to="/nosa-leadership"
+                    onClick={() => setMobileMenu(false)}
+                    className={`block rounded-lg px-4 py-3 text-sm ${
+                      scrolled
+                        ? "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
+                        : "text-white/70 hover:bg-white/10 hover:text-white"
+                    }`}
+                  >
+                    NOSA Leadership
+                  </Link>
+
+                  <Link
+                    to="/nosa-chapters"
+                    onClick={() => setMobileMenu(false)}
+                    className={`block rounded-lg px-4 py-3 text-sm ${
+                      scrolled
+                        ? "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
+                        : "text-white/70 hover:bg-white/10 hover:text-white"
+                    }`}
+                  >
+                    Chapters
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            {/* =========================
+                OLIVETIANS
+            ========================== */}
+            <NavLink
+              to="/olivetians"
+              onClick={() => setMobileMenu(false)}
+              className={({ isActive }) =>
+                `rounded-xl px-4 py-3 text-sm transition-all duration-300 ${
+                  scrolled
+                    ? isActive
+                      ? "bg-[var(--primary-light)] font-semibold text-[var(--secondary)]"
+                      : "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
+                    : isActive
+                      ? "bg-white/10 font-semibold text-[var(--secondary)]"
+                      : "text-white/80 hover:bg-white/10 hover:text-white"
+                }`
+              }
+            >
+              Olivetians
+            </NavLink>
+
+            {/* News & Events */}
+            <NavLink
+              to="/news"
+              onClick={() => setMobileMenu(false)}
+              className={({ isActive }) =>
+                `rounded-xl px-4 py-3 text-sm transition-all duration-300 ${
+                  scrolled
+                    ? isActive
+                      ? "bg-[var(--primary-light)] font-semibold text-[var(--secondary)]"
+                      : "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
+                    : isActive
+                      ? "bg-white/10 font-semibold text-[var(--secondary)]"
+                      : "text-white/80 hover:bg-white/10 hover:text-white"
+                }`
+              }
+            >
+              News & Events
+            </NavLink>
+
+            {/* Gallery */}
+            <NavLink
+              to="/gallery"
+              onClick={() => setMobileMenu(false)}
+              className={({ isActive }) =>
+                `rounded-xl px-4 py-3 text-sm transition-all duration-300 ${
+                  scrolled
+                    ? isActive
+                      ? "bg-[var(--primary-light)] font-semibold text-[var(--secondary)]"
+                      : "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
+                    : isActive
+                      ? "bg-white/10 font-semibold text-[var(--secondary)]"
+                      : "text-white/80 hover:bg-white/10 hover:text-white"
+                }`
+              }
+            >
+              Gallery
+            </NavLink>
 
             {/* Divider */}
             <div

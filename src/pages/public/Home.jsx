@@ -18,7 +18,9 @@ import {
 // import olivetGate from "../../assets/images/hero/olivetNOSA-5";
 import Navbar from "../../components/public/Navbar";
 import Footer from "../../components/public/footer";
-export default function Home() {
+export default function Home({}) {
+
+
     const heroImages = [
         "/images/olivetNOSA-4.jpg",
         "/images/olivetNOSA-2.jpg",
@@ -92,7 +94,7 @@ export default function Home() {
 
 
                 <header className="fixed left-0 right-0 top-0 z-50 px-5 pt-5 sm:px-8 lg:px-12">
-                    <Navbar />
+                    <Navbar  />
                 </header>
 
 

@@ -153,7 +153,10 @@ className="relative min-h-[78vh] overflow-hidden bg-[var(--primary-dark)]">
 {/* =========================
     WHERE THE STORY BEGAN
 ========================= */}
-<section className="relative overflow-hidden bg-white py-24 sm:py-28 lg:py-32">
+<section 
+id="history"
+  className="relative scroll-mt-24 overflow-hidden bg-white py-24 sm:py-28 lg:py-32"
+>
   <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
 
     {/* Section Intro */}

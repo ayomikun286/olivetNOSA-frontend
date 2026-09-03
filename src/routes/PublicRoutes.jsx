@@ -8,6 +8,8 @@ import News from "../pages/public/News";
 import Events from "../pages/public/Events";
 import Gallery from "../pages/public/Gallery";
 import Contact from "../pages/public/Contact";
+import NOSALeadership from "../pages/public/NOSALeadership.jsx";
+import NOSAChapters from "../pages/public/NOSAChapters.jsx";
 
 export default function PublicRoutes() {
   return (
@@ -17,6 +19,8 @@ export default function PublicRoutes() {
       <Route path="/about-school" element={<AboutSchool />} />
 
       <Route path="/about-nosa" element={<AboutNOSA />} />
+      <Route path="/nosa-leadership" element={<NOSALeadership />} />
+      <Route path="/nosa-chapters" element={<NOSAChapters />} />
 
       <Route path="/programs" element={<Programs />} />
 
