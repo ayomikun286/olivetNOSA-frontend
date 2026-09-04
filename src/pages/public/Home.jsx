@@ -2,11 +2,9 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
     ArrowRight,
-    ChevronDown,
-    Menu,
-    X,
     Play,
     Sparkles,
+    Landmark, GraduationCap, Users
 } from "lucide-react";
 
 import {
@@ -15,7 +13,6 @@ import {
     HeartHandshake,
 } from "lucide-react";
 
-// import olivetGate from "../../assets/images/hero/olivetNOSA-5";
 import Navbar from "../../components/public/Navbar";
 import Footer from "../../components/public/footer";
 export default function Home({}) {
@@ -43,12 +40,17 @@ export default function Home({}) {
 
 
     return (
-        <main className="min-h-screen bg-white">
+        <main className="min-h-screen bg-white  md:mt-20">
+
+
+            <header >
+                    <Navbar  />
+                </header>
 
             {/* =========================
                     HERO
             ========================== */}
-            <section className="relative min-h-screen overflow-hidden bg-[var(--primary-dark)]">
+            <section className="relative min-h-screen overflow-hidden bg-[var(--primary-light)]">
 
 
 
@@ -79,13 +81,13 @@ export default function Home({}) {
                 </div>
 
 
-                <div className="absolute inset-0 bg-[var(--primary-dark)]/40" />
+                <div className="absolute inset-0 bg-black/40" />
 
 
-                <div className="absolute inset-0 bg-gradient-to-r from-[var(--primary-dark)]/85 via-[var(--primary-dark)]/55 to-transparent" />
+                {/* <div className="absolute inset-0 bg-gradient-to-r from-[var(--primary-dark)]/55 via-[var(--primary-dark)]/35 to-transparent" /> */}
 
                 {/* Bottom fade */}
-                <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[var(--primary-dark)] to-transparent" />
+                {/* <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[var(--primary-dark)] to-transparent" /> */}
 
 
                 {/* =========================
@@ -93,9 +95,7 @@ export default function Home({}) {
                             ========================== */}
 
 
-                <header className="fixed left-0 right-0 top-0 z-50 px-5 pt-5 sm:px-8 lg:px-12">
-                    <Navbar  />
-                </header>
+                
 
 
 
@@ -110,7 +110,7 @@ export default function Home({}) {
                         <div className="max-w-4xl">
 
                             {/* Heritage Badge */}
-                            <div data-aos="fade-right" data-aos-delay="150" className="mb-7 inline-flex items-center gap-2 rounded-full border border-[var(--secondary)]/30 bg-[var(--secondary)]/10 px-4 py-2 backdrop-blur-md">
+                            <div data-aos="fade-right" data-aos-delay="150" className="mb-7 -mt-10 inline-flex items-center gap-2 rounded-full border border-[var(--secondary)]/30 bg-[var(--secondary)]/10 px-4 py-2 backdrop-blur-md">
 
                                 <Sparkles
                                     size={14}
@@ -126,8 +126,7 @@ export default function Home({}) {
                             {/* Heading */}
                             <h1 data-aos="fade-up" className="max-w-4xl text-5xl font-semibold leading-[0.95] tracking-[-0.04em] text-white sm:text-6xl md:text-7xl lg:text-[5.5rem]">
 
-                                A Legacy of
-                                <span className="block text-[var(--secondary)]">
+                                A Legacy of <span className="block text-[var(--secondary)]">
                                     Excellence.
                                 </span>
 
@@ -699,83 +698,71 @@ export default function Home({}) {
                     {/* =========================
         PURPOSE CARDS
     ========================== */}
-                    <div className="mt-16 grid gap-5 md:grid-cols-3">
+                   <div className="mt-16 grid gap-5 md:grid-cols-3">
 
-                        {/* Card 1 */}
-                        <div
-                            data-aos="fade-up"
-                            data-aos-delay="100"
-                            className="group rounded-3xl border border-white/10 bg-white/[0.06] p-7 backdrop-blur-md transition-all duration-500 hover:-translate-y-1 hover:border-[var(--secondary)]/30 hover:bg-white/[0.09]"
-                        >
+    {/* Card 1 */}
+    <div
+        data-aos="fade-up"
+        data-aos-delay="100"
+        className="group rounded-3xl border border-white/10 bg-white/[0.06] p-7 backdrop-blur-md transition-all duration-500 hover:-translate-y-1 hover:border-[var(--secondary)]/30 hover:bg-white/[0.09]"
+    >
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--secondary)]/10 text-[var(--secondary)] transition-transform duration-500 group-hover:scale-105">
+            <Landmark size={22} strokeWidth={1.8} />
+        </div>
 
-                            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--secondary)]/10 text-[var(--secondary)]">
-                                <span className="text-xl font-bold">
-                                    01
-                                </span>
-                            </div>
+        <h3 className="mt-7 text-xl font-semibold text-white">
+            Preserve the Legacy
+        </h3>
 
-                            <h3 className="mt-7 text-xl font-semibold text-white">
-                                Preserve the Legacy
-                            </h3>
-
-                            <p className="mt-3 text-sm leading-7 text-white/50">
-                                Keeping the history, traditions and values of Olivet
-                                alive for generations to come.
-                            </p>
-
-                        </div>
+        <p className="mt-3 text-sm leading-7 text-white/50">
+            Keeping the history, traditions and values of Olivet
+            alive for generations to come.
+        </p>
+    </div>
 
 
-                        {/* Card 2 */}
-                        <div
-                            data-aos="fade-up"
-                            data-aos-delay="200"
-                            className="group rounded-3xl border border-white/10 bg-white/[0.06] p-7 backdrop-blur-md transition-all duration-500 hover:-translate-y-1 hover:border-[var(--secondary)]/30 hover:bg-white/[0.09]"
-                        >
+    {/* Card 2 */}
+    <div
+        data-aos="fade-up"
+        data-aos-delay="200"
+        className="group rounded-3xl border border-white/10 bg-white/[0.06] p-7 backdrop-blur-md transition-all duration-500 hover:-translate-y-1 hover:border-[var(--secondary)]/30 hover:bg-white/[0.09]"
+    >
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--secondary)]/10 text-[var(--secondary)] transition-transform duration-500 group-hover:scale-105">
+            <GraduationCap size={22} strokeWidth={1.8} />
+        </div>
 
-                            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--secondary)]/10 text-[var(--secondary)]">
-                                <span className="text-xl font-bold">
-                                    02
-                                </span>
-                            </div>
+        <h3 className="mt-7 text-xl font-semibold text-white">
+            Build the Future
+        </h3>
 
-                            <h3 className="mt-7 text-xl font-semibold text-white">
-                                Build the Future
-                            </h3>
-
-                            <p className="mt-3 text-sm leading-7 text-white/50">
-                                Supporting initiatives that strengthen education,
-                                infrastructure and opportunities for today's students.
-                            </p>
-
-                        </div>
+        <p className="mt-3 text-sm leading-7 text-white/50">
+            Supporting initiatives that strengthen education,
+            infrastructure and opportunities for today's students.
+        </p>
+    </div>
 
 
-                        {/* Card 3 */}
-                        <div
-                            data-aos="fade-up"
-                            data-aos-delay="300"
-                            className="group rounded-3xl border border-white/10 bg-white/[0.06] p-7 backdrop-blur-md transition-all duration-500 hover:-translate-y-1 hover:border-[var(--secondary)]/30 hover:bg-white/[0.09]"
-                        >
+    {/* Card 3 */}
+    <div
+        data-aos="fade-up"
+        data-aos-delay="300"
+        className="group rounded-3xl border border-white/10 bg-white/[0.06] p-7 backdrop-blur-md transition-all duration-500 hover:-translate-y-1 hover:border-[var(--secondary)]/30 hover:bg-white/[0.09]"
+    >
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--secondary)]/10 text-[var(--secondary)] transition-transform duration-500 group-hover:scale-105">
+            <Users size={22} strokeWidth={1.8} />
+        </div>
 
-                            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--secondary)]/10 text-[var(--secondary)]">
-                                <span className="text-xl font-bold">
-                                    03
-                                </span>
-                            </div>
+        <h3 className="mt-7 text-xl font-semibold text-white">
+            Connect Olivetians
+        </h3>
 
-                            <h3 className="mt-7 text-xl font-semibold text-white">
-                                Connect Olivetians
-                            </h3>
+        <p className="mt-3 text-sm leading-7 text-white/50">
+            Creating a stronger network where old students can
+            reconnect, collaborate and give back.
+        </p>
+    </div>
 
-                            <p className="mt-3 text-sm leading-7 text-white/50">
-                                Creating a stronger network where old students can
-                                reconnect, collaborate and give back.
-                            </p>
-
-                        </div>
-
-                    </div>
+</div>
 
 
                     {/* =========================

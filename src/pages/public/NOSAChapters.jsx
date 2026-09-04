@@ -59,23 +59,23 @@ const activities = [
 
 export default function NOSAChapters() {
   return (
-    <div className="min-h-screen bg-white text-[var(--primary-dark)]">
+    <main className="min-h-screen bg-white text-[var(--primary-dark)]  mt-0 md:mt-15">
       {/* =========================================================
           NAVBAR
       ========================================================= */}
-     
-      {/* =========================================================
-          HERO
-      ========================================================= */}
-      <section className="relative flex min-h-screen items-end overflow-hidden">
-
-         <header className="fixed left-0 right-0 top-0 z-50 px-4 pt-4 sm:px-6 lg:px-10">
+      <header >
         <div
           
         >
           <Navbar />
         </div>
       </header>
+      {/* =========================================================
+          HERO
+      ========================================================= */}
+      <section className="relative flex min-h-screen items-end overflow-hidden">
+
+        
 
         <img
           src="/images/olivetNOSA-6.jpg"
@@ -177,7 +177,7 @@ export default function NOSAChapters() {
                 </a>
 
                 <a
-                  href="#connect"
+                  href="portal/signup"
                   className="
                     inline-flex
                     items-center
@@ -247,7 +247,7 @@ export default function NOSAChapters() {
           <div className="grid gap-16 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
             <div data-aos="fade-right">
               <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-                02 — The Network
+               — The Network
               </p>
 
               <h2 className="mt-5 text-4xl font-semibold leading-tight tracking-tight text-[var(--primary-dark)] sm:text-5xl">
@@ -284,7 +284,7 @@ export default function NOSAChapters() {
         <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
           <div className="max-w-2xl" data-aos="fade-up">
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-              03 — How Chapters Work
+             — How Chapters Work
             </p>
 
             <h2 className="mt-5 text-4xl font-semibold tracking-tight text-[var(--primary-dark)] sm:text-5xl">
@@ -316,7 +316,7 @@ export default function NOSAChapters() {
                   "
                 >
                   <div className="flex items-start justify-between">
-                    <span
+                    {/* <span
                       className="
                         text-sm
                         font-semibold
@@ -325,7 +325,7 @@ export default function NOSAChapters() {
                       "
                     >
                       {item.number}
-                    </span>
+                    </span> */}
 
                     <div
                       className="
@@ -388,7 +388,7 @@ export default function NOSAChapters() {
 
             <div data-aos="fade-left">
               <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-                04 — Beyond The Chapter
+                — Beyond The Chapter
               </p>
 
               <h2 className="mt-5 text-4xl font-semibold leading-tight tracking-tight text-[var(--primary-dark)] sm:text-5xl">
@@ -465,7 +465,7 @@ export default function NOSAChapters() {
           <div className="grid gap-14 lg:grid-cols-[0.7fr_1.3fr]">
             <div data-aos="fade-right">
               <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-                05 — Chapter Life
+                — Chapter Life
               </p>
 
               <h2 className="mt-5 text-4xl font-semibold tracking-tight sm:text-5xl">
@@ -574,7 +574,7 @@ export default function NOSAChapters() {
             className="mt-10 flex justify-center"
           >
             <a
-              href="/contact"
+              href="/portal/signup"
               className="
                 inline-flex
                 items-center
@@ -599,6 +599,6 @@ export default function NOSAChapters() {
       </section>
 
       <Footer />
-    </div>
+    </main>
   );
 }

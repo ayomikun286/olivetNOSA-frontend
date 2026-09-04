@@ -143,44 +143,104 @@ export default function Gallery() {
                 <Navbar />
               </div>
             </header>
-      <section className="relative min-h-[100vh] overflow-hidden bg-[var(--primary-dark)]">
-        <img
-          src="/images/olivetNOSA-2.jpg"
-          alt="Olivetians"
-          className="absolute inset-0 h-full w-full object-cover"
-        />
+      <section className="relative min-h-[90vh] overflow-hidden bg-[var(--primary-dark)] md:min-h-[100vh]">
 
-        <div className="absolute inset-0 bg-[var(--primary-dark)]/75" />
+  {/* Background Image */}
+  <img
+    src="/images/olivetNOSA-2.jpg"
+    alt="Olivetians"
+    className="absolute inset-0 h-full w-full object-cover"
+  />
 
-        <div className="absolute inset-0 bg-gradient-to-r from-[var(--primary-dark)] via-[var(--primary-dark)]/70 to-transparent" />
+  {/* Dark image treatment */}
+  <div className="absolute inset-0 bg-[var(--primary-dark)]/60" />
 
-        <div className="relative mx-auto flex min-h-[100vh] max-w-7xl items-end px-6 pb-20 sm:px-10 lg:px-12 lg:pb-24">
-          <div
-            className="max-w-3xl"
-            data-aos="fade-up"
-          >
-            <div className="mb-6 flex items-center gap-3 text-[var(--secondary)]">
-              <Camera size={20} strokeWidth={1.8} />
+  {/* Cinematic left-to-right gradient */}
+  <div className="absolute inset-0 bg-gradient-to-r from-[var(--primary-dark)] via-[var(--primary-dark)]/80 to-[var(--primary-dark)]/20" />
 
-              <span className="text-xs font-semibold uppercase tracking-[0.28em]">
-                Gallery
-              </span>
-            </div>
+  {/* Bottom fade */}
+  <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[var(--primary-dark)] to-transparent" />
 
-            <h1 className="text-5xl font-semibold leading-[1.02] tracking-tight text-white sm:text-6xl lg:text-7xl">
-              Moments that
-              <span className="block text-[var(--secondary)]">
-                remain.
-              </span>
-            </h1>
+  {/* Bottom border */}
+  <div className="absolute bottom-0 left-0 right-0 border-t border-white/10" />
 
-            <p className="mt-7 max-w-2xl text-base leading-8 text-white/75 sm:text-lg">
-              A visual collection of the people, places and moments
-              that have shaped the Olivetian story across generations.
-            </p>
-          </div>
+  {/* Content */}
+  <div className="relative z-10 mx-auto flex min-h-[90vh] max-w-7xl flex-col justify-end px-6 pb-8 sm:px-10 md:min-h-[100vh] lg:px-12 lg:pb-10">
+
+    <div
+      data-aos="fade-up"
+      className="max-w-5xl"
+    >
+
+      {/* Eyebrow */}
+      <div className="mb-7 flex items-center gap-4">
+
+        {/*  */}
+
+        <span className="h-px w-12 bg-[var(--secondary)]" />
+
+        <div className="flex items-center gap-3 text-white/70">
+
+          <Camera
+            size={15}
+            strokeWidth={1.8}
+          />
+
+          <span className="text-xs font-semibold uppercase tracking-[0.28em]">
+            Gallery
+          </span>
+
         </div>
-      </section>
+
+      </div>
+
+      {/* Heading */}
+      <h1 className="max-w-5xl text-5xl font-semibold leading-[0.96] tracking-[-0.035em] text-white sm:text-6xl lg:text-[5.8rem]">
+
+        Moments that
+
+        <span className="block text-[var(--secondary)]">
+          remain.
+        </span>
+
+      </h1>
+
+      {/* Description */}
+      <p className="mt-8 max-w-2xl text-base leading-8 text-white/65 sm:text-lg">
+        More than photographs. A collection of people, places and
+        memories that continue to tell the Olivetian story.
+      </p>
+
+    </div>
+
+    {/* Bottom information strip */}
+    <div
+      data-aos="fade-up"
+      data-aos-delay="150"
+      className="mt-16 flex flex-col gap-6 border-t border-white/15 pt-6 sm:flex-row sm:items-center sm:justify-between"
+    >
+
+      <div className="flex items-center gap-3">
+
+        <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-white/70">
+          ↓
+        </span>
+
+        <span className="text-xs uppercase tracking-[0.2em] text-white/50">
+          Explore the archive
+        </span>
+
+      </div>
+
+      <p className="text-xs uppercase tracking-[0.2em] text-white/40">
+        Heritage · People · Community
+      </p>
+
+    </div>
+
+  </div>
+
+</section>
 
       {/* =====================================================
           INTRO
@@ -189,7 +249,7 @@ export default function Gallery() {
         <div className="mx-auto grid max-w-7xl gap-10 px-6 sm:px-10 lg:grid-cols-[1fr_1.2fr] lg:items-end lg:px-12">
           <div data-aos="fade-up">
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-              01 · The Archive
+             The Archive
             </p>
 
             <h2 className="text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">
@@ -251,7 +311,7 @@ export default function Gallery() {
           >
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-                02 · Moments
+              Moments
               </p>
 
               <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -338,7 +398,7 @@ export default function Gallery() {
             >
               <div>
                 <p className="mb-4 text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-                  03 · Heritage
+                   Heritage
                 </p>
 
                 <h2 className="text-4xl font-semibold leading-tight sm:text-5xl">
@@ -371,7 +431,7 @@ export default function Gallery() {
         <div className="relative mx-auto max-w-4xl px-6 text-center sm:px-10">
           <div data-aos="fade-up">
             <p className="mb-4 text-xs font-semibold uppercase tracking-[0.28em] text-[var(--secondary)]">
-              04 · Keep The Story Going
+              Keep The Story Going
             </p>
 
             <h2 className="text-4xl font-semibold tracking-tight sm:text-5xl">

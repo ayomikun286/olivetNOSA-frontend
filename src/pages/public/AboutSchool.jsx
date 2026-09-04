@@ -11,6 +11,9 @@ import {
   Landmark,
   GraduationCap,
   School,
+  Building2,
+  Trophy,
+  Heart,  Sparkles
 } from "lucide-react";
 const AboutSchool = () => {
   return (
@@ -21,28 +24,28 @@ const AboutSchool = () => {
     ABOUT SCHOOL — HERO
 ========================= */}
 <section
-style={{ backgroundImage: `url("/images/olivetNOSA-2.jpg")`, backgroundSize: "cover", backgroundPosition: "center" }}
+style={{ backgroundImage: `url("/images/olivetNOSA-4.jpg")`, backgroundSize: "cover", backgroundPosition: "center" }}
 className="relative min-h-[78vh] overflow-hidden bg-[var(--primary-dark)]">
   {/* Background Image */}
   <div className="absolute inset-0">
     {/* Replace with your actual Olivet campus image */}
     <img
-      src="/images/olivet-school.jpg"
+      src="/images/olivetNOSA-4.jpg"
       alt="Olivet Baptist High School, Oyo"
       className="h-full w-full object-cover"
     />
   </div>
 
   {/* Dark overlays */}
-  <div className="absolute inset-0 bg-[var(--primary-dark)]/65" />
+  <div className="absolute inset-0 bg-[var(--primary-dark)]/55" />
 
-  <div className="absolute inset-0 bg-gradient-to-r from-[var(--primary-dark)] via-[var(--primary-dark)]/75 to-[var(--primary-dark)]/25" />
+  <div className="absolute inset-0 bg-gradient-to-r from-[var(--primary-dark)]/55 via-[var(--primary-dark)]/35 to-transparent" />
 
-  <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[var(--primary-dark)] to-transparent" />
+  {/* <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[var(--primary-dark)] to-transparent" /> */}
 
 
 
- <header className="fixed left-0 right-0 top-0 z-50 px-5 pt-5 sm:px-8 lg:px-12">
+ <header >
                     <Navbar />
                 </header>
 
@@ -167,7 +170,7 @@ className="relative min-h-[78vh] overflow-hidden bg-[var(--primary-dark)]">
           <span className="h-px w-10 bg-[var(--secondary)]" />
 
           <span className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-            01 · The Beginning
+            The Beginning
           </span>
         </div>
       </div>
@@ -345,7 +348,7 @@ className="relative min-h-[78vh] overflow-hidden bg-[var(--primary-dark)]">
           <span className="h-px w-10 bg-[var(--secondary)]" />
 
           <span className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-            02 · The Olivet Experience
+            The Olivet Experience
           </span>
         </div>
       </div>
@@ -378,77 +381,113 @@ className="relative min-h-[78vh] overflow-hidden bg-[var(--primary-dark)]">
 
 
     {/* Three Pillars */}
-    <div className="mt-20 grid border-y border-slate-200 md:grid-cols-3">
+    <div className="mt-20 grid gap-6 md:grid-cols-3">
 
-      {/* Learning */}
-      <div
+    {/* Learning */}
+    <div
         data-aos="fade-up"
         data-aos-delay="100"
-        className="group border-b border-slate-200 py-10 md:border-b-0 md:border-r md:pr-10 lg:py-12"
-      >
-        <span className="text-xs font-semibold tracking-[0.2em] text-slate-400">
-          01
-        </span>
+        className="group relative overflow-hidden rounded-2xl bg-[var(--primary-dark)]"
+    >
+        <div className="relative h-[420px] overflow-hidden">
+            <img
+                src="/images/olivetNOSA-student.jpg"
+                alt="Olivet students"
+                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
 
-        <h3 className="mt-6 text-2xl font-semibold tracking-tight text-[var(--primary-dark)]">
-          Learning
-        </h3>
+            <div className="absolute inset-0 bg-gradient-to-t from-[var(--primary-dark)] via-[var(--primary-dark)]/40 to-transparent" />
 
-        <p className="mt-4 text-base leading-7 text-[var(--text-muted)]">
-          A foundation built on knowledge, curiosity and the discipline
-          to keep growing beyond the classroom.
-        </p>
+            <div className="absolute inset-x-0 bottom-0 p-7 lg:p-8">
 
-        <div className="mt-7 h-px w-0 bg-[var(--secondary)] transition-all duration-500 group-hover:w-12" />
-      </div>
+                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
+                    Learning
+                </span>
+
+                <h3 className="mt-3 text-2xl font-semibold tracking-tight text-white">
+                    A foundation for growth.
+                </h3>
+
+                <p className="mt-3 max-w-sm text-sm leading-7 text-white/70">
+                    A foundation built on knowledge, curiosity and the discipline
+                    to keep growing beyond the classroom.
+                </p>
+
+            </div>
+        </div>
+    </div>
 
 
-      {/* Character */}
-      <div
+    {/* Character */}
+    <div
         data-aos="fade-up"
         data-aos-delay="200"
-        className="group border-b border-slate-200 py-10 md:border-b-0 md:border-r md:px-10 lg:py-12"
-      >
-        <span className="text-xs font-semibold tracking-[0.2em] text-slate-400">
-          02
-        </span>
+        className="group relative overflow-hidden rounded-2xl bg-[var(--primary-dark)]"
+    >
+        <div className="relative h-[420px] overflow-hidden">
+            <img
+                src="/images/olivetsNOSA__ -olaojo.webp"
+                alt="Olivet school community"
+                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
 
-        <h3 className="mt-6 text-2xl font-semibold tracking-tight text-[var(--primary-dark)]">
-          Character
-        </h3>
+            <div className="absolute inset-0 bg-gradient-to-t from-[var(--primary-dark)] via-[var(--primary-dark)]/40 to-transparent" />
 
-        <p className="mt-4 text-base leading-7 text-[var(--text-muted)]">
-          Lessons in responsibility, discipline and values that continue
-          to influence Olivetians long after graduation.
-        </p>
+            <div className="absolute inset-x-0 bottom-0 p-7 lg:p-8">
 
-        <div className="mt-7 h-px w-0 bg-[var(--secondary)] transition-all duration-500 group-hover:w-12" />
-      </div>
+                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
+                    Character
+                </span>
+
+                <h3 className="mt-3 text-2xl font-semibold tracking-tight text-white">
+                    Values that stay with us.
+                </h3>
+
+                <p className="mt-3 max-w-sm text-sm leading-7 text-white/70">
+                    Lessons in responsibility, discipline and values that continue
+                    to influence Olivetians long after graduation.
+                </p>
+
+            </div>
+        </div>
+    </div>
 
 
-      {/* Community */}
-      <div
+    {/* Community */}
+    <div
         data-aos="fade-up"
         data-aos-delay="300"
-        className="group py-10 md:pl-10 lg:py-12"
-      >
-        <span className="text-xs font-semibold tracking-[0.2em] text-slate-400">
-          03
-        </span>
+        className="group relative overflow-hidden rounded-2xl bg-[var(--primary-dark)]"
+    >
+        <div className="relative h-[420px] overflow-hidden">
+            <img
+                src="/images/olivetNOSA-2.jpg"
+                alt="Olivetians together"
+                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
 
-        <h3 className="mt-6 text-2xl font-semibold tracking-tight text-[var(--primary-dark)]">
-          Community
-        </h3>
+            <div className="absolute inset-0 bg-gradient-to-t from-[var(--primary-dark)] via-[var(--primary-dark)]/40 to-transparent" />
 
-        <p className="mt-4 text-base leading-7 text-[var(--text-muted)]">
-          A shared identity that connects classmates, generations and
-          Olivetians wherever life takes them.
-        </p>
+            <div className="absolute inset-x-0 bottom-0 p-7 lg:p-8">
 
-        <div className="mt-7 h-px w-0 bg-[var(--secondary)] transition-all duration-500 group-hover:w-12" />
-      </div>
+                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
+                    Community
+                </span>
 
+                <h3 className="mt-3 text-2xl font-semibold tracking-tight text-white">
+                    A connection that continues.
+                </h3>
+
+                <p className="mt-3 max-w-sm text-sm leading-7 text-white/70">
+                    A shared identity that connects classmates, generations and
+                    Olivetians wherever life takes them.
+                </p>
+
+            </div>
+        </div>
     </div>
+
+</div>
 
 
     {/* Closing Statement */}
@@ -488,7 +527,7 @@ className="relative min-h-[78vh] overflow-hidden bg-[var(--primary-dark)]">
           <span className="h-px w-10 bg-[var(--secondary)]" />
 
           <span className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-            03 · Through the Years
+          Through the Years
           </span>
         </div>
       </div>
@@ -696,7 +735,7 @@ className="relative min-h-[78vh] overflow-hidden bg-[var(--primary-dark)]">
           <span className="h-px w-10 bg-[var(--secondary)]" />
 
           <span className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-            04 · The Olivetian
+            The Olivetian
           </span>
         </div>
       </div>
@@ -742,75 +781,105 @@ className="relative min-h-[78vh] overflow-hidden bg-[var(--primary-dark)]">
     {/* Identity Cards */}
     <div className="mt-20 grid gap-5 md:grid-cols-3">
 
-      {/* Memory */}
-      <div
+    {/* The Memories */}
+    <div
         data-aos="fade-up"
         data-aos-delay="100"
-        className="group border border-white/10 bg-white/[0.03] p-8 transition duration-300 hover:-translate-y-1 hover:border-[var(--secondary)]/40 hover:bg-white/[0.06] sm:p-10"
-      >
-        <span className="text-xs font-semibold tracking-[0.2em] text-[var(--secondary)]">
-          01
-        </span>
+        className="group relative min-h-[460px] overflow-hidden rounded-2xl bg-[var(--primary-dark)]"
+    >
+        <img
+            src="/images/olivetNOSA-2.jpg"
+            alt="Olivetians"
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+        />
 
-        <h3 className="mt-10 text-2xl font-semibold text-white">
-          The Memories
-        </h3>
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--primary-dark)] via-[var(--primary-dark)]/55 to-[var(--primary-dark)]/10" />
 
-        <p className="mt-4 leading-7 text-white/55">
-          The classrooms, friendships, traditions and moments that remain
-          part of the Olivet experience long after school days are over.
-        </p>
+        <div className="relative flex min-h-[460px] flex-col justify-end p-7 sm:p-9">
 
-        <div className="mt-8 h-px w-8 bg-[var(--secondary)] transition-all duration-500 group-hover:w-14" />
-      </div>
+            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
+                The Memories
+            </span>
+
+            <h3 className="mt-3 text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+                The moments we carry.
+            </h3>
+
+            <p className="mt-4 max-w-sm text-sm leading-7 text-white/75">
+                The classrooms, friendships, traditions and moments that remain
+                part of the Olivet experience long after school days are over.
+            </p>
+
+        </div>
+    </div>
 
 
-      {/* Values */}
-      <div
+    {/* The Values */}
+    <div
         data-aos="fade-up"
         data-aos-delay="200"
-        className="group border border-white/10 bg-white/[0.03] p-8 transition duration-300 hover:-translate-y-1 hover:border-[var(--secondary)]/40 hover:bg-white/[0.06] sm:p-10"
-      >
-        <span className="text-xs font-semibold tracking-[0.2em] text-[var(--secondary)]">
-          02
-        </span>
+        className="group relative min-h-[460px] overflow-hidden rounded-2xl bg-[var(--primary-dark)]"
+    >
+        <img
+            src="/images/olivetNOSA-am.jpg"
+            alt="Olivet school community"
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+        />
 
-        <h3 className="mt-10 text-2xl font-semibold text-white">
-          The Values
-        </h3>
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--primary-dark)] via-[var(--primary-dark)]/55 to-[var(--primary-dark)]/10" />
 
-        <p className="mt-4 leading-7 text-white/55">
-          The discipline, character, faith and sense of responsibility
-          carried from the school into everyday life.
-        </p>
+        <div className="relative flex min-h-[460px] flex-col justify-end p-7 sm:p-9">
 
-        <div className="mt-8 h-px w-8 bg-[var(--secondary)] transition-all duration-500 group-hover:w-14" />
-      </div>
+            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
+                The Values
+            </span>
+
+            <h3 className="mt-3 text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+                What Olivet taught us.
+            </h3>
+
+            <p className="mt-4 max-w-sm text-sm leading-7 text-white/75">
+                The discipline, character, faith and sense of responsibility
+                carried from the school into everyday life.
+            </p>
+
+        </div>
+    </div>
 
 
-      {/* Connection */}
-      <div
+    {/* The Connection */}
+    <div
         data-aos="fade-up"
         data-aos-delay="300"
-        className="group border border-white/10 bg-white/[0.03] p-8 transition duration-300 hover:-translate-y-1 hover:border-[var(--secondary)]/40 hover:bg-white/[0.06] sm:p-10"
-      >
-        <span className="text-xs font-semibold tracking-[0.2em] text-[var(--secondary)]">
-          03
-        </span>
+        className="group relative min-h-[460px] overflow-hidden rounded-2xl bg-[var(--primary-dark)]"
+    >
+        <img
+            src="/images/olivetNOSA-student.jpg"
+            alt="Olivet students"
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+        />
 
-        <h3 className="mt-10 text-2xl font-semibold text-white">
-          The Connection
-        </h3>
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--primary-dark)] via-[var(--primary-dark)]/55 to-[var(--primary-dark)]/10" />
 
-        <p className="mt-4 leading-7 text-white/55">
-          A bond that brings together people who may have left Olivet at
-          different times, but share the same roots.
-        </p>
+        <div className="relative flex min-h-[460px] flex-col justify-end p-7 sm:p-9">
 
-        <div className="mt-8 h-px w-8 bg-[var(--secondary)] transition-all duration-500 group-hover:w-14" />
-      </div>
+            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
+                The Connection
+            </span>
 
+            <h3 className="mt-3 text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+                Different generations. One root.
+            </h3>
+
+            <p className="mt-4 max-w-sm text-sm leading-7 text-white/75">
+                A bond that brings together people who may have left Olivet at
+                different times, but share the same roots.
+            </p>
+
+        </div>
     </div>
+
+</div>
 
 
     {/* Closing Quote */}
@@ -856,7 +925,7 @@ className="relative min-h-[78vh] overflow-hidden bg-[var(--primary-dark)]">
           <span className="h-px w-10 bg-[var(--secondary)]" />
 
           <span className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-            05 · The People
+            The People
           </span>
         </div>
       </div>
@@ -1142,7 +1211,7 @@ className="relative min-h-[78vh] overflow-hidden bg-[var(--primary-dark)]">
           <span className="h-px w-10 bg-[var(--secondary)]" />
 
           <span className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-            06 · The House System
+            The House System
           </span>
         </div>
       </div>
@@ -1163,82 +1232,112 @@ className="relative min-h-[78vh] overflow-hidden bg-[var(--primary-dark)]">
         INTRODUCTION
     ===================================================== */}
 
-    <div className="mt-16 grid gap-12 lg:grid-cols-[1fr_0.8fr] lg:items-start lg:gap-20">
+    <div className="mt-16 grid gap-14 lg:grid-cols-[1fr_0.9fr] lg:items-center lg:gap-20">
 
-      <div data-aos="fade-up">
+  {/* =========================
+      LEFT — HOUSE SYSTEM STORY
+  ========================= */}
+  <div data-aos="fade-up">
 
-        <p className="max-w-3xl text-2xl font-light leading-[1.5] text-[var(--primary-dark)] sm:text-3xl lg:text-4xl">
-          The House system is part of the tradition that has helped shape
-          life at Olivet.
-        </p>
+    <p className="max-w-3xl text-2xl font-light leading-[1.5] text-[var(--primary-dark)] sm:text-3xl lg:text-4xl">
+      The House system is part of the tradition that has helped shape
+      life at Olivet.
+    </p>
 
-        <div className="mt-8 max-w-2xl space-y-5 text-base leading-8 text-[var(--text-muted)] sm:text-lg">
+    {/* Gold divider */}
+    <div className="mt-8 flex items-center gap-3">
+      <div className="h-px w-12 bg-[var(--secondary)]" />
+      <div className="h-2 w-2 rotate-45 border border-[var(--secondary)]" />
+      <div className="h-px w-12 bg-[var(--secondary)]" />
+    </div>
 
-          <p>
-            Historically a residential school, Olivet Heights was organized
-            into houses named after visionary missionaries and indigenous
-            leaders.
-          </p>
+    {/* Story points */}
+    <div className="mt-10 space-y-8">
 
-          <p>
-            Over the years, these houses became more than names. They
-            provided a sense of belonging, identity and healthy competition
-            among students.
-          </p>
-
-          <p>
-            Today, the House system remains part of the Olivet experience,
-            bringing students together through inter-house sports, debates
-            and academic competitions.
-          </p>
-
+      {/* Point 1 */}
+      <div className="flex gap-5">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[var(--primary-dark)] text-[var(--secondary)]">
+          <Building2 size={21} strokeWidth={1.7} />
         </div>
 
+        <p className="pt-1 text-base leading-8 text-[var(--text-muted)] sm:text-lg">
+          Historically a residential school, Olivet Heights was organized
+          into houses named after visionary missionaries and indigenous
+          leaders.
+        </p>
       </div>
 
 
-      {/* STATUS CARD */}
-      <div
-        data-aos="fade-left"
-        data-aos-delay="150"
-        className="relative overflow-hidden rounded-[2rem] bg-[var(--primary-dark)] p-8 sm:p-10"
-      >
-
-        {/* Decorative element */}
-        <div className="absolute -right-12 -top-12 h-32 w-32 rounded-full border border-white/10" />
-        <div className="absolute -right-6 -top-6 h-20 w-20 rounded-full border border-[var(--secondary)]/20" />
-
-        <div className="relative">
-
-          <span className="inline-flex items-center rounded-full border border-[var(--secondary)]/30 bg-[var(--secondary)]/10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
-            Current Status
-          </span>
-
-          <h3 className="mt-6 text-2xl font-semibold text-white sm:text-3xl">
-            The tradition continues.
-          </h3>
-
-          <p className="mt-5 text-sm leading-7 text-white/65 sm:text-base">
-            Boarding facilities are no longer active. Olivet Baptist High
-            School now operates exclusively as a{" "}
-            <strong className="font-semibold text-white">
-              Day School
-            </strong>.
-          </p>
-
-          <div className="my-7 h-px bg-white/10" />
-
-          <p className="text-sm leading-7 text-white/65 sm:text-base">
-            The House system continues to function through inter-house
-            sports, debates and academic competitions.
-          </p>
-
+      {/* Point 2 */}
+      <div className="flex gap-5">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[var(--primary-dark)] text-[var(--secondary)]">
+          <Users size={21} strokeWidth={1.7} />
         </div>
 
+        <p className="pt-1 text-base leading-8 text-[var(--text-muted)] sm:text-lg">
+          Over the years, these houses became more than names. They
+          provided a sense of belonging, identity and healthy competition
+          among students.
+        </p>
+      </div>
+
+
+      {/* Point 3 */}
+      <div className="flex gap-5">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[var(--primary-dark)] text-[var(--secondary)]">
+          <Trophy size={21} strokeWidth={1.7} />
+        </div>
+
+        <p className="pt-1 text-base leading-8 text-[var(--text-muted)] sm:text-lg">
+          Today, the House system remains part of the Olivet experience,
+          bringing students together through inter-house sports, debates
+          and academic competitions.
+        </p>
       </div>
 
     </div>
 
+  </div>
+
+
+  {/* =========================
+      RIGHT — IMAGE COMPOSITION
+  ========================= */}
+  <div
+    data-aos="fade-left"
+    data-aos-delay="150"
+    className="relative min-h-[620px] sm:min-h-[680px]"
+  >
+
+    {/* BACK / HISTORICAL IMAGE */}
+    <div className="absolute right-0 top-0 w-[78%] overflow-hidden rounded-[1.5rem] shadow-xl">
+      <img
+        src="/images/olivetNOSA-3.jpg"
+        alt="Olivet Baptist High School historical photograph"
+        className="aspect-[4/3] h-full w-full object-cover grayscale-[15%]"
+      />
+
+      {/* subtle image overlay */}
+      <div className="absolute inset-0 bg-[var(--primary-dark)]/10" />
+    </div>
+
+
+    {/* FRONT / CURRENT IMAGE */}
+    <div className="absolute left-0 top-[170px] z-10 w-[76%] overflow-hidden rounded-[1.5rem] border-4 border-white shadow-2xl sm:top-[190px]">
+      <img
+        src="/images/olivetNOSA.jpg"
+        alt="Olivet students"
+        className="aspect-[4/5] h-full w-full object-cover"
+      />
+    </div>
+
+
+    {/* CURRENT STATUS CARD */}
+    
+
+  </div>
+
+</div>
 
     {/* =====================================================
         HOUSE COLLECTION
@@ -1543,7 +1642,7 @@ className="relative min-h-[78vh] overflow-hidden bg-[var(--primary-dark)]">
           <span className="h-px w-10 bg-[var(--secondary)]" />
 
           <span className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-            07 · A Living Legacy
+            A Living Legacy
           </span>
 
         </div>
@@ -1725,82 +1824,80 @@ className="relative min-h-[78vh] overflow-hidden bg-[var(--primary-dark)]">
         HERITAGE DETAILS
     ===================================================== */}
 
-    <div
-      data-aos="fade-up"
-      data-aos-delay="350"
-      className="mt-12 grid gap-5 sm:grid-cols-3"
-    >
+   <div
+  data-aos="fade-up"
+  data-aos-delay="350"
+  className="mt-12 grid gap-5 sm:grid-cols-3"
+>
+  {/* ITEM 1 */}
+  <div className="group rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-7 transition-all duration-500 hover:-translate-y-1 hover:border-[var(--secondary)]/30 hover:bg-white/[0.06]">
 
-      {/* ITEM 1 */}
-      <div className="group rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-7 transition duration-300 hover:bg-white/[0.06]">
-
-        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--secondary)]/10 text-[var(--secondary)]">
-
-          <span className="text-lg font-serif">
-            01
-          </span>
-
-        </div>
-
-        <h4 className="mt-6 text-lg font-semibold text-white">
-          Remember
-        </h4>
-
-        <p className="mt-3 text-sm leading-6 text-white/50">
-          The people, places and experiences that shaped generations of
-          Olivetians.
-        </p>
-
-      </div>
-
-
-      {/* ITEM 2 */}
-      <div className="group rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-7 transition duration-300 hover:bg-white/[0.06]">
-
-        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--secondary)]/10 text-[var(--secondary)]">
-
-          <span className="text-lg font-serif">
-            02
-          </span>
-
-        </div>
-
-        <h4 className="mt-6 text-lg font-semibold text-white">
-          Connect
-        </h4>
-
-        <p className="mt-3 text-sm leading-6 text-white/50">
-          Stay connected with the people who share the Olivet experience
-          across generations.
-        </p>
-
-      </div>
-
-
-      {/* ITEM 3 */}
-      <div className="group rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-7 transition duration-300 hover:bg-white/[0.06]">
-
-        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--secondary)]/10 text-[var(--secondary)]">
-
-          <span className="text-lg font-serif">
-            03
-          </span>
-
-        </div>
-
-        <h4 className="mt-6 text-lg font-semibold text-white">
-          Carry Forward
-        </h4>
-
-        <p className="mt-3 text-sm leading-6 text-white/50">
-          Keep the values, friendships and spirit of Olivet alive for the
-          generations ahead.
-        </p>
-
-      </div>
-
+    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--secondary)]/10 text-[var(--secondary)] transition-all duration-500 group-hover:scale-110 group-hover:bg-[var(--secondary)]/20">
+      <Heart
+        size={20}
+        strokeWidth={1.5}
+        className="transition-transform duration-500 group-hover:scale-110"
+      />
     </div>
 
+    <h4 className="mt-6 text-lg font-semibold text-white">
+      Remember
+    </h4>
+
+    <p className="mt-3 text-sm leading-6 text-white/50">
+      The people, places and experiences that shaped generations of
+      Olivetians.
+    </p>
+
+  </div>
+
+
+  {/* ITEM 2 */}
+  <div className="group rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-7 transition-all duration-500 hover:-translate-y-1 hover:border-[var(--secondary)]/30 hover:bg-white/[0.06]">
+
+    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--secondary)]/10 text-[var(--secondary)] transition-all duration-500 group-hover:scale-110 group-hover:bg-[var(--secondary)]/20">
+      <UsersRound
+        size={20}
+        strokeWidth={1.5}
+        className="transition-transform duration-500 group-hover:scale-110"
+      />
+    </div>
+
+    <h4 className="mt-6 text-lg font-semibold text-white">
+      Connect
+    </h4>
+
+    <p className="mt-3 text-sm leading-6 text-white/50">
+      Stay connected with the people who share the Olivet experience
+      across generations.
+    </p>
+
+  </div>
+
+
+  {/* ITEM 3 */}
+  <div className="group rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-7 transition-all duration-500 hover:-translate-y-1 hover:border-[var(--secondary)]/30 hover:bg-white/[0.06]">
+
+    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--secondary)]/10 text-[var(--secondary)] transition-all duration-500 group-hover:scale-110 group-hover:bg-[var(--secondary)]/20">
+      <Sparkles
+        size={20}
+        strokeWidth={1.5}
+        className="transition-transform duration-500 group-hover:rotate-12 group-hover:scale-110"
+      />
+    </div>
+
+    <h4 className="mt-6 text-lg font-semibold text-white">
+      Carry Forward
+    </h4>
+
+    <p className="mt-3 text-sm leading-6 text-white/50">
+      Keep the values, friendships and spirit of Olivet alive for the
+      generations ahead.
+    </p>
+
+  </div>
+
+</div>
 
     {/* =====================================================
         FINAL MOTTO
@@ -1862,7 +1959,7 @@ className="relative min-h-[78vh] overflow-hidden bg-[var(--primary-dark)]">
             <span className="h-px w-10 bg-[var(--secondary)]" />
 
             <span className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-              08 · The Story Continues
+              The Story Continues
             </span>
 
           </div>

@@ -2,7 +2,7 @@ import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 import Login from "../pages/auth/Login";
-// import Signup from "../pages/auth/Signup";
+import Signup from "../pages/auth/Signup";
 
 const PortalRoutes = () => {
   return (
@@ -11,7 +11,7 @@ const PortalRoutes = () => {
       <Route path="/login" element={<Login />} />
 
       {/* Portal Signup */}
-      {/* <Route path="/signup" element={<Signup />} /> */}
+      <Route path="/signup" element={<Signup />} />
       
     </Routes>
   );

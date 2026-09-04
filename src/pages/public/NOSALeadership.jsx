@@ -12,7 +12,7 @@ import {
 
 const NOSALeadership = () => {
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-white mt-0 md:mt-15">
 
      {/* =========================
     HERO — NOSA LEADERSHIP
@@ -218,7 +218,7 @@ const NOSALeadership = () => {
             <span className="h-px w-10 bg-[var(--secondary)]" />
 
             <span className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--primary)]/45">
-              02 · Our Approach
+              Our Approach
             </span>
           </div>
 
@@ -353,7 +353,7 @@ const NOSALeadership = () => {
           >
 
             <span className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--primary)]/40">
-              03 · Leadership
+              Leadership
             </span>
 
             <h2 className="mt-6 text-4xl font-semibold leading-[1.05] tracking-[-0.045em] text-[var(--primary)] sm:text-5xl lg:text-6xl">
@@ -459,7 +459,7 @@ const NOSALeadership = () => {
             <div data-aos="fade-right">
 
               <span className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--primary)]/40">
-                04 · How We Work
+                How We Work
               </span>
 
               <h2 className="mt-6 max-w-md text-4xl font-semibold leading-[1.05] tracking-[-0.04em] text-[var(--primary)] sm:text-5xl lg:text-6xl">
@@ -480,12 +480,9 @@ const NOSALeadership = () => {
             >
 
               {/* Item */}
-              <div className="flex gap-6 py-8">
+              <div className="flex gap-6 py-8 px-3">
 
-                <span className="text-xs font-semibold text-[var(--secondary)]">
-                  01
-                </span>
-
+               
                 <div>
                   <h3 className="text-xl font-semibold text-[var(--primary)]">
                     National Leadership
@@ -500,11 +497,9 @@ const NOSALeadership = () => {
               </div>
 
 
-              <div className="flex gap-6 py-8">
+              <div className="flex gap-6 py-8 p-3">
 
-                <span className="text-xs font-semibold text-[var(--secondary)]">
-                  02
-                </span>
+                
 
                 <div>
                   <h3 className="text-xl font-semibold text-[var(--primary)]">
@@ -520,12 +515,9 @@ const NOSALeadership = () => {
               </div>
 
 
-              <div className="flex gap-6 py-8">
+              <div className="flex gap-6 py-8 px-3">
 
-                <span className="text-xs font-semibold text-[var(--secondary)]">
-                  03
-                </span>
-
+                
                 <div>
                   <h3 className="text-xl font-semibold text-[var(--primary)]">
                     Year Sets
@@ -540,11 +532,9 @@ const NOSALeadership = () => {
               </div>
 
 
-              <div className="flex gap-6 py-8">
+              <div className="flex gap-6 py-8 px-3">
 
-                <span className="text-xs font-semibold text-[var(--secondary)]">
-                  04
-                </span>
+                
 
                 <div>
                   <h3 className="text-xl font-semibold text-[var(--primary)]">
@@ -655,7 +645,7 @@ const NOSALeadership = () => {
               <div>
 
                 <span className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--primary)]/40">
-                  06 · The Community
+                  The Community
                 </span>
 
                 <h2 className="mt-6 max-w-3xl text-4xl font-semibold leading-[1] tracking-[-0.045em] text-[var(--primary)] sm:text-5xl lg:text-7xl">
@@ -669,7 +659,7 @@ const NOSALeadership = () => {
 
 
               <a
-                href="/about/nosa"
+                href="/about-nosa"
                 className="inline-flex w-fit items-center gap-3 rounded-full bg-[var(--primary)] px-7 py-4 text-sm font-semibold text-white transition-all duration-300 hover:-translate-y-1 hover:bg-[var(--primary-dark)] hover:shadow-xl"
               >
                 Back to About NOSA

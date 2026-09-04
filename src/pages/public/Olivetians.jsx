@@ -96,9 +96,9 @@ const Olivetians = () => {
             className="h-full w-full object-cover"
           />
 
-          <div className="absolute inset-0 bg-[var(--primary-dark)]/75" />
+          <div className="absolute inset-0 bg-[var(--primary-dark)]/55" />
 
-          <div className="absolute inset-0 bg-gradient-to-r from-[var(--primary-dark)] via-[var(--primary-dark)]/75 to-transparent" />
+          {/* <div className="absolute inset-0 bg-gradient-to-r from-[var(--primary-dark)]/65 via-[var(--primary-dark)]/55 to-transparent" /> */}
 
           <div className="absolute inset-0 bg-gradient-to-t from-[var(--primary-dark)] via-transparent to-[var(--primary-dark)]/30" />
         </div>

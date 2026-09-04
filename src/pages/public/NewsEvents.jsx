@@ -121,44 +121,99 @@ export default function NewsEvents() {
 
       <header className="fixed left-0 right-0 top-0 z-50 px-4 pt-4 sm:px-6 lg:px-10">
         <div
-          
+
         >
           <Navbar />
         </div>
       </header>
-      <section className="relative min-h-[100vh] overflow-hidden bg-[var(--primary-dark)]">
+      <section className="relative min-h-[90vh] md:min-h-[100vh] overflow-hidden bg-[var(--primary-dark)]">
+
+        {/* Background Image */}
         <img
           src="/images/olivetNOSA-6.jpg"
           alt="Olivetians"
           className="absolute inset-0 h-full w-full object-cover"
         />
 
-        <div className="absolute inset-0 bg-[var(--primary-dark)]/80" />
+        {/* Dark image treatment */}
+        <div className="absolute inset-0 bg-[var(--primary-dark)]/65" />
 
-        <div className="absolute inset-0 bg-gradient-to-r from-[var(--primary-dark)] via-[var(--primary-dark)]/70 to-transparent" />
+        {/* Left-to-right cinematic gradient */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[var(--primary-dark)] via-[var(--primary-dark)]/80 to-[var(--primary-dark)]/20" />
 
-        <div className="relative mx-auto flex min-h-[100vh] max-w-7xl items-end px-6 pb-20 sm:px-10 lg:px-12 lg:pb-24">
+        {/* Bottom fade */}
+        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[var(--primary-dark)] to-transparent" />
+
+        {/* Subtle border */}
+        <div className="absolute bottom-0 left-0 right-0 border-t border-white/10" />
+
+        {/* Content */}
+        <div className="relative z-10 mx-auto flex min-h-[90vh] md:min-h-[100vh] max-w-7xl flex-col justify-end px-6 pb-8 sm:px-10 lg:px-12 lg:pb-10">
+
           <div
-            className="max-w-3xl"
             data-aos="fade-up"
+            className="max-w-5xl"
           >
-            <p className="mb-5 text-sm font-semibold uppercase tracking-[0.28em] text-[var(--secondary)]">
-              News & Events
-            </p>
 
-            <h1 className="max-w-3xl text-5xl font-semibold leading-[1.02] tracking-tight text-white sm:text-6xl lg:text-7xl">
+            {/* Eyebrow */}
+            <div className="mb-7 flex items-center gap-4">
+
+              
+
+              <span className="h-px w-12 bg-[var(--secondary)]" />
+
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/70">
+                News & Events
+              </p>
+
+            </div>
+
+            {/* Heading */}
+            <h1 className="max-w-5xl text-5xl font-semibold leading-[0.96] tracking-[-0.035em] text-white sm:text-6xl lg:text-[5.8rem]">
+
               Stay connected with
+
               <span className="block text-[var(--secondary)]">
                 Olivet.
               </span>
+
             </h1>
 
-            <p className="mt-7 max-w-2xl text-base leading-8 text-white/75 sm:text-lg">
-              Discover the latest news, gatherings and developments
-              happening across the Olivetian community.
+            {/* Description */}
+            <p className="mt-8 max-w-2xl text-base leading-8 text-white/65 sm:text-lg">
+              Discover the latest stories, gatherings and developments
+              shaping the Olivetian community.
             </p>
+
           </div>
+
+          {/* Bottom information strip */}
+          <div
+            data-aos="fade-up"
+            data-aos-delay="150"
+            className="mt-16 flex flex-col gap-6 border-t border-white/15 pt-6 sm:flex-row sm:items-center sm:justify-between"
+          >
+
+            <div className="flex items-center gap-3">
+
+              <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-white/70">
+                ↓
+              </span>
+
+              <span className="text-xs uppercase tracking-[0.2em] text-white/50">
+                Latest from the community
+              </span>
+
+            </div>
+
+            <p className="text-xs uppercase tracking-[0.2em] text-white/40">
+              Stories · Gatherings · Developments
+            </p>
+
+          </div>
+
         </div>
+
       </section>
 
       {/* =====================================================
@@ -172,7 +227,7 @@ export default function NewsEvents() {
           >
             <div>
               <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-                01 · Latest
+              Latest
               </p>
 
               <h2 className="text-4xl font-semibold tracking-tight sm:text-5xl">
@@ -292,7 +347,7 @@ export default function NewsEvents() {
             data-aos="fade-up"
           >
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-              02 · Upcoming
+              Upcoming
             </p>
 
             <h2 className="text-4xl font-semibold tracking-tight sm:text-5xl">
@@ -365,7 +420,7 @@ export default function NewsEvents() {
             data-aos="fade-up"
           >
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-              03 · Archive
+              Archive
             </p>
 
             <h2 className="text-4xl font-semibold tracking-tight sm:text-5xl">

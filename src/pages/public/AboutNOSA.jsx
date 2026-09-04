@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 const AboutNOSA = () => {
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-white mt-0 md:mt-15">
       {/* =========================
     ABOUT NOSA — HERO
 ========================= */}
@@ -123,7 +123,7 @@ const AboutNOSA = () => {
               </a>
 
               <a
-                href="/join"
+                href="/portal/signup"
                 className="inline-flex items-center justify-center rounded-full border border-[var(--primary)]/20 bg-white/80 px-6 py-3.5 text-sm font-semibold text-[var(--primary)] backdrop-blur-md transition hover:border-[var(--secondary)] hover:text-[var(--secondary)]"
               >
                 Join the Community
@@ -205,7 +205,7 @@ const AboutNOSA = () => {
                  src="/images/olivetNOSA-6.jpg"
             alt="OlivetNOSA alumni community"
            
-                className="h-[520px] w-full object-cover transition duration-700 hover:scale-[1.03] sm:h-[600px]"
+                className="h-[300px] w-full object-cover transition duration-700 hover:scale-[1.03] sm:h-[400px]"
               />
 
               <div className="absolute inset-0 bg-gradient-to-t from-[var(--primary-dark)]/80 via-transparent to-transparent" />
@@ -326,7 +326,7 @@ const AboutNOSA = () => {
       <span className="h-px w-10 bg-[var(--secondary)]" />
 
       <span className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--primary)]/50">
-        02 · Why We Exist
+        Why We Exist
       </span>
     </div>
 
@@ -391,9 +391,9 @@ const AboutNOSA = () => {
           />
         </div>
 
-        <p className="mt-6 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
-          01
-        </p>
+        {/* <p className="mt-6 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
+          
+        </p> */}
 
         <h3 className="mt-2 text-xl font-semibold tracking-tight text-[var(--primary)]">
           Reconnect
@@ -417,9 +417,9 @@ const AboutNOSA = () => {
           />
         </div>
 
-        <p className="mt-6 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
+        {/* <p className="mt-6 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
           02
-        </p>
+        </p> */}
 
         <h3 className="mt-2 text-xl font-semibold tracking-tight text-[var(--primary)]">
           Engage
@@ -444,9 +444,9 @@ const AboutNOSA = () => {
           />
         </div>
 
-        <p className="mt-6 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
+        {/* <p className="mt-6 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
           03
-        </p>
+        </p> */}
 
         <h3 className="mt-2 text-xl font-semibold tracking-tight text-[var(--primary)]">
           Give Back
@@ -480,7 +480,7 @@ const AboutNOSA = () => {
           <span className="h-px w-10 bg-[var(--secondary)]" />
 
           <span className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--primary)]/50">
-            03 · Our Community
+            Our Community
           </span>
         </div>
       </div>
@@ -516,9 +516,9 @@ const AboutNOSA = () => {
       >
 
         {/* Number */}
-        <div className="absolute right-8 top-8 text-6xl font-semibold tracking-[-0.06em] text-white/5">
+        {/* <div className="absolute right-8 top-8 text-6xl font-semibold tracking-[-0.06em] text-white/5">
           01
-        </div>
+        </div> */}
 
         <div className="relative z-10 flex h-full flex-col">
 
@@ -558,9 +558,9 @@ const AboutNOSA = () => {
         className="group relative min-h-[390px] overflow-hidden rounded-[2rem] border border-[var(--primary)]/10 bg-white p-8 shadow-sm transition duration-500 hover:-translate-y-1 lg:p-10"
       >
 
-        <div className="absolute right-8 top-8 text-6xl font-semibold tracking-[-0.06em] text-[var(--primary)]/5">
+        {/* <div className="absolute right-8 top-8 text-6xl font-semibold tracking-[-0.06em] text-[var(--primary)]/5">
           02
-        </div>
+        </div> */}
 
         <div className="relative z-10 flex h-full flex-col">
 
@@ -600,9 +600,9 @@ const AboutNOSA = () => {
         className="group relative min-h-[390px] overflow-hidden rounded-[2rem] bg-[var(--secondary)] p-8 shadow-sm transition duration-500 hover:-translate-y-1 lg:p-10"
       >
 
-        <div className="absolute right-8 top-8 text-6xl font-semibold tracking-[-0.06em] text-[var(--primary)]/10">
+        {/* <div className="absolute right-8 top-8 text-6xl font-semibold tracking-[-0.06em] text-[var(--primary)]/10">
           03
-        </div>
+        </div> */}
 
         <div className="relative z-10 flex h-full flex-col">
 
@@ -676,7 +676,7 @@ const AboutNOSA = () => {
           <span className="h-px w-10 bg-[var(--secondary)]" />
 
           <span className="text-xs font-semibold uppercase tracking-[0.28em] text-white/45">
-            04 · What We Do
+            What We Do
           </span>
         </div>
       </div>
@@ -946,7 +946,7 @@ const AboutNOSA = () => {
           <span className="h-px w-10 bg-[var(--secondary)]" />
 
           <span className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--primary)]/45">
-            05 · Leadership
+            Leadership
           </span>
         </div>
       </div>
@@ -981,9 +981,9 @@ const AboutNOSA = () => {
       >
 
         {/* Decorative number */}
-        <span className="absolute -right-5 -top-12 text-[12rem] font-bold leading-none tracking-[-0.08em] text-white/[0.035]">
+        {/* <span className="absolute -right-5 -top-12 text-[12rem] font-bold leading-none tracking-[-0.08em] text-white/[0.035]">
           05
-        </span>
+        </span> */}
 
         <div className="relative z-10 flex min-h-[420px] flex-col justify-between">
 
@@ -1060,7 +1060,7 @@ const AboutNOSA = () => {
           <div className="flex items-center gap-5 border-t border-[var(--primary)]/10 py-5">
 
             <span className="text-xs font-semibold text-[var(--secondary)]">
-              01
+              <span className="block w-2 h-2 rounded-full bg-[var(--secondary)]"></span>
             </span>
 
             <div>
@@ -1079,7 +1079,7 @@ const AboutNOSA = () => {
           <div className="flex items-center gap-5 border-t border-[var(--primary)]/10 py-5">
 
             <span className="text-xs font-semibold text-[var(--secondary)]">
-              02
+              <span className="block w-2 h-2 rounded-full bg-[var(--secondary)]"></span>
             </span>
 
             <div>
@@ -1097,8 +1097,8 @@ const AboutNOSA = () => {
 
           <div className="flex items-center gap-5 border-t border-[var(--primary)]/10 py-5">
 
-            <span className="text-xs font-semibold text-[var(--secondary)]">
-              03
+           <span className="text-xs font-semibold text-[var(--secondary)]">
+              <span className="block w-2 h-2 rounded-full bg-[var(--secondary)]"></span>
             </span>
 
             <div>
@@ -1117,7 +1117,7 @@ const AboutNOSA = () => {
           <div className="flex items-center gap-5 border-y border-[var(--primary)]/10 py-5">
 
             <span className="text-xs font-semibold text-[var(--secondary)]">
-              04
+              <span className="block w-2 h-2 rounded-full bg-[var(--secondary)]"></span>
             </span>
 
             <div>
@@ -1197,7 +1197,7 @@ const AboutNOSA = () => {
       <span className="h-px w-10 bg-[var(--secondary)]" />
 
       <span className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--primary)]/50">
-        06 · Our Chapters
+        Our Chapters
       </span>
     </div>
 
@@ -1424,7 +1424,7 @@ const AboutNOSA = () => {
       <span className="h-px w-10 bg-[var(--secondary)]" />
 
       <span className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--primary)]/50">
-        07 · Our Year Sets
+        Our Year Sets
       </span>
     </div>
 
@@ -1476,9 +1476,7 @@ const AboutNOSA = () => {
                 Generation
               </span>
 
-              <span className="text-sm text-white/30">
-                01
-              </span>
+              
             </div>
 
             <div className="mt-20">
@@ -1511,9 +1509,7 @@ const AboutNOSA = () => {
                 Memories
               </span>
 
-              <span className="text-sm text-[var(--primary)]/20">
-                02
-              </span>
+             
             </div>
 
             <div className="mt-20">
@@ -1546,9 +1542,7 @@ const AboutNOSA = () => {
                 Connection
               </span>
 
-              <span className="text-sm text-[var(--primary)]/25">
-                03
-              </span>
+              
             </div>
 
             <div className="mt-20">
@@ -1581,9 +1575,7 @@ const AboutNOSA = () => {
                 Legacy
               </span>
 
-              <span className="text-sm text-[var(--primary)]/20">
-                04
-              </span>
+             
             </div>
 
             <div className="mt-20">
@@ -1658,7 +1650,7 @@ const AboutNOSA = () => {
       <span className="h-px w-10 bg-[var(--secondary)]" />
 
       <span className="text-xs font-semibold uppercase tracking-[0.28em] text-white/40">
-        08 · The Future
+        The Future
       </span>
     </div>
 
@@ -1716,9 +1708,9 @@ const AboutNOSA = () => {
       {/* 01 */}
       <div className="group border-b border-white/10 px-2 py-10 sm:border-b-0 sm:border-r sm:px-8 lg:px-10">
 
-        <span className="text-xs font-semibold tracking-[0.2em] text-[var(--secondary)]">
-          01
-        </span>
+        <span className="text-xs font-semibold text-[var(--secondary)]">
+              <span className="block w-2 h-2 rounded-full bg-[var(--secondary)]"></span>
+            </span>
 
         <h3 className="mt-8 text-2xl font-semibold tracking-[-0.03em]">
           Stronger Connections
@@ -1735,9 +1727,9 @@ const AboutNOSA = () => {
       {/* 02 */}
       <div className="group border-b border-white/10 px-2 py-10 sm:border-b-0 sm:border-r sm:px-8 lg:px-10">
 
-        <span className="text-xs font-semibold tracking-[0.2em] text-[var(--secondary)]">
-          02
-        </span>
+<span className="text-xs font-semibold text-[var(--secondary)]">
+              <span className="block w-2 h-2 rounded-full bg-[var(--secondary)]"></span>
+            </span>
 
         <h3 className="mt-8 text-2xl font-semibold tracking-[-0.03em]">
           Greater Impact
@@ -1754,9 +1746,9 @@ const AboutNOSA = () => {
       {/* 03 */}
       <div className="group px-2 py-10 sm:px-8 lg:px-10">
 
-        <span className="text-xs font-semibold tracking-[0.2em] text-[var(--secondary)]">
-          03
-        </span>
+       <span className="text-xs font-semibold text-[var(--secondary)]">
+              <span className="block w-2 h-2 rounded-full bg-[var(--secondary)]"></span>
+            </span>
 
         <h3 className="mt-8 text-2xl font-semibold tracking-[-0.03em]">
           A Living Legacy
@@ -1869,7 +1861,7 @@ const AboutNOSA = () => {
           <span className="h-px w-10 bg-[var(--secondary)]" />
 
           <span className="text-xs font-semibold uppercase tracking-[0.28em] text-white/50">
-            09 · Join the Community
+           Join the Community
           </span>
         </div>
 
@@ -1914,7 +1906,7 @@ const AboutNOSA = () => {
         >
 
           <a
-            href="/join-nosa"
+            href="/portal/signup"
             className="inline-flex items-center justify-center gap-3 rounded-full bg-[var(--secondary)] px-7 py-4 text-sm font-semibold text-[var(--primary-dark)] transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
           >
             Join NOSA
