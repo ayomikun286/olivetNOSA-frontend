@@ -67,7 +67,6 @@ const Navbar = () => {
             LOGO
         ========================== */}
         <Link to="/" className="flex items-center gap-3">
-          {/* Logo Mark */}
           <div className="flex h-11 w-11 items-center justify-center rounded-xl text-[var(--primary-dark)] shadow-lg">
             <img
               src="/images/olivetNOSA_logo.png"
@@ -76,7 +75,6 @@ const Navbar = () => {
             />
           </div>
 
-          {/* Logo Text */}
           <div className="leading-none">
             <p
               className={`text-lg font-bold tracking-wide transition-colors duration-500 ${
@@ -100,6 +98,7 @@ const Navbar = () => {
             DESKTOP NAVIGATION
         ========================== */}
         <div className="hidden items-center gap-8 lg:flex">
+
           {/* Home */}
           <NavLink to="/" end className={navLinkClass}>
             Home
@@ -121,9 +120,9 @@ const Navbar = () => {
               />
             </NavLink>
 
-            {/* Dropdown */}
             <div className="invisible absolute left-1/2 top-full z-50 w-60 -translate-x-1/2 translate-y-2 pt-4 opacity-0 transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
               <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl">
+
                 {/* About Olivet */}
                 <Link
                   to="/about-school"
@@ -171,9 +170,9 @@ const Navbar = () => {
               />
             </NavLink>
 
-            {/* Dropdown */}
             <div className="invisible absolute left-1/2 top-full z-50 w-64 -translate-x-1/2 translate-y-2 pt-4 opacity-0 transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
               <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl">
+
                 {/* About NOSA */}
                 <Link
                   to="/about-nosa"
@@ -190,7 +189,7 @@ const Navbar = () => {
 
                 {/* Leadership */}
                 <Link
-                  to="/about/nosa/leadership"
+                  to="/nosa-leadership"
                   className={dropdownItemClass}
                 >
                   <span className="block font-semibold text-[var(--primary)]">
@@ -204,7 +203,7 @@ const Navbar = () => {
 
                 {/* Chapters */}
                 <Link
-                  to="/about/nosa/chapters"
+                  to="/nosa-chapters"
                   className={dropdownItemClass}
                 >
                   <span className="block font-semibold text-[var(--primary)]">
@@ -233,12 +232,18 @@ const Navbar = () => {
           <NavLink to="/gallery" className={navLinkClass}>
             Gallery
           </NavLink>
+
+          {/* Contact */}
+          <NavLink to="/contact" className={navLinkClass}>
+            Contact
+          </NavLink>
         </div>
 
         {/* =========================
             RIGHT ACTIONS
         ========================== */}
         <div className="hidden items-center gap-3 lg:flex">
+
           {/* Member Login */}
           <Link
             to="/portal/login"
@@ -290,9 +295,7 @@ const Navbar = () => {
         >
           <div className="flex flex-col gap-1">
 
-            {/* =========================
-                HOME
-            ========================== */}
+            {/* Home */}
             <NavLink
               to="/"
               end
@@ -337,6 +340,7 @@ const Navbar = () => {
 
               {mobileAbout && (
                 <div className="ml-3 mt-1 border-l border-slate-200 pl-3">
+
                   <Link
                     to="/about-school"
                     onClick={() => setMobileMenu(false)}
@@ -360,6 +364,7 @@ const Navbar = () => {
                   >
                     History & Heritage
                   </Link>
+
                 </div>
               )}
             </div>
@@ -389,6 +394,8 @@ const Navbar = () => {
 
               {mobileNosa && (
                 <div className="ml-3 mt-1 border-l border-slate-200 pl-3">
+
+                  {/* About NOSA */}
                   <Link
                     to="/about-nosa"
                     onClick={() => setMobileMenu(false)}
@@ -401,6 +408,7 @@ const Navbar = () => {
                     About NOSA
                   </Link>
 
+                  {/* Leadership */}
                   <Link
                     to="/nosa-leadership"
                     onClick={() => setMobileMenu(false)}
@@ -413,6 +421,7 @@ const Navbar = () => {
                     NOSA Leadership
                   </Link>
 
+                  {/* Chapters */}
                   <Link
                     to="/nosa-chapters"
                     onClick={() => setMobileMenu(false)}
@@ -424,13 +433,12 @@ const Navbar = () => {
                   >
                     Chapters
                   </Link>
+
                 </div>
               )}
             </div>
 
-            {/* =========================
-                OLIVETIANS
-            ========================== */}
+            {/* Olivetians */}
             <NavLink
               to="/olivetians"
               onClick={() => setMobileMenu(false)}
@@ -485,6 +493,25 @@ const Navbar = () => {
               }
             >
               Gallery
+            </NavLink>
+
+            {/* Contact */}
+            <NavLink
+              to="/contact"
+              onClick={() => setMobileMenu(false)}
+              className={({ isActive }) =>
+                `rounded-xl px-4 py-3 text-sm transition-all duration-300 ${
+                  scrolled
+                    ? isActive
+                      ? "bg-[var(--primary-light)] font-semibold text-[var(--secondary)]"
+                      : "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
+                    : isActive
+                      ? "bg-white/10 font-semibold text-[var(--secondary)]"
+                      : "text-white/80 hover:bg-white/10 hover:text-white"
+                }`
+              }
+            >
+              Contact
             </NavLink>
 
             {/* Divider */}
