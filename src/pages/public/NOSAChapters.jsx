@@ -63,7 +63,13 @@ export default function NOSAChapters() {
       {/* =========================================================
           NAVBAR
       ========================================================= */}
-      <header className="fixed left-0 right-0 top-0 z-50 px-4 pt-4 sm:px-6 lg:px-10">
+     
+      {/* =========================================================
+          HERO
+      ========================================================= */}
+      <section className="relative flex min-h-screen items-end overflow-hidden">
+
+         <header className="fixed left-0 right-0 top-0 z-50 px-4 pt-4 sm:px-6 lg:px-10">
         <div
           
         >
@@ -71,10 +77,6 @@ export default function NOSAChapters() {
         </div>
       </header>
 
-      {/* =========================================================
-          HERO
-      ========================================================= */}
-      <section className="relative flex min-h-screen items-end overflow-hidden">
         <img
           src="/images/olivetNOSA-6.jpg"
           alt="Olivetians gathered together"
