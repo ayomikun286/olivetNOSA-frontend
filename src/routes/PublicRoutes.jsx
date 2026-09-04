@@ -18,12 +18,10 @@ export default function PublicRoutes() {
       <Route path="/about-school" element={<AboutSchool />} />
 
       <Route path="/about-nosa" element={<AboutNOSA />} />
-      <Route path="/nosa-leadership" element={<NOSALeadership />} />
-      <Route path="/nosa-chapters" element={<NOSAChapters />} />
-
+        <Route path="/nosa-leadership" element={<NOSALeadership />} />
+        <Route path="/nosa-chapters" element={<NOSAChapters />} />
 
       <Route path="/olivetians" element={<Olivetians />} />
-     
 
       <Route path="/news" element={<NewsEvents />} />
 

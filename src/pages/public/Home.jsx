@@ -154,7 +154,7 @@ export default function Home({}) {
                             <div data-aos="fade-up" data-aos-delay="100" className="mt-9 flex flex-col gap-3 sm:flex-row">
 
                                 <Link
-                                    to="/about"
+                                    to="/about-school"
                                     className="group inline-flex items-center justify-center gap-3 rounded-xl bg-[var(--secondary)] px-6 py-3.5 text-sm font-semibold text-[var(--primary-dark)] shadow-xl transition hover:translate-y-[-2px] hover:shadow-2xl"
                                 >
                                     Discover Our Story
@@ -166,7 +166,7 @@ export default function Home({}) {
                                 </Link>
 
                                 <Link
-                                    to="/nosa"
+                                    to="/about-nosa"
                                     className="group inline-flex items-center justify-center gap-3 rounded-xl border border-white/20 bg-white/5 px-6 py-3.5 text-sm font-medium text-white backdrop-blur-md transition hover:bg-white/10"
                                 >
                                     <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10">
