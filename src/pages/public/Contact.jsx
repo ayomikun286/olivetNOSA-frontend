@@ -38,12 +38,12 @@ const Contact = () => {
   };
 
   return (
-    <main className="bg-white text-[var(--primary-dark)]">
+    <main className="bg-white text-[var(--primary-dark)] mt-0 md:mt-15">
 
 
- <header className="fixed left-0 right-0 top-0 z-50 px-4 pt-4 sm:px-6 lg:px-10">
+      <header className="">
         <div
-          
+
         >
           <Navbar />
         </div>
@@ -53,7 +53,7 @@ const Contact = () => {
       {/* =====================================================
           HERO
       ====================================================== */}
-      <section className="relative min-h-[100vh] overflow-hidden bg-[var(--primary-dark)]">
+      <section className="relative min-h-[70vh] md:min-h-screen overflow-hidden bg-[var(--primary-dark)]">
         <img
           src="/images/olivetNOSA-building.jpg"
           alt="Olivet Baptist High School"
@@ -99,7 +99,7 @@ const Contact = () => {
             data-aos="fade-up"
           >
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-              01 · Reach Us
+              Reach Us
             </p>
 
             <h2 className="text-4xl font-semibold tracking-tight sm:text-5xl">
@@ -211,7 +211,7 @@ const Contact = () => {
           {/* Left */}
           <div data-aos="fade-right">
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-              02 · Send a Message
+              Send a Message
             </p>
 
             <h2 className="text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">
@@ -479,7 +479,7 @@ const Contact = () => {
         </div>
       </section>
 
-<Footer />
+      <Footer />
     </main>
   );
 };

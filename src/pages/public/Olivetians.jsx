@@ -69,11 +69,11 @@ const Olivetians = () => {
   ];
 
   return (
-    <div className="overflow-hidden bg-white text-[var(--primary)]">
+    <main className="overflow-hidden bg-white text-[var(--primary)] mt-0 md:mt-15">
 
- <header className="fixed left-0 right-0 top-0 z-50 px-4 pt-4 sm:px-6 lg:px-10">
+      <header >
         <div
-          
+
         >
           <Navbar />
         </div>
@@ -86,7 +86,7 @@ const Olivetians = () => {
       ====================================================== */}
       <section className="relative min-h-[82vh] overflow-hidden bg-[var(--primary-dark)]">
 
-      
+
 
 
         <div className="absolute inset-0">
@@ -743,10 +743,10 @@ const Olivetians = () => {
       {/* =====================================================
           FOOTER
       ====================================================== */}
-      
+
       <Footer />
 
-    </div>
+    </main>
   );
 };
 

@@ -59,7 +59,7 @@ const activities = [
 
 export default function NOSAChapters() {
   return (
-    <main className="min-h-screen bg-white text-[var(--primary-dark)]  mt-0 md:mt-15">
+    <main className="min-h-screen bg-white text-(--primary-dark)  mt-0 md:mt-15">
       {/* =========================================================
           NAVBAR
       ========================================================= */}

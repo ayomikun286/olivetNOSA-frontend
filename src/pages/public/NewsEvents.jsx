@@ -114,12 +114,12 @@ export default function NewsEvents() {
   }, []);
 
   return (
-    <main className="bg-white text-[var(--primary-dark)]">
+    <main className="bg-white text-[var(--primary-dark)] mt-0 md:mt-15">
       {/* =====================================================
           HERO
       ====================================================== */}
 
-      <header className="fixed left-0 right-0 top-0 z-50 px-4 pt-4 sm:px-6 lg:px-10">
+      <header >
         <div
 
         >
