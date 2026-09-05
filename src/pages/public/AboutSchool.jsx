@@ -1310,7 +1310,7 @@ className="relative min-h-[78vh] overflow-hidden bg-[var(--primary-dark)]">
   >
 
     {/* BACK / HISTORICAL IMAGE */}
-    <div className="absolute right-0 top-0 w-[78%] overflow-hidden rounded-[1.5rem] shadow-xl">
+    <div className="absolute right-0 top-0 w-[78%] overflow-hidden  shadow-xl">
       <img
         src="/images/olivetNOSA-3.jpg"
         alt="Olivet Baptist High School historical photograph"
@@ -1323,7 +1323,7 @@ className="relative min-h-[78vh] overflow-hidden bg-[var(--primary-dark)]">
 
 
     {/* FRONT / CURRENT IMAGE */}
-    <div className="absolute left-0 top-[170px] z-10 w-[76%] overflow-hidden rounded-[1.5rem] border-4 border-white shadow-2xl sm:top-[190px]">
+    <div className="absolute left-0 top-[170px] z-10 w-[76%] overflow-hidden  border-4 border-white shadow-2xl sm:top-[190px]">
       <img
         src="/images/olivetNOSA.jpg"
         alt="Olivet students"

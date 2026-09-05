@@ -38,7 +38,7 @@ const Contact = () => {
   };
 
   return (
-    <main className="bg-white text-[var(--primary-dark)] mt-0 md:mt-15">
+    <main className="bg-white overflow-x-hidden text-[var(--primary-dark)] mt-0 md:mt-15">
 
 
       <header className="">
