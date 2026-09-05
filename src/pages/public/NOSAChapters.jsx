@@ -1,6 +1,8 @@
 import React from "react";
+
 import Navbar from "../../components/public/Navbar";
 import Footer from "../../components/public/footer";
+
 import {
   ArrowDown,
   ArrowUpRight,
@@ -8,106 +10,39 @@ import {
   UsersRound,
   Handshake,
   Globe2,
-  Building2,
   HeartHandshake,
+  Network,
 } from "lucide-react";
-
-const chapters = [
-  {
-    number: "01",
-    title: "Local Chapters",
-    text: "Connect with Olivetians in your city, region, and community through local chapter activities and gatherings.",
-    icon: MapPinned,
-  },
-  {
-    number: "02",
-    title: "Year Set Networks",
-    text: "Chapters work alongside year sets to strengthen relationships across generations of Olivetians.",
-    icon: UsersRound,
-  },
-  {
-    number: "03",
-    title: "Community Service",
-    text: "Members come together to support initiatives that strengthen the school and the wider Olivetian community.",
-    icon: HeartHandshake,
-  },
-  {
-    number: "04",
-    title: "Global Connection",
-    text: "Wherever Olivetians live and work, chapters help keep the connection to Olivet alive.",
-    icon: Globe2,
-  },
-];
-
-const activities = [
-  {
-    title: "Connect",
-    text: "Build meaningful relationships with fellow Olivetians living within your community.",
-    icon: UsersRound,
-  },
-  {
-    title: "Collaborate",
-    text: "Work with other chapters and the national body on initiatives that benefit Olivet.",
-    icon: Handshake,
-  },
-  {
-    title: "Give Back",
-    text: "Turn the Olivetian spirit into practical support for the school and future generations.",
-    icon: Building2,
-  },
-];
 
 export default function NOSAChapters() {
   return (
-    <main className="min-h-screen bg-white text-(--primary-dark)  mt-0 md:mt-15">
+    <main className="min-h-screen bg-white text-(--primary-dark) mt-0 md:mt-15 overflow-x-hidden">
       {/* =========================================================
           NAVBAR
       ========================================================= */}
-      <header >
-        <div
-          
-        >
-          <Navbar />
-        </div>
+      <header>
+        <Navbar />
       </header>
+
       {/* =========================================================
           HERO
       ========================================================= */}
-      <section className="relative flex min-h-screen items-end overflow-hidden">
-
-        
-
+      <section className="relative flex min-h-[92vh] items-end overflow-hidden">
         <img
           src="/images/olivetNOSA-6.jpg"
           alt="Olivetians gathered together"
           className="absolute inset-0 h-full w-full object-cover"
         />
 
-        <div
-          className="
-            absolute inset-0
-            bg-gradient-to-r
-            from-[var(--primary-dark)]/95
-            via-[var(--primary)]/80
-            to-[var(--secondary)]/20
-          "
-        />
+        <div className="absolute inset-0 bg-[var(--primary-dark)]/65" />
 
-        <div
-          className="
-            absolute inset-0
-            bg-gradient-to-t
-            from-[var(--primary-dark)]/95
-            via-[var(--primary-dark)]/35
-            to-transparent
-          "
-        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--primary-dark)] via-[var(--primary-dark)]/25 to-transparent" />
 
-        <div className="relative z-10 w-full px-6 pb-14 pt-40 sm:px-10 lg:px-16 lg:pb-20">
+        <div className="relative z-10 w-full px-6 pb-12 pt-40 sm:px-10 lg:px-16 lg:pb-20">
           <div className="mx-auto max-w-7xl">
-            <div className="max-w-4xl">
+            <div className="max-w-5xl">
               <div
-                data-aos="fade-right"
+                data-aos="fade-up"
                 className="mb-7 flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.28em] text-[var(--secondary-light)]"
               >
                 <span className="h-px w-10 bg-[var(--secondary)]" />
@@ -116,88 +51,54 @@ export default function NOSAChapters() {
 
               <h1
                 data-aos="fade-up"
+                data-aos-delay="100"
                 className="
+                  max-w-5xl
                   text-5xl
-                  font-semibold
+                  font-medium
                   leading-[0.95]
                   tracking-[-0.045em]
                   text-white
                   sm:text-6xl
-                  lg:text-8xl
+                  lg:text-[7.5rem]
                 "
               >
-                Wherever Olivetians
+                Wherever Olivetians gather,
                 <span className="block text-[var(--secondary)]">
-                  gather, we connect.
+                  the connection continues.
                 </span>
               </h1>
-
-              <p
-                data-aos="fade-up"
-                data-aos-delay="100"
-                className="
-                  mt-8
-                  max-w-2xl
-                  text-base
-                  leading-8
-                  text-white/75
-                  sm:text-lg
-                "
-              >
-                NOSA chapters bring Olivetians together beyond the school
-                grounds — creating spaces for friendship, collaboration,
-                service and a lasting connection to our alma mater.
-              </p>
 
               <div
                 data-aos="fade-up"
                 data-aos-delay="200"
-                className="mt-10 flex flex-wrap items-center gap-4"
+                className="mt-10 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between"
               >
-                <a
-                  href="#chapters"
-                  className="
-                    inline-flex
-                    items-center
-                    gap-3
-                    rounded-full
-                    bg-[var(--secondary)]
-                    px-6
-                    py-3.5
-                    text-sm
-                    font-semibold
-                    text-[var(--primary-dark)]
-                    transition
-                    hover:-translate-y-1
-                    hover:shadow-xl
-                  "
-                >
-                  Explore Our Network
-                  <ArrowDown size={17} />
-                </a>
+                <p className="max-w-xl text-base leading-8 text-white/75 sm:text-lg">
+                  NOSA chapters bring Olivetians together within their local
+                  communities while keeping them connected to the wider
+                  National Old Students' Association.
+                </p>
 
                 <a
-                  href="portal/signup"
+                  href="#chapter-network"
                   className="
                     inline-flex
+                    w-fit
                     items-center
                     gap-3
-                    rounded-full
-                    border
-                    border-white/30
-                    bg-white/10
-                    px-6
-                    py-3.5
+                    border-b
+                    border-[var(--secondary)]
+                    pb-2
                     text-sm
                     font-semibold
                     text-white
-                    backdrop-blur-md
                     transition
-                    hover:bg-white/20
+                    hover:gap-5
                   "
                 >
-                  Connect With NOSA
-                  <ArrowUpRight size={17} />
+                  Explore the chapter network
+                  <ArrowDown size={17} />
                 </a>
               </div>
             </div>
@@ -207,29 +108,64 @@ export default function NOSAChapters() {
               data-aos-delay="300"
               className="
                 mt-20
-                flex
-                flex-col
-                gap-5
                 border-t
                 border-white/20
-                pt-6
+                pt-5
+                flex
+                flex-col
+                gap-3
                 sm:flex-row
                 sm:items-center
                 sm:justify-between
               "
             >
-              <div>
-                <p className="text-xs uppercase tracking-[0.25em] text-white/45">
-                  The Olivetian Network
-                </p>
-                <p className="mt-2 text-sm text-white/75">
-                  One association. Many communities. One shared identity.
-                </p>
-              </div>
+              <p className="text-xs uppercase tracking-[0.25em] text-white/45">
+                National Old Students' Association
+              </p>
 
-              <div className="flex items-center gap-3 text-sm text-white/60">
-                <span className="h-2 w-2 rounded-full bg-[var(--secondary)]" />
+              <p className="text-sm italic text-white/55">
                 Cum Christo Progredere
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================
+          INTRODUCTION
+      ========================================================= */}
+      <section
+        id="chapter-network"
+        className="bg-white py-24 sm:py-32 lg:py-40"
+      >
+        <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
+          <div className="grid gap-14 lg:grid-cols-[0.75fr_1.25fr] lg:gap-24">
+            <div data-aos="fade-up">
+              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
+                The Chapter Network
+              </p>
+
+              <div className="mt-6 h-px w-16 bg-[var(--secondary)]" />
+            </div>
+
+            <div data-aos="fade-up" data-aos-delay="100">
+              <h2 className="max-w-4xl text-4xl font-medium leading-[1.05] tracking-[-0.035em] text-[var(--primary-dark)] sm:text-5xl lg:text-6xl">
+                The Olivetian community does not end when school does.
+              </h2>
+
+              <div className="mt-10 grid gap-8 md:grid-cols-2">
+                <p className="text-base leading-8 text-[var(--text-muted)]">
+                  For many Olivetians, the relationships formed at school
+                  continue long after graduation. Chapters provide a place for
+                  those connections to remain active within local communities.
+                </p>
+
+                <p className="text-base leading-8 text-[var(--text-muted)]">
+                  Through the chapter network, members can reconnect with
+                  fellow Olivetians, participate in activities and contribute
+                  to the wider work of NOSA while remaining part of a shared
+                  Olivetian heritage.
+                </p>
               </div>
             </div>
           </div>
@@ -237,217 +173,273 @@ export default function NOSAChapters() {
       </section>
 
       {/* =========================================================
-          INTRO
+          CHAPTERS IN PRACTICE
       ========================================================= */}
-      <section
-        id="chapters"
-        className="relative overflow-hidden bg-white py-24 sm:py-32"
-      >
+      <section className="bg-[var(--background-soft)] py-24 sm:py-32 lg:py-40">
         <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
-          <div className="grid gap-16 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
-            <div data-aos="fade-right">
-              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-               — The Network
-              </p>
+          <div className="grid gap-14 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-24">
+            {/* Image */}
+            <div
+              data-aos="fade-right"
+              className="relative overflow-hidden"
+            >
+              <div className="aspect-[4/3] overflow-hidden">
+                <img
+                  src="/images/olivetNOSA-2.jpg"
+                  alt="Olivetian community"
+                  className="h-full w-full object-cover transition duration-700 hover:scale-[1.03]"
+                />
+              </div>
 
-              <h2 className="mt-5 text-4xl font-semibold leading-tight tracking-tight text-[var(--primary-dark)] sm:text-5xl">
-                More than a location.
-                <span className="block text-[var(--primary)]/55">
-                  It is a community.
-                </span>
-              </h2>
+              <div className="mt-5 flex items-start justify-between border-t border-black/10 pt-4">
+                <p className="text-xs uppercase tracking-[0.22em] text-[var(--text-muted)]">
+                  OlivetNOSA
+                </p>
+
+                <p className="max-w-xs text-right text-sm leading-6 text-[var(--text-muted)]">
+                  Building connections that extend beyond generations and
+                  locations.
+                </p>
+              </div>
             </div>
 
+            {/* Content */}
             <div data-aos="fade-left">
-              <p className="text-lg leading-8 text-[var(--text-muted)]">
-                NOSA chapters provide a local expression of the wider
-                Olivetian family. They create opportunities for alumni to
-                reconnect, share experiences, support one another and
-                contribute to the continued growth of Olivet.
+              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
+                Life Within a Chapter
+              </p>
+
+              <h2 className="mt-6 text-4xl font-medium leading-[1.05] tracking-[-0.035em] text-[var(--primary-dark)] sm:text-5xl">
+                A chapter gives the Olivetian connection a local home.
+              </h2>
+
+              <p className="mt-8 text-lg leading-8 text-[var(--text-muted)]">
+                Chapters create opportunities for Olivetians in a particular
+                community to remain in touch, meet one another and take part
+                in activities that bring members together.
               </p>
 
               <p className="mt-6 text-lg leading-8 text-[var(--text-muted)]">
-                From professional networks to social gatherings and community
-                initiatives, chapters help transform the idea of an alumni
-                association into something people can experience close to
-                home.
+                They are also part of something larger. Each chapter remains
+                connected to the wider NOSA community, creating a network that
+                reaches beyond individual locations.
               </p>
+
+              <div className="mt-10 border-t border-black/10">
+                <div className="flex gap-5 border-b border-black/10 py-6">
+                  <MapPinned
+                    size={21}
+                    strokeWidth={1.5}
+                    className="mt-1 shrink-0 text-[var(--primary)]"
+                  />
+
+                  <div>
+                    <h3 className="font-semibold text-[var(--primary-dark)]">
+                      Local connection
+                    </h3>
+
+                    <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
+                      A place for Olivetians within a community to reconnect
+                      and build relationships.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-5 border-b border-black/10 py-6">
+                  <UsersRound
+                    size={21}
+                    strokeWidth={1.5}
+                    className="mt-1 shrink-0 text-[var(--primary)]"
+                  />
+
+                  <div>
+                    <h3 className="font-semibold text-[var(--primary-dark)]">
+                      Shared community
+                    </h3>
+
+                    <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
+                      Members remain part of the wider Olivetian family,
+                      regardless of where they live.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-5 py-6">
+                  <Handshake
+                    size={21}
+                    strokeWidth={1.5}
+                    className="mt-1 shrink-0 text-[var(--primary)]"
+                  />
+
+                  <div>
+                    <h3 className="font-semibold text-[var(--primary-dark)]">
+                      Working together
+                    </h3>
+
+                    <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
+                      Chapters can collaborate with year sets, other chapters
+                      and the national association.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* =========================================================
-          CHAPTER STRUCTURE
+          THE WIDER NETWORK
       ========================================================= */}
-      <section className="bg-[var(--background-soft)] py-24 sm:py-32">
+      <section className="bg-white py-24 sm:py-32 lg:py-40">
         <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
-          <div className="max-w-2xl" data-aos="fade-up">
-            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-             — How Chapters Work
-            </p>
-
-            <h2 className="mt-5 text-4xl font-semibold tracking-tight text-[var(--primary-dark)] sm:text-5xl">
-              A stronger connection,
-              <span className="block text-[var(--primary)]/50">
-                wherever you are.
-              </span>
-            </h2>
-          </div>
-
-          <div className="mt-16 grid gap-px overflow-hidden rounded-3xl border border-black/5 bg-black/5 md:grid-cols-2">
-            {chapters.map((item, index) => {
-              const Icon = item.icon;
-
-              return (
-                <article
-                  key={item.number}
-                  data-aos="fade-up"
-                  data-aos-delay={index * 100}
-                  className="
-                    group
-                    bg-white
-                    p-8
-                    transition
-                    duration-300
-                    hover:bg-[var(--primary-dark)]
-                    sm:p-10
-                    lg:p-12
-                  "
-                >
-                  <div className="flex items-start justify-between">
-                    {/* <span
-                      className="
-                        text-sm
-                        font-semibold
-                        tracking-[0.2em]
-                        text-[var(--secondary)]
-                      "
-                    >
-                      {item.number}
-                    </span> */}
-
-                    <div
-                      className="
-                        rounded-2xl
-                        bg-[var(--primary-light)]
-                        p-3
-                        text-[var(--primary)]
-                        transition
-                        group-hover:bg-white/10
-                        group-hover:text-[var(--secondary)]
-                      "
-                    >
-                      <Icon size={22} />
-                    </div>
-                  </div>
-
-                  <h3 className="mt-14 text-2xl font-semibold text-[var(--primary-dark)] group-hover:text-white">
-                    {item.title}
-                  </h3>
-
-                  <p className="mt-4 max-w-md leading-7 text-[var(--text-muted)] group-hover:text-white/65">
-                    {item.text}
-                  </p>
-                </article>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* =========================================================
-          IMAGE FEATURE
-      ========================================================= */}
-      <section className="bg-white py-24 sm:py-32">
-        <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
-          <div className="grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
-            <div
-              data-aos="fade-right"
-              className="relative min-h-[480px] overflow-hidden rounded-[2rem]"
-            >
-              <img
-                src="/images/olivetNOSA-2.jpg"
-                alt="Olivetian community"
-                className="absolute inset-0 h-full w-full object-cover"
-              />
-
-              <div className="absolute inset-0 bg-gradient-to-t from-[var(--primary-dark)]/80 via-transparent to-transparent" />
-
-              <div className="absolute bottom-0 left-0 right-0 p-8 sm:p-10">
-                <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-                  Community
-                </p>
-
-                <p className="mt-3 max-w-md text-xl font-medium leading-8 text-white">
-                  Different places. Different generations. One Olivetian
-                  family.
-                </p>
+          <div className="grid gap-16 lg:grid-cols-[0.8fr_1.2fr] lg:items-start lg:gap-24">
+            <div data-aos="fade-right">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--primary-light)] text-[var(--primary)]">
+                <Network size={21} strokeWidth={1.5} />
               </div>
+
+              <p className="mt-8 text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
+                Part of a Wider Community
+              </p>
+
+              <h2 className="mt-6 text-4xl font-medium leading-[1.05] tracking-[-0.035em] text-[var(--primary-dark)] sm:text-5xl">
+                Local roots.
+                <span className="block text-[var(--primary)]/45">
+                  Wider connections.
+                </span>
+              </h2>
             </div>
 
             <div data-aos="fade-left">
-              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-                — Beyond The Chapter
+              <p className="max-w-3xl text-xl leading-9 text-[var(--primary-dark)] sm:text-2xl">
+                A chapter is one part of the wider OlivetNOSA network. Its
+                strength comes from the relationships created locally and the
+                connection those relationships maintain with the association
+                as a whole.
               </p>
 
-              <h2 className="mt-5 text-4xl font-semibold leading-tight tracking-tight text-[var(--primary-dark)] sm:text-5xl">
-                Your chapter is only
-                <span className="block text-[var(--primary)]/50">
-                  part of the story.
-                </span>
+              <div className="mt-16 border-t border-black/10">
+                <div className="grid gap-8 border-b border-black/10 py-8 md:grid-cols-[0.3fr_1fr]">
+                  <div className="text-sm font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
+                    Chapters
+                  </div>
+
+                  <p className="max-w-xl text-base leading-7 text-[var(--text-muted)]">
+                    Bring Olivetians together within their local communities
+                    and provide opportunities for continued participation.
+                  </p>
+                </div>
+
+                <div className="grid gap-8 border-b border-black/10 py-8 md:grid-cols-[0.3fr_1fr]">
+                  <div className="text-sm font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
+                    Year Sets
+                  </div>
+
+                  <p className="max-w-xl text-base leading-7 text-[var(--text-muted)]">
+                    Preserve the bonds created between classmates and
+                    generations of Olivetians.
+                  </p>
+                </div>
+
+                <div className="grid gap-8 py-8 md:grid-cols-[0.3fr_1fr]">
+                  <div className="text-sm font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
+                    NOSA
+                  </div>
+
+                  <p className="max-w-xl text-base leading-7 text-[var(--text-muted)]">
+                    Provides the wider association through which Olivetians
+                    remain connected and contribute to the future of the
+                    Olivet community.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================
+          CONTRIBUTION
+      ========================================================= */}
+      <section className="bg-[var(--primary-dark)] py-24 text-white sm:py-32 lg:py-40">
+        <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
+          <div className="grid gap-16 lg:grid-cols-[0.75fr_1.25fr] lg:gap-24">
+            <div data-aos="fade-right">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-[var(--secondary)]">
+                <HeartHandshake size={22} strokeWidth={1.5} />
+              </div>
+
+              <p className="mt-8 text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
+                Participation
+              </p>
+
+              <h2 className="mt-6 text-4xl font-medium leading-[1.05] tracking-[-0.035em] sm:text-5xl">
+                More than staying in touch.
               </h2>
+            </div>
 
-              <p className="mt-7 text-lg leading-8 text-[var(--text-muted)]">
-                Chapters are connected to the wider NOSA structure, allowing
-                local communities to contribute to national initiatives while
-                maintaining their own identity and relationships.
+            <div data-aos="fade-left">
+              <p className="max-w-3xl text-xl leading-9 text-white/70 sm:text-2xl">
+                Chapters create a practical way for members to take part in
+                the life of NOSA. Connection can lead to collaboration,
+                support and meaningful contribution to the Olivet community.
               </p>
 
-              <div className="mt-10 space-y-6">
-                <div className="flex gap-4">
-                  <div className="mt-1 h-fit rounded-full bg-[var(--primary-light)] p-2 text-[var(--primary)]">
-                    <Globe2 size={18} />
-                  </div>
+              <div className="mt-14">
+                <div className="flex gap-6 border-t border-white/15 py-8">
+                  <UsersRound
+                    size={22}
+                    strokeWidth={1.5}
+                    className="mt-1 shrink-0 text-[var(--secondary)]"
+                  />
 
                   <div>
-                    <h3 className="font-semibold text-[var(--primary-dark)]">
-                      Local presence
+                    <h3 className="text-xl font-medium">
+                      Connect with other Olivetians
                     </h3>
-                    <p className="mt-1 text-sm leading-6 text-[var(--text-muted)]">
-                      Stay connected to Olivetians around you.
+
+                    <p className="mt-3 max-w-xl leading-7 text-white/50">
+                      Build and maintain relationships with fellow members in
+                      your community.
                     </p>
                   </div>
                 </div>
 
-                <div className="flex gap-4">
-                  <div className="mt-1 h-fit rounded-full bg-[var(--primary-light)] p-2 text-[var(--primary)]">
-                    <Handshake size={18} />
-                  </div>
+                <div className="flex gap-6 border-t border-white/15 py-8">
+                  <Globe2
+                    size={22}
+                    strokeWidth={1.5}
+                    className="mt-1 shrink-0 text-[var(--secondary)]"
+                  />
 
                   <div>
-                    <h3 className="font-semibold text-[var(--primary-dark)]">
-                      National collaboration
+                    <h3 className="text-xl font-medium">
+                      Take part in the wider network
                     </h3>
-                    <p className="mt-1 text-sm leading-6 text-[var(--text-muted)]">
-                      Work together on initiatives that reach beyond one
-                      community.
+
+                    <p className="mt-3 max-w-xl leading-7 text-white/50">
+                      Remain connected to Olivetians beyond your immediate
+                      location through the wider NOSA community.
                     </p>
                   </div>
                 </div>
 
-                <div className="flex gap-4">
-                  <div className="mt-1 h-fit rounded-full bg-[var(--primary-light)] p-2 text-[var(--primary)]">
-                    <HeartHandshake size={18} />
-                  </div>
+                <div className="flex gap-6 border-y border-white/15 py-8">
+                  <HeartHandshake
+                    size={22}
+                    strokeWidth={1.5}
+                    className="mt-1 shrink-0 text-[var(--secondary)]"
+                  />
 
                   <div>
-                    <h3 className="font-semibold text-[var(--primary-dark)]">
-                      Shared responsibility
+                    <h3 className="text-xl font-medium">
+                      Contribute to Olivet
                     </h3>
-                    <p className="mt-1 text-sm leading-6 text-[var(--text-muted)]">
-                      Every chapter has a role in preserving the Olivet
-                      legacy.
+
+                    <p className="mt-3 max-w-xl leading-7 text-white/50">
+                      Support initiatives and activities that strengthen the
+                      Olivetian community and its legacy.
                     </p>
                   </div>
                 </div>
@@ -458,71 +450,71 @@ export default function NOSAChapters() {
       </section>
 
       {/* =========================================================
-          ACTIVITIES
+          CHAPTER DIRECTORY
       ========================================================= */}
-      <section className="bg-[var(--primary-dark)] py-24 text-white sm:py-32">
+      <section className="bg-white py-24 sm:py-32 lg:py-40">
         <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
-          <div className="grid gap-14 lg:grid-cols-[0.7fr_1.3fr]">
+          <div className="grid gap-12 lg:grid-cols-[0.65fr_1.35fr] lg:gap-24">
             <div data-aos="fade-right">
               <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-                — Chapter Life
+                Chapter Directory
               </p>
 
-              <h2 className="mt-5 text-4xl font-semibold tracking-tight sm:text-5xl">
-                Chapters turn
-                <span className="block text-white/35">
-                  connection into action.
-                </span>
+              <h2 className="mt-6 text-4xl font-medium leading-[1.05] tracking-[-0.035em] text-[var(--primary-dark)] sm:text-5xl">
+                Find your Olivetian community.
               </h2>
+
+              <p className="mt-7 max-w-md leading-7 text-[var(--text-muted)]">
+                As the OlivetNOSA chapter network grows, information about
+                recognised chapters and their communities can be made
+                available here.
+              </p>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-3">
-              {activities.map((item, index) => {
-                const Icon = item.icon;
-
-                return (
-                  <div
-                    key={item.title}
-                    data-aos="fade-up"
-                    data-aos-delay={index * 100}
-                    className="
-                      rounded-3xl
-                      border
-                      border-white/10
-                      bg-white/[0.04]
-                      p-7
-                      transition
-                      hover:-translate-y-2
-                      hover:bg-white/[0.08]
-                    "
-                  >
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--secondary)] text-[var(--primary-dark)]">
-                      <Icon size={22} />
-                    </div>
-
-                    <h3 className="mt-10 text-xl font-semibold">
-                      {item.title}
-                    </h3>
-
-                    <p className="mt-4 text-sm leading-7 text-white/55">
-                      {item.text}
+            <div data-aos="fade-left">
+              <div className="border-t border-black/10">
+                <div className="flex items-center justify-between border-b border-black/10 py-7">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.2em] text-[var(--text-muted)]">
+                      Chapter Network
                     </p>
+
+                    <h3 className="mt-2 text-xl font-medium text-[var(--primary-dark)]">
+                      Chapters and locations
+                    </h3>
                   </div>
-                );
-              })}
+
+                  <MapPinned
+                    size={22}
+                    strokeWidth={1.5}
+                    className="text-[var(--primary)]"
+                  />
+                </div>
+
+                <div className="py-10">
+                  <p className="max-w-xl text-lg leading-8 text-[var(--text-muted)]">
+                    Chapter information will be published as the official
+                    chapter directory is established and maintained by
+                    OlivetNOSA.
+                  </p>
+
+                  <p className="mt-5 max-w-xl text-sm leading-7 text-[var(--text-muted)]">
+                    This section is intentionally kept open so that verified
+                    chapter information can be added without presenting
+                    unconfirmed locations or associations as official.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* =========================================================
-          CTA
+          FINAL CTA
       ========================================================= */}
-      <section
-        id="connect"
-        className="relative overflow-hidden bg-[var(--secondary-light)] py-24 sm:py-32"
-      >
-        <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-[var(--secondary)]/20 blur-3xl" />
+      <section className="relative overflow-hidden bg-[var(--secondary-light)] py-24 sm:py-32 lg:py-40">
+        <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-[var(--secondary)]/15 blur-3xl" />
 
         <div className="relative mx-auto max-w-5xl px-6 text-center sm:px-10">
           <p
@@ -536,36 +528,29 @@ export default function NOSAChapters() {
             data-aos="fade-up"
             data-aos-delay="100"
             className="
-              mt-5
-              text-4xl
-              font-semibold
-              leading-tight
-              tracking-tight
+              mt-6
+              text-5xl
+              font-medium
+              leading-[0.98]
+              tracking-[-0.045em]
               text-[var(--primary-dark)]
               sm:text-6xl
+              lg:text-7xl
             "
           >
-            Find your people.
-            <span className="block text-[var(--primary)]/50">
-              Find your chapter.
+            The Olivet story
+            <span className="block text-[var(--primary)]/45">
+              continues with you.
             </span>
           </h2>
 
           <p
             data-aos="fade-up"
             data-aos-delay="200"
-            className="
-              mx-auto
-              mt-7
-              max-w-2xl
-              text-lg
-              leading-8
-              text-[var(--primary-dark)]/65
-            "
+            className="mx-auto mt-8 max-w-2xl text-lg leading-8 text-[var(--primary-dark)]/65"
           >
-            Whether you are reconnecting after many years or looking for ways
-            to become more involved, NOSA provides a place to belong, serve
-            and build lasting relationships.
+            Register with OlivetNOSA and remain connected to the alumni
+            community through the wider association and its member network.
           </p>
 
           <div
@@ -579,25 +564,27 @@ export default function NOSAChapters() {
                 inline-flex
                 items-center
                 gap-3
-                rounded-full
                 bg-[var(--primary-dark)]
                 px-7
                 py-4
                 text-sm
                 font-semibold
                 text-white
-                shadow-lg
                 transition
-                hover:-translate-y-1
+                hover:gap-5
+                hover:bg-[var(--primary)]
               "
             >
-              Connect With NOSA
+              Join OlivetNOSA
               <ArrowUpRight size={18} />
             </a>
           </div>
         </div>
       </section>
 
+      {/* =========================================================
+          FOOTER
+      ========================================================= */}
       <Footer />
     </main>
   );

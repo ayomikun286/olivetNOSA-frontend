@@ -2,25 +2,24 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
+
 import Navbar from "../../components/public/Navbar";
 import Footer from "../../components/public/footer";
+
 import {
   ArrowRight,
   Globe2,
   Heart,
   Users,
-  MapPin,
-  GraduationCap,
-  Quote,
-  Sparkles,
-  Network,
   HandHeart,
+  Quote,
+  Network,
 } from "lucide-react";
 
 const Olivetians = () => {
   useEffect(() => {
     AOS.init({
-      duration: 900,
+      duration: 850,
       once: true,
       offset: 80,
       easing: "ease-out-cubic",
@@ -53,42 +52,32 @@ const Olivetians = () => {
   const values = [
     {
       icon: Users,
+      number: "01",
       title: "Community",
       text: "A lifelong network built around shared memories, friendships and the Olivet experience.",
     },
     {
       icon: Globe2,
+      number: "02",
       title: "Connection",
       text: "Wherever life takes us, Olivet gives us a common ground to return to.",
     },
     {
       icon: HandHeart,
+      number: "03",
       title: "Service",
       text: "Giving back to the school and communities that helped shape generations of Olivetians.",
     },
   ];
 
   return (
-    <main className="overflow-hidden bg-white text-[var(--primary)] mt-0 md:mt-15">
+    <main className="overflow-x-hidden bg-white text-[var(--primary-dark)] mt-0 md:mt-15">
+      <Navbar />
 
-      <header >
-        <div
-
-        >
-          <Navbar />
-        </div>
-      </header>
-
-
-
-      {/* =====================================================
+      {/* =========================================================
           HERO
-      ====================================================== */}
+      ========================================================= */}
       <section className="relative min-h-[82vh] overflow-hidden bg-[var(--primary-dark)]">
-
-
-
-
         <div className="absolute inset-0">
           <img
             src="/images/olivetNOSA-6.jpg"
@@ -96,17 +85,16 @@ const Olivetians = () => {
             className="h-full w-full object-cover"
           />
 
-          <div className="absolute inset-0 bg-[var(--primary-dark)]/55" />
+          <div className="absolute inset-0 bg-[var(--primary-dark)]/65" />
 
-          {/* <div className="absolute inset-0 bg-gradient-to-r from-[var(--primary-dark)]/65 via-[var(--primary-dark)]/55 to-transparent" /> */}
-
-          <div className="absolute inset-0 bg-gradient-to-t from-[var(--primary-dark)] via-transparent to-[var(--primary-dark)]/30" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[var(--primary-dark)] via-transparent to-[var(--primary-dark)]/35" />
         </div>
 
-        <div className="relative mx-auto flex min-h-[82vh] max-w-7xl items-end px-6 pb-20 pt-40 sm:px-8 lg:px-12 lg:pb-28">
-
-          <div className="max-w-4xl" data-aos="fade-up">
-
+        <div className="relative mx-auto flex min-h-[82vh] max-w-7xl items-end px-6 pb-20 pt-36 sm:px-8 lg:px-12 lg:pb-28">
+          <div
+            className="max-w-4xl"
+            data-aos="fade-up"
+          >
             <div className="mb-6 flex items-center gap-3">
               <span className="h-px w-10 bg-[var(--secondary)]" />
 
@@ -118,14 +106,17 @@ const Olivetians = () => {
             <h1 className="max-w-4xl text-5xl font-semibold leading-[0.95] tracking-tight text-white sm:text-6xl lg:text-8xl">
               One school.
               <br />
+
               <span className="text-[var(--secondary)]">
                 Generations.
               </span>
+
               <br />
+
               One connection.
             </h1>
 
-            <p className="mt-8 max-w-2xl text-base leading-8 text-white/70 sm:text-lg">
+            <p className="mt-8 max-w-2xl text-base leading-8 text-white/75 sm:text-lg">
               Olivetians are more than former students. We are a community
               connected by shared memories, enduring values and a school that
               continues to live in us.
@@ -134,7 +125,7 @@ const Olivetians = () => {
             <div className="mt-10 flex flex-wrap gap-4">
               <Link
                 to="/portal/login"
-                className="group inline-flex items-center gap-3 rounded-xl bg-[var(--secondary)] px-6 py-3.5 text-sm font-semibold text-[var(--primary-dark)] transition hover:-translate-y-0.5 hover:shadow-xl"
+                className="group inline-flex items-center gap-3 bg-[var(--secondary)] px-6 py-3.5 text-sm font-semibold text-[var(--primary-dark)] transition hover:bg-white"
               >
                 Join the Community
 
@@ -146,29 +137,25 @@ const Olivetians = () => {
 
               <a
                 href="#community"
-                className="inline-flex items-center gap-3 rounded-xl border border-white/20 px-6 py-3.5 text-sm font-medium text-white transition hover:bg-white/10"
+                className="inline-flex items-center gap-3 border border-white/25 px-6 py-3.5 text-sm font-medium text-white transition hover:bg-white/10"
               >
                 Discover Olivetians
               </a>
             </div>
-
           </div>
         </div>
       </section>
 
-      {/* =====================================================
+      {/* =========================================================
           INTRO
-      ====================================================== */}
+      ========================================================= */}
       <section
         id="community"
-        className="relative bg-white py-24 sm:py-28 lg:py-32"
+        className="bg-white py-24 sm:py-28 lg:py-32"
       >
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
-
-          <div className="grid gap-16 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
-
+          <div className="grid gap-14 lg:grid-cols-[0.8fr_1.2fr] lg:items-start lg:gap-20">
             <div data-aos="fade-right">
-
               <div className="mb-5 flex items-center gap-3">
                 <span className="h-px w-8 bg-[var(--secondary)]" />
 
@@ -177,21 +164,24 @@ const Olivetians = () => {
                 </span>
               </div>
 
-              <h2 className="text-4xl font-semibold leading-tight tracking-tight text-[var(--primary-dark)] sm:text-5xl">
+              <h2 className="max-w-xl text-4xl font-semibold leading-[1.05] tracking-tight text-[var(--primary-dark)] sm:text-5xl lg:text-6xl">
                 The story continues
-                <span className="text-[var(--secondary)]"> beyond the classroom.</span>
+                <span className="text-[var(--secondary)]">
+                  {" "}
+                  beyond the classroom.
+                </span>
               </h2>
-
             </div>
 
-            <div data-aos="fade-left">
-
+            <div
+              className="max-w-2xl lg:pt-10"
+              data-aos="fade-left"
+            >
               <p className="text-lg leading-8 text-slate-600">
                 Every person who passed through Olivet carries a piece of its
-                story. From the earliest students of 1945 to today's
-                generation, Olivetians have gone on to build careers,
-                communities and institutions across Nigeria and around the
-                world.
+                story. From the earliest students to today's generation,
+                Olivetians have gone on to build careers, communities and
+                institutions across Nigeria and around the world.
               </p>
 
               <p className="mt-6 leading-8 text-slate-500">
@@ -200,20 +190,16 @@ const Olivetians = () => {
                 support the school and ensure that the values of Olivet
                 continue from one generation to the next.
               </p>
-
             </div>
-
           </div>
         </div>
       </section>
 
-      {/* =====================================================
-          VALUES
-      ====================================================== */}
-      <section className="bg-[var(--background-soft)] py-20 sm:py-24">
-
+      {/* =========================================================
+          COMMUNITY VALUES
+      ========================================================= */}
+      <section className="border-y border-slate-200 bg-[var(--background-soft)] py-20 sm:py-24">
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
-
           <div
             className="max-w-2xl"
             data-aos="fade-up"
@@ -222,17 +208,17 @@ const Olivetians = () => {
               What Connects Us
             </span>
 
-            <h2 className="mt-4 text-4xl font-semibold tracking-tight text-[var(--primary-dark)] sm:text-5xl">
+            <h2 className="mt-4 text-4xl font-semibold leading-tight tracking-tight text-[var(--primary-dark)] sm:text-5xl">
               More than a school.
               <br />
+
               <span className="text-[var(--secondary)]">
                 A lifelong community.
               </span>
             </h2>
           </div>
 
-          <div className="mt-14 grid gap-5 md:grid-cols-3">
-
+          <div className="mt-14 grid border-y border-slate-200 md:grid-cols-3">
             {values.map((item, index) => {
               const Icon = item.icon;
 
@@ -241,40 +227,46 @@ const Olivetians = () => {
                   key={item.title}
                   data-aos="fade-up"
                   data-aos-delay={index * 100}
-                  className="group rounded-2xl border border-slate-200 bg-white p-8 transition-all duration-500 hover:-translate-y-1 hover:border-[var(--secondary)]/40 hover:shadow-xl"
+                  className={`py-8 md:px-8 md:py-10 ${
+                    index !== 0
+                      ? "border-t border-slate-200 md:border-l md:border-t-0"
+                      : ""
+                  }`}
                 >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--primary-light)] text-[var(--primary)] transition-colors group-hover:bg-[var(--secondary)]">
-                    <Icon size={21} />
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold tracking-[0.2em] text-slate-400">
+                      {item.number}
+                    </span>
+
+                    <Icon
+                      size={22}
+                      strokeWidth={1.6}
+                      className="text-[var(--secondary)]"
+                    />
                   </div>
 
-                  <h3 className="mt-7 text-xl font-semibold text-[var(--primary-dark)]">
+                  <h3 className="mt-8 text-2xl font-semibold text-[var(--primary-dark)]">
                     {item.title}
                   </h3>
 
-                  <p className="mt-3 text-sm leading-7 text-slate-500">
+                  <p className="mt-3 max-w-sm text-sm leading-7 text-slate-500">
                     {item.text}
                   </p>
                 </div>
               );
             })}
-
           </div>
         </div>
       </section>
 
-      {/* =====================================================
-          YEAR SETS
-      ====================================================== */}
+      {/* =========================================================
+          GENERATIONS
+      ========================================================= */}
       <section className="bg-white py-24 sm:py-28 lg:py-32">
-
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
-
-          <div className="grid gap-14 lg:grid-cols-[0.75fr_1.25fr]">
-
+          <div className="grid gap-14 lg:grid-cols-[0.75fr_1.25fr] lg:gap-20">
             <div data-aos="fade-right">
-
-              <div className="sticky top-28">
-
+              <div className="lg:sticky lg:top-28">
                 <div className="mb-5 flex items-center gap-3">
                   <span className="h-px w-8 bg-[var(--secondary)]" />
 
@@ -283,13 +275,16 @@ const Olivetians = () => {
                   </span>
                 </div>
 
-                <h2 className="text-4xl font-semibold leading-tight tracking-tight text-[var(--primary-dark)] sm:text-5xl">
+                <h2 className="text-4xl font-semibold leading-[1.05] tracking-tight text-[var(--primary-dark)] sm:text-5xl lg:text-6xl">
                   Different
                   <br />
+
                   <span className="text-[var(--secondary)]">
                     generations.
                   </span>
+
                   <br />
+
                   One Olivet.
                 </h2>
 
@@ -298,28 +293,24 @@ const Olivetians = () => {
                   milestones. Together, those stories form the wider Olivetian
                   story.
                 </p>
-
               </div>
-
             </div>
 
-            <div className="space-y-4">
-
+            <div>
               {yearSets.map((set, index) => (
                 <div
                   key={set.year}
                   data-aos="fade-left"
-                  data-aos-delay={index * 80}
-                  className="group rounded-2xl border border-slate-200 p-7 transition-all duration-500 hover:border-[var(--secondary)]/50 hover:shadow-lg sm:p-8"
+                  data-aos-delay={index * 70}
+                  className="group border-t border-slate-200 py-8 first:pt-0 sm:py-10"
                 >
-                  <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="grid gap-5 sm:grid-cols-[150px_1fr_auto] sm:items-start sm:gap-8">
+                    <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--secondary)]">
+                      {set.year}
+                    </span>
 
                     <div>
-                      <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
-                        {set.year}
-                      </span>
-
-                      <h3 className="mt-2 text-2xl font-semibold text-[var(--primary-dark)]">
+                      <h3 className="text-2xl font-semibold text-[var(--primary-dark)]">
                         {set.title}
                       </h3>
 
@@ -328,39 +319,31 @@ const Olivetians = () => {
                       </p>
                     </div>
 
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-400 transition-all group-hover:border-[var(--secondary)] group-hover:text-[var(--secondary)]">
-                      <ArrowRight
-                        size={17}
-                        className="transition-transform duration-300 group-hover:translate-x-1"
-                      />
-                    </div>
-
+                    <ArrowRight
+                      size={18}
+                      className="hidden text-slate-300 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-[var(--secondary)] sm:block"
+                    />
                   </div>
                 </div>
               ))}
 
+              <div className="border-t border-slate-200" />
             </div>
-
           </div>
         </div>
       </section>
 
-      {/* =====================================================
+      {/* =========================================================
           GLOBAL OLIVETIANS
-      ====================================================== */}
-      <section className="relative overflow-hidden bg-[var(--primary-dark)] py-24 sm:py-28 lg:py-32">
-
-        <div className="absolute right-0 top-0 h-[500px] w-[500px] rounded-full bg-[var(--secondary)]/5 blur-3xl" />
-
-        <div className="relative mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
-
-          <div className="grid gap-14 lg:grid-cols-[1fr_0.85fr] lg:items-center">
-
+      ========================================================= */}
+      <section className="bg-[var(--primary-dark)] py-24 sm:py-28 lg:py-32">
+        <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
+          <div className="grid gap-14 lg:grid-cols-[1fr_0.9fr] lg:items-center lg:gap-20">
             <div data-aos="fade-right">
-
               <div className="mb-5 flex items-center gap-3">
                 <Globe2
                   size={17}
+                  strokeWidth={1.7}
                   className="text-[var(--secondary)]"
                 />
 
@@ -369,43 +352,44 @@ const Olivetians = () => {
                 </span>
               </div>
 
-              <h2 className="max-w-2xl text-4xl font-semibold leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
+              <h2 className="max-w-2xl text-4xl font-semibold leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-6xl">
                 Wherever life takes us,
                 <span className="text-[var(--secondary)]">
-                  {" "}Olivet comes with us.
+                  {" "}
+                  Olivet comes with us.
                 </span>
               </h2>
 
               <p className="mt-7 max-w-xl leading-8 text-white/60">
-                From Oyo to Lagos, Abuja, London, North America and beyond,
                 Olivetians continue to make their mark across different
-                professions, industries and communities.
+                professions, industries and communities, carrying with them
+                the experiences and values of their school years.
               </p>
 
-              <div className="mt-9 flex flex-wrap gap-3">
+              <div className="mt-9 flex flex-wrap gap-x-6 gap-y-3">
                 {[
                   "Nigeria",
                   "United Kingdom",
                   "North America",
                   "Africa",
-                  "Global",
+                  "Beyond",
                 ].map((location) => (
                   <span
                     key={location}
-                    className="rounded-full border border-white/10 px-4 py-2 text-xs text-white/60"
+                    className="flex items-center gap-2 text-sm text-white/55"
                   >
+                    <span className="h-1.5 w-1.5 rounded-full bg-[var(--secondary)]" />
                     {location}
                   </span>
                 ))}
               </div>
-
             </div>
 
             <div
               data-aos="fade-left"
               className="relative"
             >
-              <div className="overflow-hidden rounded-3xl border border-white/10">
+              <div className="overflow-hidden">
                 <img
                   src="/images/olivetNOSA-2.jpg"
                   alt="Olivet community"
@@ -413,34 +397,28 @@ const Olivetians = () => {
                 />
               </div>
 
-              <div className="absolute -bottom-6 -left-6 rounded-2xl border border-white/10 bg-white/10 p-5 backdrop-blur-xl">
+              <div className="mt-4 flex items-center justify-between border-b border-white/10 pb-4">
+                <span className="text-xs uppercase tracking-[0.2em] text-white/40">
+                  The Olivetian Community
+                </span>
+
                 <Globe2
-                  size={24}
+                  size={17}
                   className="text-[var(--secondary)]"
                 />
-
-                <p className="mt-2 text-sm font-medium text-white">
-                  One global community
-                </p>
               </div>
             </div>
-
           </div>
-
         </div>
       </section>
 
-      {/* =====================================================
+      {/* =========================================================
           STORIES
-      ====================================================== */}
-      <section className="bg-white py-24 sm:py-28">
-
+      ========================================================= */}
+      <section className="bg-white py-24 sm:py-28 lg:py-32">
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
-
-          <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-
+          <div className="flex flex-col gap-6 border-b border-slate-200 pb-10 sm:flex-row sm:items-end sm:justify-between">
             <div data-aos="fade-up">
-
               <span className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--secondary)]">
                 Olivetian Stories
               </span>
@@ -448,32 +426,29 @@ const Olivetians = () => {
               <h2 className="mt-4 text-4xl font-semibold tracking-tight text-[var(--primary-dark)] sm:text-5xl">
                 The people are
                 <span className="text-[var(--secondary)]">
-                  {" "}the legacy.
+                  {" "}
+                  the legacy.
                 </span>
               </h2>
-
             </div>
 
             <Link
               to="/news"
-              className="group inline-flex items-center gap-2 text-sm font-semibold text-[var(--primary)]"
+              className="group inline-flex w-fit items-center gap-2 text-sm font-semibold text-[var(--primary)]"
             >
               View stories
 
               <ArrowRight
                 size={16}
-                className="transition-transform group-hover:translate-x-1"
+                className="transition-transform duration-300 group-hover:translate-x-1"
               />
             </Link>
-
           </div>
 
-          <div className="mt-14 grid gap-6 lg:grid-cols-3">
-
-            {/* Story 1 */}
+          <div className="mt-12 grid gap-8 lg:grid-cols-3">
             <article
               data-aos="fade-up"
-              className="group overflow-hidden rounded-2xl border border-slate-200"
+              className="group"
             >
               <div className="aspect-[4/3] overflow-hidden">
                 <img
@@ -483,7 +458,7 @@ const Olivetians = () => {
                 />
               </div>
 
-              <div className="p-7">
+              <div className="border-b border-slate-200 py-6">
                 <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
                   Community
                 </span>
@@ -499,11 +474,10 @@ const Olivetians = () => {
               </div>
             </article>
 
-            {/* Story 2 */}
             <article
               data-aos="fade-up"
               data-aos-delay="100"
-              className="group overflow-hidden rounded-2xl border border-slate-200"
+              className="group"
             >
               <div className="aspect-[4/3] overflow-hidden">
                 <img
@@ -513,7 +487,7 @@ const Olivetians = () => {
                 />
               </div>
 
-              <div className="p-7">
+              <div className="border-b border-slate-200 py-6">
                 <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
                   Legacy
                 </span>
@@ -529,11 +503,10 @@ const Olivetians = () => {
               </div>
             </article>
 
-            {/* Story 3 */}
             <article
               data-aos="fade-up"
               data-aos-delay="200"
-              className="group overflow-hidden rounded-2xl border border-slate-200"
+              className="group"
             >
               <div className="aspect-[4/3] overflow-hidden">
                 <img
@@ -543,7 +516,7 @@ const Olivetians = () => {
                 />
               </div>
 
-              <div className="p-7">
+              <div className="border-b border-slate-200 py-6">
                 <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
                   Connection
                 </span>
@@ -558,21 +531,16 @@ const Olivetians = () => {
                 </p>
               </div>
             </article>
-
           </div>
-
         </div>
       </section>
 
-      {/* =====================================================
+      {/* =========================================================
           GIVING BACK
-      ====================================================== */}
-      <section className="bg-[var(--background-soft)] py-24 sm:py-28">
-
+      ========================================================= */}
+      <section className="bg-[var(--background-soft)] py-24 sm:py-28 lg:py-32">
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
-
-          <div className="grid overflow-hidden rounded-3xl bg-[var(--primary)] lg:grid-cols-2">
-
+          <div className="grid overflow-hidden bg-[var(--primary)] lg:grid-cols-2">
             <div
               className="relative min-h-[420px]"
               data-aos="fade-right"
@@ -583,10 +551,19 @@ const Olivetians = () => {
                 className="absolute inset-0 h-full w-full object-cover"
               />
 
-              <div className="absolute inset-0 bg-[var(--primary-dark)]/45" />
+              <div className="absolute inset-0 bg-[var(--primary-dark)]/40" />
 
-              <div className="absolute bottom-8 left-8 flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--secondary)] text-[var(--primary-dark)]">
-                <Heart size={24} />
+              <div className="absolute bottom-8 left-8 flex items-center gap-3 text-white">
+                <span className="flex h-11 w-11 items-center justify-center bg-[var(--secondary)] text-[var(--primary-dark)]">
+                  <Heart
+                    size={21}
+                    fill="currentColor"
+                  />
+                </span>
+
+                <span className="text-xs font-semibold uppercase tracking-[0.2em]">
+                  Give Back
+                </span>
               </div>
             </div>
 
@@ -594,16 +571,15 @@ const Olivetians = () => {
               className="flex flex-col justify-center p-9 sm:p-12 lg:p-16"
               data-aos="fade-left"
             >
-
               <span className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--secondary)]">
-                Give Back
+                Giving Back
               </span>
 
-              <h2 className="mt-5 text-4xl font-semibold leading-tight tracking-tight text-white sm:text-5xl">
+              <h2 className="mt-5 max-w-xl text-4xl font-semibold leading-[1.05] tracking-tight text-white sm:text-5xl">
                 The best way to honour the past is to invest in the future.
               </h2>
 
-              <p className="mt-6 leading-8 text-white/60">
+              <p className="mt-6 max-w-xl leading-8 text-white/60">
                 Olivet has given generations of students a foundation for
                 life. Today, Olivetians have an opportunity to help strengthen
                 that foundation for those coming next.
@@ -611,32 +587,28 @@ const Olivetians = () => {
 
               <Link
                 to="/contact"
-                className="group mt-8 inline-flex w-fit items-center gap-3 rounded-xl bg-[var(--secondary)] px-6 py-3.5 text-sm font-semibold text-[var(--primary-dark)] transition hover:-translate-y-0.5 hover:shadow-xl"
+                className="group mt-8 inline-flex w-fit items-center gap-3 bg-[var(--secondary)] px-6 py-3.5 text-sm font-semibold text-[var(--primary-dark)] transition hover:bg-white"
               >
                 Support Olivet
 
                 <ArrowRight
                   size={16}
-                  className="transition-transform group-hover:translate-x-1"
+                  className="transition-transform duration-300 group-hover:translate-x-1"
                 />
               </Link>
-
             </div>
-
           </div>
-
         </div>
       </section>
 
-      {/* =====================================================
+      {/* =========================================================
           QUOTE
-      ====================================================== */}
-      <section className="relative bg-white py-24 sm:py-28">
-
+      ========================================================= */}
+      <section className="bg-white py-24 sm:py-28 lg:py-32">
         <div className="mx-auto max-w-4xl px-6 text-center sm:px-8">
-
           <Quote
-            size={42}
+            size={40}
+            strokeWidth={1.3}
             className="mx-auto text-[var(--secondary)]"
             data-aos="fade-up"
           />
@@ -661,32 +633,32 @@ const Olivetians = () => {
 
             <span className="h-px w-8 bg-slate-200" />
           </div>
-
         </div>
       </section>
 
-      {/* =====================================================
-          MEMBER CTA
-      ====================================================== */}
-      <section className="relative overflow-hidden bg-[var(--primary-dark)] py-24 sm:py-28">
-
-        <div className="absolute inset-0 opacity-20">
+      {/* =========================================================
+          FINAL CTA
+      ========================================================= */}
+      <section className="relative overflow-hidden bg-[var(--primary-dark)] py-24 sm:py-28 lg:py-32">
+        <div className="absolute inset-0">
           <img
             src="/images/olivetNOSA-6.jpg"
             alt=""
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover opacity-15"
           />
+
+          <div className="absolute inset-0 bg-[var(--primary-dark)]/90" />
         </div>
 
-        <div className="absolute inset-0 bg-[var(--primary-dark)]/85" />
-
         <div className="relative mx-auto max-w-4xl px-6 text-center sm:px-8">
-
           <div
             data-aos="fade-up"
-            className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--secondary)] text-[var(--primary-dark)]"
+            className="mx-auto flex h-14 w-14 items-center justify-center bg-[var(--secondary)] text-[var(--primary-dark)]"
           >
-            <Network size={25} />
+            <Network
+              size={24}
+              strokeWidth={1.8}
+            />
           </div>
 
           <span
@@ -719,33 +691,27 @@ const Olivetians = () => {
           >
             <Link
               to="/portal/login"
-              className="group inline-flex items-center gap-3 rounded-xl bg-[var(--secondary)] px-7 py-4 text-sm font-semibold text-[var(--primary-dark)] transition hover:-translate-y-0.5 hover:shadow-xl"
+              className="group inline-flex items-center gap-3 bg-[var(--secondary)] px-7 py-4 text-sm font-semibold text-[var(--primary-dark)] transition hover:bg-white"
             >
               Access Member Portal
 
               <ArrowRight
                 size={16}
-                className="transition-transform group-hover:translate-x-1"
+                className="transition-transform duration-300 group-hover:translate-x-1"
               />
             </Link>
 
             <Link
               to="/about-nosa"
-              className="inline-flex items-center gap-3 rounded-xl border border-white/15 px-7 py-4 text-sm font-medium text-white transition hover:bg-white/10"
+              className="inline-flex items-center gap-3 border border-white/20 px-7 py-4 text-sm font-medium text-white transition hover:bg-white/10"
             >
               Learn About NOSA
             </Link>
           </div>
-
         </div>
       </section>
 
-      {/* =====================================================
-          FOOTER
-      ====================================================== */}
-
       <Footer />
-
     </main>
   );
 };

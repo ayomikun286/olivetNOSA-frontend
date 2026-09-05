@@ -7,6 +7,7 @@ import {
   Mail,
   Phone,
   User,
+  ArrowRight,
 } from "lucide-react";
 
 const Navbar = () => {
@@ -77,8 +78,8 @@ const Navbar = () => {
 
   return (
     <nav className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${scrolled
-        ? "border-slate-200"
-        : "border-slate-200  "
+      ? "border-slate-200"
+      : "border-slate-200  "
       }`}>
 
       {/* =====================================================
@@ -89,13 +90,13 @@ const Navbar = () => {
 
       <div
         className={`hidden md:flex bg-white transition-all duration-500 ease-in-out ${hideTopBar
-            ? "-translate-y-full opacity-0 pointer-events-none"
-            : "translate-y-0 opacity-100"
+          ? "-translate-y-full opacity-0 pointer-events-none"
+          : "translate-y-0 opacity-100"
           }`}
       >
 
         {/* Social Links */}
-        <div className="flex h-full w-80 items-center justify-center gap-3 bg-[var(--primary)] p-1">
+        <div className="flex h-full w-80 items-center justify-center gap-3 bg-[var(--primary)]/70 p-1">
 
           <a
             href="#"
@@ -184,9 +185,9 @@ const Navbar = () => {
           }`}
       >
         <div
-          className={`flex items-center justify-between gap-20 border px-8 py-5   transition-all duration-500 md:justify-center md:px-15 ${scrolled
-              ? "border-slate-200 bg-white"
-              : "border-slate-200 bg-white shadow"
+          className={`flex items-center justify-between gap-20 border px-6 py-5   transition-all duration-500 md:justify-center md:px-15 ${scrolled
+            ? "border-slate-200 bg-white"
+            : "border-slate-200 bg-white shadow"
             }`}
         >
 
@@ -395,19 +396,16 @@ const Navbar = () => {
           {/* =================================================
               RIGHT ACTION
           ================================================= */}
-          <div className="hidden items-center gap-3 lg:flex">
-
-            <div className="flex h-10 w-10 cursor-pointer flex-col items-end justify-center gap-[0.30rem] p-2 transition-all duration-500">
-
-              <span className="block h-[2px] w-5 bg-[var(--primary)]" />
-
-              <span className="block h-[2px] w-6 bg-[var(--primary)]" />
-
-              <span className="block h-[2px] w-4 bg-[var(--primary)]" />
-
-            </div>
-
-          </div>
+          <Link
+            to="/portal/signup"
+            className="hidden md:flex group items-center gap-2 border border-[var(--primary)]  px-5 py-2.5 text-sm font-semibold text-[var(--primary-dark)] transition-all duration-300 hover:shadow-md "
+          >
+            Join NOSA
+            <ArrowRight
+              size={15}
+              className="transition-transform duration-300 group-hover:translate-x-1"
+            />
+          </Link>
 
 
           {/* =================================================
@@ -418,8 +416,8 @@ const Navbar = () => {
             onClick={() => setMobileMenu(!mobileMenu)}
             aria-label={mobileMenu ? "Close menu" : "Open menu"}
             className={`flex h-10 w-10 items-center justify-center rounded-xl border transition-all duration-500 lg:hidden ${scrolled
-                ? "border-slate-200 text-[var(--primary)] hover:bg-slate-50"
-                : "border-slate-200 text-[var(--primary)] hover:bg-slate-50"
+              ? "border-slate-200 text-[var(--primary)] hover:bg-slate-50"
+              : "border-slate-200 text-[var(--primary)] hover:bg-slate-50"
               }`}
           >
             {mobileMenu ? (
@@ -438,8 +436,8 @@ const Navbar = () => {
         {mobileMenu && (
           <div
             className={`mt-3 rounded-2xl border p-5 backdrop-blur-xl shadow-lg transition-all duration-500 lg:hidden ${scrolled
-                ? "border-slate-200 bg-white/95"
-                : "border-slate-200 bg-white/95"
+              ? "border-slate-200 bg-white/95"
+              : "border-slate-200 bg-white/95"
               }`}
           >
 

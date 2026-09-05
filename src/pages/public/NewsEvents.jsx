@@ -1,14 +1,15 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import AOS from "aos";
+import "aos/dist/aos.css";
+
 import Navbar from "../../components/public/Navbar";
 import Footer from "../../components/public/footer";
-import "aos/dist/aos.css";
+
 import {
   ArrowRight,
   CalendarDays,
   MapPin,
-  Newspaper,
   Clock,
 } from "lucide-react";
 
@@ -114,222 +115,186 @@ export default function NewsEvents() {
   }, []);
 
   return (
-    <main className="bg-white text-[var(--primary-dark)] mt-0 md:mt-15">
+    <main className="mt-0 bg-white text-[var(--primary-dark)] md:mt-15">
+      <Navbar />
+
       {/* =====================================================
           HERO
       ====================================================== */}
 
-      <header >
-        <div
-
-        >
-          <Navbar />
-        </div>
-      </header>
-      <section className="relative min-h-[90vh] md:min-h-[100vh] overflow-hidden bg-[var(--primary-dark)]">
-
-        {/* Background Image */}
+      <section className="relative min-h-screen overflow-hidden bg-[var(--primary-dark)]">
         <img
           src="/images/olivetNOSA-6.jpg"
           alt="Olivetians"
           className="absolute inset-0 h-full w-full object-cover"
         />
 
-        {/* Dark image treatment */}
         <div className="absolute inset-0 bg-[var(--primary-dark)]/65" />
 
-        {/* Left-to-right cinematic gradient */}
         <div className="absolute inset-0 bg-gradient-to-r from-[var(--primary-dark)] via-[var(--primary-dark)]/80 to-[var(--primary-dark)]/20" />
 
-        {/* Bottom fade */}
         <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[var(--primary-dark)] to-transparent" />
 
-        {/* Subtle border */}
-        <div className="absolute bottom-0 left-0 right-0 border-t border-white/10" />
-
-        {/* Content */}
-        <div className="relative z-10 mx-auto flex min-h-[90vh] md:min-h-[100vh] max-w-7xl flex-col justify-end px-6 pb-8 sm:px-10 lg:px-12 lg:pb-10">
-
-          <div
-            data-aos="fade-up"
-            className="max-w-5xl"
-          >
-
-            {/* Eyebrow */}
+        <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col justify-end px-5 pb-8 sm:px-8 lg:px-12 lg:pb-10">
+          <div data-aos="fade-up" className="max-w-5xl">
             <div className="mb-7 flex items-center gap-4">
-
-              
-
               <span className="h-px w-12 bg-[var(--secondary)]" />
 
               <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/70">
                 News & Events
               </p>
-
             </div>
 
-            {/* Heading */}
-            <h1 className="max-w-5xl text-5xl font-semibold leading-[0.96] tracking-[-0.035em] text-white sm:text-6xl lg:text-[5.8rem]">
-
+            <h1 className="max-w-5xl text-5xl font-semibold leading-[0.95] tracking-[-0.04em] text-white sm:text-6xl md:text-7xl lg:text-[5.5rem]">
               Stay connected with
-
               <span className="block text-[var(--secondary)]">
                 Olivet.
               </span>
-
             </h1>
 
-            {/* Description */}
             <p className="mt-8 max-w-2xl text-base leading-8 text-white/65 sm:text-lg">
-              Discover the latest stories, gatherings and developments
-              shaping the Olivetian community.
+              Stories, gatherings and developments from a community that
+              continues to grow, remember and move forward together.
             </p>
-
           </div>
 
-          {/* Bottom information strip */}
           <div
             data-aos="fade-up"
             data-aos-delay="150"
-            className="mt-16 flex flex-col gap-6 border-t border-white/15 pt-6 sm:flex-row sm:items-center sm:justify-between"
+            className="mt-16 flex flex-col gap-5 border-t border-white/15 pt-6 sm:flex-row sm:items-center sm:justify-between"
           >
-
             <div className="flex items-center gap-3">
-
-              <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-white/70">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-white/60">
                 ↓
               </span>
 
-              <span className="text-xs uppercase tracking-[0.2em] text-white/50">
+              <span className="text-xs font-medium uppercase tracking-[0.2em] text-white/45">
                 Latest from the community
               </span>
-
             </div>
 
-            <p className="text-xs uppercase tracking-[0.2em] text-white/40">
+            <p className="text-xs font-medium uppercase tracking-[0.2em] text-white/35">
               Stories · Gatherings · Developments
             </p>
-
           </div>
-
         </div>
-
       </section>
 
       {/* =====================================================
-          LATEST NEWS
+          FEATURED STORY
       ====================================================== */}
-      <section className="bg-white py-24 sm:py-28 lg:py-32">
-        <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-12">
+
+      <section className="bg-white py-24 sm:py-32 lg:py-40">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
           <div
-            className="mb-14 flex flex-col justify-between gap-6 sm:flex-row sm:items-end"
             data-aos="fade-up"
+            className="mb-14 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between"
           >
             <div>
-              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-              Latest
+              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
+                Latest
               </p>
 
-              <h2 className="text-4xl font-semibold tracking-tight sm:text-5xl">
-                What’s happening.
+              <h2 className="max-w-2xl text-4xl font-semibold leading-tight tracking-[-0.025em] sm:text-5xl lg:text-6xl">
+                What’s happening around Olivet.
               </h2>
             </div>
 
-            <p className="max-w-md text-sm leading-7 text-[var(--text-muted)]">
-              The latest stories, updates and moments from the Olivetian
-              community.
+            <p className="max-w-md text-sm leading-7 text-[var(--text-muted)] sm:text-base">
+              The people, moments and initiatives keeping the Olivetian
+              community connected.
             </p>
           </div>
 
-          {/* Featured Story */}
-          <div
-            className="grid overflow-hidden rounded-3xl border border-black/10 bg-[var(--background-soft)] lg:grid-cols-[1.25fr_0.75fr]"
+          <article
             data-aos="fade-up"
+            className="grid gap-10 lg:grid-cols-[1.25fr_0.75fr] lg:items-center lg:gap-16"
           >
-            <div className="relative min-h-[360px] overflow-hidden lg:min-h-[500px]">
-              <img
-                src={latestNews[0].image}
-                alt={latestNews[0].title}
-                className="absolute inset-0 h-full w-full object-cover transition duration-700 hover:scale-105"
-              />
-
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-
-              <div className="absolute bottom-0 left-0 p-7 sm:p-10">
-                <span className="inline-flex rounded-full bg-white/95 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-[var(--primary-dark)]">
-                  {latestNews[0].category}
-                </span>
+            <div className="group relative overflow-hidden">
+              <div className="aspect-[16/10] overflow-hidden">
+                <img
+                  src={latestNews[0].image}
+                  alt={latestNews[0].title}
+                  className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]"
+                />
               </div>
             </div>
 
-            <div className="flex flex-col justify-center p-8 sm:p-10 lg:p-12">
-              <div className="mb-5 flex items-center gap-2 text-sm text-[var(--text-muted)]">
-                <CalendarDays size={16} />
-                {latestNews[0].date}
+            <div className="lg:py-8">
+              <div className="mb-5 flex items-center gap-3 text-xs font-medium uppercase tracking-[0.18em] text-[var(--text-muted)]">
+                <span className="text-[var(--secondary)]">
+                  {latestNews[0].category}
+                </span>
+
+                <span className="h-px w-8 bg-black/15" />
+
+                <span>{latestNews[0].date}</span>
               </div>
 
-              <h3 className="text-3xl font-semibold leading-tight sm:text-4xl">
+              <h3 className="text-3xl font-semibold leading-tight tracking-[-0.025em] sm:text-4xl lg:text-[2.8rem]">
                 {latestNews[0].title}
               </h3>
 
-              <p className="mt-6 text-sm leading-7 text-[var(--text-muted)] sm:text-base">
+              <p className="mt-6 text-base leading-8 text-[var(--text-muted)]">
                 {latestNews[0].excerpt}
               </p>
 
-              <button
-                type="button"
-                className="mt-8 inline-flex w-fit items-center gap-2 text-sm font-semibold text-[var(--primary)] transition hover:gap-3"
+              <Link
+                to="#"
+                className="mt-8 inline-flex items-center gap-2 border-b border-[var(--primary)] pb-2 text-sm font-semibold text-[var(--primary)] transition hover:gap-3"
               >
                 Read story
                 <ArrowRight size={17} />
-              </button>
+              </Link>
             </div>
-          </div>
+          </article>
 
-          {/* Smaller Stories */}
-          <div className="mt-8 grid gap-6 md:grid-cols-2">
+          {/* More Stories */}
+
+          <div className="mt-24 grid gap-x-10 gap-y-14 border-t border-black/10 pt-10 md:grid-cols-2">
             {latestNews.slice(1).map((news, index) => (
               <article
                 key={news.id}
-                className="group overflow-hidden rounded-3xl border border-black/10 bg-white"
                 data-aos="fade-up"
                 data-aos-delay={index * 100}
+                className="group"
               >
-                <div className="relative h-64 overflow-hidden">
-                  <img
-                    src={news.image}
-                    alt={news.title}
-                    className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                  />
-
-                  <div className="absolute left-5 top-5">
-                    <span className="rounded-full bg-white/95 px-4 py-2 text-xs font-semibold uppercase tracking-wider">
-                      {news.category}
-                    </span>
+                <div className="overflow-hidden">
+                  <div className="aspect-[16/10] overflow-hidden">
+                    <img
+                      src={news.image}
+                      alt={news.title}
+                      className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]"
+                    />
                   </div>
                 </div>
 
-                <div className="p-7">
-                  <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
-                    <CalendarDays size={14} />
-                    {news.date}
+                <div className="pt-6">
+                  <div className="flex items-center gap-3 text-xs font-medium uppercase tracking-[0.18em] text-[var(--text-muted)]">
+                    <span className="text-[var(--secondary)]">
+                      {news.category}
+                    </span>
+
+                    <span className="h-px w-7 bg-black/15" />
+
+                    <span>{news.date}</span>
                   </div>
 
-                  <h3 className="mt-4 text-2xl font-semibold leading-tight">
+                  <h3 className="mt-4 max-w-xl text-2xl font-semibold leading-tight sm:text-3xl">
                     {news.title}
                   </h3>
 
-                  <p className="mt-4 text-sm leading-7 text-[var(--text-muted)]">
+                  <p className="mt-4 max-w-xl text-sm leading-7 text-[var(--text-muted)] sm:text-base">
                     {news.excerpt}
                   </p>
 
-                  <button
-                    type="button"
-                    className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[var(--primary)] transition group-hover:gap-3"
+                  <Link
+                    to="#"
+                    className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[var(--primary)] transition hover:gap-3"
                   >
                     Read story
                     <ArrowRight size={16} />
-                  </button>
+                  </Link>
                 </div>
               </article>
             ))}
@@ -338,53 +303,59 @@ export default function NewsEvents() {
       </section>
 
       {/* =====================================================
-          UPCOMING EVENTS
+          EVENTS
       ====================================================== */}
-      <section className="bg-[var(--background-soft)] py-24 sm:py-28 lg:py-32">
-        <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-12">
-          <div
-            className="mb-14"
-            data-aos="fade-up"
-          >
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-              Upcoming
-            </p>
 
-            <h2 className="text-4xl font-semibold tracking-tight sm:text-5xl">
-              Gatherings that bring us together.
-            </h2>
+      <section className="bg-[var(--primary-dark)] py-24 text-white sm:py-32 lg:py-40">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
+          <div
+            data-aos="fade-up"
+            className="mb-16 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between"
+          >
+            <div>
+              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
+                Upcoming
+              </p>
+
+              <h2 className="max-w-3xl text-4xl font-semibold leading-tight tracking-[-0.025em] sm:text-5xl lg:text-6xl">
+                Gatherings that bring us together.
+              </h2>
+            </div>
+
+            <p className="max-w-md text-sm leading-7 text-white/55 sm:text-base">
+              There are moments in every Olivetian journey when being
+              together matters most.
+            </p>
           </div>
 
-          <div className="divide-y divide-black/10 rounded-3xl border border-black/10 bg-white">
+          <div className="border-t border-white/15">
             {upcomingEvents.map((event, index) => (
               <article
                 key={event.id}
-                className="grid gap-7 p-7 sm:p-9 lg:grid-cols-[130px_1fr_auto] lg:items-center"
                 data-aos="fade-up"
                 data-aos-delay={index * 100}
+                className="grid gap-8 border-b border-white/15 py-9 lg:grid-cols-[120px_1fr_auto] lg:items-center lg:gap-12"
               >
-                {/* Date */}
-                <div className="flex h-24 w-24 flex-col items-center justify-center rounded-2xl bg-[var(--primary-dark)] text-white">
-                  <span className="text-3xl font-semibold leading-none">
+                <div className="flex items-baseline gap-3 lg:block">
+                  <span className="text-5xl font-semibold leading-none tracking-[-0.04em]">
                     {event.day}
                   </span>
 
-                  <span className="mt-1 text-xs font-semibold tracking-[0.2em] text-[var(--secondary)]">
+                  <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--secondary)] lg:ml-1">
                     {event.month}
                   </span>
                 </div>
 
-                {/* Details */}
                 <div>
-                  <h3 className="text-2xl font-semibold">
+                  <h3 className="text-2xl font-semibold leading-tight sm:text-3xl">
                     {event.title}
                   </h3>
 
-                  <p className="mt-3 max-w-2xl text-sm leading-7 text-[var(--text-muted)]">
+                  <p className="mt-3 max-w-2xl text-sm leading-7 text-white/55 sm:text-base">
                     {event.description}
                   </p>
 
-                  <div className="mt-5 flex flex-col gap-3 text-xs text-[var(--text-muted)] sm:flex-row sm:gap-6">
+                  <div className="mt-5 flex flex-col gap-3 text-xs text-white/50 sm:flex-row sm:gap-6">
                     <span className="flex items-center gap-2">
                       <MapPin size={15} />
                       {event.location}
@@ -397,13 +368,13 @@ export default function NewsEvents() {
                   </div>
                 </div>
 
-                <button
-                  type="button"
-                  className="inline-flex w-fit items-center gap-2 rounded-full border border-[var(--primary)] px-5 py-3 text-sm font-semibold text-[var(--primary)] transition hover:bg-[var(--primary)] hover:text-white"
+                <Link
+                  to="#"
+                  className="inline-flex w-fit items-center gap-2 border-b border-white/25 pb-2 text-sm font-semibold text-white transition hover:gap-3 hover:border-[var(--secondary)]"
                 >
                   Event details
                   <ArrowRight size={16} />
-                </button>
+                </Link>
               </article>
             ))}
           </div>
@@ -411,41 +382,49 @@ export default function NewsEvents() {
       </section>
 
       {/* =====================================================
-          NEWS ARCHIVE
+          ARCHIVE
       ====================================================== */}
-      <section className="bg-white py-24 sm:py-28 lg:py-32">
-        <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-12">
-          <div
-            className="mb-12"
-            data-aos="fade-up"
-          >
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-              Archive
-            </p>
 
-            <h2 className="text-4xl font-semibold tracking-tight sm:text-5xl">
-              From the community.
-            </h2>
+      <section className="bg-white py-24 sm:py-32 lg:py-40">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
+          <div
+            data-aos="fade-up"
+            className="mb-14 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between"
+          >
+            <div>
+              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
+                Archive
+              </p>
+
+              <h2 className="text-4xl font-semibold tracking-[-0.025em] sm:text-5xl lg:text-6xl">
+                From the community.
+              </h2>
+            </div>
+
+            <p className="max-w-md text-sm leading-7 text-[var(--text-muted)] sm:text-base">
+              A record of the conversations, achievements and moments that
+              continue to shape the Olivetian story.
+            </p>
           </div>
 
-          <div className="grid gap-4">
+          <div className="border-t border-black/10">
             {archiveNews.map((news, index) => (
               <article
                 key={news.id}
-                className="group flex flex-col gap-5 rounded-2xl border border-black/10 p-6 transition hover:border-[var(--secondary)] sm:flex-row sm:items-center sm:justify-between sm:p-7"
                 data-aos="fade-up"
                 data-aos-delay={index * 70}
+                className="group flex flex-col gap-5 border-b border-black/10 py-7 sm:flex-row sm:items-center sm:justify-between sm:py-8"
               >
                 <div>
-                  <div className="mb-3 flex items-center gap-3 text-xs font-medium text-[var(--text-muted)]">
+                  <div className="mb-3 flex items-center gap-3 text-xs font-medium uppercase tracking-[0.16em] text-[var(--text-muted)]">
                     <span>{news.date}</span>
 
-                    <span className="h-1 w-1 rounded-full bg-[var(--secondary)]" />
+                    <span className="h-px w-7 bg-[var(--secondary)]" />
 
                     <span>{news.category}</span>
                   </div>
 
-                  <h3 className="text-xl font-semibold transition group-hover:text-[var(--primary)] sm:text-2xl">
+                  <h3 className="max-w-3xl text-xl font-semibold leading-tight transition group-hover:text-[var(--primary)] sm:text-2xl">
                     {news.title}
                   </h3>
                 </div>
@@ -461,42 +440,36 @@ export default function NewsEvents() {
       </section>
 
       {/* =====================================================
-          SIMPLE CTA
+          CLOSING
       ====================================================== */}
-      <section className="bg-[var(--primary-dark)] py-24 text-white sm:py-28">
-        <div
-          className="mx-auto max-w-4xl px-6 text-center sm:px-10"
-          data-aos="fade-up"
-        >
-          <Newspaper
-            size={38}
-            strokeWidth={1.5}
-            className="mx-auto mb-7 text-[var(--secondary)]"
-          />
 
-          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.28em] text-[var(--secondary)]">
+      <section className="bg-[var(--primary-dark)] py-24 text-white sm:py-32 lg:py-40">
+        <div
+          data-aos="fade-up"
+          className="mx-auto max-w-4xl px-5 text-center sm:px-8"
+        >
+          <p className="mb-5 text-xs font-semibold uppercase tracking-[0.28em] text-[var(--secondary)]">
             Stay Connected
           </p>
 
-          <h2 className="text-4xl font-semibold tracking-tight sm:text-5xl">
+          <h2 className="text-4xl font-semibold leading-tight tracking-[-0.025em] sm:text-5xl lg:text-6xl">
             There is always something happening in the Olivetian community.
           </h2>
 
-          <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-white/65 sm:text-base">
+          <p className="mx-auto mt-7 max-w-2xl text-base leading-8 text-white/55">
             Keep up with the people, gatherings and initiatives that continue
             to connect generations of Olivetians.
           </p>
 
           <Link
             to="/olivetians"
-            className="mt-9 inline-flex items-center gap-2 rounded-full bg-[var(--secondary)] px-7 py-4 text-sm font-semibold text-[var(--primary-dark)] transition hover:gap-3"
+            className="mt-9 inline-flex items-center gap-2 rounded-xl bg-[var(--secondary)] px-7 py-4 text-sm font-semibold text-[var(--primary-dark)] transition hover:gap-3"
           >
             Explore the Olivetian Community
             <ArrowRight size={17} />
           </Link>
         </div>
       </section>
-
 
       <Footer />
     </main>

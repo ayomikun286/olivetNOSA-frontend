@@ -1,23 +1,21 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import {
-    ArrowRight,
-    Play,
-    Sparkles,
-    Landmark, GraduationCap, Users
-} from "lucide-react";
 
 import {
+    ArrowDown,
+    ArrowUpRight,
+    ArrowRight,
     UsersRound,
-    Link2,
     HeartHandshake,
+    GraduationCap,
+    Network,
+    Landmark,
 } from "lucide-react";
 
 import Navbar from "../../components/public/Navbar";
 import Footer from "../../components/public/footer";
-export default function Home({}) {
 
-
+export default function Home() {
     const heroImages = [
         "/images/olivetNOSA-4.jpg",
         "/images/olivetNOSA-2.jpg",
@@ -25,7 +23,6 @@ export default function Home({}) {
         "/images/olivetNOSA.jpg.jpg",
         "/images/olivetNOSA-3.jpg",
         "/images/olivetNOSA-6.jpg",
-
     ];
 
     const [currentImage, setCurrentImage] = useState(0);
@@ -33,1552 +30,1027 @@ export default function Home({}) {
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentImage((prev) => (prev + 1) % heroImages.length);
-        }, 4000);
+        }, 5000);
 
         return () => clearInterval(interval);
-    }, []);
-
+    }, [heroImages.length]);
 
     return (
-        <main className="min-h-screen bg-white  md:mt-20">
+        <main className="min-h-screen bg-white text-[var(--primary-dark)] overflow-x-hidden mt-0 md:mt-15">
+            {/* =========================================================
+                NAVBAR
+            ========================================================== */}
+            <header>
+                <Navbar />
+            </header>
 
-
-            <header >
-                    <Navbar  />
-                </header>
-
-            {/* =========================
-                    HERO
-            ========================== */}
-            <section className="relative min-h-screen overflow-hidden bg-[var(--primary-light)]">
-
-
-
-                {/* =========================
-                        DYNAMIC BACKGROUND
-                ========================== */}
+            {/* =========================================================
+                HERO
+            ========================================================== */}
+            <section className="relative flex min-h-[94vh] items-end overflow-hidden bg-[var(--primary-dark)]">
+                {/* Background slideshow */}
                 <div className="absolute inset-0">
-
                     {heroImages.map((image, index) => (
                         <div
                             key={image}
-                            className={`absolute inset-0 bg-cover bg-center transition-opacity duration-[1500ms] ${index === currentImage
-                                ? "opacity-100"
-                                : "opacity-0"
-                                }`}
+                            className={`absolute inset-0 bg-cover bg-center transition-opacity duration-[1800ms] ${
+                                index === currentImage
+                                    ? "opacity-100"
+                                    : "opacity-0"
+                            }`}
                             style={{
                                 backgroundImage: `url("${image}")`,
                                 transform:
                                     index === currentImage
-                                        ? "scale(1.05)"
+                                        ? "scale(1.04)"
                                         : "scale(1)",
                                 transition:
-                                    "opacity 1500ms ease-in-out, transform 7000ms ease-out",
+                                    "opacity 1800ms ease-in-out, transform 7000ms ease-out",
                             }}
                         />
                     ))}
-
                 </div>
 
+                {/* Dark image treatment */}
+                <div className="absolute inset-0 bg-[var(--primary-dark)]/55" />
 
-                <div className="absolute inset-0 bg-black/40" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[var(--primary-dark)] via-[var(--primary-dark)]/35 to-transparent" />
 
+                <div className="absolute inset-0 bg-gradient-to-r from-[var(--primary-dark)]/35 via-transparent to-transparent" />
 
-                {/* <div className="absolute inset-0 bg-gradient-to-r from-[var(--primary-dark)]/55 via-[var(--primary-dark)]/35 to-transparent" /> */}
+                {/* Hero content */}
+                <div className="relative z-10 w-full px-6 pb-14 pt-40 sm:px-10 lg:px-16 lg:pb-20">
+                    <div className="mx-auto max-w-7xl">
+                        <div className="max-w-5xl">
+                            {/* Eyebrow */}
+                            <div
+                                data-aos="fade-up"
+                                className="flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.28em] text-[var(--secondary-light)]"
+                            >
+                                <span className="h-px w-10 bg-[var(--secondary)]" />
 
-                {/* Bottom fade */}
-                {/* <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[var(--primary-dark)] to-transparent" /> */}
-
-
-                {/* =========================
-                                    NAVBAR
-                            ========================== */}
-
-
-                
-
-
-
-                {/* =========================
-                                    HERO CONTENT
-                            ========================== */}
-                <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl items-center px-5 pb-20 pt-32 sm:px-8 lg:px-12">
-
-                    <div className="grid w-full items-end gap-16 lg:grid-cols-[1fr_320px]">
-
-                        {/* Main Content */}
-                        <div className="max-w-4xl">
-
-                            {/* Heritage Badge */}
-                            <div data-aos="fade-right" data-aos-delay="150" className="mb-7 -mt-10 inline-flex items-center gap-2 rounded-full border border-[var(--secondary)]/30 bg-[var(--secondary)]/10 px-4 py-2 backdrop-blur-md">
-
-                                <Sparkles
-                                    size={14}
-                                    className="text-[var(--secondary)]"
-                                />
-
-                                <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[var(--secondary)] sm:text-xs">
-                                    Established 1945 · Olivet Heights
-                                </span>
-
+                                National Old Students' Association
                             </div>
 
-                            {/* Heading */}
-                            <h1 data-aos="fade-up" className="max-w-4xl text-5xl font-semibold leading-[0.95] tracking-[-0.04em] text-white sm:text-6xl md:text-7xl lg:text-[5.5rem]">
-
-                                A Legacy of <span className="block text-[var(--secondary)]">
-                                    Excellence.
+                            {/* Main heading */}
+                            <h1
+                                data-aos="fade-up"
+                                data-aos-delay="100"
+                                 className="max-w-5xl text-5xl font-semibold leading-[0.95] tracking-[-0.045em] text-white sm:text-6xl lg:text-7xl xl:text-8xl"
+                            >
+                                A connection that began at Olivet
+                                <span className="block text-[var(--secondary)]">
+                                    continues across generations.
                                 </span>
-
-                                <span className="block">
-                                    A Future of Possibility.
-                                </span>
-
                             </h1>
 
-                            {/* Description */}
-                            <p
+                            {/* Supporting content */}
+                            <div
                                 data-aos="fade-up"
-                                data-aos-delay="150"
-
-                                className="mt-7 max-w-2xl text-base leading-7 text-white/70 sm:text-lg sm:leading-8">
-
-                                For more than eight decades, Olivet Baptist High School
-                                has shaped generations through education, character,
-                                leadership and service.
-
-                            </p>
-
-                            {/* Actions */}
-                            <div data-aos="fade-up" data-aos-delay="100" className="mt-9 flex flex-col gap-3 sm:flex-row">
+                                data-aos-delay="200"
+                                className="mt-10 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between"
+                            >
+                                <p className="max-w-xl text-base leading-8 text-white/75 sm:text-lg">
+                                    OlivetNOSA brings together former students
+                                    of Olivet Baptist High School, keeping
+                                    friendships, memories and a shared sense
+                                    of belonging alive across generations.
+                                </p>
 
                                 <Link
-                                    to="/about-school"
-                                    className="group inline-flex items-center justify-center gap-3 rounded-xl bg-[var(--secondary)] px-6 py-3.5 text-sm font-semibold text-[var(--primary-dark)] shadow-xl transition hover:translate-y-[-2px] hover:shadow-2xl"
+                                    to="/about-nosa"
+                                    className="
+                                        group
+                                        inline-flex
+                                        w-fit
+                                        items-center
+                                        gap-3
+                                        border-b
+                                        border-[var(--secondary)]
+                                        pb-2
+                                        text-sm
+                                        font-semibold
+                                        text-white
+                                        transition
+                                        hover:gap-5
+                                    "
                                 >
-                                    Discover Our Story
+                                    Discover OlivetNOSA
+                                    <ArrowUpRight size={17} />
+                                </Link>
+                            </div>
+                        </div>
+
+                        {/* Hero footer */}
+                        <div
+                            data-aos="fade-up"
+                            data-aos-delay="300"
+                            className="
+                                mt-20
+                                flex
+                                flex-col
+                                gap-3
+                                border-t
+                                border-white/20
+                                pt-5
+                                sm:flex-row
+                                sm:items-center
+                                sm:justify-between
+                            "
+                        >
+                            <p className="text-xs uppercase tracking-[0.25em] text-white/45">
+                                Olivet Baptist High School · Olivet Heights
+                            </p>
+
+                            <p className="text-sm italic text-white/50">
+                                Cum Christo Progredere
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Scroll */}
+                <a
+                    href="#who-we-are"
+                    className="
+                        absolute
+                        bottom-7
+                        left-1/2
+                        z-20
+                        hidden
+                        -translate-x-1/2
+                        items-center
+                        gap-3
+                        text-white/45
+                        md:flex
+                    "
+                >
+                    <span className="text-[9px] font-medium uppercase tracking-[0.3em]">
+                        Explore
+                    </span>
+
+                    <ArrowDown size={14} />
+                </a>
+            </section>
+
+            {/* =========================================================
+                WHO WE ARE
+            ========================================================== */}
+            <section
+                id="who-we-are"
+                className="bg-white py-24 sm:py-32 lg:py-40"
+            >
+                <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
+                    <div className="grid gap-14 lg:grid-cols-[0.7fr_1.3fr] lg:gap-24">
+                        {/* Label */}
+                        <div data-aos="fade-right">
+                            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
+                                Who We Are
+                            </p>
+
+                            <div className="mt-6 h-px w-16 bg-[var(--secondary)]" />
+
+                            <p className="mt-7 max-w-xs text-sm leading-7 text-[var(--text-muted)]">
+                                An association built around the shared
+                                experience of being an Olivetian.
+                            </p>
+                        </div>
+
+                        {/* Content */}
+                        <div data-aos="fade-up" data-aos-delay="100">
+                            <h2 className="max-w-4xl text-4xl font-medium leading-[1.05] tracking-[-0.035em] text-[var(--primary-dark)] sm:text-5xl lg:text-6xl">
+                                One school brought us together.
+                                <span className="block text-[var(--primary)]">
+                                    NOSA keeps us connected.
+                                </span>
+                            </h2>
+
+                            <div className="mt-10 grid gap-8 md:grid-cols-2">
+                                <p className="text-base leading-8 text-[var(--text-muted)]">
+                                    The National Old Students' Association of
+                                    Olivet Baptist High School brings together
+                                    former students across year sets, chapters
+                                    and generations.
+                                </p>
+
+                                <p className="text-base leading-8 text-[var(--text-muted)]">
+                                    Through shared memories, relationships and
+                                    collective responsibility, Olivetians
+                                    continue to contribute to one another and
+                                    to the future of the Olivet community.
+                                </p>
+                            </div>
+
+                            <div className="mt-10 flex flex-wrap gap-x-8 gap-y-4">
+                                <Link
+                                    to="/about-nosa"
+                                    className="group inline-flex items-center gap-3 text-sm font-semibold text-[var(--primary)]"
+                                >
+                                    About OlivetNOSA
 
                                     <ArrowRight
-                                        size={17}
+                                        size={16}
                                         className="transition-transform group-hover:translate-x-1"
                                     />
                                 </Link>
 
                                 <Link
-                                    to="/about-nosa"
-                                    className="group inline-flex items-center justify-center gap-3 rounded-xl border border-white/20 bg-white/5 px-6 py-3.5 text-sm font-medium text-white backdrop-blur-md transition hover:bg-white/10"
-                                >
-                                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10">
-                                        <Play size={12} fill="currentColor" />
-                                    </span>
-
-                                    Explore NOSA
-                                </Link>
-
-                            </div>
-
-                        </div>
-
-                        {/* =========================
-                HERITAGE CARD
-            ========================== */}
-                        <div className="hidden lg:block">
-
-                            <div data-aos="fade-up" className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/10 p-6 backdrop-blur-xl">
-
-                                <div className="mb-8 flex items-center justify-between">
-
-                                    <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-white/50">
-                                        Our Journey
-                                    </span>
-
-                                    <span className="h-2 w-2 rounded-full bg-[var(--secondary)] shadow-[0_0_12px_var(--secondary)]" />
-
-                                </div>
-
-                                <div className="flex items-end gap-4">
-
-                                    <div>
-                                        <p className="text-5xl font-semibold tracking-tight text-white">
-                                            1945
-                                        </p>
-
-                                        <p className="mt-1 text-xs text-white/50">
-                                            The beginning
-                                        </p>
-                                    </div>
-
-                                    <div className="mb-3 h-px flex-1 bg-gradient-to-r from-[var(--secondary)]/70 to-white/10" />
-
-                                    <div className="text-right">
-                                        <p className="text-3xl font-semibold text-[var(--secondary)]">
-                                            80+
-                                        </p>
-
-                                        <p className="mt-1 text-xs text-white/50">
-                                            Years of legacy
-                                        </p>
-                                    </div>
-
-                                </div>
-
-                                <div className="mt-6 border-t border-white/10 pt-5">
-
-                                    <p className="text-sm leading-6 text-white/60">
-                                        Generations of Olivetians. One enduring spirit.
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-                            {/* Motto */}
-                            <div data-aos="fade-up" data-aos-delay="150" className="mt-5 px-2">
-
-                                <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-[var(--secondary)]">
-                                    Our Motto
-                                </p>
-
-                                <p className="mt-2 font-serif text-xl italic text-white/80">
-                                    “Cum Christo Progredere”
-                                </p>
-
-                                <p className="mt-1 text-xs text-white/40">
-                                    Forward with Christ
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                {/* =========================
-            SCROLL INDICATOR
-        ========================== */}
-                <div className="absolute bottom-7 left-1/2 z-20 hidden -translate-x-1/2 items-center gap-3 text-white/40 md:flex">
-
-                    <div className="h-8 w-px bg-white/20" />
-
-                    <span className="text-[9px] font-medium uppercase tracking-[0.3em]">
-                        Scroll to explore
-                    </span>
-
-                </div>
-
-            </section>
-
-
-
-
-
-
-            {/* =========================
-                    LEGACY INTRO
-                ========================== */}
-            <section className="relative overflow-hidden bg-white py-24 sm:py-28 lg:py-32">
-
-                <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
-
-                    <div className="grid items-center gap-16 lg:grid-cols-[1.1fr_0.9fr]">
-
-                        {/* =========================
-          LEFT — INTRO
-      ========================== */}
-                        <div>
-
-                            <div className="mb-6 flex items-center gap-3">
-
-                                <span data-aos="fade-right" data-aos-delay="150" className="h-px w-10 bg-[var(--secondary)]" />
-
-                                <span data-aos="fade-in" className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-                                    Eight Decades of Purpose
-                                </span>
-
-                            </div>
-
-                            <h2 data-aos="fade-right" data-aos-delay="100" className="max-w-3xl text-4xl font-semibold leading-tight tracking-[-0.03em] text-[var(--primary-dark)] sm:text-5xl lg:text-6xl">
-
-                                More than a school.
-                                <span className="block text-[var(--primary)]">
-                                    A legacy that lives on.
-                                </span>
-
-                            </h2>
-
-                            <p data-aos="fade-up" className="mt-7 max-w-2xl text-base leading-8 text-[var(--text-muted)] sm:text-lg">
-
-                                Since 1945, Olivet Baptist High School has stood as a place
-                                where education meets character, leadership and service.
-                                Generations of students have passed through Olivet Heights,
-                                carrying its values into communities and institutions across
-                                Nigeria and beyond.
-
-                            </p>
-
-                            <div className="mt-9">
-
-                                <Link
-                                    to="/about-school"
-                                    data-aos="fade-right" data-aos-delay="150"
+                                    to="/olivetians"
                                     className="group inline-flex items-center gap-3 text-sm font-semibold text-[var(--primary)]"
                                 >
+                                    Meet the Olivetians
 
-                                    Discover our history
-
-                                    <span data-aos="fade-left" data-aos-delay="150" className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--primary)]/20 transition-all duration-300 group-hover:bg-[var(--primary)] group-hover:text-white">
-
-                                        <ArrowRight
-                                            size={16}
-                                            className="transition-transform duration-300 group-hover:translate-x-1"
-                                        />
-
-                                    </span>
-
+                                    <ArrowRight
+                                        size={16}
+                                        className="transition-transform group-hover:translate-x-1"
+                                    />
                                 </Link>
-
                             </div>
-
                         </div>
-
-
-                        {/* =========================
-          RIGHT — TIMELINE CARD
-      ========================== */}
-                        <div className="relative">
-
-                            {/* Decorative number */}
-                            <div className="absolute -right-4 -top-16 select-none text-[9rem] font-semibold leading-none tracking-[-0.08em] text-[var(--primary)]/[0.04] sm:text-[12rem]">
-                                80
-                            </div>
-
-                            <div data-aos="fade-left" className="relative rounded-3xl border border-slate-200 bg-[var(--background-soft)] p-7 sm:p-9">
-
-                                <div className="flex items-center justify-between">
-
-                                    <span className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--text-muted)]">
-                                        Our Journey
-                                    </span>
-
-                                    <span className="rounded-full bg-[var(--secondary-light)] px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-[var(--primary-dark)]">
-                                        Since 1945
-                                    </span>
-
-                                </div>
-
-
-                                {/* Timeline */}
-                                <div className="mt-10 space-y-8">
-
-                                    {/* 1945 */}
-                                    <div data-aos="fade-up" data-aos-delay="150" className="flex gap-5">
-
-                                        <div className="flex flex-col items-center">
-
-                                            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--primary-dark)] text-xs font-bold text-white">
-                                                45
-                                            </div>
-
-                                            <div className="mt-2 h-full w-px bg-slate-200" />
-
-                                        </div>
-
-                                        <div className="pb-5">
-
-                                            <p className="text-2xl font-semibold text-[var(--primary-dark)]">
-                                                1945
-                                            </p>
-
-                                            <p className="mt-1 text-sm leading-6 text-[var(--text-muted)]">
-                                                The beginning of the Olivet story in Oyo.
-                                            </p>
-
-                                        </div>
-
-                                    </div>
-
-
-                                    {/* 1976 */}
-                                    <div data-aos="fade-up" data-aos-delay="300" className="flex gap-5">
-
-                                        <div className="flex flex-col items-center">
-
-                                            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[var(--secondary)] bg-white text-xs font-bold text-[var(--secondary)]">
-                                                76
-                                            </div>
-
-                                            <div className="mt-2 h-full w-px bg-slate-200" />
-
-                                        </div>
-
-                                        <div className="pb-5">
-
-                                            <p className="text-2xl font-semibold text-[var(--primary-dark)]">
-                                                1976
-                                            </p>
-
-                                            <p className="mt-1 text-sm leading-6 text-[var(--text-muted)]">
-                                                The National Old Students Association was established,
-                                                strengthening the bond between generations of Olivetians.
-                                            </p>
-
-                                        </div>
-
-                                    </div>
-
-
-                                    {/* Today */}
-                                    <div data-aos="fade-up" data-aos-delay="450" className="flex gap-5">
-
-                                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--secondary)] text-xs font-bold text-[var(--primary-dark)]">
-                                            →
-                                        </div>
-
-                                        <div>
-
-                                            <p className="text-2xl font-semibold text-[var(--primary-dark)]">
-                                                Today
-                                            </p>
-
-                                            <p className="mt-1 text-sm leading-6 text-[var(--text-muted)]">
-                                                A growing community committed to preserving the legacy
-                                                and building the future.
-                                            </p>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
                     </div>
-
                 </div>
-
             </section>
 
-
-
-
-            {/* =========================
-    OUR STORY SECTION
-========================= */}
-            <section className="relative overflow-hidden bg-white py-24 sm:py-28 lg:py-32">
-                <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
-
-                    <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
-
-                        {/* =========================
-          IMAGE
-      ========================== */}
+            {/* =========================================================
+                WHERE IT BEGAN
+            ========================================================== */}
+            <section className="bg-[var(--background-soft)] py-24 sm:py-32 lg:py-40">
+                <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
+                    <div className="grid gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-24">
+                        {/* Image */}
                         <div
                             data-aos="fade-right"
-                            data-aos-duration="1000"
-                            className="relative"
+                            className="relative overflow-hidden"
                         >
-                            {/* Decorative background */}
-                            <div className="absolute -bottom-6 -left-6 h-32 w-32 rounded-3xl bg-[var(--primary-light)]" />
-
-                            {/* Image container */}
-                            <div style={{ backgroundImage: `url("/images/olivetNOSA-10.jpg")`, backgroundSize: "cover", backgroundPosition: "center" }} className="relative flex justify-center items-center aspect-[4/3] overflow-hidden rounded-[2rem] border border-slate-200 bg-[var(--background-soft)] shadow-xl">
-
-                              
-
-                                {/* Image overlay */}
-                                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[var(--primary-dark)]/30 via-transparent to-transparent" />
+                            <div className="aspect-[4/3] overflow-hidden">
+                                <img
+                                    src="/images/olivetNOSA-2.jpg"
+                                    alt="Olivet Baptist High School heritage"
+                                    className="h-full w-full object-cover transition duration-700 hover:scale-[1.03]"
+                                />
                             </div>
 
-                            {/* Year badge */}
-                            <div
-                                data-aos="fade-up"
-                                data-aos-delay="350"
-                                className="absolute -bottom-5 right-6 rounded-2xl border border-white/70 bg-white/95 px-6 py-4 shadow-xl backdrop-blur-md sm:right-8"
-                            >
-                                <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-                                    Established
+                            <div className="mt-5 flex items-start justify-between border-t border-black/10 pt-4">
+                                <p className="text-xs uppercase tracking-[0.22em] text-[var(--text-muted)]">
+                                    Olivet Archives
                                 </p>
 
-                                <p className="mt-1 text-3xl font-bold tracking-tight text-[var(--primary-dark)]">
-                                    1945
+                                <p className="max-w-xs text-right text-sm leading-6 text-[var(--text-muted)]">
+                                    A history carried forward by generations
+                                    of Olivetians.
                                 </p>
                             </div>
                         </div>
 
-
-                        {/* =========================
-          CONTENT
-      ========================== */}
+                        {/* Content */}
                         <div>
-
-                            {/* Section label */}
                             <div
                                 data-aos="fade-left"
-                                data-aos-delay="100"
-                                className="mb-6 flex items-center gap-3"
+                                className="flex items-center gap-3"
                             >
                                 <span className="h-px w-10 bg-[var(--secondary)]" />
 
-                                <span className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-                                    Our Story
+                                <span className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
+                                    Where It Began
                                 </span>
                             </div>
 
+                            <p
+                                data-aos="fade-left"
+                                data-aos-delay="100"
+                                className="mt-7 text-6xl font-medium tracking-[-0.05em] text-[var(--primary)] sm:text-7xl lg:text-8xl"
+                            >
+                                1945
+                            </p>
 
-                            {/* Heading */}
                             <h2
                                 data-aos="fade-left"
                                 data-aos-delay="150"
-                                className="max-w-2xl text-4xl font-semibold leading-[1.05] tracking-[-0.035em] text-[var(--primary-dark)] sm:text-5xl lg:text-6xl"
+                                className="mt-2 max-w-xl text-3xl font-medium leading-[1.05] tracking-[-0.035em] text-[var(--primary-dark)] sm:text-4xl lg:text-5xl"
                             >
-                                A tradition of
-                                <span className="block text-[var(--primary)]">
-                                    excellence since 1945.
-                                </span>
+                                The beginning of the Olivet story.
                             </h2>
 
-
-                            {/* Paragraph */}
                             <p
                                 data-aos="fade-left"
-                                data-aos-delay="250"
+                                data-aos-delay="220"
                                 className="mt-7 max-w-xl text-base leading-8 text-[var(--text-muted)] sm:text-lg"
                             >
-                                For generations, Olivet Baptist High School has been a place
-                                where education goes beyond the classroom. From its beginnings
-                                in Oyo to the generations of Olivetians it has shaped, the
-                                school continues to stand for knowledge, character, leadership
-                                and service.
+                                From its early beginnings at Olivet Heights,
+                                the school has grown through generations of
+                                students whose experiences, friendships and
+                                achievements form an important part of its
+                                history.
                             </p>
 
-
-                            {/* Stats */}
-                            <div className="mt-9 grid max-w-xl grid-cols-2 gap-4 sm:grid-cols-3">
-
-                                {/* Stat 1 */}
-                                <div
-                                    data-aos="fade-up"
-                                    data-aos-delay="300"
-                                    className="rounded-2xl border border-slate-200 bg-[var(--background-soft)] p-5"
-                                >
-                                    <p className="text-2xl font-bold text-[var(--primary)]">
-                                        1945
-                                    </p>
-
-                                    <p className="mt-1 text-xs leading-5 text-slate-500">
-                                        Founded
-                                    </p>
-                                </div>
-
-
-                                {/* Stat 2 */}
-                                <div
-                                    data-aos="fade-up"
-                                    data-aos-delay="400"
-                                    className="rounded-2xl border border-slate-200 bg-[var(--background-soft)] p-5"
-                                >
-                                    <p className="text-2xl font-bold text-[var(--primary)]">
-                                        80+
-                                    </p>
-
-                                    <p className="mt-1 text-xs leading-5 text-slate-500">
-                                        Years of legacy
-                                    </p>
-                                </div>
-
-
-                                {/* Stat 3 */}
-                                <div
-                                    data-aos="fade-up"
-                                    data-aos-delay="500"
-                                    className="rounded-2xl border border-slate-200 bg-[var(--background-soft)] p-5"
-                                >
-                                    <p className="text-2xl font-bold text-[var(--primary)]">
-                                        NOSA
-                                    </p>
-
-                                    <p className="mt-1 text-xs leading-5 text-slate-500">
-                                        Alumni community
-                                    </p>
-                                </div>
-
-                            </div>
-
-
-                            {/* Button */}
                             <div
-                                data-aos="fade-up"
-                                data-aos-delay="550"
-                                className="mt-9"
+                                data-aos="fade-left"
+                                data-aos-delay="280"
+                                className="mt-9 border-l-2 border-[var(--secondary)] pl-5"
                             >
-                                <Link
-                                    to="/about-school"
-                                    className="group inline-flex items-center gap-3 text-sm font-semibold text-(--primary)"
-                                >
-                                    Discover our history
+                                <p className="text-sm font-semibold text-[var(--primary-dark)]">
+                                    January 29, 1945
+                                </p>
 
-                                    <span className="flex h-10 w-10 items-center justify-center rounded-full border border-(--primary)/20 transition-all duration-300 group-hover:bg-[var(--primary)] group-hover:text-white">
-                                        <ArrowRight
-                                            size={16}
-                                            className="transition-transform duration-300 group-hover:translate-x-1"
-                                        />
-                                    </span>
-                                </Link>
+                                <p className="mt-1 text-sm leading-6 text-[var(--text-muted)]">
+                                    The First Assembly
+                                </p>
                             </div>
 
-                        </div>
+                            <Link
+                                to="/about-school"
+                                data-aos="fade-left"
+                                data-aos-delay="320"
+                                className="group mt-9 inline-flex items-center gap-3 text-sm font-semibold text-[var(--primary)]"
+                            >
+                                Explore the school history
 
+                                <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--primary)]/20 transition group-hover:bg-[var(--primary)] group-hover:text-white">
+                                    <ArrowRight
+                                        size={16}
+                                        className="transition-transform group-hover:translate-x-1"
+                                    />
+                                </span>
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </section>
 
-
-
-            {/* =========================
-                                NOSA_SECTION
-                            ========================= */}
-            <section style={{ backgroundImage: `url("/images/olivetNOSA-10.jpg")`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundBlendMode: 'overlay' }} className="relative overflow-hidden bg-(--primary-dark) py-24 sm:py-28 lg:py-32">
-
-                {/* Decorative Elements */}
-                <div className="pointer-events-none absolute -left-40 top-20 h-96 w-96 rounded-full bg-[var(--primary)]/30 blur-3xl" />
-
-                <div className="pointer-events-none absolute -right-40 bottom-0 h-96 w-96 rounded-full bg-[var(--secondary)]/10 blur-3xl" />
-
-                <div className="relative mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
-
-                    {/* =========================
-                            INTRO
-                        ========================== */}
-                    <div className="max-w-3xl">
-
-                        <div
-                            data-aos="fade-right"
-                            className="mb-6 flex items-center gap-3"
-                        >
-                            <span className="h-px w-10 bg-[var(--secondary)]" />
-
-                            <span className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-                                Our Community
-                            </span>
-                        </div>
-
-                        <h2
-                            data-aos="fade-up"
-                            data-aos-delay="100"
-                            className="text-4xl font-semibold leading-[1.05] tracking-[-0.035em] text-white sm:text-5xl lg:text-6xl"
-                        >
-                            One Olivet.
-                            <span className="block text-[var(--secondary)]">
-                                One community.
-                            </span>
-                            <span className="block">
-                                Generations connected.
-                            </span>
-                        </h2>
-
-                        <p
-                            data-aos="fade-up"
-                            data-aos-delay="200"
-                            className="mt-7 max-w-2xl text-base leading-8 text-white/60 sm:text-lg"
-                        >
-                            NOSA brings together generations of Olivetians with a shared
-                            commitment to preserving the school's heritage, supporting
-                            its development and creating opportunities for the generations
-                            that follow.
-                        </p>
-
-                    </div>
-
-
-                    {/* =========================
-        PURPOSE CARDS
-    ========================== */}
-                   <div className="mt-16 grid gap-5 md:grid-cols-3">
-
-    {/* Card 1 */}
-    <div
-        data-aos="fade-up"
-        data-aos-delay="100"
-        className="group rounded-3xl border border-white/10 bg-white/[0.06] p-7 backdrop-blur-md transition-all duration-500 hover:-translate-y-1 hover:border-[var(--secondary)]/30 hover:bg-white/[0.09]"
-    >
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--secondary)]/10 text-[var(--secondary)] transition-transform duration-500 group-hover:scale-105">
-            <Landmark size={22} strokeWidth={1.8} />
-        </div>
-
-        <h3 className="mt-7 text-xl font-semibold text-white">
-            Preserve the Legacy
-        </h3>
-
-        <p className="mt-3 text-sm leading-7 text-white/50">
-            Keeping the history, traditions and values of Olivet
-            alive for generations to come.
-        </p>
-    </div>
-
-
-    {/* Card 2 */}
-    <div
-        data-aos="fade-up"
-        data-aos-delay="200"
-        className="group rounded-3xl border border-white/10 bg-white/[0.06] p-7 backdrop-blur-md transition-all duration-500 hover:-translate-y-1 hover:border-[var(--secondary)]/30 hover:bg-white/[0.09]"
-    >
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--secondary)]/10 text-[var(--secondary)] transition-transform duration-500 group-hover:scale-105">
-            <GraduationCap size={22} strokeWidth={1.8} />
-        </div>
-
-        <h3 className="mt-7 text-xl font-semibold text-white">
-            Build the Future
-        </h3>
-
-        <p className="mt-3 text-sm leading-7 text-white/50">
-            Supporting initiatives that strengthen education,
-            infrastructure and opportunities for today's students.
-        </p>
-    </div>
-
-
-    {/* Card 3 */}
-    <div
-        data-aos="fade-up"
-        data-aos-delay="300"
-        className="group rounded-3xl border border-white/10 bg-white/[0.06] p-7 backdrop-blur-md transition-all duration-500 hover:-translate-y-1 hover:border-[var(--secondary)]/30 hover:bg-white/[0.09]"
-    >
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--secondary)]/10 text-[var(--secondary)] transition-transform duration-500 group-hover:scale-105">
-            <Users size={22} strokeWidth={1.8} />
-        </div>
-
-        <h3 className="mt-7 text-xl font-semibold text-white">
-            Connect Olivetians
-        </h3>
-
-        <p className="mt-3 text-sm leading-7 text-white/50">
-            Creating a stronger network where old students can
-            reconnect, collaborate and give back.
-        </p>
-    </div>
-
-</div>
-
-
-                    {/* =========================
-        CTA
-    ========================== */}
-                    <div
-                        data-aos="fade-up"
-                        data-aos-delay="350"
-                        className="mt-12 flex flex-col items-start justify-between gap-6 rounded-3xl border border-white bg-white p-7 sm:flex-row sm:items-center sm:p-8"
-                    >
-
-                        <div>
-                            <p className="text-lg font-semibold text-[var(--primary-dark)]">
-                                Be part of the Olivet story.
+            {/* =========================================================
+                VISION / MISSION
+            ========================================================== */}
+            <section className="bg-white py-24 sm:py-32 lg:py-40">
+                <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
+                    <div className="grid gap-14 lg:grid-cols-[0.7fr_1.3fr] lg:gap-24">
+                        <div data-aos="fade-right">
+                            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
+                                Our Direction
                             </p>
 
-                            <p className="mt-1 text-smtext-[var(--primary-dark)]">
-                                Connect with fellow Olivetians and support the next generation.
+                            <h2 className="mt-6 max-w-md text-4xl font-medium leading-[1.05] tracking-[-0.035em] text-[var(--primary-dark)] sm:text-5xl">
+                                A shared purpose across generations.
+                            </h2>
+                        </div>
+
+                        <div data-aos="fade-left">
+                            <p className="max-w-3xl text-xl leading-9 text-[var(--primary-dark)] sm:text-2xl">
+                                NOSA exists to keep the Olivetian community
+                                connected, to honour where we came from and to
+                                help shape where we are going.
+                            </p>
+
+                            <div className="mt-14 border-t border-black/10">
+                                {/* Vision */}
+                                <div className="grid gap-6 border-b border-black/10 py-9 md:grid-cols-[auto_0.3fr_1fr] md:items-start">
+                                    <UsersRound
+                                        size={23}
+                                        strokeWidth={1.5}
+                                        className="text-[var(--secondary)]"
+                                    />
+
+                                    <h3 className="text-xl font-semibold text-[var(--primary-dark)]">
+                                        A connected community
+                                    </h3>
+
+                                    <p className="max-w-xl text-sm leading-7 text-[var(--text-muted)]">
+                                        Building a united community of
+                                        Olivetians who remain connected across
+                                        year sets, chapters, generations and
+                                        wherever life takes them.
+                                    </p>
+                                </div>
+
+                                {/* Heritage */}
+                                <div className="grid gap-6 border-b border-black/10 py-9 md:grid-cols-[auto_0.3fr_1fr] md:items-start">
+                                    <Landmark
+                                        size={23}
+                                        strokeWidth={1.5}
+                                        className="text-[var(--secondary)]"
+                                    />
+
+                                    <h3 className="text-xl font-semibold text-[var(--primary-dark)]">
+                                        A heritage preserved
+                                    </h3>
+
+                                    <p className="max-w-xl text-sm leading-7 text-[var(--text-muted)]">
+                                        Protecting the memories, relationships
+                                        and traditions that have helped shape
+                                        the Olivetian story.
+                                    </p>
+                                </div>
+
+                                {/* Giving back */}
+                                <div className="grid gap-6 py-9 md:grid-cols-[auto_0.3fr_1fr] md:items-start">
+                                    <HeartHandshake
+                                        size={23}
+                                        strokeWidth={1.5}
+                                        className="text-[var(--secondary)]"
+                                    />
+
+                                    <h3 className="text-xl font-semibold text-[var(--primary-dark)]">
+                                        A community that gives back
+                                    </h3>
+
+                                    <p className="max-w-xl text-sm leading-7 text-[var(--text-muted)]">
+                                        Creating opportunities for Olivetians
+                                        to contribute their time, experience
+                                        and resources to the wider community.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <p className="mt-7 text-xs uppercase tracking-[0.2em] text-[var(--text-muted)]">
+                                Draft statements — subject to official NOSA
+                                approval
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* =========================================================
+                OLIVETNOSA TODAY
+            ========================================================== */}
+            <section className="bg-[var(--primary-dark)] py-24 text-white sm:py-32 lg:py-40">
+                <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
+                    <div className="grid gap-14 lg:grid-cols-[0.7fr_1.3fr] lg:gap-24">
+                        {/* Intro */}
+                        <div data-aos="fade-right">
+                            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
+                                OlivetNOSA Today
+                            </p>
+
+                            <h2 className="mt-6 max-w-md text-4xl font-medium leading-[1.05] tracking-[-0.035em] sm:text-5xl">
+                                An association shaped by its people.
+                            </h2>
+
+                            <p className="mt-7 max-w-md leading-8 text-white/55">
+                                The association provides the structure through
+                                which Olivetians can remain connected,
+                                participate and contribute to the community.
+                            </p>
+
+                            <Link
+                                to="/about-nosa"
+                                className="group mt-9 inline-flex items-center gap-3 border-b border-[var(--secondary)] pb-2 text-sm font-semibold text-white"
+                            >
+                                Learn more about NOSA
+                                <ArrowRight
+                                    size={16}
+                                    className="transition-transform group-hover:translate-x-1"
+                                />
+                            </Link>
+                        </div>
+
+                        {/* Structure */}
+                        <div
+                            data-aos="fade-left"
+                            className="divide-y divide-white/15 border-y border-white/15"
+                        >
+                            {/* Chapters */}
+                            <Link
+                                to="/leaders-chapters"
+                                className="group grid gap-5 py-9 sm:grid-cols-[auto_0.3fr_1fr] sm:items-start"
+                            >
+                                <Network
+                                    size={23}
+                                    strokeWidth={1.5}
+                                    className="text-[var(--secondary)]"
+                                />
+
+                                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
+                                    Local
+                                </p>
+
+                                <div>
+                                    <h3 className="text-2xl font-medium">
+                                        Chapters
+                                    </h3>
+
+                                    <p className="mt-3 max-w-xl leading-7 text-white/50">
+                                        Local communities through which
+                                        Olivetians can stay connected and take
+                                        part in the life of NOSA.
+                                    </p>
+
+                                    <span className="mt-5 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--secondary)]">
+                                        Explore chapters
+                                        <ArrowRight
+                                            size={14}
+                                            className="transition-transform group-hover:translate-x-1"
+                                        />
+                                    </span>
+                                </div>
+                            </Link>
+
+                            {/* Year sets */}
+                            <Link
+                                to="/leaders-chapters"
+                                className="group grid gap-5 py-9 sm:grid-cols-[auto_0.3fr_1fr] sm:items-start"
+                            >
+                                <GraduationCap
+                                    size={23}
+                                    strokeWidth={1.5}
+                                    className="text-[var(--secondary)]"
+                                />
+
+                                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
+                                    Generations
+                                </p>
+
+                                <div>
+                                    <h3 className="text-2xl font-medium">
+                                        Year Sets
+                                    </h3>
+
+                                    <p className="mt-3 max-w-xl leading-7 text-white/50">
+                                        Reconnect with classmates and preserve
+                                        the relationships formed during your
+                                        time at Olivet.
+                                    </p>
+
+                                    <span className="mt-5 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--secondary)]">
+                                        Find your year set
+                                        <ArrowRight
+                                            size={14}
+                                            className="transition-transform group-hover:translate-x-1"
+                                        />
+                                    </span>
+                                </div>
+                            </Link>
+
+                            {/* Leadership */}
+                            <Link
+                                to="/leaders-chapters"
+                                className="group grid gap-5 py-9 sm:grid-cols-[auto_0.3fr_1fr] sm:items-start"
+                            >
+                                <Landmark
+                                    size={23}
+                                    strokeWidth={1.5}
+                                    className="text-[var(--secondary)]"
+                                />
+
+                                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
+                                    Service
+                                </p>
+
+                                <div>
+                                    <h3 className="text-2xl font-medium">
+                                        Leadership
+                                    </h3>
+
+                                    <p className="mt-3 max-w-xl leading-7 text-white/50">
+                                        Meet the people entrusted with guiding
+                                        the association and serving its
+                                        members.
+                                    </p>
+
+                                    <span className="mt-5 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--secondary)]">
+                                        Meet the leadership
+                                        <ArrowRight
+                                            size={14}
+                                            className="transition-transform group-hover:translate-x-1"
+                                        />
+                                    </span>
+                                </div>
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* =========================================================
+                THE OLIVETIAN COMMUNITY
+            ========================================================== */}
+            <section className="bg-white py-24 sm:py-32 lg:py-40">
+                <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
+                    <div className="grid gap-14 lg:grid-cols-[0.95fr_1.05fr] lg:items-center lg:gap-24">
+                        {/* Image */}
+                        <div
+                            data-aos="fade-right"
+                            className="relative overflow-hidden"
+                        >
+                            <div className="aspect-[4/5] overflow-hidden">
+                                <img
+                                    src="/images/olivetNOSA-10.jpg"
+                                    alt="Olivetian community"
+                                    className="h-full w-full object-cover transition duration-700 hover:scale-[1.03]"
+                                />
+                            </div>
+
+                            <div className="mt-5 flex items-start justify-between border-t border-black/10 pt-4">
+                                <p className="text-xs uppercase tracking-[0.22em] text-[var(--text-muted)]">
+                                    The Olivetian Community
+                                </p>
+
+                                <p className="max-w-xs text-right text-sm leading-6 text-[var(--text-muted)]">
+                                    Connected by where we began.
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Content */}
+                        <div data-aos="fade-left">
+                            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
+                                Olivetians
+                            </p>
+
+                            <div className="mt-6 h-px w-16 bg-[var(--secondary)]" />
+
+                            <h2 className="mt-7 max-w-3xl text-4xl font-medium leading-[1.05] tracking-[-0.035em] text-[var(--primary-dark)] sm:text-5xl lg:text-6xl">
+                                Wherever life has taken you,
+                                <span className="block text-[var(--primary)]">
+                                    your Olivetian connection remains.
+                                </span>
+                            </h2>
+
+                            <p className="mt-8 max-w-2xl text-lg leading-8 text-[var(--text-muted)]">
+                                The alumni community brings together people
+                                whose paths began in the same place. NOSA
+                                provides a way to reconnect, participate and
+                                remain part of something that continues beyond
+                                the school years.
+                            </p>
+
+                            <div className="mt-10 border-t border-black/10">
+                                <Link
+                                    to="/olivetians"
+                                    className="group flex items-center justify-between border-b border-black/10 py-6"
+                                >
+                                    <div className="flex items-center gap-5">
+                                        <UsersRound
+                                            size={22}
+                                            strokeWidth={1.5}
+                                            className="text-[var(--primary)]"
+                                        />
+
+                                        <div>
+                                            <h3 className="font-semibold text-[var(--primary-dark)]">
+                                                Meet the Olivetian community
+                                            </h3>
+
+                                            <p className="mt-1 text-sm leading-6 text-[var(--text-muted)]">
+                                                Discover the wider network of
+                                                Olivetians.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <ArrowRight
+                                        size={18}
+                                        className="text-[var(--primary)] transition-transform group-hover:translate-x-1"
+                                    />
+                                </Link>
+
+                                <Link
+                                    to="/portal/register"
+                                    className="group flex items-center justify-between py-6"
+                                >
+                                    <div className="flex items-center gap-5">
+                                        <HeartHandshake
+                                            size={22}
+                                            strokeWidth={1.5}
+                                            className="text-[var(--primary)]"
+                                        />
+
+                                        <div>
+                                            <h3 className="font-semibold text-[var(--primary-dark)]">
+                                                Become part of NOSA
+                                            </h3>
+
+                                            <p className="mt-1 text-sm leading-6 text-[var(--text-muted)]">
+                                                Join the community and stay
+                                                connected.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <ArrowRight
+                                        size={18}
+                                        className="text-[var(--primary)] transition-transform group-hover:translate-x-1"
+                                    />
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* =========================================================
+                NEWS & EVENTS
+            ========================================================== */}
+            <section className="bg-[var(--background-soft)] py-24 sm:py-32 lg:py-40">
+                <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
+                    <div className="grid gap-12 lg:grid-cols-[0.7fr_1.3fr] lg:gap-24">
+                        {/* Intro */}
+                        <div data-aos="fade-right">
+                            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
+                                News & Events
+                            </p>
+
+                            <h2 className="mt-6 max-w-md text-4xl font-medium leading-[1.05] tracking-[-0.035em] text-[var(--primary-dark)] sm:text-5xl">
+                                Life across the Olivet community.
+                            </h2>
+
+                            <p className="mt-7 max-w-md text-base leading-8 text-[var(--text-muted)]">
+                                Keep up with announcements, community stories,
+                                reunions and moments taking place across
+                                Olivet and NOSA.
+                            </p>
+
+                            <Link
+                                to="/news"
+                                className="group mt-9 inline-flex items-center gap-3 text-sm font-semibold text-[var(--primary)]"
+                            >
+                                View all news
+                                <ArrowRight
+                                    size={16}
+                                    className="transition-transform group-hover:translate-x-1"
+                                />
+                            </Link>
+                        </div>
+
+                        {/* Featured story */}
+                        <div data-aos="fade-left">
+                            <article className="group overflow-hidden border-t border-black/10">
+                                <div className="grid gap-8 py-8 md:grid-cols-[0.9fr_1.1fr] md:items-center">
+                                    <div className="aspect-[4/3] overflow-hidden">
+                                        <img
+                                            src="/images/olivetNOSA-3.jpg"
+                                            alt="Olivet community"
+                                            className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
+                                            Olivet News
+                                        </p>
+
+                                        <h3 className="mt-4 text-2xl font-medium leading-tight tracking-[-0.025em] text-[var(--primary-dark)] sm:text-3xl">
+                                            Stories and updates from the
+                                            Olivetian community.
+                                        </h3>
+
+                                        <p className="mt-5 text-sm leading-7 text-[var(--text-muted)]">
+                                            The latest announcements, community
+                                            stories and updates will appear
+                                            here as they are published.
+                                        </p>
+
+                                        <Link
+                                            to="/news"
+                                            className="mt-7 inline-flex items-center gap-3 text-sm font-semibold text-[var(--primary)]"
+                                        >
+                                            Read the latest
+                                            <ArrowRight size={15} />
+                                        </Link>
+                                    </div>
+                                </div>
+                            </article>
+
+                            {/* Event row */}
+                            <div className="border-y border-black/10">
+                                <Link
+                                    to="/events"
+                                    className="group flex flex-col gap-5 py-7 sm:flex-row sm:items-center sm:justify-between"
+                                >
+                                    <div className="flex items-center gap-5">
+                                        <span className="flex h-11 w-11 shrink-0 items-center justify-center border border-[var(--primary)]/15 text-[var(--primary)]">
+                                            <UsersRound
+                                                size={20}
+                                                strokeWidth={1.5}
+                                            />
+                                        </span>
+
+                                        <div>
+                                            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
+                                                Upcoming
+                                            </p>
+
+                                            <h3 className="mt-1 text-lg font-semibold text-[var(--primary-dark)]">
+                                                Events & gatherings
+                                            </h3>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center gap-3 text-sm font-semibold text-[var(--primary)]">
+                                        Explore events
+                                        <ArrowRight
+                                            size={16}
+                                            className="transition-transform group-hover:translate-x-1"
+                                        />
+                                    </div>
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* =========================================================
+                FROM THE ARCHIVES
+            ========================================================== */}
+            <section className="bg-white py-24 sm:py-32 lg:py-40">
+                <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
+                    <div className="flex flex-col justify-between gap-10 lg:flex-row lg:items-end">
+                        <div className="max-w-3xl">
+                            <p
+                                data-aos="fade-right"
+                                className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]"
+                            >
+                                From the Archives
+                            </p>
+
+                            <h2
+                                data-aos="fade-up"
+                                className="mt-6 text-4xl font-medium leading-[1.05] tracking-[-0.035em] text-[var(--primary-dark)] sm:text-5xl lg:text-6xl"
+                            >
+                                Remembering the people,
+                                <span className="block text-[var(--primary)]">
+                                    places and moments.
+                                </span>
+                            </h2>
+
+                            <p
+                                data-aos="fade-up"
+                                data-aos-delay="120"
+                                className="mt-7 max-w-2xl text-base leading-8 text-[var(--text-muted)] sm:text-lg"
+                            >
+                                Photographs and memories preserve the story of
+                                Olivet for those who lived it and those who
+                                will carry it forward.
                             </p>
                         </div>
 
                         <Link
-                            to="/about-nosa"
-                            className="group inline-flex shrink-0 items-center gap-3 rounded-xl bg-[var(--secondary)] px-6 py-3.5 text-sm font-semibold text-[var(--primary-dark)] shadow-lg transition hover:-translate-y-0.5 hover:shadow-xl"
+                            to="/gallery"
+                            data-aos="fade-left"
+                            className="group inline-flex items-center gap-3 text-sm font-semibold text-[var(--primary)]"
                         >
-                            Discover NOSA
+                            Explore the gallery
 
-                            <ArrowRight
-                                size={17}
-                                className="transition-transform duration-300 group-hover:translate-x-1"
-                            />
+                            <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--primary)]/20 transition group-hover:bg-[var(--primary)] group-hover:text-white">
+                                <ArrowRight
+                                    size={16}
+                                    className="transition-transform group-hover:translate-x-1"
+                                />
+                            </span>
                         </Link>
-
                     </div>
 
-                </div>
-            </section>
+                    {/* Archive gallery */}
+                    <div className="mt-16 grid gap-5 lg:grid-cols-12 lg:grid-rows-2">
+                        {/* Main image */}
+                        <div
+                            data-aos="fade-up"
+                            className="group relative min-h-[400px] overflow-hidden lg:col-span-7 lg:row-span-2 lg:min-h-[620px]"
+                        >
+                            <img
+                                src="/images/olivetNOSA-2.jpg"
+                                alt="Olivet archives"
+                                className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]"
+                            />
 
+                            <div className="absolute inset-0 bg-gradient-to-t from-[var(--primary-dark)]/80 via-transparent to-transparent" />
 
+                            <div className="absolute bottom-0 left-0 right-0 p-7 sm:p-9">
+                                <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
+                                    The Olivetian Story
+                                </p>
 
-            {/* =========================
-                                                  OLIVETIANS SECTION
-                                             ========================= */}
-            <section className="relative overflow-hidden bg-[var(--background-soft)] py-24 sm:py-28 lg:py-32">
-                <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
-                    {/* Section Header */}
-                    <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
-                        <div className="max-w-3xl">
-                            <div
-                                data-aos="fade-right"
-                                className="mb-6 flex items-center gap-3"
-                            >
-                                <span className="h-px w-10 bg-[var(--secondary)]" />
+                                <h3 className="mt-3 text-2xl font-medium text-white sm:text-3xl">
+                                    Generations on the Heights
+                                </h3>
 
-                                <span className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-                                    The Olivetian Community
-                                </span>
+                                <p className="mt-2 max-w-lg text-sm leading-6 text-white/60">
+                                    Moments from the people and places that
+                                    continue to shape the Olivetian story.
+                                </p>
                             </div>
-
-                            <h2
-                                data-aos="fade-up"
-                                data-aos-delay="100"
-                                className="text-4xl font-semibold leading-[1.05] tracking-[-0.035em] text-[var(--primary-dark)] sm:text-5xl lg:text-6xl"
-                            >
-                                The people who
-                                <span className="block text-[var(--primary)]">
-                                    carry the legacy.
-                                </span>
-                            </h2>
-
-                            <p
-                                data-aos="fade-up"
-                                data-aos-delay="200"
-                                className="mt-7 max-w-2xl text-base leading-8 text-[var(--text-muted)] sm:text-lg"
-                            >
-                                From different generations and different walks of life, Olivetians
-                                remain connected by the values, friendships and memories formed on
-                                the Heights.
-                            </p>
                         </div>
 
-                        <div data-aos="fade-left" data-aos-delay="200">
-                            <Link
-                                to="/olivetians"
-                                className="group inline-flex items-center gap-3 text-sm font-semibold text-[var(--primary)]"
-                            >
-                                Explore the Olivetian community
-
-                                <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--primary)]/20 transition-all duration-300 group-hover:bg-[var(--primary)] group-hover:text-white">
-                                    <ArrowRight
-                                        size={16}
-                                        className="transition-transform duration-300 group-hover:translate-x-1"
-                                    />
-                                </span>
-                            </Link>
-                        </div>
-                    </div>
-
-                    {/* Community Cards */}
-                    <div className="mt-16 grid gap-5 md:grid-cols-3">
-                        {/* Card 1 */}
+                        {/* Image 2 */}
                         <div
                             data-aos="fade-up"
                             data-aos-delay="100"
-                            className="group relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-xl"
+                            className="group relative min-h-[280px] overflow-hidden lg:col-span-5"
                         >
-                            <div className="absolute right-0 top-0 h-32 w-32 rounded-full bg-[var(--primary-light)] blur-2xl transition-all duration-500 group-hover:scale-150" />
+                            <img
+                                src="/images/olivetNOSA-3.jpg"
+                                alt="Olivet heritage"
+                                className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]"
+                            />
 
-                            <div className="relative">
-                                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--primary-light)] text-[var(--primary)]">
-                                    <UsersRound size={24} strokeWidth={1.8} />
-                                </div>
+                            <div className="absolute inset-0 bg-[var(--primary-dark)]/15 transition group-hover:bg-[var(--primary-dark)]/30" />
 
-                                <h3 className="mt-8 text-2xl font-semibold tracking-tight text-[var(--primary-dark)]">
-                                    Generations
-                                </h3>
-
-                                <p className="mt-4 text-sm leading-7 text-[var(--text-muted)]">
-                                    Connect with Olivetians across generations and rediscover the
-                                    friendships and relationships that began on the Heights.
-                                </p>
-
-                                <div className="mt-8 h-px w-full bg-slate-100" />
-
-                                <p className="mt-5 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
-                                    1945 — Today
-                                </p>
+                            <div className="absolute bottom-5 left-5">
+                                <span className="bg-white/90 px-3 py-1.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-[var(--primary-dark)]">
+                                    Heritage
+                                </span>
                             </div>
                         </div>
 
-                        {/* Card 2 */}
+                        {/* Image 3 */}
                         <div
                             data-aos="fade-up"
                             data-aos-delay="200"
-                            className="group relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-xl"
+                            className="group relative min-h-[280px] overflow-hidden lg:col-span-5"
                         >
-                            <div className="absolute right-0 top-0 h-32 w-32 rounded-full bg-[var(--secondary-light)] blur-2xl transition-all duration-500 group-hover:scale-150" />
+                            <img
+                                src="/images/olivetNOSA-11.jpg"
+                                alt="Olivetian community"
+                                className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]"
+                            />
 
-                            <div className="relative">
-                                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--secondary-light)] text-[var(--secondary)]">
-                                    <Link2 size={24} strokeWidth={1.8} />
-                                </div>
+                            <div className="absolute inset-0 bg-[var(--primary-dark)]/15 transition group-hover:bg-[var(--primary-dark)]/30" />
 
-                                <h3 className="mt-8 text-2xl font-semibold tracking-tight text-[var(--primary-dark)]">
-                                    Connections
-                                </h3>
-
-                                <p className="mt-4 text-sm leading-7 text-[var(--text-muted)]">
-                                    Build meaningful connections, collaborate professionally and stay
-                                    involved with the wider Olivetian network.
-                                </p>
-
-                                <div className="mt-8 h-px w-full bg-slate-100" />
-
-                                <p className="mt-5 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
-                                    Connect · Collaborate
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* Card 3 */}
-                        <div
-                            data-aos="fade-up"
-                            data-aos-delay="300"
-                            className="group relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-xl"
-                        >
-                            <div className="absolute right-0 top-0 h-32 w-32 rounded-full bg-[var(--primary-light)] blur-2xl transition-all duration-500 group-hover:scale-150" />
-
-                            <div className="relative">
-                                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--primary-light)] text-[var(--primary)]">
-                                    <HeartHandshake size={24} strokeWidth={1.8} />
-                                </div>
-
-                                <h3 className="mt-8 text-2xl font-semibold tracking-tight text-[var(--primary-dark)]">
-                                    Give Back
-                                </h3>
-
-                                <p className="mt-4 text-sm leading-7 text-[var(--text-muted)]">
-                                    Support the school, contribute to meaningful initiatives and help
-                                    create better opportunities for the generations coming after us.
-                                </p>
-
-                                <div className="mt-8 h-px w-full bg-slate-100" />
-
-                                <p className="mt-5 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
-                                    Legacy · Impact
-                                </p>
+                            <div className="absolute bottom-5 left-5">
+                                <span className="bg-white/90 px-3 py-1.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-[var(--primary-dark)]">
+                                    Community
+                                </span>
                             </div>
                         </div>
                     </div>
+                </div>
+            </section>
 
-                    {/* Bottom Community CTA */}
+            {/* =========================================================
+                FINAL CTA
+            ========================================================== */}
+            <section className="bg-[var(--secondary-light)] py-24 sm:py-32 lg:py-40">
+                <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
                     <div
                         data-aos="fade-up"
-                        data-aos-delay="350"
-                        className="relative mt-6 overflow-hidden rounded-[2rem] bg-[var(--primary)] px-7 py-10 sm:px-10 lg:px-12"
+                        className="border-t border-[var(--primary)]/10 pt-14"
                     >
-                        <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white/5 blur-3xl" />
-
-                        <div className="relative flex flex-col items-start justify-between gap-7 lg:flex-row lg:items-center">
+                        <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
                             <div>
-                                <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-                                    Stay Connected
+                                <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
+                                    The Olivetian Community
                                 </p>
 
-                                <h3 className="mt-3 text-2xl font-semibold tracking-tight text-white sm:text-3xl">
-                                    Your Olivet story is part of our story.
-                                </h3>
+                                <h2 className="mt-6 max-w-4xl text-5xl font-medium leading-[0.98] tracking-[-0.045em] text-[var(--primary-dark)] sm:text-6xl lg:text-7xl">
+                                    Your Olivet story
+                                    <span className="block text-[var(--primary)]">
+                                        is part of ours.
+                                    </span>
+                                </h2>
 
-                                <p className="mt-3 max-w-2xl text-sm leading-7 text-white/55">
-                                    Join the community, update your profile and stay connected with
-                                    fellow Olivetians around the world.
+                                <p className="mt-7 max-w-2xl text-base leading-8 text-[var(--text-muted)] sm:text-lg">
+                                    Reconnect with fellow Olivetians, become
+                                    part of the association and continue
+                                    contributing to the community that
+                                    connects us all.
                                 </p>
                             </div>
 
                             <Link
-                                to="/portal/login"
-                                className="group inline-flex shrink-0 items-center gap-3 rounded-xl bg-[var(--secondary)] px-6 py-3.5 text-sm font-semibold text-[var(--primary-dark)] shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl"
+                                to="/portal/register"
+                                className="
+                                    group
+                                    inline-flex
+                                    w-fit
+                                    shrink-0
+                                    items-center
+                                    gap-3
+                                    bg-[var(--primary-dark)]
+                                    px-7
+                                    py-4
+                                    text-sm
+                                    font-semibold
+                                    text-white
+                                    transition
+                                    hover:bg-[var(--primary)]
+                                "
                             >
-                                Enter Member Portal
+                                Become a Member
 
-                                <ArrowRight
-                                    size={17}
-                                    className="transition-transform duration-300 group-hover:translate-x-1"
+                                <ArrowUpRight
+                                    size={18}
+                                    className="transition-transform group-hover:translate-x-1"
                                 />
                             </Link>
                         </div>
-                    </div>
-                </div>
-            </section>
 
+                        <div className="mt-16 flex flex-col justify-between gap-5 border-t border-[var(--primary)]/10 pt-6 sm:flex-row sm:items-center">
+                            <p className="text-sm text-[var(--text-muted)]">
+                                National Old Students' Association
+                            </p>
 
-
-            {/* =========================
-    NEWS & EVENTS SECTION
-========================= */}
-            <section className="relative overflow-hidden bg-white py-24 sm:py-28 lg:py-32">
-                <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
-
-                    {/* Section Header */}
-                    <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
-                        <div className="max-w-3xl">
-                            <div
-                                data-aos="fade-right"
-                                className="mb-6 flex items-center gap-3"
-                            >
-                                <span className="h-px w-10 bg-[var(--secondary)]" />
-
-                                <span className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-                                    Latest from Olivet
-                                </span>
-                            </div>
-
-                            <h2
-                                data-aos="fade-up"
-                                data-aos-delay="100"
-                                className="text-4xl font-semibold leading-[1.05] tracking-[-0.035em] text-[var(--primary-dark)] sm:text-5xl lg:text-6xl"
-                            >
-                                Stories, moments &
-                                <span className="block text-[var(--primary)]">
-                                    what’s happening.
-                                </span>
-                            </h2>
-
-                            <p
-                                data-aos="fade-up"
-                                data-aos-delay="200"
-                                className="mt-7 max-w-2xl text-base leading-8 text-[var(--text-muted)] sm:text-lg"
-                            >
-                                Stay connected with the latest stories, announcements and events
-                                from Olivet Baptist High School and the wider Olivetian community.
+                            <p className="text-sm font-medium italic text-[var(--secondary)]">
+                                Cum Christo Progredere
                             </p>
                         </div>
-
-                        <div data-aos="fade-left" data-aos-delay="200">
-                            <Link
-                                to="/news"
-                                className="group inline-flex items-center gap-3 text-sm font-semibold text-[var(--primary)]"
-                            >
-                                View all news & events
-
-                                <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--primary)]/20 transition-all duration-300 group-hover:bg-[var(--primary)] group-hover:text-white">
-                                    <ArrowRight
-                                        size={16}
-                                        className="transition-transform duration-300 group-hover:translate-x-1"
-                                    />
-                                </span>
-                            </Link>
-                        </div>
-                    </div>
-
-                    {/* Editorial Layout */}
-                    <div className="mt-16 grid gap-6 lg:grid-cols-[1.35fr_0.65fr]">
-
-                        {/* =========================
-          FEATURED STORY
-      ========================= */}
-                        <article
-                            data-aos="fade-up"
-                            data-aos-delay="100"
-                            className="group overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl"
-                        >
-                            {/* Image */}
-                            <div className="relative aspect-[16/9] overflow-hidden bg-[var(--primary-light)]">
-                                {/* Replace this placeholder with the actual image */}
-                                <div className="flex h-full items-center justify-center">
-                                    <div className="text-center">
-                                        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-white/70 text-[var(--primary)]">
-                                            <span className="text-2xl font-bold">O</span>
-                                        </div>
-
-                                        <p className="mt-4 text-sm font-medium text-slate-400">
-                                            Featured story image
-                                        </p>
-
-                                        <p className="mt-1 text-xs text-slate-300">
-                                            Image placeholder
-                                        </p>
-                                    </div>
-                                </div>
-
-                                {/* Image overlay */}
-                                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[var(--primary-dark)]/50 via-transparent to-transparent opacity-60 transition-opacity duration-500 group-hover:opacity-80" />
-
-                                {/* Featured label */}
-                                <div className="absolute left-5 top-5">
-                                    <span className="rounded-full bg-[var(--secondary)] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--primary-dark)]">
-                                        Featured
-                                    </span>
-                                </div>
-                            </div>
-
-                            {/* Content */}
-                            <div className="p-7 sm:p-9">
-                                <div className="flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.2em]">
-                                    <span className="text-[var(--secondary)]">
-                                        Olivet News
-                                    </span>
-
-                                    <span className="h-1 w-1 rounded-full bg-slate-300" />
-
-                                    <span className="text-slate-400">
-                                        2026
-                                    </span>
-                                </div>
-
-                                <h3 className="mt-4 max-w-2xl text-2xl font-semibold leading-tight tracking-tight text-[var(--primary-dark)] transition-colors duration-300 group-hover:text-[var(--primary)] sm:text-3xl">
-                                    Celebrating the legacy and future of the Olivetian community
-                                </h3>
-
-                                <p className="mt-4 max-w-2xl text-sm leading-7 text-[var(--text-muted)]">
-                                    Discover the latest developments, stories and moments that
-                                    continue to shape the Olivet Baptist High School community.
-                                </p>
-
-                                <Link
-                                    to="/news"
-                                    className="group/link mt-7 inline-flex items-center gap-3 text-sm font-semibold text-[var(--primary)]"
-                                >
-                                    Read story
-
-                                    <ArrowRight
-                                        size={16}
-                                        className="transition-transform duration-300 group-hover/link:translate-x-1"
-                                    />
-                                </Link>
-                            </div>
-                        </article>
-
-                        {/* =========================
-          SUPPORTING STORIES
-      ========================= */}
-                        <div className="grid gap-6">
-
-                            {/* News Card */}
-                            <article
-                                data-aos="fade-left"
-                                data-aos-delay="200"
-                                className="group flex flex-col overflow-hidden rounded-[2rem] border border-slate-200 bg-[var(--background-soft)] transition-all duration-500 hover:-translate-y-1 hover:bg-white hover:shadow-xl sm:flex-row lg:flex-col"
-                            >
-                                {/* Image */}
-                                <div className="relative aspect-[16/10] overflow-hidden bg-[var(--primary-light)] sm:w-[40%] sm:shrink-0 lg:w-full">
-                                    <div className="flex h-full items-center justify-center">
-                                        <div className="text-center">
-                                            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-white/70 text-[var(--primary)]">
-                                                <span className="font-bold">O</span>
-                                            </div>
-
-                                            <p className="mt-3 text-xs text-slate-400">
-                                                News image
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div className="absolute inset-0 bg-[var(--primary-dark)]/10 transition-colors duration-500 group-hover:bg-[var(--primary-dark)]/20" />
-                                </div>
-
-                                <div className="p-6 sm:p-7">
-                                    <div className="flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.2em]">
-                                        <span className="text-[var(--secondary)]">
-                                            News
-                                        </span>
-
-                                        <span className="h-1 w-1 rounded-full bg-slate-300" />
-
-                                        <span className="text-slate-400">
-                                            Latest
-                                        </span>
-                                    </div>
-
-                                    <h3 className="mt-3 text-xl font-semibold leading-tight tracking-tight text-[var(--primary-dark)] transition-colors duration-300 group-hover:text-[var(--primary)]">
-                                        News and updates from the Heights
-                                    </h3>
-
-                                    <Link
-                                        to="/news"
-                                        className="mt-5 inline-flex items-center gap-2 text-xs font-semibold text-[var(--primary)]"
-                                    >
-                                        Read more
-
-                                        <ArrowRight
-                                            size={14}
-                                            className="transition-transform duration-300 group-hover:translate-x-1"
-                                        />
-                                    </Link>
-                                </div>
-                            </article>
-
-                            {/* Event Card */}
-                            <article
-                                data-aos="fade-left"
-                                data-aos-delay="300"
-                                className="group flex flex-col overflow-hidden rounded-[2rem] border border-slate-200 bg-[var(--primary-dark)] transition-all duration-500 hover:-translate-y-1 hover:shadow-xl sm:flex-row lg:flex-col"
-                            >
-                                {/* Event Image / Visual */}
-                                <div className="relative aspect-[16/10] overflow-hidden bg-[var(--primary)] sm:w-[40%] sm:shrink-0 lg:w-full">
-                                    <div className="absolute inset-0 bg-gradient-to-br from-[var(--primary)] to-[var(--primary-dark)]" />
-
-                                    <div className="relative flex h-full items-center justify-center">
-                                        <div className="text-center">
-                                            <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-                                                Upcoming
-                                            </p>
-
-                                            <p className="mt-2 text-5xl font-bold tracking-tight text-white">
-                                                01
-                                            </p>
-
-                                            <p className="mt-1 text-xs uppercase tracking-[0.2em] text-white/40">
-                                                Event
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="p-6 sm:p-7">
-                                    <div className="flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.2em]">
-                                        <span className="text-[var(--secondary)]">
-                                            Events
-                                        </span>
-
-                                        <span className="h-1 w-1 rounded-full bg-white/20" />
-
-                                        <span className="text-white/35">
-                                            Upcoming
-                                        </span>
-                                    </div>
-
-                                    <h3 className="mt-3 text-xl font-semibold leading-tight tracking-tight text-white">
-                                        Upcoming Olivetian events
-                                    </h3>
-
-                                    <p className="mt-3 text-sm leading-6 text-white/45">
-                                        Discover upcoming gatherings, activities and moments to connect
-                                        with the Olivetian community.
-                                    </p>
-
-                                    <Link
-                                        to="/events"
-                                        className="group/link mt-5 inline-flex items-center gap-2 text-xs font-semibold text-[var(--secondary)]"
-                                    >
-                                        Explore events
-
-                                        <ArrowRight
-                                            size={14}
-                                            className="transition-transform duration-300 group-hover/link:translate-x-1"
-                                        />
-                                    </Link>
-                                </div>
-                            </article>
-
-                        </div>
                     </div>
                 </div>
             </section>
 
-
-
-
-
-{/* =========================
-    GALLERY SECTION
-========================= */}
-<section className="relative overflow-hidden bg-[var(--background-soft)] py-24 sm:py-28 lg:py-32">
-  <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
-
-    {/* Header */}
-    <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
-      <div className="max-w-3xl">
-        <div
-          data-aos="fade-right"
-          className="mb-6 flex items-center gap-3"
-        >
-          <span className="h-px w-10 bg-[var(--secondary)]" />
-
-          <span className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-            From the Archives
-          </span>
-        </div>
-
-        <h2
-          data-aos="fade-up"
-          data-aos-delay="100"
-          className="text-4xl font-semibold leading-[1.05] tracking-[-0.035em] text-[var(--primary-dark)] sm:text-5xl lg:text-6xl"
-        >
-          Moments that
-          <span className="block text-[var(--primary)]">
-            tell our story.
-          </span>
-        </h2>
-
-        <p
-          data-aos="fade-up"
-          data-aos-delay="200"
-          className="mt-7 max-w-2xl text-base leading-8 text-[var(--text-muted)] sm:text-lg"
-        >
-          A glimpse into the people, places and moments that have shaped
-          generations of Olivetians.
-        </p>
-      </div>
-
-      <div data-aos="fade-left" data-aos-delay="200">
-        <Link
-          to="/gallery"
-          className="group inline-flex items-center gap-3 text-sm font-semibold text-[var(--primary)]"
-        >
-          Explore the full gallery
-
-          <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--primary)]/20 transition-all duration-300 group-hover:bg-[var(--primary)] group-hover:text-white">
-            <ArrowRight
-              size={16}
-              className="transition-transform duration-300 group-hover:translate-x-1"
-            />
-          </span>
-        </Link>
-      </div>
-    </div>
-
-    {/* Gallery Grid */}
-    <div className="mt-16 grid gap-5 lg:grid-cols-12 lg:grid-rows-2">
-
-      {/* Large Image */}
-      <div
-        data-aos="fade-up"
-        data-aos-delay="100"
-        style={{backgroundImage:"url('/images/olivetNOSA-2.jpg')", backgroundPosition:"center", backgroundSize:"cover"}}
-        className="group relative min-h-[360px] overflow-hidden rounded-[2rem] border border-slate-200 bg-[var(--primary-light)] lg:col-span-7 lg:row-span-2 lg:min-h-[620px]"
-      >
-       
-        <div className="absolute inset-0 bg-gradient-to-t from-[var(--primary-dark)]/70 via-transparent to-transparent" />
-
-        {/* Caption */}
-        <div className="absolute bottom-0 left-0 right-0 p-7 sm:p-9">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-            The Olivetian Story
-          </p>
-
-          <h3 className="mt-3 text-2xl font-semibold tracking-tight text-white sm:text-3xl">
-            Generations on the Heights
-          </h3>
-
-          <p className="mt-2 max-w-lg text-sm leading-6 text-white/60">
-            Moments from the people and places that continue to define
-            the Olivetian experience.
-          </p>
-        </div>
-
-        {/* Hover icon */}
-        <div className="absolute right-6 top-6 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white opacity-0 backdrop-blur-md transition-all duration-500 group-hover:opacity-100">
-          <ArrowRight
-            size={17}
-            className="-rotate-45"
-          />
-        </div>
-      </div>
-
-      {/* Image 2 */}
-      <div
-        data-aos="fade-up"
-        data-aos-delay="200"
-        style={{backgroundImage:"url('/images/olivetNOSA-3.jpg')", backgroundPosition:"center", backgroundSize:"cover"}}
-        className="group relative min-h-[280px] overflow-hidden rounded-[2rem] border border-slate-200 bg-[var(--secondary-light)] lg:col-span-5"
-      >
-       
-
-        <div className="absolute inset-0 bg-[var(--primary-dark)]/10 transition-all duration-500 group-hover:bg-[var(--primary-dark)]/30" />
-
-        <div className="absolute bottom-5 left-5">
-          <span className="rounded-full bg-white/90 px-3 py-1.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-[var(--primary-dark)]">
-            Heritage
-          </span>
-        </div>
-      </div>
-
-      {/* Image 3 */}
-      <div
-        data-aos="fade-up"
-        data-aos-delay="300"
-        style={{backgroundImage:"url('/images/olivetNOSA-11.jpg')", backgroundPosition:"center", backgroundSize:"cover"}}
-        className="group relative min-h-[280px] overflow-hidden rounded-[2rem] border border-slate-200 bg-[var(--primary-light)] lg:col-span-5"
-      >
-        
-
-        <div className="absolute inset-0 bg-[var(--primary-dark)]/10 transition-all duration-500 group-hover:bg-[var(--primary-dark)]/30" />
-
-        <div className="absolute bottom-5 left-5">
-          <span className="rounded-full bg-white/90 px-3 py-1.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-[var(--primary-dark)]">
-            Community
-          </span>
-        </div>
-      </div>
-
-    </div>
-
-    {/* Bottom CTA */}
-    <div
-      data-aos="fade-up"
-      data-aos-delay="350"
-      className="mt-8 flex flex-col items-start justify-between gap-6 rounded-[2rem] border border-slate-200 bg-white p-7 shadow-sm sm:flex-row sm:items-center sm:p-8"
-    >
-      <div>
-        <p className="text-lg font-semibold text-[var(--primary-dark)]">
-          Every photograph holds a piece of history.
-        </p>
-
-        <p className="mt-1 text-sm text-[var(--text-muted)]">
-          Explore more memories from across the Olivetian community.
-        </p>
-      </div>
-
-      <Link
-        to="/gallery"
-        className="group inline-flex shrink-0 items-center gap-3 rounded-xl bg-[var(--primary)] px-6 py-3.5 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:bg-[var(--primary-dark)] hover:shadow-xl"
-      >
-        View Gallery
-
-        <ArrowRight
-          size={17}
-          className="transition-transform duration-300 group-hover:translate-x-1"
-        />
-      </Link>
-    </div>
-
-  </div>
-</section>
-
-
-
-{/* =========================
-    FINAL CTA SECTION
-========================= */}
-<section className="relative overflow-hidden bg-[var(--primary-dark)] py-24 sm:py-28 lg:py-32">
-  {/* Decorative background */}
-  <div className="pointer-events-none absolute -left-40 top-1/2 h-[32rem] w-[32rem] -translate-y-1/2 rounded-full bg-[var(--primary)]/30 blur-3xl" />
-
-  <div className="pointer-events-none absolute -right-40 -top-40 h-[30rem] w-[30rem] rounded-full bg-[var(--secondary)]/10 blur-3xl" />
-
-  <div className="relative mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
-    <div className="grid items-center gap-14 lg:grid-cols-[1.2fr_0.8fr] lg:gap-20">
-
-      {/* Main Message */}
-      <div>
-        <div
-          data-aos="fade-right"
-          className="mb-7 flex items-center gap-3"
-        >
-          <span className="h-px w-10 bg-[var(--secondary)]" />
-
-          <span className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-            Continue the Legacy
-          </span>
-        </div>
-
-        <h2
-          data-aos="fade-up"
-          data-aos-delay="100"
-          className="max-w-4xl text-4xl font-semibold leading-[1.02] tracking-[-0.04em] text-white sm:text-5xl lg:text-7xl"
-        >
-          The story began
-          <span className="block text-[var(--secondary)]">
-            in 1945.
-          </span>
-
-          <span className="block text-white/80">
-            It continues with you.
-          </span>
-        </h2>
-
-        <p
-          data-aos="fade-up"
-          data-aos-delay="200"
-          className="mt-7 max-w-2xl text-base leading-8 text-white/55 sm:text-lg"
-        >
-          Whether you are reconnecting with old classmates, discovering the
-          Olivetian community or looking for a way to give back, there is a
-          place for you in the story.
-        </p>
-
-        <div
-          data-aos="fade-up"
-          data-aos-delay="300"
-          className="mt-9 flex flex-col gap-3 sm:flex-row"
-        >
-          <Link
-            to="/contact"
-            className="group inline-flex items-center justify-center gap-3 rounded-xl bg-[var(--secondary)] px-6 py-3.5 text-sm font-semibold text-[var(--primary-dark)] shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl"
-          >
-            Join NOSA
-
-            <ArrowRight
-              size={17}
-              className="transition-transform duration-300 group-hover:translate-x-1"
-            />
-          </Link>
-
-          <Link
-            to="/portal/login"
-            className="inline-flex items-center justify-center rounded-xl border border-white/15 bg-white/5 px-6 py-3.5 text-sm font-medium text-white transition-all duration-300 hover:border-white/25 hover:bg-white/10"
-          >
-            Member Portal
-          </Link>
-        </div>
-      </div>
-
-      {/* Legacy Card */}
-      <div
-        data-aos="fade-left"
-        data-aos-delay="200"
-        className="relative"
-      >
-        <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.06] p-8 backdrop-blur-md sm:p-10">
-
-          {/* Decorative circle */}
-          <div className="absolute -right-20 -top-20 h-52 w-52 rounded-full border border-[var(--secondary)]/10" />
-
-          <div className="relative">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-              Our Motto
-            </p>
-
-            <div className="mt-7">
-              <p className="font-serif text-3xl italic leading-tight text-white sm:text-4xl">
-                “Cum Christo
-                <span className="block text-white/60">
-                  Progredere”
-                </span>
-              </p>
-
-              <p className="mt-4 text-sm text-white/40">
-                Forward with Christ
-              </p>
-            </div>
-
-            <div className="my-8 h-px bg-white/10" />
-
-            <div className="flex items-end justify-between">
-              <div>
-                <p className="text-5xl font-bold tracking-tight text-white">
-                  1945
-                </p>
-
-                <p className="mt-1 text-xs uppercase tracking-[0.2em] text-white/35">
-                  Established
-                </p>
-              </div>
-
-              <div className="text-right">
-                <p className="text-3xl font-semibold text-[var(--secondary)]">
-                  80+
-                </p>
-
-                <p className="mt-1 text-xs uppercase tracking-[0.15em] text-white/35">
-                  Years of legacy
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Small accent */}
-        <div className="absolute -bottom-3 left-8 h-6 w-20 rounded-full bg-[var(--secondary)]/20 blur-xl" />
-      </div>
-
-    </div>
-  </div>
-</section>
-
-
-
-
-
-
-
-
+            {/* =========================================================
+                FOOTER
+            ========================================================== */}
             <Footer />
-
         </main>
     );
 }
