@@ -135,12 +135,14 @@ export default function Gallery() {
   };
 
   return (
-    <main className="mt-0 bg-white text-[var(--primary-dark)] md:mt-15">
+    <main className="mt-0 bg-white overflow-x-hidden text-[var(--primary-dark)] md:mt-15">
      
      
      
      
       <PageTitle title="Gallery | OlivetNOSA" />
+      .
+       
       <Navbar />
 
       {/* =====================================================
