@@ -30,12 +30,18 @@ const Footer = () => {
             <img src="/images/olivetNOSA_logo.png" alt="" />
           </div>
 
-              <div className="leading-none">
-                <p className="text-lg font-bold tracking-wide">
-                  OLIVET
-                </p>
 
-                <p className="mt-1 text-[9px] font-medium uppercase tracking-[0.22em] text-white/50">
+ 
+
+             
+
+
+              <div className="leading-none">
+               <p className="text-xs font-bold tracking-wide  transition-colors duration-500 max-w-35">
+               Olivet National Old Students Association
+              </p>
+
+                <p className="mt-1 text-[7px] font-medium uppercase tracking-[0.22em] text-white/50">
                   Baptist High School
                 </p>
               </div>
