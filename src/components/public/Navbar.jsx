@@ -215,7 +215,7 @@ const Navbar = () => {
           }`}
       >
         <div
-          className={`flex items-center justify-between gap-20 border px-6 py-5   transition-all duration-500 md:justify-center md:px-15 ${scrolled
+          className={`flex items-center justify-between gap-20 border px-6 py-5   transition-all duration-500 md:justify-center md:px-2 ${scrolled
             ? "border-slate-200 bg-white"
             : "border-slate-200 bg-white shadow"
             }`}
@@ -236,11 +236,11 @@ const Navbar = () => {
 
             <div className="leading-none">
 
-              <p className="text-lg font-bold tracking-wide text-[var(--primary-dark)] transition-colors duration-500">
-                OLIVET
+              <p className="text-xs font-bold tracking-wide text-[var(--primary-dark)] transition-colors duration-500 max-w-35">
+               Olivet National Old Students Association
               </p>
 
-              <p className="mt-1 text-[9px] font-medium uppercase tracking-[0.22em] text-slate-500 transition-colors duration-500">
+              <p className="mt-1 text-[7px] font-medium uppercase tracking-[0.22em] text-slate-500 transition-colors duration-500">
                 Baptist High School
               </p>
 

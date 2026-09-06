@@ -97,7 +97,7 @@ export default function Home() {
                             <h1
                                 data-aos="fade-up"
                                 data-aos-delay="100"
-                                className="max-w-5xl text-5xl font-semibold leading-[0.95] tracking-[-0.045em] text-white sm:text-6xl lg:text-7xl xl:text-8xl"
+                                className="max-w-4xl text-5xl font-semibold leading-[0.95] tracking-[-0.045em] text-white sm:text-6xl lg:text-7xl xl:text-8xl"
                             >
                                 A connection that began at Olivet
                                 <span className="block text-[var(--secondary)]">

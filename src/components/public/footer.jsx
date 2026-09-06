@@ -258,8 +258,7 @@ const Footer = () => {
         <div className="flex flex-col gap-5 text-xs text-white/35 sm:flex-row sm:items-center sm:justify-between">
 
           <p>
-            © {new Date().getFullYear()} Olivet Baptist High School.
-            All rights reserved.
+            @ {new Date().getFullYear()} National Old Students Association | Powered by: DXsExpressionsUK
           </p>
 
           <div className="flex flex-wrap items-center gap-5">
