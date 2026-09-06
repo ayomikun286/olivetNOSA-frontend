@@ -108,8 +108,8 @@ const Navbar = () => {
 
   return (
     <nav className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${scrolled
-      ? "border-red-200"
-      : "border-red-200  "
+      ? "border-red-800"
+      : "border-red-800  "
       }`}>
 
       {/* =====================================================
