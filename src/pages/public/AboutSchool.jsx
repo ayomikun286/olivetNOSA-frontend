@@ -515,7 +515,7 @@ const AboutSchool = () => {
               <div className="space-y-4">
                 <div className="overflow-hidden">
                   <img
-                    src="/images/olivetsNOSA__ -olaojo.webp"
+                    src="/images/olivetNOSA-4.jpg"
                     alt="Olivet school community"
                     className="aspect-[4/3] w-full object-cover"
                   />
@@ -736,7 +736,7 @@ const AboutSchool = () => {
       data-aos="fade-up"
       className="mt-24 grid gap-10 border-t border-white/10 pt-16 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-20"
     >
-      <div className="overflow-hidden rounded-[1.5rem]">
+      <div className="overflow-hidden ">
         <img
           src="/images/olivetNOSA-3.jpg"
           alt="Historical photograph from Olivet Baptist High School"
@@ -929,7 +929,7 @@ const AboutSchool = () => {
                     className="group grid gap-4 border-b border-slate-300 py-7 sm:grid-cols-[70px_1fr_auto] sm:items-start sm:gap-8"
                   >
                     <span className="text-sm font-semibold text-[var(--secondary)]">
-                      0{index + 1}
+                     
                     </span>
 
                     <div>

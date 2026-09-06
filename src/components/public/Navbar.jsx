@@ -126,7 +126,7 @@ const Navbar = () => {
       >
 
         {/* Social Links */}
-        <div className="flex h-full w-80 items-center justify-center gap-3 bg-[var(--primary)]/70 p-1">
+        <div className="flex h-full w-80 items-center justify-center gap-3 bg-[var(--primary)]/92 p-1">
 
           <a
             href="#"
@@ -476,7 +476,7 @@ const Navbar = () => {
         ====================================================== */}
         {mobileMenu && (
           <div
-            className={`mt-3 rounded-2xl border p-5 backdrop-blur-xl shadow-lg transition-all duration-500 lg:hidden ${scrolled
+            className={`mt-0  border p-5 backdrop-blur-xl  transition-all duration-500 lg:hidden ${scrolled
               ? "border-slate-200 bg-white/95"
               : "border-slate-200 bg-white/95"
               }`}
@@ -678,7 +678,7 @@ const Navbar = () => {
               <Link
                 to="/portal/login"
                 onClick={() => setMobileMenu(false)}
-                className="rounded-xl border border-slate-200 px-4 py-3 text-center text-sm text-[var(--primary)] transition-all duration-300 hover:bg-slate-50"
+                className=" border border-slate-200 px-4 py-3 text-center text-sm text-[var(--primary)] transition-all duration-300 hover:bg-slate-50"
               >
                 Member Login
               </Link>
@@ -688,7 +688,7 @@ const Navbar = () => {
               <Link
                 to="/portal/signup"
                 onClick={() => setMobileMenu(false)}
-                className="mt-2 rounded-xl bg-[var(--secondary)] px-4 py-3 text-center text-sm font-semibold text-[var(--primary-dark)] transition hover:shadow-lg"
+                className="mt-2  bg-[var(--secondary)] px-4 py-3 text-center text-sm font-semibold text-[var(--primary-dark)] transition hover:shadow-lg"
               >
                 Join NOSA
               </Link>

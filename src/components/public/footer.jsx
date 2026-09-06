@@ -207,7 +207,7 @@ const Footer = () => {
             {/* CTA */}
             <Link
               to="/Signup"
-              className="group mt-6 inline-flex items-center gap-3 rounded-xl bg-[var(--secondary)] px-5 py-3 text-sm font-semibold text-[var(--primary-dark)] transition hover:-translate-y-0.5 hover:shadow-lg"
+              className="group mt-6 inline-flex items-center gap-3  bg-[var(--secondary)] px-5 py-3 text-sm font-semibold text-[var(--primary-dark)] transition hover:-translate-y-0.5 hover:shadow-lg"
             >
               Join the Community
 
