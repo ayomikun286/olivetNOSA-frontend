@@ -216,8 +216,8 @@ const Navbar = () => {
       >
         <div
           className={`flex items-center justify-between gap-20 border px-6 py-5   transition-all duration-500 md:justify-center md:px-15 ${scrolled
-            ? "border-slate-200 bg-red-500"
-            : "border-slate-200 bg-red-500 shadow"
+            ? "border-slate-200 bg-white"
+            : "border-slate-200 bg-white shadow"
             }`}
         >
 
