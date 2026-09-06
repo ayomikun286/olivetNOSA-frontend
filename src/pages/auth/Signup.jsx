@@ -27,6 +27,8 @@ const Signup = () => {
     alumniId: "",
     enrollmentYear: "",
     graduationYear: "",
+    yearSet: "",
+    chapter: "",
     password: "",
     confirmPassword: "",
   });
@@ -400,6 +402,32 @@ const Signup = () => {
                       required
                       className="h-13 w-full rounded-xl border border-slate-200 px-4 text-sm outline-none transition placeholder:text-slate-400 focus:border-[var(--secondary)] focus:ring-4 focus:ring-[var(--secondary)]/10"
                     />
+                  </div>
+
+                 
+
+                  {/* Chapter */}
+                  <div>
+                    <label
+                      htmlFor="chapter"
+                      className="mb-2 block text-sm font-medium text-[var(--primary-dark)] min-w-full"
+                    >
+                      Chapter *
+                    </label>
+
+                    <select
+                      id="chapter"
+                      name="chapter"
+                      value={formData.chapter}
+                      onChange={handleChange}
+                      required
+                      className="h-13 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm outline-none transition focus:border-[var(--secondary)] focus:ring-4 focus:ring-[var(--secondary)]/10"
+                    >
+                      <option value="">Select Chapter</option>
+                      <option value="Lagos">Lagos Chapter</option>
+                      <option value="Ibadan">Ibadan Chapter</option>
+                      <option value="Abuja">Abuja Chapter</option>
+                    </select>
                   </div>
 
                 </div>
