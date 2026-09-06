@@ -167,9 +167,7 @@ const Signup = () => {
               <div>
 
                 <div className="mb-5 flex items-center gap-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--primary-light)] text-sm font-semibold text-[var(--primary)]">
-                    01
-                  </div>
+                  
 
                   <div>
                     <h3 className="text-sm font-semibold text-[var(--primary-dark)]">
@@ -318,10 +316,7 @@ const Signup = () => {
               <div>
 
                 <div className="mb-5 flex items-center gap-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--primary-light)] text-sm font-semibold text-[var(--primary)]">
-                    02
-                  </div>
-
+                  
                   <div>
                     <h3 className="text-sm font-semibold text-[var(--primary-dark)]">
                       Your Olivet history
@@ -416,9 +411,7 @@ const Signup = () => {
               <div>
 
                 <div className="mb-5 flex items-center gap-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--primary-light)] text-sm font-semibold text-[var(--primary)]">
-                    03
-                  </div>
+                  
 
                   <div>
                     <h3 className="text-sm font-semibold text-[var(--primary-dark)]">
