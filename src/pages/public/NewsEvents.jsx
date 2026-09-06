@@ -5,6 +5,7 @@ import "aos/dist/aos.css";
 
 import Navbar from "../../components/public/Navbar";
 import Footer from "../../components/public/footer";
+import PageTitle  from "../../components/common/PageTitle.jsx";
 
 import {
   ArrowRight,
@@ -116,6 +117,9 @@ export default function NewsEvents() {
 
   return (
     <main className="mt-0 bg-white text-[var(--primary-dark)] md:mt-15">
+     
+     
+      <PageTitle title="News & Events | OlivetNOSA" />
       <Navbar />
 
       {/* =====================================================
@@ -239,13 +243,13 @@ export default function NewsEvents() {
                 {latestNews[0].excerpt}
               </p>
 
-              <Link
+              {/* <Link
                 to="#"
                 className="mt-8 inline-flex items-center gap-2 border-b border-[var(--primary)] pb-2 text-sm font-semibold text-[var(--primary)] transition hover:gap-3"
               >
                 Read story
                 <ArrowRight size={17} />
-              </Link>
+              </Link> */}
             </div>
           </article>
 

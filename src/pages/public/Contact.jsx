@@ -7,6 +7,8 @@ import "aos/dist/aos.css";
 
 import Navbar from "../../components/public/Navbar";
 import Footer from "../../components/public/footer";
+import PageTitle  from "../../components/common/PageTitle.jsx";
+
 
 import {
   ArrowRight,
@@ -43,6 +45,8 @@ const Contact = () => {
 
   return (
     <main className="mt-0 overflow-x-hidden bg-white text-[var(--primary-dark)] md:mt-15">
+      
+      <PageTitle title="Contact | OlivetNOSA" />
       <Navbar />
 
       {/* =====================================================

@@ -5,6 +5,8 @@ import "aos/dist/aos.css";
 
 import Navbar from "../../components/public/Navbar";
 import Footer from "../../components/public/footer";
+import PageTitle  from "../../components/common/PageTitle.jsx";
+
 
 import {
   ArrowRight,
@@ -72,6 +74,8 @@ const Olivetians = () => {
 
   return (
     <main className="overflow-x-hidden bg-white text-[var(--primary-dark)] mt-0 md:mt-15">
+     
+      <PageTitle title="Olivetians | OlivetNOSA" />
       <Navbar />
 
       {/* =========================================================
@@ -234,9 +238,7 @@ const Olivetians = () => {
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold tracking-[0.2em] text-slate-400">
-                      {item.number}
-                    </span>
+                    
 
                     <Icon
                       size={22}
@@ -546,7 +548,7 @@ const Olivetians = () => {
               data-aos="fade-right"
             >
               <img
-                src="/images/olivet-school.jpg"
+                src="/images/olivetNOSA-3.jpg"
                 alt="Olivet Baptist High School"
                 className="absolute inset-0 h-full w-full object-cover"
               />
@@ -601,40 +603,7 @@ const Olivetians = () => {
         </div>
       </section>
 
-      {/* =========================================================
-          QUOTE
-      ========================================================= */}
-      <section className="bg-white py-24 sm:py-28 lg:py-32">
-        <div className="mx-auto max-w-4xl px-6 text-center sm:px-8">
-          <Quote
-            size={40}
-            strokeWidth={1.3}
-            className="mx-auto text-[var(--secondary)]"
-            data-aos="fade-up"
-          />
-
-          <blockquote
-            data-aos="fade-up"
-            className="mt-7 text-3xl font-medium leading-tight tracking-tight text-[var(--primary-dark)] sm:text-4xl lg:text-5xl"
-          >
-            “The story of Olivet is not only about where we came from.
-            It is about what we choose to carry forward.”
-          </blockquote>
-
-          <div
-            data-aos="fade-up"
-            className="mt-8 flex items-center justify-center gap-3"
-          >
-            <span className="h-px w-8 bg-slate-200" />
-
-            <span className="text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">
-              Cum Christo Progredere
-            </span>
-
-            <span className="h-px w-8 bg-slate-200" />
-          </div>
-        </div>
-      </section>
+    
 
       {/* =========================================================
           FINAL CTA

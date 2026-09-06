@@ -10,6 +10,8 @@ import {
   ShieldCheck,
   UserRound,
 } from "lucide-react";
+import PageTitle  from "../../components/common/PageTitle.jsx";
+
 
 const Login = () => {
   const [loginMethod, setLoginMethod] = useState("magic");
@@ -51,7 +53,9 @@ const Login = () => {
 
   return (
     <main className="min-h-screen bg-white">
-      <div className="grid min-h-screen lg:grid-cols-2">
+
+      <PageTitle title="Login | OlivetNOSA" />  
+      <div className="grid w-screen h-screen overflow-hidden lg:grid-cols-2">
 
         {/* =====================================================
             LEFT SIDE — OLIVET HERITAGE
@@ -71,11 +75,11 @@ const Login = () => {
           <div className="relative z-10 flex min-h-screen flex-col justify-between p-10 xl:p-16">
 
             {/* Logo */}
-            <Link to="/" className="inline-block">
+            <Link to="/" className="w-fit">
               <img
                 src="/images/olivetNOSA_logo.png"
                 alt="OlivetNOSA"
-                className="h-16 w-auto brightness-0 invert"
+                className="h-16 w-auto  invert"
               />
             </Link>
 
@@ -111,7 +115,7 @@ const Login = () => {
         {/* =====================================================
             RIGHT SIDE — LOGIN
         ===================================================== */}
-        <section className="flex min-h-screen items-center justify-center px-5 py-12 sm:px-8 lg:px-12 xl:px-20">
+        <section className="flex h-screen overflow-y-scroll items-start justify-center px-5 py-12 sm:px-8 lg:px-12 xl:px-20">
 
           <div className="w-full max-w-md">
 

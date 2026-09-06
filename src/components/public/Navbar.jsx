@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import {
   ChevronDown,
   Menu,
@@ -11,6 +11,8 @@ import {
 } from "lucide-react";
 
 const Navbar = () => {
+
+    const location = useLocation();
   const [mobileMenu, setMobileMenu] = useState(false);
   const [mobileAbout, setMobileAbout] = useState(false);
   const [mobileNosa, setMobileNosa] = useState(false);
@@ -20,6 +22,34 @@ const Navbar = () => {
   // =========================================
   // SCROLL DETECTION
   // =========================================
+    // =========================================
+  // HASH SCROLLING
+  // =========================================
+  useEffect(() => {
+    if (!location.hash) return;
+
+    const hash = location.hash.replace("#", "");
+
+    const scrollToSection = () => {
+      const element = document.getElementById(hash);
+
+      if (!element) return;
+
+      const navbarOffset = 100;
+      const elementPosition =
+        element.getBoundingClientRect().top + window.scrollY;
+
+      window.scrollTo({
+        top: elementPosition - navbarOffset,
+        behavior: "smooth",
+      });
+    };
+
+    // Give React Router time to render the destination page
+    const timer = setTimeout(scrollToSection, 50);
+
+    return () => clearTimeout(timer);
+  }, [location.pathname, location.hash]);
   useEffect(() => {
     let lastScrollY = window.scrollY;
 
@@ -363,6 +393,14 @@ const Navbar = () => {
               Olivetians
             </NavLink>
 
+             {/* Programs */}
+            <NavLink
+              to="/programs"
+              className={navLinkClass}
+            >
+              Programs
+            </NavLink>
+
 
             {/* News & Events */}
             <NavLink
@@ -380,6 +418,9 @@ const Navbar = () => {
             >
               Gallery
             </NavLink>
+
+            
+
 
 
             {/* Contact */}
@@ -567,6 +608,20 @@ const Navbar = () => {
                 }
               >
                 Olivetians
+              </NavLink>
+
+                      {/* News & Events */}
+              <NavLink
+                to="/programs"
+                onClick={() => setMobileMenu(false)}
+                className={({ isActive }) =>
+                  `rounded-xl px-4 py-3 text-sm transition-all duration-300 ${isActive
+                    ? "bg-[var(--primary-light)] font-semibold text-[var(--secondary)]"
+                    : "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
+                  }`
+                }
+              >
+                Programs
               </NavLink>
 
 

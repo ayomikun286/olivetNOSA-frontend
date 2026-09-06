@@ -11,6 +11,7 @@ import {
   ShieldCheck,
   UserRound,
 } from "lucide-react";
+import PageTitle  from "../../components/common/PageTitle.jsx";
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -58,7 +59,10 @@ const Signup = () => {
 
   return (
     <main className="min-h-screen bg-[var(--background-soft)]">
-      <div className="grid min-h-screen lg:grid-cols-[0.85fr_1.15fr]">
+      
+      
+      <PageTitle title="Create Account | OlivetNOSA" />
+      <div className="grid w-screen h-screen overflow-hidden lg:grid-cols-2">
 
         {/* =====================================================
             LEFT — BRAND / HERITAGE
@@ -78,11 +82,11 @@ const Signup = () => {
           <div className="relative z-10 flex min-h-screen flex-col justify-between p-10 xl:p-16">
 
             {/* Logo */}
-            <Link to="/" className="inline-block">
+            <Link to="/" className="w-fit">
               <img
                 src="/images/olivetNOSA_logo.png"
                 alt="OlivetNOSA"
-                className="h-16 w-auto brightness-0 invert"
+                className="h-16 w-auto invert"
               />
             </Link>
 
@@ -118,7 +122,7 @@ const Signup = () => {
         {/* =====================================================
             RIGHT — CREATE ACCOUNT
         ===================================================== */}
-        <section className="flex min-h-screen items-center justify-center bg-white px-5 py-12 sm:px-8 lg:px-12 xl:px-20">
+        <section className="flex h-screen overflow-y-scroll items-start justify-center bg-white px-5 py-12 sm:px-8 lg:px-12 xl:px-20">
 
           <div className="w-full max-w-2xl">
 

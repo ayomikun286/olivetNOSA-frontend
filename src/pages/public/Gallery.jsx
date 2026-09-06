@@ -5,6 +5,8 @@ import "aos/dist/aos.css";
 
 import Navbar from "../../components/public/Navbar";
 import Footer from "../../components/public/footer";
+import PageTitle  from "../../components/common/PageTitle.jsx";
+
 
 import {
   ArrowRight,
@@ -134,6 +136,11 @@ export default function Gallery() {
 
   return (
     <main className="mt-0 bg-white text-[var(--primary-dark)] md:mt-15">
+     
+     
+     
+     
+      <PageTitle title="Gallery | OlivetNOSA" />
       <Navbar />
 
       {/* =====================================================

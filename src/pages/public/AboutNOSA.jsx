@@ -5,6 +5,7 @@ import "aos/dist/aos.css";
 
 import Navbar from "../../components/public/Navbar";
 import Footer from "../../components/public/footer";
+import PageTitle  from "../../components/common/PageTitle.jsx";
 
 import {
   ArrowDown,
@@ -31,6 +32,8 @@ const AboutNOSA = () => {
       <Navbar />
 
       <main className="overflow-x-hidden bg-white text-[var(--primary-dark)] mt-0 md:mt-15">
+         <PageTitle title="About NOSA | OlivetNOSA" />
+        
         {/* =========================================================
             HERO
         ========================================================== */}
@@ -106,7 +109,7 @@ const AboutNOSA = () => {
                   </Link>
 
                   <Link
-                    to="/portal/register"
+                    to="/portal/Signup"
                     className="group inline-flex items-center gap-3 rounded-xl border border-white/25 bg-white/5 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition duration-300 hover:bg-white/10"
                   >
                     Become a member
@@ -861,7 +864,7 @@ const AboutNOSA = () => {
 
                 <div className="mt-12 flex flex-wrap gap-x-10 gap-y-5 border-t border-black/10 pt-7">
                   <Link
-                    to="/portal/register"
+                    to="/portal/Signup"
                     className="group inline-flex items-center gap-3 rounded-xl bg-[var(--primary)] px-6 py-3.5 text-sm font-semibold text-white transition duration-300 hover:opacity-90"
                   >
                     Join NOSA

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-
+import PageTitle  from "../../components/common/PageTitle.jsx";
 import {
     ArrowDown,
     ArrowUpRight,
@@ -37,27 +37,28 @@ export default function Home() {
 
     return (
         <main className="min-h-screen bg-white text-[var(--primary-dark)] overflow-x-hidden mt-0 md:mt-15">
-            {/* =========================================================
-                NAVBAR
-            ========================================================== */}
+            
+                <PageTitle title="OlivetNOSA | Olivet Nigerian School Alumni Association" />
+          
+
+
             <header>
                 <Navbar />
             </header>
 
-            {/* =========================================================
-                HERO
-            ========================================================== */}
+                   
+                {/* HERO */}
+           
             <section className="relative flex min-h-[94vh] items-end overflow-hidden bg-[var(--primary-dark)]">
                 {/* Background slideshow */}
                 <div className="absolute inset-0">
                     {heroImages.map((image, index) => (
                         <div
                             key={image}
-                            className={`absolute inset-0 bg-cover bg-center transition-opacity duration-[1800ms] ${
-                                index === currentImage
+                            className={`absolute inset-0 bg-cover bg-center transition-opacity duration-[1800ms] ${index === currentImage
                                     ? "opacity-100"
                                     : "opacity-0"
-                            }`}
+                                }`}
                             style={{
                                 backgroundImage: `url("${image}")`,
                                 transform:
@@ -96,7 +97,7 @@ export default function Home() {
                             <h1
                                 data-aos="fade-up"
                                 data-aos-delay="100"
-                                 className="max-w-5xl text-5xl font-semibold leading-[0.95] tracking-[-0.045em] text-white sm:text-6xl lg:text-7xl xl:text-8xl"
+                                className="max-w-5xl text-5xl font-semibold leading-[0.95] tracking-[-0.045em] text-white sm:text-6xl lg:text-7xl xl:text-8xl"
                             >
                                 A connection that began at Olivet
                                 <span className="block text-[var(--secondary)]">
@@ -704,7 +705,7 @@ export default function Home() {
                                 </Link>
 
                                 <Link
-                                    to="/portal/register"
+                                    to="/portal/Signup"
                                     className="group flex items-center justify-between py-6"
                                 >
                                     <div className="flex items-center gap-5">
@@ -813,7 +814,7 @@ export default function Home() {
                             {/* Event row */}
                             <div className="border-y border-black/10">
                                 <Link
-                                    to="/events"
+                                    to="/news"
                                     className="group flex flex-col gap-5 py-7 sm:flex-row sm:items-center sm:justify-between"
                                 >
                                     <div className="flex items-center gap-5">
@@ -1007,7 +1008,7 @@ export default function Home() {
                             </div>
 
                             <Link
-                                to="/portal/register"
+                                to="/portal/Signup"
                                 className="
                                     group
                                     inline-flex

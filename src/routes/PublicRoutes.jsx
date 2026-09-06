@@ -9,7 +9,8 @@ import Contact from "../pages/public/Contact";
 import NOSALeadership from "../pages/public/NOSALeadership.jsx";
 import NOSAChapters from "../pages/public/NOSAChapters.jsx";
 import Olivetians from "../pages/public/Olivetians.jsx";
-
+import NotFound from "../pages/public/NotFound";
+import Programs from "../pages/public/Programs.jsx";
 export default function PublicRoutes() {
   return (
     <Routes>
@@ -28,6 +29,8 @@ export default function PublicRoutes() {
       <Route path="/gallery" element={<Gallery />} />
 
       <Route path="/contact" element={<Contact />} />
+      <Route path="/programs" element={<Programs />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

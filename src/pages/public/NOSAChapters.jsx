@@ -3,6 +3,8 @@ import React from "react";
 import Navbar from "../../components/public/Navbar";
 import Footer from "../../components/public/footer";
 
+
+
 import {
   ArrowDown,
   ArrowUpRight,
@@ -13,10 +15,12 @@ import {
   HeartHandshake,
   Network,
 } from "lucide-react";
+import PageTitle  from "../../components/common/PageTitle.jsx";
 
 export default function NOSAChapters() {
   return (
     <main className="min-h-screen bg-white text-(--primary-dark) mt-0 md:mt-15 overflow-x-hidden">
+      <PageTitle title="Chapters | OlivetNOSA" />
       {/* =========================================================
           NAVBAR
       ========================================================= */}

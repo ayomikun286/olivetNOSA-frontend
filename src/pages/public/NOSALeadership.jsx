@@ -11,10 +11,12 @@ import {
   Network,
   HeartHandshake,
 } from "lucide-react";
+import PageTitle  from "../../components/common/PageTitle.jsx";
 
 const NOSALeadership = () => {
   return (
     <main className="min-h-screen bg-white text-(--primary-dark) mt-0 md:mt-15 overflow-x-hidden">
+       <PageTitle title="Leadership | OlivetNOSA" />
       {/* =========================================================
           NAVBAR
       ========================================================= */}
