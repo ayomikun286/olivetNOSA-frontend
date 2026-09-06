@@ -677,7 +677,7 @@ const Programs = () => {
 
 
         {/* =====================================================
-            09 — CLOSING
+            CLOSING
         ====================================================== */}
         <section className="overflow-hidden bg-[var(--primary-dark)] py-24 text-white sm:py-28 lg:py-32">
 
