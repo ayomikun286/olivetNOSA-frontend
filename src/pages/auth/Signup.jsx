@@ -127,7 +127,7 @@ const Signup = () => {
           <div className="w-full max-w-2xl">
 
             {/* Mobile Logo */}
-            <div className="mb-10 lg:hidden">
+            <div className="mb-10 lg:hidden w-fit">
               <Link to="/">
                 <img
                   src="/images/olivetNOSA_logo.png"

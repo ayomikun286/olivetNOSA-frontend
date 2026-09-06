@@ -120,7 +120,7 @@ const Login = () => {
           <div className="w-full max-w-md">
 
             {/* Mobile Logo */}
-            <div className="mb-10 lg:hidden">
+            <div className="mb-10 lg:hidden w-fit">
               <Link to="/">
                 <img
                   src="/images/olivetNOSA_logo.png"
