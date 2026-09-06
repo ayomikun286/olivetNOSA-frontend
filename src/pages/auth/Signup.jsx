@@ -27,7 +27,6 @@ const Signup = () => {
     alumniId: "",
     enrollmentYear: "",
     graduationYear: "",
-    yearSet: "",
     chapter: "",
     password: "",
     confirmPassword: "",

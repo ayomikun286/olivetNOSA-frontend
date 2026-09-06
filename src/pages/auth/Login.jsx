@@ -8,10 +8,8 @@ import {
   LockKeyhole,
   Mail,
   ShieldCheck,
-  UserRound,
 } from "lucide-react";
-import PageTitle  from "../../components/common/PageTitle.jsx";
-
+import PageTitle from "../../components/common/PageTitle.jsx";
 
 const Login = () => {
   const [loginMethod, setLoginMethod] = useState("magic");
@@ -19,8 +17,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
-    email: "",
-    alumniId: "",
+    identifier: "",
     password: "",
   });
 
@@ -38,15 +35,14 @@ const Login = () => {
 
     if (loginMethod === "magic") {
       console.log("Request magic login link:", {
-        email: formData.email,
+        email: formData.identifier,
       });
 
       return;
     }
 
     console.log("Password login:", {
-      email: formData.email,
-      alumniId: formData.alumniId,
+      identifier: formData.identifier,
       password: formData.password,
     });
   };
@@ -54,7 +50,8 @@ const Login = () => {
   return (
     <main className="min-h-screen bg-white">
 
-      <PageTitle title="Login | OlivetNOSA" />  
+      <PageTitle title="Login | OlivetNOSA" />
+
       <div className="grid w-screen h-screen overflow-hidden lg:grid-cols-2">
 
         {/* =====================================================
@@ -79,7 +76,7 @@ const Login = () => {
               <img
                 src="/images/olivetNOSA_logo.png"
                 alt="OlivetNOSA"
-                className="h-16 w-auto  invert"
+                className="h-16 w-auto invert"
               />
             </Link>
 
@@ -181,13 +178,16 @@ const Login = () => {
 
             <form onSubmit={handleSubmit} className="space-y-5">
 
-              {/* EMAIL */}
+              {/* EMAIL / ALUMNI ID */}
               <div>
+
                 <label
-                  htmlFor="email"
+                  htmlFor="identifier"
                   className="mb-2 block text-sm font-medium text-[var(--primary-dark)]"
                 >
-                  Email Address
+                  {loginMethod === "magic"
+                    ? "Email Address"
+                    : "Email / Alumni ID"}
                 </label>
 
                 <div className="relative">
@@ -198,57 +198,22 @@ const Login = () => {
                   />
 
                   <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
+                    id="identifier"
+                    name="identifier"
+                    type="text"
+                    value={formData.identifier}
                     onChange={handleChange}
-                    placeholder="you@example.com"
+                    placeholder={
+                      loginMethod === "magic"
+                        ? "you@example.com"
+                        : "Enter your email or Alumni ID"
+                    }
                     required
                     className="h-14 w-full rounded-xl border border-slate-200 bg-white pl-11 pr-4 text-sm outline-none transition placeholder:text-slate-400 focus:border-[var(--secondary)] focus:ring-4 focus:ring-[var(--secondary)]/10"
                   />
 
                 </div>
               </div>
-
-              {/* ALUMNI ID — PASSWORD MODE */}
-              {loginMethod === "password" && (
-                <div>
-
-                  <div className="mb-2 flex items-center justify-between">
-                    <label
-                      htmlFor="alumniId"
-                      className="text-sm font-medium text-[var(--primary-dark)]"
-                    >
-                      Alumni ID
-                    </label>
-
-                    <span className="text-xs text-slate-400">
-                      Optional
-                    </span>
-                  </div>
-
-                  <div className="relative">
-
-                    <UserRound
-                      size={18}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-                    />
-
-                    <input
-                      id="alumniId"
-                      name="alumniId"
-                      type="text"
-                      value={formData.alumniId}
-                      onChange={handleChange}
-                      placeholder="Enter your Alumni ID"
-                      className="h-14 w-full rounded-xl border border-slate-200 bg-white pl-11 pr-4 text-sm outline-none transition placeholder:text-slate-400 focus:border-[var(--secondary)] focus:ring-4 focus:ring-[var(--secondary)]/10"
-                    />
-
-                  </div>
-
-                </div>
-              )}
 
               {/* PASSWORD */}
               {loginMethod === "password" && (
