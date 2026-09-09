@@ -61,3 +61,16 @@ body{
   padding: 0;
   background-color: var(--bg-light);
 }
+
+@keyframes progressFill {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.animate-progressFill {
+  animation-name: progressFill;
+}

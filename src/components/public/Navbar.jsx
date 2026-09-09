@@ -236,12 +236,12 @@ const Navbar = () => {
 
             <div className="leading-none">
 
-              <p className="text-xs font-bold tracking-wide text-[var(--primary-dark)] transition-colors duration-500 max-w-35">
-               Olivet National Old Students Association
+              <p className="text-lg font-bold tracking-wide text-[var(--primary-dark)] transition-colors duration-500 max-w-35">
+               OBHS 
               </p>
 
-              <p className="mt-1 text-[7px] font-medium uppercase tracking-[0.22em] text-slate-500 transition-colors duration-500">
-                Baptist High School
+              <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-primary transition-colors duration-500 max-w-50">
+                Global Old Students Association Website
               </p>
 
             </div>

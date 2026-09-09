@@ -10,150 +10,280 @@ import {
     GraduationCap,
     Network,
     Landmark,
+    ChevronLeft,
+    ChevronRight,
 } from "lucide-react";
 
 import Navbar from "../../components/public/Navbar";
 import Footer from "../../components/public/footer";
 
 export default function Home() {
-    const heroImages = [
-        "/images/olivetNOSA-4.jpg",
-        "/images/olivetNOSA-2.jpg",
-        "/images/olivetNOSA-10.jpg",
-        "/images/olivetNOSA.jpg.jpg",
-        "/images/olivetNOSA-3.jpg",
-        "/images/olivetNOSA-6.jpg",
+    const heroSlides = [
+        {
+            image: "/images/olivetNOSA-4.jpg",
+            eyebrow: "Olivet Baptist High School",
+            title: "Welcome to Olivet Baptist High School",
+            highlight: "Global Old Students Association.",
+            description:
+                "OlivetNOSA connects former students of Olivet Baptist High School across generations, preserving friendships, memories and a shared sense of belonging.",
+            linkText: "Discover OlivetNOSA",
+            linkTo: "/about-nosa",
+        },
+        {
+            image: "/images/olivetNOSA-2.jpg",
+            eyebrow: "National Old Students' Association",
+            title: "A connection that began at Olivet",
+            highlight: "continues across generations.",
+            description:
+                "Keeping friendships, memories and a shared sense of belonging alive across generations of proud Olivetians worldwide.",
+            linkText: "Explore School Heritage",
+            linkTo: "/about-school",
+        },
+        {
+            image: "/images/olivetNOSA-10.jpg",
+            eyebrow: "Our Global Community",
+            title: "One school brought us together,",
+            highlight: "NOSA keeps us connected.",
+            description:
+                "Uniting Olivetians across chapters, year sets, and branches worldwide, fostering fellowship, networking and shared growth.",
+            linkText: "Meet the Olivetians",
+            linkTo: "/olivetians",
+        },
+        {
+            image: "/images/olivetNOSA.jpg",
+            eyebrow: "Impact & Service",
+            title: "Empowering our alma mater",
+            highlight: "through purposeful giving.",
+            description:
+                "Giving back to the institution that shaped us—investing in campus infrastructure, academic excellence, and student mentorship on the Heights.",
+            linkText: "Become a Member",
+            linkTo: "/portal/signup",
+        },
+        {
+            image: "/images/olivetNOSA-3.jpg",
+            eyebrow: "Preserving Our Legacy",
+            title: "Cum Christo Progredere",
+            highlight: "Marching forward with Christ.",
+            description:
+                "Honoring over seven decades of moral leadership, sound learning, and rich history established on Olivet Heights since 1945.",
+            linkText: "View the Archives",
+            linkTo: "/gallery",
+        },
     ];
 
-    const [currentImage, setCurrentImage] = useState(0);
+    const [currentSlide, setCurrentSlide] = useState(0);
+    const [isPaused, setIsPaused] = useState(false);
 
     useEffect(() => {
+        if (isPaused) return;
+
         const interval = setInterval(() => {
-            setCurrentImage((prev) => (prev + 1) % heroImages.length);
-        }, 5000);
+            setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+        }, 6000);
 
         return () => clearInterval(interval);
-    }, [heroImages.length]);
+    }, [isPaused, heroSlides.length]);
+
+    const nextSlide = () => {
+        setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+    };
+
+    const prevSlide = () => {
+        setCurrentSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
+    };
+
+    const goToSlide = (index) => {
+        setCurrentSlide(index);
+    };
 
     return (
         <main className="min-h-screen bg-white text-[var(--primary-dark)] overflow-x-hidden mt-0 md:mt-15">
-            
-                <PageTitle title="OlivetNOSA | Olivet Nigerian School Alumni Association" />
-          
-
+            <PageTitle title="OlivetNOSA | Olivet Nigerian School Alumni Association" />
 
             <header>
                 <Navbar />
             </header>
 
-                   
-                {/* HERO */}
-           
-            <section className="relative flex min-h-[94vh] items-end overflow-hidden bg-[var(--primary-dark)]">
-                {/* Background slideshow */}
-                <div className="absolute inset-0">
-                    {heroImages.map((image, index) => (
-                        <div
-                            key={image}
-                            className={`absolute inset-0 bg-cover bg-center transition-opacity duration-[1800ms] ${index === currentImage
-                                    ? "opacity-100"
-                                    : "opacity-0"
+            {/* HERO SLIDER */}
+            <section
+                className="relative flex min-h-[94vh] items-end overflow-hidden bg-[var(--primary-dark)]"
+                onMouseEnter={() => setIsPaused(true)}
+                onMouseLeave={() => setIsPaused(false)}
+            >
+                {/* Background slideshow with ultra-smooth crossfade and Ken-Burns zoom */}
+                <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                    {heroSlides.map((slide, index) => {
+                        const isActive = index === currentSlide;
+                        return (
+                            <div
+                                key={slide.image}
+                                className={`absolute inset-0 bg-cover bg-center ${
+                                    isActive
+                                        ? "opacity-100 z-10"
+                                        : "opacity-0 z-0"
                                 }`}
-                            style={{
-                                backgroundImage: `url("${image}")`,
-                                transform:
-                                    index === currentImage
-                                        ? "scale(1.04)"
-                                        : "scale(1)",
-                                transition:
-                                    "opacity 1800ms ease-in-out, transform 7000ms ease-out",
-                            }}
-                        />
-                    ))}
+                                style={{
+                                    backgroundImage: `url("${slide.image}")`,
+                                    transform: isActive ? "scale(1.06)" : "scale(1)",
+                                    transition:
+                                        "opacity 1400ms cubic-bezier(0.4, 0, 0.2, 1), transform 8000ms cubic-bezier(0.25, 1, 0.5, 1)",
+                                }}
+                            />
+                        );
+                    })}
                 </div>
 
-                {/* Dark image treatment */}
-                <div className="absolute inset-0 bg-[var(--primary-dark)]/55" />
-
-                <div className="absolute inset-0 bg-gradient-to-t from-[var(--primary-dark)] via-[var(--primary-dark)]/35 to-transparent" />
-
-                <div className="absolute inset-0 bg-gradient-to-r from-[var(--primary-dark)]/35 via-transparent to-transparent" />
+                {/* Dark image treatment overlays */}
+                <div className="pointer-events-none absolute inset-0 bg-[var(--primary-dark)]/60 z-10" />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[var(--primary-dark)] via-[var(--primary-dark)]/40 to-transparent z-10" />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[var(--primary-dark)]/50 via-transparent to-transparent z-10" />
 
                 {/* Hero content */}
-                <div className="relative z-10 w-full px-6 pb-14 pt-40 sm:px-10 lg:px-16 lg:pb-20">
+                <div className="relative z-20 w-full px-6 pb-14 pt-10 md:pt-30 sm:px-10 lg:px-16 lg:pb-20">
                     <div className="mx-auto max-w-7xl">
-                        <div className="max-w-5xl">
-                            {/* Eyebrow */}
-                            <div
-                                data-aos="fade-up"
-                                className="flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.28em] text-[var(--secondary-light)]"
-                            >
-                                <span className="h-px w-10 bg-[var(--secondary)]" />
+                        {/* Stacking grid container so all slides occupy the exact same space and crossfade seamlessly */}
+                        <div className="max-w-5xl grid grid-cols-1 grid-rows-1">
+                            {heroSlides.map((slide, index) => {
+                                const isActive = index === currentSlide;
+                                return (
+                                    <div
+                                        key={slide.image + index}
+                                        className={`col-start-1 row-start-1 flex flex-col justify-end transition-all duration-700 ease-out ${
+                                            isActive
+                                                ? "opacity-100 translate-y-0 pointer-events-auto z-10"
+                                                : "opacity-0 translate-y-6 pointer-events-none z-0"
+                                        }`}
+                                    >
+                                        {/* Eyebrow */}
+                                        <div
+                                            className={`flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.28em] text-[var(--secondary-light)] transition-all duration-700 ease-out ${
+                                                isActive
+                                                    ? "opacity-100 translate-y-0 delay-100"
+                                                    : "opacity-0 -translate-y-2 delay-0"
+                                            }`}
+                                        >
+                                            <span className="h-px w-10 bg-[var(--secondary)]" />
+                                            {slide.eyebrow}
+                                        </div>
 
-                                National Old Students' Association
+                                        {/* Main heading */}
+                                        <h1
+                                            className={`mt-4  md:max-w-2xl font-semibold leading-[1.02] tracking-[-0.04em] text-white text-4xl md:text-[5rem]  transition-all duration-700 ease-out ${
+                                                isActive
+                                                    ? "opacity-100 translate-y-0 delay-200"
+                                                    : "opacity-0 translate-y-4 delay-0"
+                                            }`}
+                                        >
+                                            {slide.title}
+                                            <span className="block text-[var(--secondary)]">
+                                                {slide.highlight}
+                                            </span>
+                                        </h1>
+
+                                        {/* Supporting content */}
+                                        <div
+                                            className={`mt-8 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between transition-all duration-700 ease-out ${
+                                                isActive
+                                                    ? "opacity-100 translate-y-0 delay-300"
+                                                    : "opacity-0 translate-y-4 delay-0"
+                                            }`}
+                                        >
+                                            <p className="max-w-xl text-base leading-8 text-white/80 sm:text-lg">
+                                                {slide.description}
+                                            </p>
+
+                                            <Link
+                                                to={slide.linkTo}
+                                                tabIndex={isActive ? 0 : -1}
+                                                className="
+                                                    group
+                                                    inline-flex
+                                                    w-fit
+                                                    items-center
+                                                    gap-3
+                                                    border-b
+                                                    border-[var(--secondary)]
+                                                    pb-2
+                                                    text-sm
+                                                    font-semibold
+                                                    text-white
+                                                    transition-all
+                                                    hover:gap-5
+                                                "
+                                            >
+                                                {slide.linkText}
+                                                <ArrowUpRight size={17} />
+                                            </Link>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        {/* Slider Controls & Progress Indicators */}
+                        <div className="mt-12 flex items-center justify-between gap-6 border-t border-white/20 pt-6 sm:mt-16">
+                            {/* Slide indicators / dots */}
+                            <div className="flex items-center gap-2.5">
+                                {heroSlides.map((_, idx) => (
+                                    <button
+                                        key={idx}
+                                        onClick={() => goToSlide(idx)}
+                                        aria-label={`Go to slide ${idx + 1}`}
+                                        className={`relative h-2 rounded-full overflow-hidden transition-all duration-500 cursor-pointer ${
+                                            idx === currentSlide
+                                                ? "w-10 bg-white/25"
+                                                : "w-2.5 bg-white/40 hover:bg-white/70"
+                                        }`}
+                                    >
+                                        {idx === currentSlide && (
+                                            <span
+                                                key={`progress-${currentSlide}`}
+                                                className="absolute inset-0 bg-[var(--secondary)] rounded-full animate-progressFill"
+                                                style={{
+                                                    animationDuration: "6000ms",
+                                                    animationTimingFunction: "linear",
+                                                    animationFillMode: "forwards",
+                                                    animationPlayState: isPaused ? "paused" : "running",
+                                                }}
+                                            />
+                                        )}
+                                    </button>
+                                ))}
+
+                                {/* <span className="ml-3 text-xs font-mono tracking-widest text-white/60">
+                                    0{currentSlide + 1} / 0{heroSlides.length}
+                                </span> */}
                             </div>
 
-                            {/* Main heading */}
-                            <h1
-                                data-aos="fade-up"
-                                data-aos-delay="100"
-                                className="max-w-4xl text-5xl font-semibold leading-[0.95] tracking-[-0.045em] text-white sm:text-6xl lg:text-7xl xl:text-8xl"
-                            >
-                                A connection that began at Olivet
-                                <span className="block text-[var(--secondary)]">
-                                    continues across generations.
-                                </span>
-                            </h1>
-
-                            {/* Supporting content */}
-                            <div
-                                data-aos="fade-up"
-                                data-aos-delay="200"
-                                className="mt-10 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between"
-                            >
-                                <p className="max-w-xl text-base leading-8 text-white/75 sm:text-lg">
-                                    OlivetNOSA brings together former students
-                                    of Olivet Baptist High School, keeping
-                                    friendships, memories and a shared sense
-                                    of belonging alive across generations.
-                                </p>
-
-                                <Link
-                                    to="/about-nosa"
-                                    className="
-                                        group
-                                        inline-flex
-                                        w-fit
-                                        items-center
-                                        gap-3
-                                        border-b
-                                        border-[var(--secondary)]
-                                        pb-2
-                                        text-sm
-                                        font-semibold
-                                        text-white
-                                        transition
-                                        hover:gap-5
-                                    "
+                            {/* Arrow buttons */}
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={prevSlide}
+                                    aria-label="Previous slide"
+                                    className="flex h-10 w-10 items-center justify-center rounded-full border border-white/25 text-white/80 transition-all duration-300 hover:border-[var(--secondary)] hover:bg-white/10 hover:text-white hover:scale-105 active:scale-95 cursor-pointer"
                                 >
-                                    Discover OlivetNOSA
-                                    <ArrowUpRight size={17} />
-                                </Link>
+                                    <ChevronLeft size={18} />
+                                </button>
+                                <button
+                                    onClick={nextSlide}
+                                    aria-label="Next slide"
+                                    className="flex h-10 w-10 items-center justify-center rounded-full border border-white/25 text-white/80 transition-all duration-300 hover:border-[var(--secondary)] hover:bg-white/10 hover:text-white hover:scale-105 active:scale-95 cursor-pointer"
+                                >
+                                    <ChevronRight size={18} />
+                                </button>
                             </div>
                         </div>
 
                         {/* Hero footer */}
                         <div
-                            data-aos="fade-up"
-                            data-aos-delay="300"
                             className="
-                                mt-20
+                                mt-6
                                 flex
                                 flex-col
                                 gap-3
                                 border-t
-                                border-white/20
-                                pt-5
+                                border-white/10
+                                pt-4
                                 sm:flex-row
                                 sm:items-center
                                 sm:justify-between
@@ -170,12 +300,12 @@ export default function Home() {
                     </div>
                 </div>
 
-                {/* Scroll */}
+                {/* Scroll explore */}
                 <a
                     href="#who-we-are"
                     className="
                         absolute
-                        bottom-7
+                        bottom-4
                         left-1/2
                         z-20
                         hidden
@@ -183,6 +313,8 @@ export default function Home() {
                         items-center
                         gap-3
                         text-white/45
+                        transition
+                        hover:text-white
                         md:flex
                     "
                 >
@@ -193,6 +325,11 @@ export default function Home() {
                     <ArrowDown size={14} />
                 </a>
             </section>
+
+
+
+
+
 
             {/* =========================================================
                 WHO WE ARE

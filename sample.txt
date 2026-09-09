@@ -1,0 +1,57 @@
+
+
+
+
+
+
+                SYSTEM FLOW
+
+
+            user create account 
+                    |
+                    |
+                    |
+                    |
+             verify email 
+                    |
+                    |
+                    |
+            admin approve as member 
+                    |
+                    |
+            member request to be come a chapter or yearSet leader 
+                    |
+                    |
+                    |
+                admin verify and approve request
+                    |
+                    |
+            member become leader 
+
+
+
+
+
+
+
+
+
+
+            user interface for the flow 
+
+
+
+                        create account page 
+                                |
+                                |
+                                |
+                        verify email page 
+                                |
+                                |
+                                |
+                        leadership status with option button 
+                                |
+                                |
+                    next page dashboard with pending membership status sign .. 
+                    if user also request to become a leader: pending leadership status .. 
+

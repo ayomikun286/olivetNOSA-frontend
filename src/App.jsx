@@ -1,21 +1,54 @@
 import { Routes, Route } from "react-router-dom";
 
-import PublicRoutes from "./routes/PublicRoutes";
-import PortalRoutes from "./routes/PortalRoutes";
-import AdminRoutes from "./routes/AdminRoutes";
+import "./app.css";
+
+import PublicRoutes from "./routes/PublicRoutes.jsx";
+import AuthRoutes from "./routes/authRoutes.jsx";
+import AdminRoutes from "./routes/AdminRoutes.jsx";
+import MemberRoutes from "./routes/MemberRoutes.jsx";
 
 function App() {
   return (
     <Routes>
 
-      {/* PUBLIC WEBSITE */}
-      <Route path="/*" element={<PublicRoutes />} />
+      {/* ========================================
+          PUBLIC WEBSITE
+      ======================================== */}
 
-      {/* MEMBER PORTAL */}
-      <Route path="/portal/*" element={<PortalRoutes />} />
+      <Route
+        path="/*"
+        element={<PublicRoutes />}
+      />
 
-      {/* ADMIN DASHBOARD */}
-      <Route path="/admin/*" element={<AdminRoutes />} />
+
+      {/* ========================================
+          AUTHENTICATION
+      ======================================== */}
+
+      <Route
+        path="/portal/*"
+        element={<AuthRoutes />}
+      />
+
+
+      {/* ========================================
+          MEMBER PORTAL
+      ======================================== */}
+
+      <Route
+        path="/portal/member/*"
+        element={<MemberRoutes />}
+      />
+
+
+      {/* ========================================
+          ADMIN DASHBOARD
+      ======================================== */}
+
+      <Route
+        path="/admin/*"
+        element={<AdminRoutes />}
+      />
 
     </Routes>
   );
