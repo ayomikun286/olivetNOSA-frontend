@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   ArrowRight,
   Eye,
@@ -13,34 +13,36 @@ import PageTitle from "../../components/common/PageTitle.jsx";
 import Alert from "../../components/common/Alert.jsx";
 import NosaLoader from "../../components/common/NosaLoader.jsx";
 
-import {LoginUser } from "../../services/authService.js";
+import { LoginUser } from "../../services/authService.js";
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  // ========================================
+
+
+
+
+
   // FORM STATE
-  // ========================================
-
   const [formData, setFormData] = useState({
     login: "",
     password: "",
   });
 
-  // ========================================
-  // UI STATE
-  // ========================================
-
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState({});
   const [loader, setLoader] = useState(false);
   const [redirect, setRedirect] = useState(false);
-  const [alert, setAlert] = useState(null);
+  const [alert, setAlert] = useState(() => location.state?.alert || null);
+  
+  //  useEffect(() => {
 
-  // ========================================
-  // ALERT
-  // Same pattern as Signup
-  // ========================================
+  //   if (location.state?.alert) {
+  //     setAlert(location.state.alert);
+  //   }
+  // }, [location.state]);
+
 
   const showAlert = (type, title, message) => {
     setAlert({
@@ -70,7 +72,7 @@ const Login = () => {
       server: "",
     }));
 
-    setAlert(null);
+
   };
 
   // ========================================
@@ -80,6 +82,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+  
     setAlert(null);
     setError({});
 
@@ -187,16 +190,14 @@ const Login = () => {
     }
   };
 
-  // ========================================
-  // UI
-  // ========================================
-
   return (
     <main className="min-h-screen bg-white">
       <PageTitle title="Login | OlivetNOSA" />
 
       {/* REDIRECT LOADER */}
       {redirect && <NosaLoader />}
+
+
 
       {/* ALERT */}
       {alert && (
@@ -207,6 +208,16 @@ const Login = () => {
           onClose={() => setAlert(null)}
         />
       )}
+
+
+      {/* {location.state?.alert && (
+        <Alert
+          type={location.state.alert.type}
+          title={location.state.alert.title}
+          message={location.state.alert.message}
+          onClose={() => setAlert(null)}
+        />
+      )} */}
 
       <div className="grid min-h-screen w-screen overflow-hidden lg:grid-cols-2">
 
@@ -298,18 +309,18 @@ const Login = () => {
 
             </div>
 
-            {/* ========================================
-                FORM
-            ======================================== */}
 
+
+
+
+
+            {/* FORM*/}
             <form
               onSubmit={handleSubmit}
               className="space-y-5"
             >
 
-              {/* ========================================
-                  EMAIL / ALUMNI ID
-              ======================================== */}
+              {/*EMAIL / ALUMNI ID*/}
 
               <div>
 
@@ -335,14 +346,17 @@ const Login = () => {
                     onChange={handleChange}
                     placeholder="Enter your email or Alumni ID"
                     autoComplete="username"
-                    className={`w-full rounded-xl border bg-white py-3.5 pl-11 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 ${
-                      error.login
-                        ? "border-red-400 focus:border-red-500"
-                        : "border-slate-200 focus:border-[var(--primary)]"
-                    }`}
+                    className={`w-full rounded-xl border bg-white py-3.5 pl-11 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 ${error.login
+                      ? "border-red-400 focus:border-red-500"
+                      : "border-slate-200 focus:border-[var(--primary)]"
+                      }`}
                   />
 
                 </div>
+
+
+
+
 
                 {/* FIELD ERROR */}
                 {error.login && (
@@ -353,9 +367,12 @@ const Login = () => {
 
               </div>
 
-              {/* ========================================
-                  PASSWORD
-              ======================================== */}
+
+
+
+
+
+              {/* PASSWORD*/}
 
               <div>
 
@@ -392,11 +409,10 @@ const Login = () => {
                     onChange={handleChange}
                     placeholder="Enter your password"
                     autoComplete="current-password"
-                    className={`w-full rounded-xl border bg-white py-3.5 pl-11 pr-12 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 ${
-                      error.password
-                        ? "border-red-400 focus:border-red-500"
-                        : "border-slate-200 focus:border-[var(--primary)]"
-                    }`}
+                    className={`w-full rounded-xl border bg-white py-3.5 pl-11 pr-12 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 ${error.password
+                      ? "border-red-400 focus:border-red-500"
+                      : "border-slate-200 focus:border-[var(--primary)]"
+                      }`}
                   />
 
                   <button
@@ -420,6 +436,9 @@ const Login = () => {
 
                 </div>
 
+
+
+
                 {/* FIELD ERROR */}
                 {error.password && (
                   <p className="mt-1.5 text-xs text-red-500">
@@ -429,22 +448,27 @@ const Login = () => {
 
               </div>
 
-              {/* ========================================
-                  SERVER ERROR
-              ======================================== */}
+
+
+
+
+
+
+              {/*SERVER ERROR */}
 
               {error.server && (
-                <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3">
+                <div className="">
                   <p className="text-sm leading-6 text-red-600">
                     {error.server}
                   </p>
                 </div>
               )}
 
-              {/* ========================================
-                  SUBMIT
-              ======================================== */}
 
+
+
+
+              {/*SUBMIT*/}
               <button
                 type="submit"
                 disabled={loader}
@@ -468,9 +492,9 @@ const Login = () => {
 
             </form>
 
-            {/* ========================================
-                SIGN UP
-            ======================================== */}
+          
+                {/* SIGN UP
+            ======================================== */} 
 
             <div className="mt-8 text-center">
 
@@ -486,9 +510,9 @@ const Login = () => {
 
             </div>
 
-            {/* ========================================
-                BACK HOME
-            ======================================== */}
+        
+
+
 
             <div className="mt-6 text-center">
 

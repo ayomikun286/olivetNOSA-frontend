@@ -9,6 +9,7 @@ import {
 
 import { checkVerificationStatus } from "../../services/authService.js";
 import PageTitle from "../../components/common/PageTitle.jsx";
+import ResendVerificationButton from "../../components/common/ResendVerificationButton.jsx.jsx";
 
 const VerifyEmail = () => {
   const location = useLocation();
@@ -233,6 +234,8 @@ const VerifyEmail = () => {
               Your verification link will expire after{" "}
               <strong>30 minutes</strong>.
             </p>
+
+            <ResendVerificationButton email={email} />
 
             <Link
               to="/portal/login"
