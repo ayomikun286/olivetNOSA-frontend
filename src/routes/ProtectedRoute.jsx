@@ -52,7 +52,14 @@ const ProtectedRoute = () => {
         replace
         state={{
           from: location,
-          message: "Please log in to access your account.",
+          state: {
+            alert: {
+              type: "error",
+              title: "Network error",
+              message: "Please log in to access your account.",
+            },
+          },
+
         }}
       />
     );
