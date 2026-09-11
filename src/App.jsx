@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 
-import "./app.css";
+import "./App.css";
 
 import PublicRoutes from "./routes/PublicRoutes.jsx";
 import AuthRoutes from "./routes/authRoutes.jsx";
