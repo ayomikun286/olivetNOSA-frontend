@@ -15,10 +15,10 @@ import {
 
 const Navbar = ({setIsOpen }) => {
   return (
-    <div className='flex justify-between items-center border py-3 px-15 border-b-(--primary-light)'>
+    <div className='flex justify-between items-center border py-3 px-8 md:px-15 border-b-(--primary-light)'>
 
       <div 
-      onClick= {()=> {setIsOpen(true), alert('hello ')}}
+      onClick= {()=> {setIsOpen(true)}}
       className=' w-9 gap-1 flex flex-col border rounded border-(--primary)/50 p-1'>
         <span className='block w-full h-0.75 bg-(--primary)/50 rounded-full' />
         <span className='block w-full h-0.75 bg-(--primary)/50 rounded-full' />

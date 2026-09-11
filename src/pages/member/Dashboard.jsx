@@ -27,7 +27,7 @@ const Dashboard = () => {
     logout,
   } = useAuth();
 
-  const [isOpen, setIsOpen] = useState(true)
+  const [isOpen, setIsOpen] = useState(false)
   const firstName = user?.firstName || "Olivetian";
   const email = user?.email || "";
   const isEmailVerified = user?.isEmailVerified ?? false;
@@ -57,7 +57,7 @@ const Dashboard = () => {
                 transition-all
                 duration-200
                
-                ${isOpen ? "w-80" : "w-0"}
+                ${isOpen ? "w-60" : "w-0"}
                 md:w-70
             `}>
 

@@ -23,9 +23,9 @@ const Main = () => {
             </div>
         </div>
 
-        <div className='flex  justify-center gap-5 items-center mt-8'>
+        <div className='flex  justify-center gap-5 items-center mt-8 flex-wrap'>
 
-            <div className='min-w-55 p-3 shadow-(--shadow-sm) flex gap-5 rounded'>
+            <div className='min-w-55 w-full p-3 shadow-(--shadow-sm) flex gap-5 rounded'>
                 <span className=' flex justify-center items-center text-(--success) w-10 h-10 rounded-full bg-(--success)/20 '>
                     <ShieldCheck />
                 </span>
@@ -36,7 +36,7 @@ const Main = () => {
                 </div>
 
             </div>
-            <div className='min-w-55 p-3 shadow-(--shadow-sm) flex gap-5 rounded'>
+            <div className='min-w-55 p-3 w-full shadow-(--shadow-sm) flex gap-5 rounded'>
                  <span className=' flex justify-center items-center text-(--primary) w-10 h-10 rounded-full bg-(--primary)/20 '>
                     <CreditCard />
                 </span>
@@ -48,7 +48,7 @@ const Main = () => {
 
             </div>
            
-            <div className='min-w-55 p-3 shadow-(--shadow-sm) flex gap-5 rounded'>
+            <div className='min-w-55 p-3 w-full shadow-(--shadow-sm) flex gap-5 rounded'>
                 <span className=' block w-10 h-10 rounded-full bg-(--success) '>
 
                 </span>
@@ -60,7 +60,7 @@ const Main = () => {
 
             </div>
            
-            <div className='min-w-55 p-3 shadow-(--shadow-sm) flex gap-5 rounded'>
+            <div className='min-w-55 w-full p-3 shadow-(--shadow-sm) flex gap-5 rounded'>
                 <span className=' block w-10 h-10 rounded-full bg-(--success)'>
 
                 </span>

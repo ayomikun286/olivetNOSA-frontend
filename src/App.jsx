@@ -15,10 +15,7 @@ function App() {
           PUBLIC WEBSITE
       ======================================== */}
 
-      <Route
-        path="/*"
-        element={<PublicRoutes />}
-      />
+      <Route path="/*" element={<PublicRoutes />} />
 
 
       {/* ========================================
