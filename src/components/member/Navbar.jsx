@@ -1,28 +1,19 @@
 import React from 'react'
 import {
-    ArrowDown,
-    ArrowUpRight,
-    UsersRound,
-    Globe2,
-    HeartHandshake,
-    GraduationCap,
-    Landmark,
-    Infinity,
-    Home,
-    User,
     Bell
 } from "lucide-react";
 
-const Navbar = ({setIsOpen }) => {
+const Navbar = ({setIsOpen,firstName ,year }) => {
+  console.log(firstName)
   return (
-    <div className='flex justify-between items-center border py-3 px-8 md:px-15 border-b-(--primary-light)'>
+    <div className='flex justify-between items-center border-b py-3 px-8 md:px-8 border-b-(--secondary)/50'>
 
       <div 
-      onClick= {()=> {setIsOpen(true)}}
-      className=' w-9 gap-1 flex flex-col border rounded border-(--primary)/50 p-1'>
-        <span className='block w-full h-0.75 bg-(--primary)/50 rounded-full' />
-        <span className='block w-full h-0.75 bg-(--primary)/50 rounded-full' />
-        <span className='block w-full h-0.75 bg-(--primary)/50 rounded-full' />
+      onClick={() => setIsOpen(prev => !prev)}
+      className='  gap-1 flex flex-col  p-1'>
+        <span className='block w-8 h-0.75 bg-(--primary) rounded-full' />
+        <span className='block w-9 h-0.75 bg-(--primary) rounded-full' />
+        <span className='block w-7 h-0.75 bg-(--primary) rounded-full' />
       </div>
 
 
@@ -34,12 +25,12 @@ const Navbar = ({setIsOpen }) => {
         </div>
 
         <div  className='flex items-center justify-center gap-4 '>
-          <span className='w-8 h-8 bg-red-400 rounded-full'>
-
-          </span>
-          <div className='flex flex-col'>
-            <strong>ayomikun e..</strong>
-            <small>class of 2018</small>
+          <span className="w-8 h-8 rounded-full bg-[var(--secondary)] flex items-center justify-center text-[var(--primary)] font-bold">
+  {firstName?.charAt(0)}
+</span>
+          <div className='flex flex-col text-(--primary)'>
+            <strong>{firstName}</strong>
+            <small>class of <span>{year}</span></small>
           </div>
 
           

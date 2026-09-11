@@ -51,6 +51,7 @@ export const AuthProvider = ({ children }) => {
 
       if (data?.success && data?.data) {
         setUser(data.data);
+        console.log(data.data)
         return true;
       }
 

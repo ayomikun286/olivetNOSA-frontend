@@ -5,15 +5,16 @@ import {
     User
 } from "lucide-react";
 
-const Sidebar = ({setIsOpen, isOpen,pageSection, setPageSection }) => {
+import { NavLink } from 'react-router-dom';
+const Sidebar = ({ setIsOpen}) => {
     return (
         <div className='w-full overflow-hidden h-full bg-(--primary) p-3 overflow'>
             {/* LOGO */}
-            <div className="flex  relative items-center md:justify-center gap-3 p-2">
+            <div className="flex  relative items-center md:justify-center gap-3 p-2 border-b border-b-(--secondary) ">
 
-                   
-                    <div onClick={()=> setIsOpen(false)} className='absolute top-0 right-0 text-(--secondary)/90'><XCircle className='w-5' /></div>
-                
+
+                <div onClick={() => setIsOpen(false)} className=' md:hidden absolute top-0 right-0 text-(--secondary)/90'><XCircle className='w-5' /></div>
+
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl text-[var(--primary-dark)] shadow-lg">
                     <img
                         src="/images/olivetNOSA_logo.png"
@@ -43,23 +44,28 @@ const Sidebar = ({setIsOpen, isOpen,pageSection, setPageSection }) => {
 
             {/* Navigators */}
             <div className='flex flex-col gap-2  mt-10'>
-                <button className="
-                        flex items-center gap-5 font-semibold text-white
-                        bg-white/5
-                        hover:text-[var(--secondary)]
-                          px-3 py-2 rounded
-                        border border-transparent
-                        
-                        transition-all duration-300
-                    "
-                    onClick={()=>setPageSection("Dashboard")}
+                <NavLink
+                    to="/portal/member/dashboard"
+                    className={({ isActive }) =>
+    `
+      flex items-center gap-5 font-semibold
+      px-3 py-2 rounded
+      border border-transparent
+      transition-all duration-300
+      ${
+        isActive
+          ? "bg-white/10 text-[var(--secondary)] border-[var(--secondary)]/20"
+          : "text-white hover:text-[var(--secondary)] hover:bg-white/5"
+      }
+    `
+  }
                     >
-
-                    <Home className="h-4 w-4 " strokeWidth={2}/>
-                    <p className='text-[0.9rem]'>Dashboard</p>
-
-                </button>
-                <button className="
+                    <Home className="h-4 w-4" />
+                    <p className="text-[0.9rem]">Dashboard</p>
+                </NavLink>
+                <NavLink
+                    to="/portal/member/dashboard/profile"
+                    className="
                         flex items-center gap-5 font-semibold text-white 
                         hover:text-[var(--secondary)]
                          px-3 py-2 rounded
@@ -67,27 +73,10 @@ const Sidebar = ({setIsOpen, isOpen,pageSection, setPageSection }) => {
                         
                         transition-all duration-300
                     "
-                    onClick={()=> setPageSection("Profile")}
                     >
-
-                    <User className="h-4 w-4 " strokeWidth={2}/>
-                    <p className='text-[0.9rem]'>My Profile</p>
-
-                </button>
-
-                <button className="
-                        flex items-center gap-5 font-semibold text-white 
-                        hover:text-[var(--secondary)]
-                         px-3 py-2 rounded
-                        border border-transparent
-                        
-                        transition-all duration-300
-                    ">
-
-                    <Home className="h-4 w-4 " strokeWidth={2}/>
-                    <p className='text-[0.9rem]'>Membership & dues</p>
-
-                </button>
+                    <Home className="h-4 w-4" />
+                    <p className="text-[0.9rem]">My Profile</p>
+                </NavLink>
 
             </div>
 

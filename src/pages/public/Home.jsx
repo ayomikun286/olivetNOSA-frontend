@@ -97,7 +97,7 @@ export default function Home() {
     };
 
     return (
-        <main className="min-h-screen bg-white text-[var(--primary-dark)] overflow-x-hidden mt-0 md:mt-15">
+        <main className="min-h-screen bg-white text-[var(--primary-dark)] overflow-x-hidden mt-8 md:mt-15">
             <PageTitle title="OlivetNOSA | Olivet Nigerian School Alumni Association" />
 
             <header>
@@ -106,7 +106,7 @@ export default function Home() {
 
             {/* HERO SLIDER */}
             <section
-                className="relative flex min-h-[94vh] items-end overflow-hidden bg-[var(--primary-dark)]"
+                className="relative flex min-h-[94vh] items-end overflow-hidden bg-[var(--primary-dark)]  "
                 onMouseEnter={() => setIsPaused(true)}
                 onMouseLeave={() => setIsPaused(false)}
             >
@@ -118,10 +118,12 @@ export default function Home() {
                             <div
                                 key={slide.image}
                                 className={`absolute inset-0 bg-cover bg-center ${
+                                    
                                     isActive
                                         ? "opacity-100 z-10"
                                         : "opacity-0 z-0"
                                 }`}
+
                                 style={{
                                     backgroundImage: `url("${slide.image}")`,
                                     transform: isActive ? "scale(1.06)" : "scale(1)",
