@@ -1,87 +1,242 @@
-import React from 'react'
+import React from "react";
 import {
-    XCircle,
-    Home,
-    User
+  XCircle,
+  Home,
+  User,
+  ClipboardList,
+  CreditCard,
+  Users,
+  MapPin,
+  Bell,
+  HelpCircle,
+  LogOut,
 } from "lucide-react";
 
-import { NavLink } from 'react-router-dom';
-const Sidebar = ({ setIsOpen}) => {
-    return (
-        <div className='w-full overflow-hidden h-full bg-(--primary) p-3 overflow'>
-            {/* LOGO */}
-            <div className="flex  relative items-center md:justify-center gap-3 p-2 border-b border-b-(--secondary) ">
+import { NavLink } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
+const Sidebar = ({ setIsOpen }) => {
+  const { user } = useAuth();
 
-                <div onClick={() => setIsOpen(false)} className=' md:hidden absolute top-0 right-0 text-(--secondary)/90'><XCircle className='w-5' /></div>
+  const isYearSetLeader =
+    user?.yearSet?.leader?.toString() === user?.id?.toString();
 
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl text-[var(--primary-dark)] shadow-lg">
-                    <img
-                        src="/images/olivetNOSA_logo.png"
-                        alt="Olivet NOSA"
-                        className="h-full w-full object-contain"
-                    />
-                </div>
+  const isChapterLeader =
+    user?.chapter?.leader?.toString() === user?.id?.toString();
 
-                <div className="leading-none">
-
-                    <p className="text-lg font-bold tracking-wide text-white transition-colors duration-500 max-w-35">
-                        OBHS
-                    </p>
-
-                    <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-white transition-colors duration-500 max-w-50">
-                        ALUMNI PORTAL
-                    </p>
-
-                    {/* <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-white transition-colors duration-500 max-w-50">
-                Global Old Students Association Website
-              </p> */}
-
-                </div>
-
-            </div>
-
-
-            {/* Navigators */}
-            <div className='flex flex-col gap-2  mt-10'>
-                <NavLink
-                    to="/portal/member/dashboard"
-                    className={({ isActive }) =>
+  const linkClass = ({ isActive }) =>
     `
-      flex items-center gap-5 font-semibold
-      px-3 py-2 rounded
+      group flex items-center gap-4
+      px-3 py-2.5 rounded
       border border-transparent
-      transition-all duration-300
+      font-medium text-[0.88rem]
+      transition-all duration-300 ease-out
       ${
         isActive
-          ? "bg-white/10 text-[var(--secondary)] border-[var(--secondary)]/20"
-          : "text-white hover:text-[var(--secondary)] hover:bg-white/5"
+          ? `
+            bg-white/10
+            text-[var(--secondary)]
+            border-[var(--secondary)]/20
+            shadow-sm
+          `
+          : `
+            text-white/90
+            hover:text-[var(--secondary)]
+            hover:bg-white/[0.06]
+            hover:border-white/10
+          `
       }
-    `
-  }
-                    >
-                    <Home className="h-4 w-4" />
-                    <p className="text-[0.9rem]">Dashboard</p>
-                </NavLink>
+    `;
+
+  const iconClass =
+    "h-[17px] w-[17px] shrink-0 transition-transform duration-300 group-hover:scale-110";
+
+  const sectionTitle =
+    "px-3 mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-white/40";
+
+  return (
+    <div className="w-full h-full overflow-hidden bg-[var(--primary)] p-3 flex flex-col">
+
+      {/* ================= LOGO ================= */}
+      <div className="relative flex items-center md:justify-center gap-3 p-2 pb-4 border-b border-[var(--secondary)]/40">
+
+        {/* MOBILE CLOSE */}
+        <button
+          type="button"
+          onClick={() => setIsOpen(false)}
+          className="
+            md:hidden absolute top-0 right-0
+            text-[var(--secondary)]/80
+            hover:text-[var(--secondary)]
+            transition-colors duration-200
+          "
+        >
+          <XCircle className="w-5 h-5" />
+        </button>
+
+        <div className="flex h-11 w-11 items-center justify-center rounded-xl shrink-0">
+          <img
+            src="/images/olivetNOSA_logo.png"
+            alt="Olivet NOSA"
+            className="h-full w-full object-contain"
+          />
+        </div>
+
+        <div className="leading-none">
+          <p className="text-lg font-bold tracking-wide text-white">
+            OBHS
+          </p>
+
+          <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/90">
+            ALUMNI PORTAL
+          </p>
+        </div>
+      </div>
+
+      {/* ================= NAVIGATION ================= */}
+      <nav  className="flex-1 overflow-y-auto mt-7 space-y-7 pr-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+
+        {/* ================= OVERVIEW ================= */}
+        <div>
+          <p className={sectionTitle}>Overview</p>
+
+          <div className="space-y-1">
+            <NavLink
+              to="/portal/member/dashboard"
+              end
+              className={linkClass}
+            >
+              <Home className={iconClass} />
+              <span>Dashboard</span>
+            </NavLink>
+          </div>
+        </div>
+
+        {/* ================= MEMBERSHIP ================= */}
+        <div>
+          <p className={sectionTitle}>Membership</p>
+
+          <div className="space-y-1">
+            <NavLink
+              to="/portal/member/dashboard/profile"
+              className={linkClass}
+            >
+              <User className={iconClass} />
+              <span>My Profile</span>
+            </NavLink>
+
+            <NavLink
+              to="/portal/member/obligations"
+              className={linkClass}
+            >
+              <ClipboardList className={iconClass} />
+              <span>My Obligations</span>
+            </NavLink>
+
+            <NavLink
+              to="/portal/member/payments"
+              className={linkClass}
+            >
+              <CreditCard className={iconClass} />
+              <span>Payment History</span>
+            </NavLink>
+          </div>
+        </div>
+
+        {/* ================= LEADERSHIP ================= */}
+        {(isYearSetLeader || isChapterLeader) && (
+          <div>
+            <p className={sectionTitle}>Leadership</p>
+
+            <div className="space-y-1">
+
+              {isYearSetLeader && (
                 <NavLink
-                    to="/portal/member/dashboard/profile"
-                    className="
-                        flex items-center gap-5 font-semibold text-white 
-                        hover:text-[var(--secondary)]
-                         px-3 py-2 rounded
-                        border border-transparent
-                        
-                        transition-all duration-300
-                    "
-                    >
-                    <Home className="h-4 w-4" />
-                    <p className="text-[0.9rem]">My Profile</p>
+                  to="/portal/member/dashboard/year-set"
+                  className={linkClass}
+                >
+                  <Users className={iconClass} />
+                  <span>My Year Set</span>
                 </NavLink>
+              )}
+
+              {isChapterLeader && (
+                <NavLink
+                  to="/portal/member/dashboard/Chapter "
+                  className={linkClass}
+                >
+                  <MapPin className={iconClass} />
+                  <span>My Chapter</span>
+                </NavLink>
+              )}
 
             </div>
+          </div>
+        )}
 
+        {/* ================= COMMUNICATION ================= */}
+        <div>
+          <p className={sectionTitle}>Communication</p>
+
+          <div className="space-y-1">
+            <NavLink
+              to="/portal/member/notifications"
+              className={linkClass}
+            >
+              <Bell className={iconClass} />
+              <span>Notifications</span>
+            </NavLink>
+          </div>
         </div>
-    )
-}
 
-export default Sidebar
+        {/* ================= SUPPORT ================= */}
+        <div>
+          <p className={sectionTitle}>Support</p>
+
+          <div className="space-y-1">
+            <NavLink
+              to="/portal/member/help"
+              className={linkClass}
+            >
+              <HelpCircle className={iconClass} />
+              <span>Help & Support</span>
+            </NavLink>
+          </div>
+        </div>
+
+      </nav>
+
+      {/* ================= ACCOUNT ================= */}
+      <div className="pt-3 mt-3 border-t border-white/10">
+
+        <button
+          type="button"
+          className="
+            group w-full flex items-center gap-4
+            px-3 py-2.5 rounded-lg
+            text-white/90
+            hover:text-[var(--secondary)]
+            hover:bg-white/[0.06]
+            transition-all duration-300 ease-out
+          "
+        >
+          <LogOut
+            className="
+              h-[17px] w-[17px]
+              transition-transform duration-300
+              group-hover:translate-x-0.5
+            "
+          />
+
+          <span className="font-medium text-[0.88rem]">
+            Logout
+          </span>
+        </button>
+
+      </div>
+
+    </div>
+  );
+};
+
+export default Sidebar;

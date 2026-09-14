@@ -74,7 +74,7 @@ const Navbar = ({ setIsOpen, firstName, year, logout, alumniId }) => {
             {/* Name */}
             <div className="hidden flex-col text-(--primary) sm:flex">
               <strong className="text-sm leading-tight">
-                {firstName}
+                {firstName.toUpperCase()}
               </strong>
 
               <small className="text-xs opacity-70">
@@ -97,23 +97,23 @@ const Navbar = ({ setIsOpen, firstName, year, logout, alumniId }) => {
           {/* ================= DROPDOWN ================= */}
           <div
             className={`absolute right-0 top-13 z-50 w-64 origin-top-right overflow-hidden rounded border border-(--secondary)/20 bg-(--bg-light) shadow-lg transition-all duration-200 ${dropDown
-                ? "visible scale-100 opacity-100"
-                : "invisible scale-95 opacity-0"
+              ? "visible scale-100 opacity-100"
+              : "invisible scale-95 opacity-0"
               }`}
           >
 
             {/* User info */}
             <div className="border-b border-(--secondary)/20 px-4 py-4">
               <p className="font-semibold text-(--primary)">
-                {firstName}
+                {firstName.toUpperCase()}
               </p>
 
               <p className="text-xs text-(--primary)/60">
                 {alumniId || (
-                                        <span className="text-(--color-warning)">
-                                            Pending approval
-                                        </span>
-                                    )}
+                  <span className="text-(--color-warning)">
+                    Pending approval
+                  </span>
+                )}
               </p>
             </div>
 

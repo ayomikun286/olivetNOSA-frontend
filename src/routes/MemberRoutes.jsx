@@ -6,6 +6,8 @@ import ProtectedRoute from "./ProtectedRoute.jsx";
 
 import Main from "../pages/member/Main.jsx";
 import Profile from "../pages/member/Profile.jsx";
+import MyYearSet from "../pages/member/MyYearSet.jsx";
+import MyChapter from "../pages/member/MyChapter.jsx";
 
 const MemberRoutes = () => {
   return (
@@ -20,6 +22,14 @@ const MemberRoutes = () => {
 
           {/* /portal/member/dashboard/profile */}
           <Route path="profile" element={<Profile />} />
+
+
+          {/* /portal/member/dashboard/My-Year-Set */}
+          <Route path="year-set" element={<MyYearSet />} />
+
+          {/* /portal/member/dashboard/Chapter */}
+
+          <Route path="chapter" element={<MyChapter />} />
 
         </Route>
 

@@ -24,6 +24,7 @@ const Dashboard = () => {
   const [isOpen, setIsOpen] = useState(false)
   const firstName = user?.firstName || "Olivetian";
   const email = user?.email || "";
+  const alumniId = user?.alumniId
   const isEmailVerified = user?.isEmailVerified ?? false;
   // const [pageSection, setPageSection] = useState('Dashboard');
 
@@ -67,7 +68,7 @@ const Dashboard = () => {
         
         {/* main content */}
         <section className='main  w-full  flex flex-col overflow-y-auto overflow-x-hidden'>
-          <Navbar  setIsOpen={setIsOpen} firstName={firstName} year={user?.graduationYear} logout={logout}/>
+          <Navbar  setIsOpen={setIsOpen} alumniId={alumniId} firstName={firstName} year={user?.graduationYear} logout={logout}/>
 
           
 

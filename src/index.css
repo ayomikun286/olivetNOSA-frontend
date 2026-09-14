@@ -16,6 +16,11 @@
   --bg-light: #F7F9FC;
   --bg-dark: #0B1F33;
 
+
+  --success-light: #E9F9F1;
+  --warning-light: #FFF4E5;
+  --danger-light: #FEEDEC;
+
   --border: #E4E7EC;
 
   --success: #12B76A;
@@ -46,6 +51,10 @@
   --color-bg-light: #F7F9FC;
   --color-bg-dark: #0B1F33;
 
+  --color-success-light: #E9F9F1;
+  --color-warning-light: #FFF4E5;
+  --color-danger-light: #FEEDEC;
+
   --color-border: #E4E7EC;
 
   --color-success: #12B76A;
@@ -53,10 +62,11 @@
   --color-danger: #F04438;
 }
 
-*{
+* {
   box-sizing: border-box;
 }
-body{
+
+body {
   margin: 0;
   padding: 0;
   background-color: var(--bg-light);
@@ -66,6 +76,7 @@ body{
   from {
     width: 0%;
   }
+
   to {
     width: 100%;
   }

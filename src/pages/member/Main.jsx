@@ -14,11 +14,9 @@ import {
     CircleDollarSign,
 } from "lucide-react";
 
-
-
 import Notifications from "../../components/member/Notifications.jsx";
-import PaymentHistory from "../../components/member/PaymentHistory.jsx"
-import QuickActions from "../../components/member/QuickActions.jsx"
+import PaymentHistory from "../../components/member/PaymentHistory.jsx";
+import QuickActions from "../../components/member/QuickActions.jsx";
 import MembershipStatus from "../../components/member/MembershipStatus.jsx";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { getMyObligation } from "../../services/obligationService.js";
@@ -46,6 +44,14 @@ const Main = () => {
     }, []);
 
     // ========================================
+    // INDIVIDUAL OBLIGATIONS
+    // ========================================
+
+    const individualObligations = obligations.filter(
+        (item) => item.obligation?.category === "individual"
+    );
+
+    // ========================================
     // MEMBER DATA
     // ========================================
 
@@ -57,29 +63,47 @@ const Main = () => {
 
     // ========================================
     // OBLIGATION SUMMARY
+
+
+
+
+
+
+
+
+    // ========================================
+    // INDIVIDUAL OBLIGATION SUMMARY
     // ========================================
 
-    const totalObligation = obligations.reduce(
-        (total, item) => total + (item.amountDue || 0),
+    const totalObligation = individualObligations.reduce(
+        (total, item) => total + Number(item.amountDue || 0),
         0
     );
 
-    const amountPaid = obligations.reduce(
-        (total, item) => total + (item.amountPaid || 0),
+    const amountPaid = individualObligations.reduce(
+        (total, item) => total + Number(item.amountPaid || 0),
         0
     );
 
-    const outstanding = totalObligation - amountPaid;
+    const outstanding = Math.max(totalObligation - amountPaid, 0);
 
-    const unpaidObligations = obligations.filter(
+    const unpaidObligations = individualObligations.filter(
         (item) =>
             item.status !== "paid" &&
             Number(item.amountDue || 0) > Number(item.amountPaid || 0)
     );
 
-    const nextDueDate = obligations
+    const nextDueDate = individualObligations
         .filter((item) => item.status !== "paid" && item.dueDate)
-        .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))[0]?.dueDate;
+        .sort(
+            (a, b) =>
+                new Date(a.dueDate) - new Date(b.dueDate)
+        )[0]?.dueDate;
+
+
+
+
+
 
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat("en-NG", {
@@ -130,7 +154,6 @@ const Main = () => {
                 ======================================== */}
 
             <div className=" space-y-4">
-
 
                 {/* MEMBER HERO */}
                 <div
@@ -187,6 +210,7 @@ const Main = () => {
 
                             <div className="flex flex-col gap-1">
                                 <small>Graduation Year</small>
+
                                 <strong className="font-semibold text-sm">
                                     {year}
                                 </strong>
@@ -230,9 +254,9 @@ const Main = () => {
                     </div>
                 </div>
 
-
                 <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_280px] gap-4">
                     <div className="space-y-5">
+
                         {/* // FINANCIAL OVERVIEW */}
                         <div className="space-y-3">
 
@@ -245,7 +269,6 @@ const Main = () => {
                                     Keep track of your membership obligations and payments.
                                 </p>
                             </div>
-
 
                             <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
 
@@ -282,13 +305,15 @@ const Main = () => {
                                         <p className="text-sm text-white/65 mt-1">
                                             remaining from {formatCurrency(totalObligation)}
                                         </p>
-
                                         <div className="mt-5 h-2 rounded-full bg-white/10 overflow-hidden">
                                             <div
                                                 className="h-full bg-(--secondary) rounded-full transition-all"
                                                 style={{
                                                     width: totalObligation
-                                                        ? `${Math.min((amountPaid / totalObligation) * 100, 100)}%`
+                                                        ? `${Math.min(
+                                                            (amountPaid / totalObligation) * 100,
+                                                            100
+                                                        )}%`
                                                         : "0%",
                                                 }}
                                             />
@@ -296,9 +321,12 @@ const Main = () => {
 
                                         <div className="flex justify-between text-xs mt-2 text-white/60">
                                             <span>{formatCurrency(amountPaid)} paid</span>
+
                                             <span>
                                                 {totalObligation
-                                                    ? Math.round((amountPaid / totalObligation) * 100)
+                                                    ? Math.round(
+                                                        (amountPaid / totalObligation) * 100
+                                                    )
                                                     : 0}
                                                 %
                                             </span>
@@ -306,7 +334,6 @@ const Main = () => {
 
                                     </div>
                                 </div>
-
 
                                 {/* PAID */}
                                 <div className="rounded bg-(--bg-white) border border-(--border) p-5">
@@ -332,12 +359,11 @@ const Main = () => {
                                     </h3>
 
                                     <p className="text-xs text-(--text-muted) mt-2">
-                                        Across {obligations.length} obligation
-                                        {obligations.length !== 1 ? "s" : ""}
+                                        Across {individualObligations.length} obligation
+                                        {individualObligations.length !== 1 ? "s" : ""}
                                     </p>
 
                                 </div>
-
 
                                 {/* NEXT DUE */}
                                 <div className="rounded bg-(--bg-white) border border-(--border) p-5">
@@ -361,12 +387,16 @@ const Main = () => {
                                     </p>
 
                                     <h3 className="text-xl font-bold text-(--text-primary) mt-1">
-                                        {nextDueDate ? formatDate(nextDueDate) : "All settled"}
+                                        {nextDueDate
+                                            ? formatDate(nextDueDate)
+                                            : "All settled"}
                                     </h3>
 
                                     <p className="text-xs text-(--text-muted) mt-2">
                                         {unpaidObligations.length
-                                            ? `${unpaidObligations.length} outstanding obligation${unpaidObligations.length > 1 ? "s" : ""
+                                            ? `${unpaidObligations.length} outstanding obligation${unpaidObligations.length > 1
+                                                ? "s"
+                                                : ""
                                             }`
                                             : "You're all caught up"}
                                     </p>
@@ -375,9 +405,6 @@ const Main = () => {
 
                             </div>
                         </div>
-
-
-
 
                         {/* MY OBLIGATIONS */}
                         <div className="bg-(--bg-white) border border-(--border) rounded overflow-hidden">
@@ -396,14 +423,15 @@ const Main = () => {
 
                                 <div className="flex items-center gap-2 text-xs text-(--text-secondary)">
                                     <CircleDollarSign size={16} />
-                                    {obligations.length} obligation
-                                    {obligations.length !== 1 ? "s" : ""}
+
+                                    {individualObligations.length} obligation
+                                    {individualObligations.length !== 1 ? "s" : ""}
                                 </div>
 
                             </div>
 
-
-                            <div className="divide-y divide-(--border)">
+                            {/* the table */}
+                            <div className="divide-y max-h-[500px] overflow-y-auto scrollbar-hide divide-(--border)">
 
                                 {loadingObligations ? (
 
@@ -411,7 +439,7 @@ const Main = () => {
                                         Loading your obligations...
                                     </div>
 
-                                ) : obligations.length === 0 ? (
+                                ) : individualObligations.length === 0 ? (
 
                                     <div className="p-10 text-center">
 
@@ -431,7 +459,7 @@ const Main = () => {
 
                                 ) : (
 
-                                    obligations.map((item) => {
+                                    individualObligations.map((item) => {
 
                                         const paid = Number(item.amountPaid || 0);
                                         const due = Number(item.amountDue || 0);
@@ -447,124 +475,152 @@ const Main = () => {
                                         return (
                                             <div
                                                 key={item._id}
-                                                className="p-5 hover:bg-(--bg-light)/60 transition"
+                                                className="p-5 sm:p-6 hover:bg-(--bg-light)/50 transition"
                                             >
 
-                                                <div className="flex flex-col lg:flex-row lg:items-center gap-5">
+                                                {/* TOP ROW */}
+                                                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
 
-                                                    {/* NAME */}
-                                                    <div className="flex items-start gap-3 flex-1 min-w-0">
+                                                    {/* OBLIGATION INFO */}
+                                                    <div className="flex items-start gap-3.5 min-w-0">
 
                                                         <div className="w-10 h-10 shrink-0 rounded-lg bg-(--primary-light) text-(--primary) flex items-center justify-center">
-                                                            <ReceiptText size={19} />
+                                                            <ReceiptText size={18} />
                                                         </div>
 
                                                         <div className="min-w-0">
 
-                                                            <h3 className="font-semibold text-(--text-primary)">
+                                                            <h3 className="text-sm font-semibold text-(--text-primary)">
                                                                 {item.obligation?.name || "Membership obligation"}
                                                             </h3>
 
-                                                            <p className="text-xs text-(--text-secondary) mt-1 truncate">
+                                                            <p className="text-xs text-(--text-secondary) mt-1 leading-relaxed max-w-xl">
                                                                 {item.obligation?.description ||
                                                                     "Assigned membership contribution"}
                                                             </p>
 
-                                                        </div>
+                                                            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2.5 text-xs text-(--text-muted)">
 
-                                                    </div>
+                                                                <span>
+                                                                    Due {formatDate(item.dueDate)}
+                                                                </span>
 
+                                                                <span>
+                                                                    Individual
+                                                                </span>
 
-                                                    {/* AMOUNT */}
-                                                    <div className="lg:w-32">
-
-                                                        <p className="text-xs text-(--text-muted)">
-                                                            Amount
-                                                        </p>
-
-                                                        <p className="font-semibold mt-1">
-                                                            {formatCurrency(due)}
-                                                        </p>
-
-                                                    </div>
-
-
-                                                    {/* PROGRESS */}
-                                                    <div className="lg:w-40">
-
-                                                        <div className="flex justify-between text-xs mb-2">
-
-                                                            <span className="text-(--text-secondary)">
-                                                                Paid {formatCurrency(paid)}
-                                                            </span>
-
-                                                            <span className="font-medium">
-                                                                {Math.round(progress)}%
-                                                            </span>
-
-                                                        </div>
-
-                                                        <div className="h-1.5 bg-(--bg-light) rounded-full overflow-hidden">
-
-                                                            <div
-                                                                className="h-full bg-(--success) rounded-full"
-                                                                style={{
-                                                                    width: `${progress}%`,
-                                                                }}
-                                                            />
+                                                            </div>
 
                                                         </div>
 
                                                     </div>
 
+                                                    {/* AMOUNT + STATUS */}
+                                                    <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0">
 
-                                                    {/* DUE DATE */}
-                                                    <div className="lg:w-28">
+                                                        <div className="sm:text-right">
 
-                                                        <p className="text-xs text-(--text-muted)">
-                                                            Due date
-                                                        </p>
+                                                            <p className="text-[11px] text-(--text-muted)">
+                                                                Amount due
+                                                            </p>
 
-                                                        <p className="text-sm font-medium mt-1">
-                                                            {formatDate(item.dueDate)}
-                                                        </p>
+                                                            <p className="text-sm font-semibold text-(--text-primary) mt-0.5">
+                                                                {formatCurrency(due)}
+                                                            </p>
 
-                                                    </div>
-
-
-                                                    {/* STATUS + ACTION */}
-                                                    <div className="flex items-center gap-3">
+                                                        </div>
 
                                                         {isPaid ? (
 
-                                                            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-(--success) bg-green-50 px-2.5 py-1.5 rounded-full">
-                                                                <CheckCircle2 size={14} />
+                                                            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-(--success) bg-(--success-light) px-2.5 py-1.5 rounded-full">
+                                                                <CheckCircle2 size={13} />
                                                                 Paid
                                                             </span>
 
                                                         ) : isPartial ? (
 
-                                                            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-(--warning) bg-orange-50 px-2.5 py-1.5 rounded-full">
-                                                                <Clock3 size={14} />
+                                                            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-(--warning) bg-(--warning-light) px-2.5 py-1.5 rounded-full">
+                                                                <Clock3 size={13} />
                                                                 Partial
                                                             </span>
 
                                                         ) : (
 
-                                                            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-(--primary) bg-(--primary-light) px-2.5 py-1.5 rounded-full">
-                                                                <AlertCircle size={14} />
+                                                            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-(--primary) bg-(--danger-light) px-2.5 py-1.5 rounded-full">
+                                                                <AlertCircle size={13} />
                                                                 Pending
                                                             </span>
 
                                                         )}
 
-                                                        {!isPaid && (
-                                                            <button
-                                                                className="flex items-center gap-1 bg-(--primary) text-white px-3 py-2 rounded-(--radius-sm) text-xs font-semibold hover:bg-(--primary-dark) transition"
+                                                    </div>
+
+                                                </div>
+
+                                                {/* BOTTOM ROW */}
+                                                <div className="mt-5 pt-4 border-t border-(--border)">
+
+                                                    <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+
+                                                        {/* PROGRESS */}
+                                                        <div className="flex-1 min-w-0">
+
+                                                            <div className="flex items-center justify-between mb-2">
+
+                                                                <span className="text-xs text-(--text-secondary)">
+                                                                    {isPaid
+                                                                        ? "Payment completed"
+                                                                        : `${formatCurrency(paid)} paid`}
+                                                                </span>
+
+                                                                <span className="text-xs font-semibold text-(--text-primary)">
+                                                                    {Math.round(progress)}%
+                                                                </span>
+
+                                                            </div>
+
+                                                            <div className="h-1.5 bg-(--bg-light) rounded-full overflow-hidden">
+
+                                                                <div
+                                                                    className="h-full bg-(--success) rounded-full transition-all"
+                                                                    style={{
+                                                                        width: `${progress}%`,
+                                                                    }}
+                                                                />
+
+                                                            </div>
+
+                                                        </div>
+
+                                                        {/* OUTSTANDING */}
+                                                        <div className="sm:w-32 shrink-0">
+
+                                                            <p className="text-[11px] text-(--text-muted)">
+                                                                Outstanding
+                                                            </p>
+
+                                                            <p
+                                                                className={`text-sm font-semibold mt-0.5 ${remaining > 0
+                                                                    ? "text-(--text-primary)"
+                                                                    : "text-(--success)"
+                                                                    }`}
                                                             >
-                                                                Pay
+                                                                {formatCurrency(remaining)}
+                                                            </p>
+
+                                                        </div>
+
+                                                        {/* ACTION */}
+                                                        {!isPaid && (
+
+                                                            <button
+                                                                type="button"
+                                                                className="inline-flex items-center justify-center gap-1.5 bg-(--primary) text-white px-4 py-2 rounded-(--radius-sm) text-xs font-semibold hover:bg-(--primary-dark) transition shrink-0"
+                                                            >
+                                                                Pay now
                                                                 <ArrowUpRight size={14} />
                                                             </button>
+
                                                         )}
 
                                                     </div>
@@ -581,14 +637,13 @@ const Main = () => {
 
                         </div>
 
-
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
                             {/* PAYMENT HISTORY */}
                             <PaymentHistory />
 
                             {/* QUICK ACTIONS */}
-                           <QuickActions   hasOutstanding={outstanding > 0}/>
+                            <QuickActions hasOutstanding={outstanding > 0} />
 
                         </div>
 
@@ -599,7 +654,6 @@ const Main = () => {
 
                         <Notifications />
                     </aside>
-
 
                 </div>
 
