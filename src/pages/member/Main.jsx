@@ -162,10 +162,10 @@ const Main = () => {
                         </div>
                     </div>
 
-                    <div className="flex justify-between md:px-15 px-2 items-start md:justify-between md:items-center flex-wrap">
+                    <div className="flex justify-between gap-3 md:px-15 px-2 items-start md:justify-between md:items-center flex-wrap">
 
                         {/* Alumni ID */}
-                        <div className="flex gap-4 md:border-r md:pr-5 items-center">
+                        <div className="flex gap-4 md:border-r pr-2 md:pr-5 items-center">
                             <GraduationCap size={20} strokeWidth={2} />
 
                             <div className="flex flex-col gap-1">
