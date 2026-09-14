@@ -66,8 +66,8 @@ const Dashboard = () => {
         </section>
         
         {/* main content */}
-        <section className='main  w-full  flex flex-col'>
-          <Navbar  setIsOpen={setIsOpen} firstName={firstName} year={user?.graduationYear}/>
+        <section className='main  w-full  flex flex-col overflow-y-auto overflow-x-hidden'>
+          <Navbar  setIsOpen={setIsOpen} firstName={firstName} year={user?.graduationYear} logout={logout}/>
 
           
 

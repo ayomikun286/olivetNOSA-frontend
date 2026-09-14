@@ -55,3 +55,58 @@
                     next page dashboard with pending membership status sign .. 
                     if user also request to become a leader: pending leadership status .. 
 
+
+
+
+
+
+
+
+OBLIGATION
+│
+├── Individual
+│   │
+│   ├── Dues & Development Levy
+│   │      └── Annual ₦24,000
+│   │
+│   └── Insurance Premium
+│          └── Annual ₦10,000
+│
+├── Year Set
+│   │
+│   ├── Annual Dues
+│   │      └── Annual ₦50,000
+│   │
+│   ├── Teachers' Levy
+│   │      ├── Monthly ₦70,000
+│   │      ├── Quarterly ₦210,000
+│   │      └── Annual ₦840,000
+│   │
+│   └── AGM Support Levy
+│          └── Annual ₦200,000
+│
+└── Chapter
+    │
+    ├── Annual Dues
+    │      └── Annual ₦200,000
+    │
+    ├── Teachers' Levy
+    │      ├── Monthly ₦70,000
+    │      ├── Quarterly ₦210,000
+    │      └── Annual ₦840,000
+    │
+    └── AGM Support Levy
+           └── Annual ₦250,000---+
+
+
+
+
+
+
+
+POST   /api/obligations
+GET    /api/obligations
+GET    /api/obligations/:id
+PATCH  /api/obligations/:id
+PATCH  /api/obligations/:id/status
+DELETE /api/obligations/:id

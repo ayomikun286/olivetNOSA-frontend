@@ -1,46 +1,156 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from "react";
 import {
-    Bell
+  Bell,
+  ChevronDown,
+  LogOut,
+  User,
+  Settings,
 } from "lucide-react";
 
-const Navbar = ({setIsOpen,firstName ,year }) => {
-  console.log(firstName)
+const Navbar = ({ setIsOpen, firstName, year, logout, alumniId }) => {
+  const [dropDown, setDropDown] = useState(false);
+  const dropdownRef = useRef(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target)
+      ) {
+        setDropDown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div className='flex justify-between items-center border-b py-3 px-8 md:px-8 border-b-(--secondary)/50'>
+    <nav className="flex items-center justify-between border-b border-b-(--secondary)/50 bg-(--bg-light) px-4 py-3 md:px-8">
 
-      <div 
-      onClick={() => setIsOpen(prev => !prev)}
-      className='  gap-1 flex flex-col  p-1'>
-        <span className='block w-8 h-0.75 bg-(--primary) rounded-full' />
-        <span className='block w-9 h-0.75 bg-(--primary) rounded-full' />
-        <span className='block w-7 h-0.75 bg-(--primary) rounded-full' />
-      </div>
+      {/* ================= LEFT ================= */}
+      <button
+        onClick={() => setIsOpen((prev) => !prev)}
+        className="flex flex-col gap-1 p-1"
+        aria-label="Toggle sidebar"
+      >
+        <span className="block h-0.75 w-8 rounded-full bg-(--primary)" />
+        <span className="block h-0.75 w-9 rounded-full bg-(--primary)" />
+        <span className="block h-0.75 w-7 rounded-full bg-(--primary)" />
+      </button>
 
+      {/* ================= RIGHT ================= */}
+      <div className="flex items-center gap-5">
 
-      <div className='flex items-center gap-4'>
+        {/* Notification */}
+        <button
+          className="relative p-1 text-(--primary)"
+          aria-label="Notifications"
+        >
+          <Bell size={20} strokeWidth={2} />
 
-        <div className='relative '>
-          <span className='absolute -top-1 -right-1 w-fit h-3 p-[0.1rem] text-white block bg-(--secondary) flex justify-center items-center text-xs font-bold  rounded-full'>0</span>
-          <Bell className="h-5 w-5 text-(--primary) " strokeWidth={2} />
-        </div>
+          <span className="absolute -right-1 -top-1 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-(--secondary) px-1 text-[9px] font-bold text-white">
+            0
+          </span>
+        </button>
 
-        <div  className='flex items-center justify-center gap-4 '>
-          <span className="w-8 h-8 rounded-full bg-[var(--secondary)] flex items-center justify-center text-[var(--primary)] font-bold">
-  {firstName?.charAt(0)}
-</span>
-          <div className='flex flex-col text-(--primary)'>
-            <strong>{firstName}</strong>
-            <small>class of <span>{year}</span></small>
+        {/* Profile */}
+        <div ref={dropdownRef} className="relative">
+
+          {/* Profile trigger */}
+          <button
+            onClick={() => setDropDown((prev) => !prev)}
+            className="flex items-center gap-3 text-left"
+          >
+            {/* Avatar */}
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-(--secondary) font-bold text-(--primary)">
+              {firstName?.charAt(0)?.toUpperCase()}
+            </span>
+
+            {/* Name */}
+            <div className="hidden flex-col text-(--primary) sm:flex">
+              <strong className="text-sm leading-tight">
+                {firstName}
+              </strong>
+
+              <small className="text-xs opacity-70">
+                {alumniId || (
+                  <span className="text-(--color-warning)">
+                    Pending approval
+                  </span>
+                )}
+              </small>
+            </div>
+
+            {/* Chevron */}
+            <ChevronDown
+              size={16}
+              className={`text-(--primary) transition-transform duration-300 ${dropDown ? "rotate-180" : ""
+                }`}
+            />
+          </button>
+
+          {/* ================= DROPDOWN ================= */}
+          <div
+            className={`absolute right-0 top-13 z-50 w-64 origin-top-right overflow-hidden rounded border border-(--secondary)/20 bg-(--bg-light) shadow-lg transition-all duration-200 ${dropDown
+                ? "visible scale-100 opacity-100"
+                : "invisible scale-95 opacity-0"
+              }`}
+          >
+
+            {/* User info */}
+            <div className="border-b border-(--secondary)/20 px-4 py-4">
+              <p className="font-semibold text-(--primary)">
+                {firstName}
+              </p>
+
+              <p className="text-xs text-(--primary)/60">
+                {alumniId || (
+                                        <span className="text-(--color-warning)">
+                                            Pending approval
+                                        </span>
+                                    )}
+              </p>
+            </div>
+
+            {/* Profile */}
+            <button
+              className="flex w-full items-center gap-3 px-4 py-3 text-sm text-(--primary) transition-colors hover:bg-(--primary)/5"
+              onClick={() => setDropDown(false)}
+            >
+              <User size={17} />
+              <span>My Profile</span>
+            </button>
+
+            {/* Settings */}
+            <button
+              className="flex w-full items-center gap-3 px-4 py-3 text-sm text-(--primary) transition-colors hover:bg-(--primary)/5"
+              onClick={() => setDropDown(false)}
+            >
+              <Settings size={17} />
+              <span>Settings</span>
+            </button>
+
+            {/* Logout */}
+            <div className="border-t border-(--secondary)/20">
+              <button
+                onClick={logout}
+                className="flex w-full items-center gap-3 px-4 py-3 text-sm text-red-600 transition-colors hover:bg-red-50"
+              >
+                <LogOut size={17} />
+                <span>Logout</span>
+              </button>
+            </div>
+
           </div>
-
-          
-
         </div>
-
       </div>
+    </nav>
+  );
+};
 
-    </div>
-  )
-}
-
-export default Navbar
+export default Navbar;
