@@ -125,3 +125,125 @@ Year Set / graduation year
 Name
 Alumni ID
 Basic profile details
+
+
+
+| Area              | Super Admin | Admin | Treasurer | Secretary |
+| ----------------- | ----------- | ----- | --------- | --------- |
+| Dashboard         | ✓           | ✓     | ✓         | ✓         |
+| Members           | ✓           | ✓     | Read      | ✓         |
+| Obligations       | ✓           | ✓     | ✓         | Read      |
+| Payments          | ✓           | ✓     | ✓         | Read      |
+| Financial Reports | ✓           | ✓     | ✓         | Read      |
+| Year Sets         | ✓           | ✓     | Read      | ✓         |
+| Chapters          | ✓           | ✓     | Read      | ✓         |
+| Notifications     | ✓           | ✓     | ✓         | ✓         |
+| Settings          | ✓           | ✓     | —         | —         |
+| Role Management   | ✓           | —     | —         | —         |
+
+
+
+
+
+OlivetNOSA
+│
+├── Public Website
+│
+├── Authentication
+│   ├── Register
+│   ├── Email Verification
+│   ├── Login
+│   ├── Forgot Password
+│   └── JWT Cookie Auth
+│
+├── Member Portal
+│   ├── Dashboard
+│   ├── Profile
+│   ├── My Obligations
+│   ├── My Year Set
+│   ├── My Chapter
+│   ├── Payment History
+│   ├── Directory
+│   ├── Notifications
+│   └── Help & Support
+│
+├── Admin Portal
+│   ├── Dashboard
+│   ├── Members
+│   ├── Obligations
+│   ├── Payments
+│   ├── Year Sets
+│   ├── Chapters
+│   ├── Financial Reports
+│   ├── Notifications
+│   └── Admin Settings
+│
+├── Authorization
+│   ├── Super Admin
+│   ├── Admin
+│   ├── Treasurer
+│   ├── Secretary
+│   └── Member
+│
+├── Financial Architecture
+│   ├── Obligation
+│   ├── ObligationAssignment
+│   └── Payment
+│
+├── Payment Gateways
+│   ├── Paystack
+│   ├── Flutterwave
+│   └── PayPal
+│
+├── Leadership
+│   ├── Year Set Leaders
+│   └── Chapter Leaders
+│
+├── Notifications
+│   ├── Account
+│   ├── Payment
+│   ├── Obligation
+│   ├── Announcement
+│   └── System
+│
+└── Audit
+    └── AuditLog
+
+
+
+
+
+
+
+    src/
+├── components/
+│   ├── admin/
+│   │   ├── AdminPageHeader.jsx
+│   │   ├── AdminStatCard.jsx
+│   │   ├── AdminSection.jsx
+│   │   ├── AdminSectionHeader.jsx
+│   │   ├── AdminTable.jsx
+│   │   ├── AdminTableRow.jsx
+│   │   ├── AdminEmptyState.jsx
+│   │   ├── AdminBadge.jsx
+│   │   ├── AdminActionButton.jsx
+│   │   ├── AdminLoading.jsx
+│   │   └── AdminError.jsx
+│   │
+│   └── charts/
+│       ├── CollectionTrendChart.jsx
+│       └── CollectionCategoryChart.jsx
+│
+├── pages/
+│   └── admin/
+│       ├── Dashboard.jsx
+│       ├── Main.jsx
+│       ├── Members.jsx
+│       ├── Obligations.jsx
+│       ├── Payments.jsx
+│       ├── YearSets.jsx
+│       ├── Chapters.jsx
+│       └── FinancialReports.jsx
+│
+└── services/
+    └── adminService.js
