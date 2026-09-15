@@ -222,9 +222,10 @@ const NotificationDropdown = () => {
                 {unreadCount > 0 && (
                     <span
                         className="
+                       
                             absolute
-                            -top-0.5
-                            -right-0.5
+                            md:-top-0.5
+                            md:-right-0.5
                             min-w-[17px]
                             h-[17px]
                             px-1
@@ -248,22 +249,25 @@ const NotificationDropdown = () => {
             {/* Dropdown */}
             {open && (
                 <div
-                    className="
-                        absolute
-                        right-0
-                        top-full
-                        mt-3
-                        w-[360px]
-                        max-w-[calc(100vw-2rem)]
-                        bg-(--bg-white)
-                        border
-                        border-(--border)
-                        rounded
-                        shadow-xl
-                        z-50
-                        overflow-hidden
-                    "
-                >
+    className="
+        absolute
+        right-0
+        top-full
+        mt-3
+        min-w-[320px]
+        md:w-[360px]
+        max-w-[calc(100vw-1rem)]
+        sm:max-w-[calc(100vw-2rem)]
+        bg-(--bg-white)
+        border
+        border-(--border)
+        rounded
+        shadow-xl
+       
+        z-50
+        overflow-hidden
+    "
+>
                     {/* Header */}
                     <div className="px-4 py-4 border-b border-(--border)">
                         <div className="flex items-center justify-between gap-4">
