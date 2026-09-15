@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 
-
 import {
     Bell,
     CheckCheck,
@@ -12,7 +11,9 @@ import {
     ArrowUpRight,
     Inbox,
 } from "lucide-react";
+
 import { useNavigate } from "react-router-dom";
+
 import {
     getMyNotifications,
     markAllNotificationsAsRead,
@@ -20,8 +21,8 @@ import {
 } from "../../services/notificationService.js";
 
 const NotificationDropdown = () => {
-
     const navigate = useNavigate();
+
     const [open, setOpen] = useState(false);
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -82,33 +83,34 @@ const NotificationDropdown = () => {
     };
 
     const markOneAsRead = async (notification) => {
-    try {
-        if (!notification.isRead) {
-            await markNotificationAsRead(notification._id);
+        try {
+            if (!notification.isRead) {
+                await markNotificationAsRead(notification._id);
 
-            setNotifications((current) =>
-                current.map((item) =>
-                    item._id === notification._id
-                        ? {
-                              ...item,
-                              isRead: true,
-                          }
-                        : item
-                )
+                setNotifications((current) =>
+                    current.map((item) =>
+                        item._id === notification._id
+                            ? {
+                                  ...item,
+                                  isRead: true,
+                              }
+                            : item
+                    )
+                );
+            }
+
+            if (notification.link) {
+                navigate(notification.link);
+                setOpen(false);
+            }
+        } catch (error) {
+            console.error(
+                "Mark notification read error:",
+                error
             );
         }
+    };
 
-        if (notification.link) {
-            navigate(notification.link);
-            setOpen(false);
-        }
-    } catch (error) {
-        console.error(
-            "Mark notification read error:",
-            error
-        );
-    }
-};
     const markAllAsRead = async () => {
         if (!unreadCount) return;
 
@@ -170,21 +172,15 @@ const NotificationDropdown = () => {
         }
 
         if (difference < 3600) {
-            return `${Math.floor(
-                difference / 60
-            )}m`;
+            return `${Math.floor(difference / 60)}m`;
         }
 
         if (difference < 86400) {
-            return `${Math.floor(
-                difference / 3600
-            )}h`;
+            return `${Math.floor(difference / 3600)}h`;
         }
 
         if (difference < 604800) {
-            return `${Math.floor(
-                difference / 86400
-            )}d`;
+            return `${Math.floor(difference / 86400)}d`;
         }
 
         return created.toLocaleDateString("en-NG", {
@@ -193,8 +189,7 @@ const NotificationDropdown = () => {
         });
     };
 
-    const recentNotifications =
-        notifications.slice(0, 5);
+    const recentNotifications = notifications.slice(0, 5);
 
     return (
         <div
@@ -222,10 +217,9 @@ const NotificationDropdown = () => {
                 {unreadCount > 0 && (
                     <span
                         className="
-                       
                             absolute
-                            md:-top-0.5
-                            md:-right-0.5
+                            -top-0.5
+                            -right-0.5
                             min-w-[17px]
                             h-[17px]
                             px-1
@@ -247,31 +241,36 @@ const NotificationDropdown = () => {
             </button>
 
             {/* Dropdown */}
-            {open && (
-                <div
-    className="
-        absolute
-        right-0
-        top-full
-        mt-3
-        min-w-[320px]
-        md:w-[360px]
-        max-w-[calc(100vw-1rem)]
-        sm:max-w-[calc(100vw-2rem)]
-        bg-(--bg-white)
-        border
-        border-(--border)
-        rounded
-        shadow-xl
-       
-        z-50
-        overflow-hidden
-    "
->
+           {open && (
+    <div
+        className="
+            fixed
+            left-2
+            right-2
+            top-[60px]
+            w-auto
+            max-w-none
+            bg-(--bg-white)
+            border
+            border-(--border)
+            rounded
+            shadow-xl
+            z-[100]
+            overflow-hidden
+
+            sm:absolute
+            sm:left-auto
+            sm:right-0
+            sm:top-full
+            sm:mt-3
+            sm:w-[360px]
+            sm:max-w-[360px]
+        "
+    >
                     {/* Header */}
                     <div className="px-4 py-4 border-b border-(--border)">
                         <div className="flex items-center justify-between gap-4">
-                            <div>
+                            <div className="min-w-0">
                                 <h3 className="text-sm font-semibold text-(--primary)">
                                     Notifications
                                 </h3>
@@ -297,11 +296,10 @@ const NotificationDropdown = () => {
                                         text-(--primary)
                                         hover:text-(--primary-dark)
                                         disabled:opacity-50
+                                        shrink-0
                                     "
                                 >
-                                    <CheckCheck
-                                        size={14}
-                                    />
+                                    <CheckCheck size={14} />
 
                                     {markingAll
                                         ? "..."
@@ -320,8 +318,7 @@ const NotificationDropdown = () => {
                                 Loading...
                             </p>
                         </div>
-                    ) : recentNotifications.length ===
-                      0 ? (
+                    ) : recentNotifications.length === 0 ? (
                         <div className="py-10 px-5 text-center">
                             <div className="w-10 h-10 mx-auto rounded-full bg-(--primary-light) text-(--primary) flex items-center justify-center">
                                 <Inbox size={18} />
@@ -341,9 +338,7 @@ const NotificationDropdown = () => {
                             {recentNotifications.map(
                                 (notification) => (
                                     <button
-                                        key={
-                                            notification._id
-                                        }
+                                        key={notification._id}
                                         type="button"
                                         onClick={() =>
                                             markOneAsRead(
@@ -364,7 +359,8 @@ const NotificationDropdown = () => {
                                             }
                                         `}
                                     >
-                                        <div className="flex items-start gap-3">
+                                        <div className="flex items-start gap-3 min-w-0">
+                                            {/* Icon */}
                                             <div
                                                 className={`
                                                     w-8
@@ -386,13 +382,16 @@ const NotificationDropdown = () => {
                                                 )}
                                             </div>
 
+                                            {/* Content */}
                                             <div className="min-w-0 flex-1">
-                                                <div className="flex items-start justify-between gap-3">
-                                                    <div className="flex items-center gap-1.5 min-w-0">
+                                                {/* Title + Time */}
+                                                <div className="flex items-start gap-2 min-w-0">
+                                                    <div className="flex items-center gap-1.5 min-w-0 flex-1">
                                                         <h4
                                                             className={`
                                                                 text-xs
                                                                 truncate
+                                                                min-w-0
                                                                 ${
                                                                     notification.isRead
                                                                         ? "font-medium"
@@ -411,26 +410,27 @@ const NotificationDropdown = () => {
                                                         )}
                                                     </div>
 
-                                                    <span className="text-[10px] text-(--text-muted) whitespace-nowrap">
+                                                    <span className="text-[10px] text-(--text-muted) whitespace-nowrap shrink-0">
                                                         {getRelativeTime(
                                                             notification.createdAt
                                                         )}
                                                     </span>
                                                 </div>
 
-                                                <p className="text-xs text-(--text-muted) mt-1 leading-5 line-clamp-2">
+                                                {/* Message */}
+                                                <p className="text-xs text-(--text-muted) mt-1 leading-5 line-clamp-2 break-words">
                                                     {
                                                         notification.message
                                                     }
                                                 </p>
 
+                                                {/* Link */}
                                                 {notification.link && (
                                                     <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-(--primary) mt-2">
                                                         View details
+
                                                         <ArrowUpRight
-                                                            size={
-                                                                11
-                                                            }
+                                                            size={11}
                                                         />
                                                     </span>
                                                 )}
@@ -447,7 +447,10 @@ const NotificationDropdown = () => {
                         <button
                             type="button"
                             onClick={() => {
-                               navigate("/portal/member/dashboard/notifications");
+                                navigate(
+                                    "/portal/member/dashboard/notifications"
+                                );
+
                                 setOpen(false);
                             }}
                             className="
