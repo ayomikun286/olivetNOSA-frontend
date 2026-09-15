@@ -16,6 +16,10 @@ import {
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
+
+const handleLinkClick = () => {
+  setIsOpen(false);
+};
 const Sidebar = ({ setIsOpen }) => {
   const { user } = useAuth();
 
@@ -104,6 +108,7 @@ const Sidebar = ({ setIsOpen }) => {
             <NavLink
               to="/portal/member/dashboard"
               end
+              onClick={handleLinkClick}
               className={linkClass}
             >
               <Home className={iconClass} />
@@ -120,6 +125,7 @@ const Sidebar = ({ setIsOpen }) => {
             <NavLink
               to="/portal/member/dashboard/profile"
               className={linkClass}
+              onClick={handleLinkClick}
             >
               <User className={iconClass} />
               <span>My Profile</span>
@@ -128,6 +134,7 @@ const Sidebar = ({ setIsOpen }) => {
             <NavLink
               to="/portal/member/dashboard/my-obligation"
               className={linkClass}
+              onClick={handleLinkClick}
             >
               <ClipboardList className={iconClass} />
               <span>My Obligations</span>
@@ -136,6 +143,7 @@ const Sidebar = ({ setIsOpen }) => {
             <NavLink
               to="/portal/member/dashboard/payment-history"
               className={linkClass}
+              onClick={handleLinkClick}
             >
               <CreditCard className={iconClass} />
               <span>Payment History</span>
@@ -144,6 +152,7 @@ const Sidebar = ({ setIsOpen }) => {
             <NavLink
               to="/portal/member/dashboard/directory"
               className={linkClass}
+              onClick={handleLinkClick}
             >
               <ContactRound className={iconClass} />
               <span>Directory</span>
@@ -162,6 +171,7 @@ const Sidebar = ({ setIsOpen }) => {
                 <NavLink
                   to="/portal/member/dashboard/year-set"
                   className={linkClass}
+                  onClick={handleLinkClick}
                 >
                   <Users className={iconClass} />
                   <span>My Year Set</span>
@@ -172,6 +182,7 @@ const Sidebar = ({ setIsOpen }) => {
                 <NavLink
                   to="/portal/member/dashboard/Chapter "
                   className={linkClass}
+                  onClick={handleLinkClick}
                 >
                   <MapPin className={iconClass} />
                   <span>My Chapter</span>
@@ -190,6 +201,7 @@ const Sidebar = ({ setIsOpen }) => {
             <NavLink
               to="/portal/member/dashboard/notifications"
               className={linkClass}
+              onClick={handleLinkClick}
             >
               <Bell className={iconClass} />
               <span>Notifications</span>
@@ -205,6 +217,7 @@ const Sidebar = ({ setIsOpen }) => {
             <NavLink
               to="/portal/member/dashboard/help-support"
               className={linkClass}
+              onClick={handleLinkClick}
             >
               <HelpCircle className={iconClass} />
               <span>Help & Support</span>
