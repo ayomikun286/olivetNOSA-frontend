@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+
 import {
     ReceiptText,
     WalletCards,
@@ -8,6 +9,8 @@ import {
     Clock3,
     AlertCircle,
     ArrowUpRight,
+    Users,
+    MapPin,
 } from "lucide-react";
 
 import { getMyObligation } from "../../services/obligationService.js";
@@ -20,14 +23,16 @@ const Obligations = () => {
         const fetchObligations = async () => {
             try {
                 const data = await getMyObligation();
+const individual = (data?.assignments || []).filter(
+    (item) => item.obligation?.category === "individual"
+);
 
-                const individual = (data?.assignments || []).filter(
-                    (item) => item.obligation?.category === "individual"
-                );
-
-                setObligations(individual);
+setObligations(individual);
             } catch (error) {
-                console.error("Failed to fetch obligations:", error);
+                console.error(
+                    "Failed to fetch obligations:",
+                    error
+                );
             } finally {
                 setLoading(false);
             }
@@ -47,35 +52,48 @@ const Obligations = () => {
     const formatDate = (date) => {
         if (!date) return "—";
 
-        return new Date(date).toLocaleDateString("en-NG", {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-        });
+        return new Date(date).toLocaleDateString(
+            "en-NG",
+            {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+            }
+        );
     };
 
     const totalDue = obligations.reduce(
-        (total, item) => total + Number(item.amountDue || 0),
+        (total, item) =>
+            total + Number(item.amountDue || 0),
         0
     );
 
     const totalPaid = obligations.reduce(
-        (total, item) => total + Number(item.amountPaid || 0),
+        (total, item) =>
+            total + Number(item.amountPaid || 0),
         0
     );
 
-    const outstanding = Math.max(totalDue - totalPaid, 0);
+    const outstanding = Math.max(
+        totalDue - totalPaid,
+        0
+    );
 
     const getStatus = (item) => {
         const due = Number(item.amountDue || 0);
         const paid = Number(item.amountPaid || 0);
-        const remaining = Math.max(due - paid, 0);
+
+        const remaining = Math.max(
+            due - paid,
+            0
+        );
 
         if (remaining === 0) {
             return {
                 label: "Paid",
                 icon: CheckCircle2,
-                className: "text-(--success) bg-(--success-light)",
+                className:
+                    "text-(--success) bg-(--success-light)",
             };
         }
 
@@ -83,15 +101,46 @@ const Obligations = () => {
             return {
                 label: "Partial",
                 icon: Clock3,
-                className: "text-(--warning) bg-(--warning-light)",
+                className:
+                    "text-(--warning) bg-(--warning-light)",
             };
         }
 
         return {
             label: "Pending",
             icon: AlertCircle,
-            className: "text-(--warning) bg-(--warning-light)",
+            className:
+                "text-(--warning) bg-(--warning-light)",
         };
+    };
+
+    const getCategoryLabel = (category) => {
+        switch (category) {
+            case "individual":
+                return "Individual";
+
+            case "yearSet":
+                return "Year Set";
+
+            case "chapter":
+                return "Chapter";
+
+            default:
+                return "Membership";
+        }
+    };
+
+    const getCategoryIcon = (category) => {
+        switch (category) {
+            case "yearSet":
+                return Users;
+
+            case "chapter":
+                return MapPin;
+
+            default:
+                return ReceiptText;
+        }
     };
 
     return (
@@ -105,7 +154,8 @@ const Obligations = () => {
                     </h1>
 
                     <p className="text-sm text-(--secondary) mt-1">
-                        View your assigned membership contributions and payment status.
+                        View your assigned membership
+                        contributions and payment status.
                     </p>
                 </div>
 
@@ -133,8 +183,11 @@ const Obligations = () => {
                         </h2>
 
                         <p className="text-xs text-(--text-muted) mt-2">
-                            Across {obligations.length} obligation
-                            {obligations.length !== 1 ? "s" : ""}
+                            Across {obligations.length}{" "}
+                            obligation
+                            {obligations.length !== 1
+                                ? "s"
+                                : ""}
                         </p>
                     </div>
 
@@ -191,18 +244,19 @@ const Obligations = () => {
                     </div>
                 </div>
 
-                {/* OBLIGATIONS */}
+                {/* ALL OBLIGATIONS */}
                 <div className="bg-(--bg-white) border border-(--border) rounded overflow-hidden">
 
                     {/* HEADER */}
                     <div className="p-5 border-b border-(--border) flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div>
                             <h2 className="font-semibold text-(--primary)">
-                                Individual Obligations
+                                My Obligations
                             </h2>
 
                             <p className="text-sm text-(--secondary) mt-1">
-                                Your assigned personal membership contributions.
+                                Your individual, year set and
+                                chapter contributions.
                             </p>
                         </div>
 
@@ -210,7 +264,9 @@ const Obligations = () => {
                             <CircleDollarSign size={16} />
 
                             {obligations.length} obligation
-                            {obligations.length !== 1 ? "s" : ""}
+                            {obligations.length !== 1
+                                ? "s"
+                                : ""}
                         </div>
                     </div>
 
@@ -223,168 +279,234 @@ const Obligations = () => {
                         </div>
                     ) : obligations.length === 0 ? (
                         <div className="p-12 text-center">
-
                             <div className="w-12 h-12 mx-auto rounded-full bg-(--primary-light) text-(--primary) flex items-center justify-center">
                                 <CheckCircle2 size={22} />
                             </div>
 
                             <h3 className="font-semibold text-(--primary) mt-4">
-                                No individual obligations
+                                No obligations
                             </h3>
 
                             <p className="text-sm text-(--secondary) mt-1 max-w-md mx-auto">
-                                You currently have no individual membership obligations
+                                You currently have no
+                                membership obligations
                                 assigned to your account.
                             </p>
                         </div>
                     ) : (
-                        <div className="max-h-[500px] overflow-y-auto">
-                            <div className="divide-y divide-(--border)">
+                        <div className="divide-y max-h-[400px] overflow-y-auto scrollbar-hide divide-(--border)">
 
-                                {obligations.map((item) => {
-                                    const due = Number(item.amountDue || 0);
-                                    const paid = Number(item.amountPaid || 0);
-                                    const remaining = Math.max(due - paid, 0);
+                            {obligations.map((item) => {
+                                const due = Number(
+                                    item.amountDue || 0
+                                );
 
-                                    const progress = due
-                                        ? Math.min((paid / due) * 100, 100)
-                                        : 0;
+                                const paid = Number(
+                                    item.amountPaid || 0
+                                );
 
-                                    const status = getStatus(item);
-                                    const StatusIcon = status.icon;
+                                const remaining =
+                                    Math.max(
+                                        due - paid,
+                                        0
+                                    );
 
-                                    return (
-                                        <div
-                                            key={item._id}
-                                            className="p-5 sm:p-6"
-                                        >
+                                const progress = due
+                                    ? Math.min(
+                                          (paid / due) *
+                                              100,
+                                          100
+                                      )
+                                    : 0;
 
-                                            {/* TOP */}
-                                            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                                const status =
+                                    getStatus(item);
 
-                                                <div className="flex items-start gap-3.5 min-w-0">
+                                const StatusIcon =
+                                    status.icon;
 
-                                                    <div className="w-10 h-10 shrink-0 rounded-lg bg-(--primary-light) text-(--primary) flex items-center justify-center">
-                                                        <ReceiptText size={18} />
-                                                    </div>
+                                const CategoryIcon =
+                                    getCategoryIcon(
+                                        item.obligation
+                                            ?.category
+                                    );
 
-                                                    <div className="min-w-0">
+                                return (
+                                    <div
+                                        key={item._id}
+                                        className="p-5 sm:p-6"
+                                    >
 
+                                        {/* TOP */}
+                                        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+
+                                            <div className="flex items-start gap-3.5 min-w-0">
+
+                                                <div className="w-10 h-10 shrink-0 rounded-lg bg-(--primary-light) text-(--primary) flex items-center justify-center">
+                                                    <CategoryIcon
+                                                        size={
+                                                            18
+                                                        }
+                                                    />
+                                                </div>
+
+                                                <div className="min-w-0">
+
+                                                    <div className="flex flex-wrap items-center gap-2">
                                                         <h3 className="text-sm font-semibold text-(--primary)">
-                                                            {item.obligation?.name ||
+                                                            {item
+                                                                .obligation
+                                                                ?.name ||
                                                                 "Membership obligation"}
                                                         </h3>
 
-                                                        <p className="text-xs text-(--secondary) mt-1 leading-relaxed max-w-2xl">
-                                                            {item.obligation?.description ||
-                                                                "Assigned membership contribution"}
-                                                        </p>
-
-                                                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2.5 text-xs text-(--text-muted)">
-
-                                                            <span className="flex items-center gap-1">
-                                                                <CalendarDays size={13} />
-                                                                Due {formatDate(item.dueDate)}
-                                                            </span>
-
-                                                            <span>
-                                                                Individual
-                                                            </span>
-
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                {/* STATUS + AMOUNT */}
-                                                <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0">
-
-                                                    <div className="sm:text-right">
-                                                        <p className="text-[11px] text-(--text-muted)">
-                                                            Amount due
-                                                        </p>
-
-                                                        <p className="text-sm font-semibold text-(--primary) mt-0.5">
-                                                            {formatCurrency(due)}
-                                                        </p>
+                                                        <span className="text-[10px] font-medium px-2 py-1 rounded-full bg-(--bg-light) text-(--secondary)">
+                                                            {getCategoryLabel(
+                                                                item
+                                                                    .obligation
+                                                                    ?.category
+                                                            )}
+                                                        </span>
                                                     </div>
 
-                                                    <span
-                                                        className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-full ${status.className}`}
-                                                    >
-                                                        <StatusIcon size={13} />
-                                                        {status.label}
-                                                    </span>
+                                                    <p className="text-xs text-(--secondary) mt-1 leading-relaxed max-w-2xl">
+                                                        {item
+                                                            .obligation
+                                                            ?.description ||
+                                                            "Assigned membership contribution"}
+                                                    </p>
 
+                                                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2.5 text-xs text-(--text-muted)">
+
+                                                        <span className="flex items-center gap-1">
+                                                            <CalendarDays
+                                                                size={
+                                                                    13
+                                                                }
+                                                            />
+
+                                                            Due{" "}
+                                                            {formatDate(
+                                                                item.dueDate
+                                                            )}
+                                                        </span>
+
+                                                    </div>
                                                 </div>
                                             </div>
 
-                                            {/* PAYMENT PROGRESS */}
-                                            <div className="mt-5 pt-4 border-t border-(--border)">
+                                            {/* STATUS + AMOUNT */}
+                                            <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0">
 
-                                                <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                                                <div className="sm:text-right">
+                                                    <p className="text-[11px] text-(--text-muted)">
+                                                        Amount due
+                                                    </p>
 
-                                                    <div className="flex-1 min-w-0">
-
-                                                        <div className="flex items-center justify-between mb-2">
-
-                                                            <span className="text-xs text-(--secondary)">
-                                                                {paid > 0
-                                                                    ? `${formatCurrency(paid)} paid`
-                                                                    : "No payment recorded"}
-                                                            </span>
-
-                                                            <span className="text-xs font-semibold text-(--primary)">
-                                                                {Math.round(progress)}%
-                                                            </span>
-
-                                                        </div>
-
-                                                        <div className="h-1.5 bg-(--bg-light) rounded-full overflow-hidden">
-                                                            <div
-                                                                className="h-full bg-(--success) rounded-full transition-all"
-                                                                style={{
-                                                                    width: `${progress}%`,
-                                                                }}
-                                                            />
-                                                        </div>
-
-                                                    </div>
-
-                                                    {/* OUTSTANDING */}
-                                                    <div className="sm:w-32 shrink-0">
-
-                                                        <p className="text-[11px] text-(--text-muted)">
-                                                            Outstanding
-                                                        </p>
-
-                                                        <p
-                                                            className={`text-sm font-semibold mt-0.5 ${remaining > 0
-                                                                    ? "text-(--primary)"
-                                                                    : "text-(--success)"
-                                                                }`}
-                                                        >
-                                                            {formatCurrency(remaining)}
-                                                        </p>
-
-                                                    </div>
-
-                                                    {/* PAY */}
-                                                    {remaining > 0 && (
-                                                        <button
-                                                            type="button"
-                                                            className="inline-flex items-center justify-center gap-1.5 bg-(--primary) text-white px-4 py-2 rounded-(--radius-sm) text-xs font-semibold hover:bg-(--primary-dark) transition shrink-0"
-                                                        >
-                                                            Pay now
-                                                            <ArrowUpRight size={14} />
-                                                        </button>
-                                                    )}
-
+                                                    <p className="text-sm font-semibold text-(--primary) mt-0.5">
+                                                        {formatCurrency(
+                                                            due
+                                                        )}
+                                                    </p>
                                                 </div>
+
+                                                <span
+                                                    className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-full ${status.className}`}
+                                                >
+                                                    <StatusIcon
+                                                        size={
+                                                            13
+                                                        }
+                                                    />
+
+                                                    {
+                                                        status.label
+                                                    }
+                                                </span>
                                             </div>
                                         </div>
-                                    );
-                                })}
-                            </div>
+
+                                        {/* PAYMENT PROGRESS */}
+                                        <div className="mt-5 pt-4 border-t border-(--border)">
+
+                                            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+
+                                                <div className="flex-1 min-w-0">
+
+                                                    <div className="flex items-center justify-between mb-2">
+
+                                                        <span className="text-xs text-(--secondary)">
+                                                            {paid >
+                                                            0
+                                                                ? `${formatCurrency(
+                                                                      paid
+                                                                  )} paid`
+                                                                : "No payment recorded"}
+                                                        </span>
+
+                                                        <span className="text-xs font-semibold text-(--primary)">
+                                                            {Math.round(
+                                                                progress
+                                                            )}
+                                                            %
+                                                        </span>
+
+                                                    </div>
+
+                                                    <div className="h-1.5 bg-(--bg-light) rounded-full overflow-hidden">
+
+                                                        <div
+                                                            className="h-full bg-(--success) rounded-full transition-all"
+                                                            style={{
+                                                                width: `${progress}%`,
+                                                            }}
+                                                        />
+
+                                                    </div>
+                                                </div>
+
+                                                {/* OUTSTANDING */}
+                                                <div className="sm:w-32 shrink-0">
+
+                                                    <p className="text-[11px] text-(--text-muted)">
+                                                        Outstanding
+                                                    </p>
+
+                                                    <p
+                                                        className={`text-sm font-semibold mt-0.5 ${
+                                                            remaining >
+                                                            0
+                                                                ? "text-(--primary)"
+                                                                : "text-(--success)"
+                                                        }`}
+                                                    >
+                                                        {formatCurrency(
+                                                            remaining
+                                                        )}
+                                                    </p>
+
+                                                </div>
+
+                                                {/* PAY */}
+                                                {remaining > 0 && (
+                                                    <button
+                                                        type="button"
+                                                        className="inline-flex items-center justify-center gap-1.5 bg-(--primary) text-white px-4 py-2 rounded-(--radius-sm) text-xs font-semibold hover:bg-(--primary-dark) transition shrink-0"
+                                                    >
+                                                        Pay now
+                                                        <ArrowUpRight
+                                                            size={
+                                                                14
+                                                            }
+                                                        />
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+
                         </div>
                     )}
                 </div>

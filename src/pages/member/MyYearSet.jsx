@@ -746,7 +746,7 @@ const MyYearSet = () => {
                         </div>
 
                         {recentActivity.length > 0 ? (
-                            <div className="divide-y divide-(--border)">
+                            <div className="divide-y max-h-[400px] overflow-y-auto scrollbar-hide divide-(--border)">
                                 {recentActivity.map((activity, index) => (
                                     <div
                                         key={activity._id || index}

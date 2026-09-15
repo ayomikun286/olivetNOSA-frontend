@@ -313,7 +313,7 @@ const PaymentHistory = () => {
                         </div>
                     ) : (
                         <div className="max-h-[600px] overflow-y-auto">
-                            <div className="divide-y divide-(--border)">
+                            <div className="divide-y max-h-[400px] overflow-y-auto scrollbar-hide divide-(--border)">
                                 {payments.map((payment) => {
                                     const status = getStatus(
                                         payment.status
