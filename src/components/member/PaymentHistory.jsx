@@ -14,11 +14,11 @@ const PaymentHistory = ({ payments = [] }) => {
       {/* HEADER */}
       <div className="p-5 border-b border-(--border) flex items-center justify-between gap-3">
         <div>
-          <h2 className="font-semibold text-(--text-primary)">
+          <h2 className="font-semibold text-(--primary)">
             Payment History
           </h2>
 
-          <p className="text-sm text-(--text-secondary) mt-1">
+          <p className="text-sm text-(--secondary) mt-1">
             Your most recent payments.
           </p>
         </div>
@@ -42,11 +42,11 @@ const PaymentHistory = ({ payments = [] }) => {
             <ReceiptText size={20} />
           </div>
 
-          <h3 className="text-sm font-semibold text-(--text-primary) mt-3">
+          <h3 className="text-sm font-semibold text-(--primary) mt-3">
             No payments yet
           </h3>
 
-          <p className="text-xs text-(--text-secondary) mt-1">
+          <p className="text-xs text-(--secondary) mt-1">
             Your payment history will appear here once you make a payment.
           </p>
         </div>
@@ -62,16 +62,16 @@ const PaymentHistory = ({ payments = [] }) => {
               </div>
 
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-(--text-primary) truncate">
+                <p className="text-sm font-medium text-(--primary) truncate">
                   {payment.description || "Membership payment"}
                 </p>
 
-                <p className="text-xs text-(--text-secondary) mt-0.5">
+                <p className="text-xs text-(--secondary) mt-0.5">
                   {payment.date || "—"}
                 </p>
               </div>
 
-              <p className="text-sm font-semibold text-(--text-primary)">
+              <p className="text-sm font-semibold text-(--primary)">
                 {payment.amount || "₦0"}
               </p>
             </div>
@@ -85,7 +85,7 @@ const PaymentHistory = ({ payments = [] }) => {
           <button
             type="button"
             onClick={() => navigate("/dashboard/payments")}
-            className="text-xs font-medium text-(--text-secondary) hover:text-(--primary) transition"
+            className="text-xs font-medium text-(--secondary) hover:text-(--primary) transition"
           >
             View complete payment history →
           </button>

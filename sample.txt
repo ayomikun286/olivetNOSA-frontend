@@ -110,3 +110,18 @@ GET    /api/obligations/:id
 PATCH  /api/obligations/:id
 PATCH  /api/obligations/:id/status
 DELETE /api/obligations/:id
+
+
+
+
+
+
+1. Directory ← next
+Members should be able to find other Olivetians, probably with:
+
+Search
+Chapter
+Year Set / graduation year
+Name
+Alumni ID
+Basic profile details

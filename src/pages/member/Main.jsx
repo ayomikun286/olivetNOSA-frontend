@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+
 import {
     CreditCard,
     ReceiptText,
@@ -23,7 +24,6 @@ import { getMyObligation } from "../../services/obligationService.js";
 
 const Main = () => {
     const { user } = useAuth();
-
     const [obligations, setObligations] = useState([]);
     const [loadingObligations, setLoadingObligations] = useState(true);
 
@@ -31,7 +31,6 @@ const Main = () => {
         const fetchObligations = async () => {
             try {
                 const data = await getMyObligation();
-
                 setObligations(data?.assignments || []);
             } catch (error) {
                 console.error("Failed to fetch obligations:", error);
@@ -39,7 +38,6 @@ const Main = () => {
                 setLoadingObligations(false);
             }
         };
-
         fetchObligations();
     }, []);
 
@@ -63,13 +61,7 @@ const Main = () => {
 
     // ========================================
     // OBLIGATION SUMMARY
-
-
-
-
-
-
-
+    // ========================================
 
     // ========================================
     // INDIVIDUAL OBLIGATION SUMMARY
@@ -100,11 +92,6 @@ const Main = () => {
                 new Date(a.dueDate) - new Date(b.dueDate)
         )[0]?.dueDate;
 
-
-
-
-
-
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat("en-NG", {
             style: "currency",
@@ -115,7 +102,6 @@ const Main = () => {
 
     const formatDate = (date) => {
         if (!date) return "—";
-
         return new Date(date).toLocaleDateString("en-NG", {
             day: "numeric",
             month: "short",
@@ -154,7 +140,6 @@ const Main = () => {
                 ======================================== */}
 
             <div className=" space-y-4">
-
                 {/* MEMBER HERO */}
                 <div
                     style={{
@@ -186,7 +171,6 @@ const Main = () => {
                     </div>
 
                     <div className="flex justify-between gap-3 md:px-15 px-2 items-start md:justify-between md:items-center flex-wrap">
-
                         {/* Alumni ID */}
                         <div className="flex gap-4 md:border-r pr-2 md:pr-5 items-center">
                             <GraduationCap size={20} strokeWidth={2} />
@@ -196,7 +180,7 @@ const Main = () => {
 
                                 <strong className="font-semibold text-sm">
                                     {alumniId || (
-                                        <span className="text-(--color-warning)">
+                                        <span className="text-(--warning)">
                                             Pending approval
                                         </span>
                                     )}
@@ -226,7 +210,7 @@ const Main = () => {
 
                                 <strong className="font-semibold text-sm">
                                     {yearSet || (
-                                        <span className="text-(--color-warning)">
+                                        <span className="text-(--warning)">
                                             Not yet assigned
                                         </span>
                                     )}
@@ -243,43 +227,37 @@ const Main = () => {
 
                                 <strong className="font-semibold text-sm">
                                     {chapter || (
-                                        <span className="text-(--color-warning)">
+                                        <span className="text-(--warning)">
                                             Not yet assigned
                                         </span>
                                     )}
                                 </strong>
                             </div>
                         </div>
-
                     </div>
                 </div>
 
                 <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_280px] gap-4">
                     <div className="space-y-5">
-
                         {/* // FINANCIAL OVERVIEW */}
                         <div className="space-y-3">
-
                             <div>
-                                <h2 className="text-lg font-semibold text-(--text-primary)">
+                                <h2 className="text-lg font-semibold text-(--primary)">
                                     Your contributions
                                 </h2>
 
-                                <p className="text-sm text-(--text-secondary)">
+                                <p className="text-sm text-(--secondary)">
                                     Keep track of your membership obligations and payments.
                                 </p>
                             </div>
 
                             <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-
                                 {/* MAIN BALANCE */}
                                 <div className="lg:col-span-1 rounded bg-(--primary) text-white p-5 relative overflow-hidden">
-
                                     <div className="absolute -right-8 -top-8 w-28 h-28 rounded-full bg-white/5" />
                                     <div className="absolute -right-3 -bottom-10 w-24 h-24 rounded-full bg-(--secondary)/10" />
 
                                     <div className="relative">
-
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-2">
                                                 <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center">
@@ -305,15 +283,16 @@ const Main = () => {
                                         <p className="text-sm text-white/65 mt-1">
                                             remaining from {formatCurrency(totalObligation)}
                                         </p>
+
                                         <div className="mt-5 h-2 rounded-full bg-white/10 overflow-hidden">
                                             <div
                                                 className="h-full bg-(--secondary) rounded-full transition-all"
                                                 style={{
                                                     width: totalObligation
                                                         ? `${Math.min(
-                                                            (amountPaid / totalObligation) * 100,
-                                                            100
-                                                        )}%`
+                                                              (amountPaid / totalObligation) * 100,
+                                                              100
+                                                          )}%`
                                                         : "0%",
                                                 }}
                                             />
@@ -325,21 +304,18 @@ const Main = () => {
                                             <span>
                                                 {totalObligation
                                                     ? Math.round(
-                                                        (amountPaid / totalObligation) * 100
-                                                    )
+                                                          (amountPaid / totalObligation) * 100
+                                                      )
                                                     : 0}
                                                 %
                                             </span>
                                         </div>
-
                                     </div>
                                 </div>
 
                                 {/* PAID */}
                                 <div className="rounded bg-(--bg-white) border border-(--border) p-5">
-
                                     <div className="flex items-center justify-between">
-
                                         <div className="w-10 h-10 rounded-lg bg-green-50 text-(--success) flex items-center justify-center">
                                             <CheckCircle2 size={20} />
                                         </div>
@@ -347,14 +323,13 @@ const Main = () => {
                                         <span className="text-xs text-(--text-muted)">
                                             Total
                                         </span>
-
                                     </div>
 
-                                    <p className="text-sm text-(--text-secondary) mt-5">
+                                    <p className="text-sm text-(--secondary) mt-5">
                                         Amount paid
                                     </p>
 
-                                    <h3 className="text-2xl font-bold text-(--text-primary) mt-1">
+                                    <h3 className="text-2xl font-bold text-(--primary) mt-1">
                                         {formatCurrency(amountPaid)}
                                     </h3>
 
@@ -362,14 +337,11 @@ const Main = () => {
                                         Across {individualObligations.length} obligation
                                         {individualObligations.length !== 1 ? "s" : ""}
                                     </p>
-
                                 </div>
 
                                 {/* NEXT DUE */}
                                 <div className="rounded bg-(--bg-white) border border-(--border) p-5">
-
                                     <div className="flex items-center justify-between">
-
                                         <div className="w-10 h-10 rounded-lg bg-(--secondary-light) text-(--secondary) flex items-center justify-center">
                                             <Calendar size={20} />
                                         </div>
@@ -379,14 +351,13 @@ const Main = () => {
                                                 Upcoming
                                             </span>
                                         )}
-
                                     </div>
 
-                                    <p className="text-sm text-(--text-secondary) mt-5">
+                                    <p className="text-sm text-(--secondary) mt-5">
                                         Next due date
                                     </p>
 
-                                    <h3 className="text-xl font-bold text-(--text-primary) mt-1">
+                                    <h3 className="text-xl font-bold text-(--primary) mt-1">
                                         {nextDueDate
                                             ? formatDate(nextDueDate)
                                             : "All settled"}
@@ -394,81 +365,66 @@ const Main = () => {
 
                                     <p className="text-xs text-(--text-muted) mt-2">
                                         {unpaidObligations.length
-                                            ? `${unpaidObligations.length} outstanding obligation${unpaidObligations.length > 1
-                                                ? "s"
-                                                : ""
-                                            }`
+                                            ? `${unpaidObligations.length} outstanding obligation${
+                                                  unpaidObligations.length > 1
+                                                      ? "s"
+                                                      : ""
+                                              }`
                                             : "You're all caught up"}
                                     </p>
-
                                 </div>
-
                             </div>
                         </div>
 
                         {/* MY OBLIGATIONS */}
                         <div className="bg-(--bg-white) border border-(--border) rounded overflow-hidden">
-
                             <div className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-(--border)">
-
                                 <div>
-                                    <h2 className="font-semibold text-(--text-primary)">
+                                    <h2 className="font-semibold text-(--primary)">
                                         My Obligations
                                     </h2>
 
-                                    <p className="text-sm text-(--text-secondary) mt-1">
+                                    <p className="text-sm text-(--secondary) mt-1">
                                         Your assigned membership contributions.
                                     </p>
                                 </div>
 
-                                <div className="flex items-center gap-2 text-xs text-(--text-secondary)">
+                                <div className="flex items-center gap-2 text-xs text-(--secondary)">
                                     <CircleDollarSign size={16} />
 
                                     {individualObligations.length} obligation
                                     {individualObligations.length !== 1 ? "s" : ""}
                                 </div>
-
                             </div>
 
                             {/* the table */}
                             <div className="divide-y max-h-[500px] overflow-y-auto scrollbar-hide divide-(--border)">
-
                                 {loadingObligations ? (
-
-                                    <div className="p-8 text-center text-sm text-(--text-secondary)">
+                                    <div className="p-8 text-center text-sm text-(--secondary)">
                                         Loading your obligations...
                                     </div>
-
                                 ) : individualObligations.length === 0 ? (
-
                                     <div className="p-10 text-center">
-
                                         <div className="w-12 h-12 mx-auto rounded-full bg-(--primary-light) text-(--primary) flex items-center justify-center">
                                             <CheckCircle2 size={22} />
                                         </div>
 
-                                        <h3 className="font-semibold mt-4">
+                                        <h3 className="font-semibold mt-4 text-(--primary)">
                                             You're all caught up
                                         </h3>
 
-                                        <p className="text-sm text-(--text-secondary) mt-1">
+                                        <p className="text-sm text-(--secondary) mt-1">
                                             You currently have no outstanding obligations.
                                         </p>
-
                                     </div>
-
                                 ) : (
-
                                     individualObligations.map((item) => {
-
                                         const paid = Number(item.amountPaid || 0);
                                         const due = Number(item.amountDue || 0);
                                         const remaining = Math.max(due - paid, 0);
-
                                         const progress = due
                                             ? Math.min((paid / due) * 100, 100)
                                             : 0;
-
                                         const isPaid = remaining === 0;
                                         const isPartial = paid > 0 && remaining > 0;
 
@@ -477,142 +433,112 @@ const Main = () => {
                                                 key={item._id}
                                                 className="p-5 sm:p-6 hover:bg-(--bg-light)/50 transition"
                                             >
-
                                                 {/* TOP ROW */}
                                                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-
                                                     {/* OBLIGATION INFO */}
                                                     <div className="flex items-start gap-3.5 min-w-0">
-
                                                         <div className="w-10 h-10 shrink-0 rounded-lg bg-(--primary-light) text-(--primary) flex items-center justify-center">
                                                             <ReceiptText size={18} />
                                                         </div>
 
                                                         <div className="min-w-0">
-
-                                                            <h3 className="text-sm font-semibold text-(--text-primary)">
-                                                                {item.obligation?.name || "Membership obligation"}
+                                                            <h3 className="text-sm font-semibold text-(--primary)">
+                                                                {item.obligation?.name ||
+                                                                    "Membership obligation"}
                                                             </h3>
 
-                                                            <p className="text-xs text-(--text-secondary) mt-1 leading-relaxed max-w-xl">
+                                                            <p className="text-xs text-(--secondary) mt-1 leading-relaxed max-w-xl">
                                                                 {item.obligation?.description ||
                                                                     "Assigned membership contribution"}
                                                             </p>
 
                                                             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2.5 text-xs text-(--text-muted)">
-
                                                                 <span>
                                                                     Due {formatDate(item.dueDate)}
                                                                 </span>
 
-                                                                <span>
-                                                                    Individual
-                                                                </span>
-
+                                                                <span>Individual</span>
                                                             </div>
-
                                                         </div>
-
                                                     </div>
 
                                                     {/* AMOUNT + STATUS */}
                                                     <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0">
-
                                                         <div className="sm:text-right">
-
                                                             <p className="text-[11px] text-(--text-muted)">
                                                                 Amount due
                                                             </p>
 
-                                                            <p className="text-sm font-semibold text-(--text-primary) mt-0.5">
+                                                            <p className="text-sm font-semibold text-(--primary) mt-0.5">
                                                                 {formatCurrency(due)}
                                                             </p>
-
                                                         </div>
 
                                                         {isPaid ? (
-
                                                             <span className="inline-flex items-center gap-1.5 text-xs font-medium text-(--success) bg-(--success-light) px-2.5 py-1.5 rounded-full">
                                                                 <CheckCircle2 size={13} />
                                                                 Paid
                                                             </span>
-
                                                         ) : isPartial ? (
-
                                                             <span className="inline-flex items-center gap-1.5 text-xs font-medium text-(--warning) bg-(--warning-light) px-2.5 py-1.5 rounded-full">
                                                                 <Clock3 size={13} />
                                                                 Partial
                                                             </span>
-
                                                         ) : (
-
                                                             <span className="inline-flex items-center gap-1.5 text-xs font-medium text-(--primary) bg-(--danger-light) px-2.5 py-1.5 rounded-full">
                                                                 <AlertCircle size={13} />
                                                                 Pending
                                                             </span>
-
                                                         )}
-
                                                     </div>
-
                                                 </div>
 
                                                 {/* BOTTOM ROW */}
                                                 <div className="mt-5 pt-4 border-t border-(--border)">
-
                                                     <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-
                                                         {/* PROGRESS */}
                                                         <div className="flex-1 min-w-0">
-
                                                             <div className="flex items-center justify-between mb-2">
-
-                                                                <span className="text-xs text-(--text-secondary)">
+                                                                <span className="text-xs text-(--secondary)">
                                                                     {isPaid
                                                                         ? "Payment completed"
                                                                         : `${formatCurrency(paid)} paid`}
                                                                 </span>
 
-                                                                <span className="text-xs font-semibold text-(--text-primary)">
+                                                                <span className="text-xs font-semibold text-(--primary)">
                                                                     {Math.round(progress)}%
                                                                 </span>
-
                                                             </div>
 
                                                             <div className="h-1.5 bg-(--bg-light) rounded-full overflow-hidden">
-
                                                                 <div
                                                                     className="h-full bg-(--success) rounded-full transition-all"
                                                                     style={{
                                                                         width: `${progress}%`,
                                                                     }}
                                                                 />
-
                                                             </div>
-
                                                         </div>
 
                                                         {/* OUTSTANDING */}
                                                         <div className="sm:w-32 shrink-0">
-
                                                             <p className="text-[11px] text-(--text-muted)">
                                                                 Outstanding
                                                             </p>
 
                                                             <p
-                                                                className={`text-sm font-semibold mt-0.5 ${remaining > 0
-                                                                    ? "text-(--text-primary)"
-                                                                    : "text-(--success)"
-                                                                    }`}
+                                                                className={`text-sm font-semibold mt-0.5 ${
+                                                                    remaining > 0
+                                                                        ? "text-(--primary)"
+                                                                        : "text-(--success)"
+                                                                }`}
                                                             >
                                                                 {formatCurrency(remaining)}
                                                             </p>
-
                                                         </div>
 
                                                         {/* ACTION */}
                                                         {!isPaid && (
-
                                                             <button
                                                                 type="button"
                                                                 className="inline-flex items-center justify-center gap-1.5 bg-(--primary) text-white px-4 py-2 rounded-(--radius-sm) text-xs font-semibold hover:bg-(--primary-dark) transition shrink-0"
@@ -620,43 +546,30 @@ const Main = () => {
                                                                 Pay now
                                                                 <ArrowUpRight size={14} />
                                                             </button>
-
                                                         )}
-
                                                     </div>
-
                                                 </div>
-
                                             </div>
                                         );
                                     })
-
                                 )}
-
                             </div>
-
                         </div>
 
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-
                             {/* PAYMENT HISTORY */}
                             <PaymentHistory />
 
                             {/* QUICK ACTIONS */}
                             <QuickActions hasOutstanding={outstanding > 0} />
-
                         </div>
-
                     </div>
 
                     <aside className="flex flex-col space-y-8">
                         <MembershipStatus />
-
                         <Notifications />
                     </aside>
-
                 </div>
-
             </div>
         </div>
     );

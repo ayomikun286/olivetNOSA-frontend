@@ -53,11 +53,11 @@ const QuickActions = ({ hasOutstanding }) => {
   return (
     <div className="bg-(--bg-white) border border-(--border) rounded overflow-hidden">
       <div className="p-5 border-b border-(--border)">
-        <h2 className="font-semibold text-(--text-primary)">
+        <h2 className="font-semibold text-(--primary)">
           Quick Actions
         </h2>
 
-        <p className="text-sm text-(--text-secondary) mt-1">
+        <p className="text-sm text-(--secondary) mt-1">
           Quickly access important areas of your membership.
         </p>
       </div>
@@ -78,11 +78,11 @@ const QuickActions = ({ hasOutstanding }) => {
               </div>
 
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-(--text-primary)">
+                <p className="text-sm font-medium text-(--primary)">
                   {action.label}
                 </p>
 
-                <p className="text-xs text-(--text-secondary) mt-0.5 truncate">
+                <p className="text-xs text-(--secondary) mt-0.5 truncate">
                   {action.description}
                 </p>
               </div>

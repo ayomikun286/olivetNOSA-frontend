@@ -10,6 +10,7 @@ import {
   Bell,
   HelpCircle,
   LogOut,
+  ContactRound,
 } from "lucide-react";
 
 import { NavLink } from "react-router-dom";
@@ -31,21 +32,20 @@ const Sidebar = ({ setIsOpen }) => {
       border border-transparent
       font-medium text-[0.88rem]
       transition-all duration-300 ease-out
-      ${
-        isActive
-          ? `
+      ${isActive
+      ? `
             bg-white/10
             text-[var(--secondary)]
             border-[var(--secondary)]/20
             shadow-sm
           `
-          : `
+      : `
             text-white/90
             hover:text-[var(--secondary)]
             hover:bg-white/[0.06]
             hover:border-white/10
           `
-      }
+    }
     `;
 
   const iconClass =
@@ -94,7 +94,7 @@ const Sidebar = ({ setIsOpen }) => {
       </div>
 
       {/* ================= NAVIGATION ================= */}
-      <nav  className="flex-1 overflow-y-auto mt-7 space-y-7 pr-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <nav className="flex-1 overflow-y-auto mt-7 space-y-7 pr-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
 
         {/* ================= OVERVIEW ================= */}
         <div>
@@ -126,7 +126,7 @@ const Sidebar = ({ setIsOpen }) => {
             </NavLink>
 
             <NavLink
-              to="/portal/member/obligations"
+              to="/portal/member/dashboard/my-obligation"
               className={linkClass}
             >
               <ClipboardList className={iconClass} />
@@ -134,11 +134,19 @@ const Sidebar = ({ setIsOpen }) => {
             </NavLink>
 
             <NavLink
-              to="/portal/member/payments"
+              to="/portal/member/dashboard/payment-history"
               className={linkClass}
             >
               <CreditCard className={iconClass} />
               <span>Payment History</span>
+            </NavLink>
+
+            <NavLink
+              to="/portal/member/dashboard/directory"
+              className={linkClass}
+            >
+              <ContactRound className={iconClass} />
+              <span>Directory</span>
             </NavLink>
           </div>
         </div>
@@ -180,7 +188,7 @@ const Sidebar = ({ setIsOpen }) => {
 
           <div className="space-y-1">
             <NavLink
-              to="/portal/member/notifications"
+              to="/portal/member/dashboard/notifications"
               className={linkClass}
             >
               <Bell className={iconClass} />
@@ -195,7 +203,7 @@ const Sidebar = ({ setIsOpen }) => {
 
           <div className="space-y-1">
             <NavLink
-              to="/portal/member/help"
+              to="/portal/member/dashboard/help-support"
               className={linkClass}
             >
               <HelpCircle className={iconClass} />

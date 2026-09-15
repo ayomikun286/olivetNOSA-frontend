@@ -1,17 +1,24 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
-  Bell,
   ChevronDown,
   LogOut,
   User,
   Settings,
 } from "lucide-react";
+import { NavLink } from "react-router-dom";
+import NotificationDropdown from "../common/NotificationDropdown.jsx";
 
-const Navbar = ({ setIsOpen, firstName, year, logout, alumniId }) => {
+const Navbar = ({
+  setIsOpen,
+  firstName,
+  year,
+  logout,
+  alumniId,
+}) => {
   const [dropDown, setDropDown] = useState(false);
   const dropdownRef = useRef(null);
 
-  // Close dropdown when clicking outside
+  // Close profile dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -25,9 +32,14 @@ const Navbar = ({ setIsOpen, firstName, year, logout, alumniId }) => {
     document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
     };
   }, []);
+
+  const initial = firstName?.charAt(0)?.toUpperCase() || "U";
 
   return (
     <nav className="flex items-center justify-between border-b border-b-(--secondary)/50 bg-(--bg-light) px-4 py-3 md:px-8">
@@ -46,40 +58,34 @@ const Navbar = ({ setIsOpen, firstName, year, logout, alumniId }) => {
       {/* ================= RIGHT ================= */}
       <div className="flex items-center gap-5">
 
-        {/* Notification */}
-        <button
-          className="relative p-1 text-(--primary)"
-          aria-label="Notifications"
+        {/* ================= NOTIFICATIONS ================= */}
+        <NotificationDropdown />
+
+        {/* ================= PROFILE ================= */}
+        <div
+          ref={dropdownRef}
+          className="relative"
         >
-          <Bell size={20} strokeWidth={2} />
-
-          <span className="absolute -right-1 -top-1 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-(--secondary) px-1 text-[9px] font-bold text-white">
-            0
-          </span>
-        </button>
-
-        {/* Profile */}
-        <div ref={dropdownRef} className="relative">
-
           {/* Profile trigger */}
           <button
             onClick={() => setDropDown((prev) => !prev)}
             className="flex items-center gap-3 text-left"
+            aria-label="Open profile menu"
           >
             {/* Avatar */}
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-(--secondary) font-bold text-(--primary)">
-              {firstName?.charAt(0)?.toUpperCase()}
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-(--secondary) font-bold text-(--primary)">
+              {initial}
             </span>
 
-            {/* Name */}
-            <div className="hidden flex-col text-(--primary) sm:flex">
-              <strong className="text-sm leading-tight">
-                {firstName.toUpperCase()}
+            {/* Name + Alumni ID */}
+            <div className="hidden flex-col sm:flex">
+              <strong className="text-sm leading-tight text-(--primary)">
+                {firstName?.toUpperCase()}
               </strong>
 
-              <small className="text-xs opacity-70">
+              <small className="mt-0.5 text-xs text-(--primary)/60">
                 {alumniId || (
-                  <span className="text-(--color-warning)">
+                  <span className="text-(--warning)">
                     Pending approval
                   </span>
                 )}
@@ -89,57 +95,102 @@ const Navbar = ({ setIsOpen, firstName, year, logout, alumniId }) => {
             {/* Chevron */}
             <ChevronDown
               size={16}
-              className={`text-(--primary) transition-transform duration-300 ${dropDown ? "rotate-180" : ""
-                }`}
+              className={`text-(--primary) transition-transform duration-300 ${
+                dropDown ? "rotate-180" : ""
+              }`}
             />
           </button>
 
-          {/* ================= DROPDOWN ================= */}
+          {/* ================= PROFILE DROPDOWN ================= */}
           <div
-            className={`absolute right-0 top-13 z-50 w-64 origin-top-right overflow-hidden rounded border border-(--secondary)/20 bg-(--bg-light) shadow-lg transition-all duration-200 ${dropDown
-              ? "visible scale-100 opacity-100"
-              : "invisible scale-95 opacity-0"
-              }`}
+            className={`
+              absolute right-0 top-13 z-50
+              w-72
+              origin-top-right
+              overflow-hidden
+              rounded
+              border border-(--secondary)/20
+              bg-(--bg-light)
+              shadow-lg
+              transition-all duration-200
+              ${
+                dropDown
+                  ? "visible scale-100 opacity-100"
+                  : "invisible scale-95 opacity-0"
+              }
+            `}
           >
 
-            {/* User info */}
+            {/* ================= USER INFO ================= */}
             <div className="border-b border-(--secondary)/20 px-4 py-4">
-              <p className="font-semibold text-(--primary)">
-                {firstName.toUpperCase()}
-              </p>
+              <div className="flex items-center gap-3">
 
-              <p className="text-xs text-(--primary)/60">
-                {alumniId || (
-                  <span className="text-(--color-warning)">
-                    Pending approval
-                  </span>
-                )}
-              </p>
+                {/* Avatar */}
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-(--secondary) text-base font-bold text-(--primary)">
+                  {initial}
+                </span>
+
+                {/* Identity */}
+                <div className="min-w-0">
+                  <p className="truncate font-semibold text-(--primary)">
+                    {firstName?.toUpperCase()}
+                  </p>
+
+                  <p className="mt-0.5 text-xs text-(--primary)/60">
+                    {alumniId || (
+                      <span className="text-(--warning)">
+                        Pending approval
+                      </span>
+                    )}
+                  </p>
+                </div>
+              </div>
             </div>
 
-            {/* Profile */}
-            <button
-              className="flex w-full items-center gap-3 px-4 py-3 text-sm text-(--primary) transition-colors hover:bg-(--primary)/5"
+            {/* ================= PROFILE ================= */}
+            <NavLink
+              to="/portal/member/dashboard/profile"
               onClick={() => setDropDown(false)}
+              className="
+                flex w-full items-center gap-3
+                px-4 py-3
+                text-sm text-(--primary)
+                transition-colors
+                hover:bg-(--primary)/5
+              "
             >
               <User size={17} />
               <span>My Profile</span>
-            </button>
+            </NavLink>
 
-            {/* Settings */}
+            {/* ================= SETTINGS ================= */}
             <button
-              className="flex w-full items-center gap-3 px-4 py-3 text-sm text-(--primary) transition-colors hover:bg-(--primary)/5"
+              type="button"
               onClick={() => setDropDown(false)}
+              className="
+                flex w-full items-center gap-3
+                px-4 py-3
+                text-sm text-(--primary)
+                transition-colors
+                hover:bg-(--primary)/5
+              "
             >
               <Settings size={17} />
               <span>Settings</span>
             </button>
 
-            {/* Logout */}
+            {/* ================= LOGOUT ================= */}
             <div className="border-t border-(--secondary)/20">
               <button
+                type="button"
                 onClick={logout}
-                className="flex w-full items-center gap-3 px-4 py-3 text-sm text-red-600 transition-colors hover:bg-red-50"
+                className="
+                  flex w-full items-center gap-3
+                  px-4 py-3
+                  text-sm text-red-600
+                  transition-colors
+                  hover:bg-red-50
+                "
               >
                 <LogOut size={17} />
                 <span>Logout</span>

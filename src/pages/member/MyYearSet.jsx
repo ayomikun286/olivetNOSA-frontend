@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+
 import {
     Users,
     Wallet,
@@ -28,10 +29,12 @@ const MyYearSet = () => {
                 setError("");
 
                 const data = await getyearSetObligation();
+                console.log(data)
 
                 setYearSetData(data);
             } catch (err) {
                 console.error("Fetch year set error:", err);
+
                 setError(
                     err.message || "Failed to load year set information."
                 );
@@ -49,6 +52,7 @@ const MyYearSet = () => {
 
     const yearSet = yearSetData?.yearSet || user?.yearSet;
     const summary = yearSetData?.summary;
+    const obligations = yearSetData?.obligations || [];
     const members = yearSetData?.members || [];
     const recentActivity = yearSetData?.recentActivity || [];
 
@@ -95,40 +99,39 @@ const MyYearSet = () => {
                         PAGE INTRO
                     ======================================== */}
 
-                    <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
-
+                    <div className="flex flex-col p-4 rounded shadow sm:flex-row sm:items-end sm:justify-between gap-3">
                         <div>
                             <p className="text-xs font-semibold uppercase tracking-wide text-(--secondary)">
                                 Leadership
                             </p>
 
-                            <h1 className="text-xl md:text-2xl font-semibold text-(--text-primary) mt-1">
+                            <h1 className="text-xl md:text-2xl font-semibold text-(--primary) mt-1">
                                 My Year Set
                             </h1>
 
-                            <p className="text-sm text-(--text-secondary) mt-1">
+                            <p className="text-sm text-(--secondary) mt-1">
                                 Manage your year set membership and official contributions.
                             </p>
                         </div>
 
                         <div className="flex items-center gap-3">
-
                             <div className="w-10 h-10 rounded-md bg-(--primary-light) text-(--primary) flex items-center justify-center">
                                 <Users size={19} />
                             </div>
 
                             <div>
-                                <p className="text-sm font-semibold text-(--text-primary)">
+                                <p className="text-sm font-semibold text-(--primary)">
                                     {yearSet?.name || "Year Set"}
                                 </p>
 
                                 <p className="text-xs text-(--text-muted) mt-0.5">
-                                    {yearSet?.year || user?.graduationYear || "—"} Set
+                                    {yearSet?.year ||
+                                        user?.graduationYear ||
+                                        "—"}{" "}
+                                    Set
                                 </p>
                             </div>
-
                         </div>
-
                     </div>
 
                     {/* ========================================
@@ -155,13 +158,12 @@ const MyYearSet = () => {
                     ======================================== */}
 
                     <div className="space-y-3">
-
                         <div>
-                            <h2 className="text-lg font-semibold text-(--text-primary)">
+                            <h2 className="text-lg font-semibold text-(--primary)">
                                 Year Set Contributions
                             </h2>
 
-                            <p className="text-sm text-(--text-secondary)">
+                            <p className="text-sm text-(--secondary)">
                                 Track your year set's financial responsibility.
                             </p>
                         </div>
@@ -171,17 +173,13 @@ const MyYearSet = () => {
                             {/* MAIN BALANCE */}
 
                             <div className="lg:col-span-2 rounded bg-(--primary) text-white p-5 relative overflow-hidden">
-
                                 <div className="absolute -right-8 -top-8 w-28 h-28 rounded-full bg-white/5" />
 
                                 <div className="absolute -right-3 -bottom-10 w-24 h-24 rounded-full bg-(--secondary)/10" />
 
                                 <div className="relative">
-
                                     <div className="flex items-center justify-between">
-
                                         <div className="flex items-center gap-2">
-
                                             <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center">
                                                 <Wallet size={18} />
                                             </div>
@@ -189,7 +187,6 @@ const MyYearSet = () => {
                                             <span className="text-sm text-white/75">
                                                 Outstanding balance
                                             </span>
-
                                         </div>
 
                                         {!loading && outstanding > 0 && (
@@ -197,7 +194,6 @@ const MyYearSet = () => {
                                                 Action needed
                                             </span>
                                         )}
-
                                     </div>
 
                                     <h3 className="text-3xl font-bold mt-7">
@@ -214,7 +210,6 @@ const MyYearSet = () => {
                                     </p>
 
                                     <div className="mt-5 h-2 rounded-full bg-white/10 overflow-hidden">
-
                                         <div
                                             className="h-full bg-(--secondary) rounded-full transition-all duration-500"
                                             style={{
@@ -223,11 +218,9 @@ const MyYearSet = () => {
                                                     : `${contributionProgress}%`,
                                             }}
                                         />
-
                                     </div>
 
                                     <div className="flex justify-between text-xs mt-2 text-white/60">
-
                                         <span>
                                             {loading
                                                 ? "—"
@@ -238,22 +231,17 @@ const MyYearSet = () => {
                                             {loading
                                                 ? "—"
                                                 : `${Math.round(
-                                                    contributionProgress
-                                                )}%`}
+                                                      contributionProgress
+                                                  )}%`}
                                         </span>
-
                                     </div>
-
                                 </div>
-
                             </div>
 
                             {/* PAID */}
 
                             <div className="rounded bg-(--bg-white) border border-(--border) p-5">
-
                                 <div className="flex items-center justify-between">
-
                                     <div className="w-10 h-10 rounded-lg bg-green-50 text-(--success) flex items-center justify-center">
                                         <CheckCircle2 size={20} />
                                     </div>
@@ -261,14 +249,13 @@ const MyYearSet = () => {
                                     <span className="text-xs text-(--text-muted)">
                                         Total
                                     </span>
-
                                 </div>
 
-                                <p className="text-sm text-(--text-secondary) mt-5">
+                                <p className="text-sm text-(--secondary) mt-5">
                                     Amount paid
                                 </p>
 
-                                <h3 className="text-2xl font-bold text-(--text-primary) mt-1">
+                                <h3 className="text-2xl font-bold text-(--primary) mt-1">
                                     {loading
                                         ? "—"
                                         : formatCurrency(amountPaid)}
@@ -277,15 +264,12 @@ const MyYearSet = () => {
                                 <p className="text-xs text-(--text-muted) mt-2">
                                     Official year set payments
                                 </p>
-
                             </div>
 
                             {/* MEMBERS */}
 
                             <div className="rounded bg-(--bg-white) border border-(--border) p-5">
-
                                 <div className="flex items-center justify-between">
-
                                     <div className="w-10 h-10 rounded-lg bg-(--primary-light) text-(--primary) flex items-center justify-center">
                                         <Users size={20} />
                                     </div>
@@ -293,26 +277,256 @@ const MyYearSet = () => {
                                     <span className="text-xs text-(--text-muted)">
                                         Active
                                     </span>
-
                                 </div>
 
-                                <p className="text-sm text-(--text-secondary) mt-5">
+                                <p className="text-sm text-(--secondary) mt-5">
                                     Year set members
                                 </p>
 
-                                <h3 className="text-2xl font-bold text-(--text-primary) mt-1">
+                                <h3 className="text-2xl font-bold text-(--primary) mt-1">
                                     {loading ? "—" : memberCount}
                                 </h3>
 
                                 <p className="text-xs text-(--text-muted) mt-2">
                                     Members assigned to this set
                                 </p>
+                            </div>
+                        </div>
+                    </div>
 
+                    {/* ========================================
+                        YEAR SET OBLIGATIONS
+                    ======================================== */}
+
+                    <section className="bg-(--bg-white) border border-(--border) rounded overflow-hidden">
+                        <div className="p-5 border-b border-(--border) flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div>
+                                <h2 className="font-semibold text-(--primary)">
+                                    Year Set Obligations
+                                </h2>
+
+                                <p className="text-sm text-(--secondary) mt-1">
+                                    View all financial obligations assigned to your year set.
+                                </p>
                             </div>
 
+                            <div className="flex items-center gap-2 text-xs text-(--secondary)">
+                                <CircleDollarSign size={15} />
+
+                                {obligations.length} obligation
+                                {obligations.length !== 1 ? "s" : ""}
+                            </div>
                         </div>
 
-                    </div>
+                        {loading ? (
+                            <div className="p-10 text-center">
+                                <p className="text-sm text-(--secondary)">
+                                    Loading obligations...
+                                </p>
+                            </div>
+                        ) : obligations.length === 0 ? (
+                            <div className="p-10 text-center">
+                                <div className="w-12 h-12 mx-auto rounded-full bg-(--primary-light) text-(--primary) flex items-center justify-center">
+                                    <CheckCircle2 size={22} />
+                                </div>
+
+                                <h3 className="font-semibold text-(--primary) mt-4">
+                                    No obligations assigned
+                                </h3>
+
+                                <p className="text-sm text-(--secondary) mt-1 max-w-md mx-auto">
+                                    There are currently no financial obligations assigned to this year set.
+                                </p>
+                            </div>
+                        ) : (
+                            <div className="divide-y divide-(--border) max-h-[450px] overflow-y-auto scrollbar-hide">
+                                {obligations.map((item) => {
+                                    const due = Number(item.amountDue || 0);
+                                    const paid = Number(item.amountPaid || 0);
+
+                                    const remaining = Math.max(
+                                        due - paid,
+                                        0
+                                    );
+
+                                    const progress = due
+                                        ? Math.min((paid / due) * 100, 100)
+                                        : 0;
+
+                                    const isPaid = remaining === 0;
+
+                                    return (
+                                        <div
+                                            key={item._id}
+                                            className="p-5 sm:p-6"
+                                        >
+                                            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+
+                                                {/* OBLIGATION INFO */}
+
+                                                <div className="flex items-start gap-3.5 min-w-0">
+                                                    <div className="w-10 h-10 shrink-0 rounded-lg bg-(--primary-light) text-(--primary) flex items-center justify-center">
+                                                        <CircleDollarSign
+                                                            size={18}
+                                                        />
+                                                    </div>
+
+                                                    <div className="min-w-0">
+                                                        <h3 className="text-sm font-semibold text-(--primary)">
+                                                            {item.obligation
+                                                                ?.name ||
+                                                                "Year Set Obligation"}
+                                                        </h3>
+
+                                                        <p className="text-xs text-(--secondary) mt-1 leading-relaxed max-w-2xl">
+                                                            {item.obligation
+                                                                ?.description ||
+                                                                "Official year set contribution"}
+                                                        </p>
+
+                                                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2.5 text-xs text-(--text-muted)">
+                                                            <span className="flex items-center gap-1">
+                                                                <CalendarDays
+                                                                    size={13}
+                                                                />
+
+                                                                Due{" "}
+                                                                {formatDate(
+                                                                    item.dueDate
+                                                                )}
+                                                            </span>
+
+                                                            <span>
+                                                                Year Set
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {/* AMOUNT + STATUS */}
+
+                                                <div className="flex items-center justify-between lg:justify-end gap-4 shrink-0">
+                                                    <div className="lg:text-right">
+                                                        <p className="text-[11px] text-(--text-muted)">
+                                                            Amount due
+                                                        </p>
+
+                                                        <p className="text-sm font-semibold text-(--primary) mt-0.5">
+                                                            {formatCurrency(
+                                                                due
+                                                            )}
+                                                        </p>
+                                                    </div>
+
+                                                    <span
+                                                        className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-full ${
+                                                            isPaid
+                                                                ? "text-(--success) bg-(--success-light)"
+                                                                : "text-(--warning) bg-(--warning-light)"
+                                                        }`}
+                                                    >
+                                                        {isPaid ? (
+                                                            <CheckCircle2
+                                                                size={13}
+                                                            />
+                                                        ) : (
+                                                            <AlertCircle
+                                                                size={13}
+                                                            />
+                                                        )}
+
+                                                        {isPaid
+                                                            ? "Paid"
+                                                            : "Outstanding"}
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            {/* PAYMENT PROGRESS */}
+
+                                            <div className="mt-5 pt-4 border-t border-(--border)">
+                                                <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+
+                                                    <div className="flex-1 min-w-0">
+                                                        <div className="flex items-center justify-between mb-2">
+                                                            <span className="text-xs text-(--secondary)">
+                                                                {paid > 0
+                                                                    ? `${formatCurrency(
+                                                                          paid
+                                                                      )} paid`
+                                                                    : "No payment recorded"}
+                                                            </span>
+
+                                                            <span className="text-xs font-semibold text-(--primary)">
+                                                                {Math.round(
+                                                                    progress
+                                                                )}
+                                                                %
+                                                            </span>
+                                                        </div>
+
+                                                        <div className="h-1.5 bg-(--bg-light) rounded-full overflow-hidden">
+                                                            <div
+                                                                className="h-full bg-(--success) rounded-full transition-all"
+                                                                style={{
+                                                                    width: `${progress}%`,
+                                                                }}
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="sm:w-32 shrink-0">
+                                                        <p className="text-[11px] text-(--text-muted)">
+                                                            Outstanding
+                                                        </p>
+
+                                                        <p
+                                                            className={`text-sm font-semibold mt-0.5 ${
+                                                                remaining > 0
+                                                                    ? "text-(--primary)"
+                                                                    : "text-(--success)"
+                                                            }`}
+                                                        >
+                                                            {formatCurrency(
+                                                                remaining
+                                                            )}
+                                                        </p>
+                                                    </div>
+
+                                                    {remaining > 0 && (
+                                                        <button
+                                                            type="button"
+                                                            className="
+                                                                inline-flex
+                                                                items-center
+                                                                justify-center
+                                                                gap-1.5
+                                                                bg-(--primary)
+                                                                text-white
+                                                                px-4
+                                                                py-2
+                                                                rounded-(--radius-sm)
+                                                                text-xs
+                                                                font-semibold
+                                                                hover:bg-(--primary-dark)
+                                                                transition
+                                                                shrink-0
+                                                            "
+                                                        >
+                                                            Pay now
+                                                            <ArrowUpRight
+                                                                size={14}
+                                                            />
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </section>
 
                     {/* ========================================
                         MEMBERS + PAYMENT
@@ -320,82 +534,62 @@ const MyYearSet = () => {
 
                     <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_320px] gap-4">
 
-                        {/* ========================================
-                            MEMBERS
-                        ======================================== */}
+                        {/* MEMBERS */}
 
                         <section className="bg-(--bg-white) border border-(--border) rounded overflow-hidden">
-
                             <div className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-(--border)">
-
                                 <div>
-
-                                    <h2 className="font-semibold text-(--text-primary)">
+                                    <h2 className="font-semibold text-(--primary)">
                                         Year Set Members
                                     </h2>
 
-                                    <p className="text-sm text-(--text-secondary) mt-1">
+                                    <p className="text-sm text-(--secondary) mt-1">
                                         Active members assigned to your year set.
                                     </p>
-
                                 </div>
 
-                                <div className="flex items-center gap-2 text-xs text-(--text-secondary)">
+                                <div className="flex items-center gap-2 text-xs text-(--secondary)">
                                     <Users size={15} />
 
                                     {memberCount} member
                                     {memberCount !== 1 ? "s" : ""}
                                 </div>
-
                             </div>
 
                             {loading ? (
-
-                                <div className="p-8 text-center text-sm text-(--text-secondary)">
+                                <div className="p-8 text-center text-sm text-(--secondary)">
                                     Loading members...
                                 </div>
-
                             ) : members.length === 0 ? (
-
                                 <div className="p-10 text-center">
-
                                     <div className="w-12 h-12 mx-auto rounded-full bg-(--primary-light) text-(--primary) flex items-center justify-center">
                                         <Users size={22} />
                                     </div>
 
-                                    <h3 className="font-semibold mt-4 text-(--text-primary)">
+                                    <h3 className="font-semibold mt-4 text-(--primary)">
                                         No members found
                                     </h3>
 
-                                    <p className="text-sm text-(--text-secondary) mt-1">
+                                    <p className="text-sm text-(--secondary) mt-1">
                                         No active members are currently assigned
                                         to this year set.
                                     </p>
-
                                 </div>
-
                             ) : (
-
                                 <div className="divide-y divide-(--border) max-h-[430px] overflow-y-auto scrollbar-hide">
-
                                     {members.slice(0, 5).map((member) => (
-
                                         <div
                                             key={member._id}
                                             className="p-5 hover:bg-(--bg-light)/50 transition"
                                         >
-
                                             <div className="flex items-center justify-between gap-4">
-
                                                 <div className="flex items-center gap-3.5 min-w-0">
-
                                                     <div className="w-10 h-10 shrink-0 rounded-lg bg-(--primary-light) text-(--primary) flex items-center justify-center">
                                                         <UserRound size={18} />
                                                     </div>
 
                                                     <div className="min-w-0">
-
-                                                        <h3 className="text-sm font-semibold text-(--text-primary) truncate">
+                                                        <h3 className="text-sm font-semibold text-(--primary) truncate">
                                                             {member.firstName}{" "}
                                                             {member.middleName
                                                                 ? `${member.middleName} `
@@ -403,41 +597,33 @@ const MyYearSet = () => {
                                                             {member.lastName}
                                                         </h3>
 
-                                                        <p className="text-xs text-(--text-secondary) mt-1">
-                                                            {member.alumniId || "No Alumni ID"}
+                                                        <p className="text-xs text-(--secondary) mt-1">
+                                                            {member.alumniId ||
+                                                                "No Alumni ID"}
                                                         </p>
-
                                                     </div>
-
                                                 </div>
 
                                                 <div className="text-right shrink-0">
-
-                                                    <p className="text-xs font-semibold text-(--text-primary)">
-                                                        {member.chapter?.code || "—"}
+                                                    <p className="text-xs font-semibold text-(--primary)">
+                                                        {member.chapter?.code ||
+                                                            "—"}
                                                     </p>
 
                                                     <p className="text-xs text-(--text-muted) mt-1">
                                                         Class of{" "}
-                                                        {member.graduationYear || "—"}
+                                                        {member.graduationYear ||
+                                                            "—"}
                                                     </p>
-
                                                 </div>
-
                                             </div>
-
                                         </div>
-
                                     ))}
-
                                 </div>
-
                             )}
 
                             {members.length > 5 && (
-
                                 <div className="border-t border-(--border) p-4 text-center">
-
                                     <button
                                         type="button"
                                         className="inline-flex items-center gap-1.5 text-xs font-semibold text-(--primary) hover:text-(--secondary) transition"
@@ -445,85 +631,66 @@ const MyYearSet = () => {
                                         View all members
                                         <ArrowUpRight size={14} />
                                     </button>
-
                                 </div>
-
                             )}
-
                         </section>
 
-                        {/* ========================================
-                            PAYMENT
-                        ======================================== */}
+                        {/* PAYMENT */}
 
                         <section className="bg-(--bg-white) border border-(--border) rounded overflow-hidden">
-
                             <div className="p-5 border-b border-(--border)">
-
                                 <div className="flex items-center gap-3">
-
                                     <div className="w-10 h-10 rounded-lg bg-(--secondary-light) text-(--secondary) flex items-center justify-center">
                                         <Wallet size={19} />
                                     </div>
 
                                     <div>
-
-                                        <h2 className="font-semibold text-(--text-primary)">
+                                        <h2 className="font-semibold text-(--primary)">
                                             Year Set Payment
                                         </h2>
 
-                                        <p className="text-xs text-(--text-secondary) mt-1">
+                                        <p className="text-xs text-(--secondary) mt-1">
                                             Official contribution
                                         </p>
-
                                     </div>
-
                                 </div>
-
                             </div>
 
                             <div className="p-5">
-
-                                <p className="text-xs text-(--text-secondary)">
+                                <p className="text-xs text-(--secondary)">
                                     Outstanding
                                 </p>
 
-                                <h3 className="text-2xl font-bold text-(--text-primary) mt-1">
+                                <h3 className="text-2xl font-bold text-(--primary) mt-1">
                                     {loading
                                         ? "—"
                                         : formatCurrency(outstanding)}
                                 </h3>
 
                                 <div className="mt-5 space-y-3">
-
                                     <div className="flex items-center justify-between text-xs">
-
                                         <span className="text-(--text-muted)">
                                             Paid
                                         </span>
 
-                                        <span className="font-semibold text-(--text-primary)">
+                                        <span className="font-semibold text-(--primary)">
                                             {loading
                                                 ? "—"
                                                 : formatCurrency(amountPaid)}
                                         </span>
-
                                     </div>
 
                                     <div className="flex items-center justify-between text-xs">
-
                                         <span className="text-(--text-muted)">
                                             Total due
                                         </span>
 
-                                        <span className="font-semibold text-(--text-primary)">
+                                        <span className="font-semibold text-(--primary)">
                                             {loading
                                                 ? "—"
                                                 : formatCurrency(totalDue)}
                                         </span>
-
                                     </div>
-
                                 </div>
 
                                 <p className="text-xs text-(--text-muted) leading-relaxed mt-5">
@@ -552,11 +719,8 @@ const MyYearSet = () => {
                                     Make Year Set Payment
                                     <ArrowUpRight size={14} />
                                 </button>
-
                             </div>
-
                         </section>
-
                     </div>
 
                     {/* ========================================
@@ -564,68 +728,51 @@ const MyYearSet = () => {
                     ======================================== */}
 
                     <section className="bg-(--bg-white) border border-(--border) rounded overflow-hidden">
-
                         <div className="p-5 border-b border-(--border)">
-
                             <div className="flex items-center gap-2">
-
                                 <CircleDollarSign
                                     size={17}
                                     className="text-(--primary)"
                                 />
 
-                                <h2 className="font-semibold text-(--text-primary)">
+                                <h2 className="font-semibold text-(--primary)">
                                     Recent Activity
                                 </h2>
-
                             </div>
 
-                            <p className="text-sm text-(--text-secondary) mt-1">
+                            <p className="text-sm text-(--secondary) mt-1">
                                 Recent financial activity from your year set.
                             </p>
-
                         </div>
 
                         {recentActivity.length > 0 ? (
-
                             <div className="divide-y divide-(--border)">
-
                                 {recentActivity.map((activity, index) => (
-
                                     <div
                                         key={activity._id || index}
                                         className="p-5"
                                     >
                                         {/* Payment activity will appear here */}
                                     </div>
-
                                 ))}
-
                             </div>
-
                         ) : (
-
                             <div className="p-8 text-center">
-
                                 <CalendarDays
                                     size={22}
                                     className="mx-auto text-(--text-muted)"
                                 />
 
-                                <p className="mt-3 text-sm font-medium text-(--text-primary)">
+                                <p className="mt-3 text-sm font-medium text-(--primary)">
                                     No recent activity
                                 </p>
 
-                                <p className="mt-1 text-xs text-(--text-secondary)">
+                                <p className="mt-1 text-xs text-(--secondary)">
                                     Transactions and updates will appear here.
                                 </p>
-
                             </div>
-
                         )}
-
                     </section>
-
                 </div>
             </div>
         </>
