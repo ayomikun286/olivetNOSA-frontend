@@ -4,10 +4,6 @@ import { useAuth } from "../context/AuthContext.jsx";
 import NosaLoader from "../components/common/NosaLoader.jsx";
 import Alert from "../components/common/Alert.jsx";
 
-
-import MemberDashboard from "../pages/member/Dashboard.jsx";
-import AdminDashboard from "../pages/admin/Dashboard.jsx";
-
 const DashboardGateway = () => {
   const { user, loading, authError } = useAuth();
 
@@ -15,7 +11,6 @@ const DashboardGateway = () => {
     return <NosaLoader />;
   }
 
-  // Email not verified
   if (authError?.status === 403) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -27,17 +22,19 @@ const DashboardGateway = () => {
     );
   }
 
-  // Not authenticated
   if (!user) {
     return <Navigate to="/portal/login" replace />;
   }
 
-  // Role-based dashboard
-  if (user.role === "admin") {
-    return <AdminDashboard />;
+  if (user.role === "admin" || user.role === "superAdmin") {
+    return <Navigate to="/portal/admin/dashboard" replace />;
   }
 
-  return <MemberDashboard />;
+  if (user.role === "member") {
+    return <Navigate to="/portal/member/dashboard" replace />;
+  }
+
+  return <Navigate to="/portal/login" replace />;
 };
 
 export default DashboardGateway;

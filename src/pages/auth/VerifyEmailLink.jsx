@@ -63,7 +63,7 @@ const VerifyEmailLink = () => {
         );
 
         setTimeout(() => {
-          navigate("/portal/member/dashboard", {
+          navigate("/portal/dashboard", {
             replace: true,
           });
         }, 1500);

@@ -165,9 +165,10 @@ const Login = () => {
 
       setRedirect(true);
 
+      
       // Give the success alert/loader a moment
       setTimeout(() => {
-        navigate("/portal/member/dashboard");
+       navigate("/portal/dashboard");
       }, 1000);
     } catch (err) {
       console.error("Login error:", err);

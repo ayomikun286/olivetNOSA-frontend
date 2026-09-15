@@ -1,9 +1,19 @@
-import React from 'react'
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+
+import ProtectedRoute from "./ProtectedRoute.jsx";
+import AdminDashboard from "../pages/admin/Dashboard.jsx";
 
 const AdminRoutes = () => {
   return (
-    <div>AdminRoutes</div>
-  )
-}
+    <Routes>
+      <Route element={<ProtectedRoute />}>
 
-export default AdminRoutes
+        <Route path="dashboard" element={<AdminDashboard />} />
+
+      </Route>
+    </Routes>
+  );
+};
+
+export default AdminRoutes;
