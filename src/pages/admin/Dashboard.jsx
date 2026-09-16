@@ -30,6 +30,9 @@ const Dashboard = () => {
     await logout();
   };
 
+
+  const [loading, setLoading] = useState(true)
+
   // ========================================
   // NOTIFICATION POLLING
   // ========================================
@@ -62,6 +65,8 @@ const Dashboard = () => {
             setAlertNotification(latest);
           }
         }
+
+          setLoading(false)
       } catch (error) {
         console.error(
           "Admin notification polling error:",

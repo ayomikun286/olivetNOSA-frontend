@@ -8,7 +8,7 @@ import {
   Mail,
   ShieldCheck,
 } from "lucide-react";
-
+import { useAuth } from "../../context/AuthContext.jsx";
 import PageTitle from "../../components/common/PageTitle.jsx";
 import Alert from "../../components/common/Alert.jsx";
 import NosaLoader from "../../components/common/NosaLoader.jsx";
@@ -16,6 +16,7 @@ import NosaLoader from "../../components/common/NosaLoader.jsx";
 import { LoginUser } from "../../services/authService.js";
 
 const Login = () => {
+  const { checkAuth } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -35,7 +36,7 @@ const Login = () => {
   const [loader, setLoader] = useState(false);
   const [redirect, setRedirect] = useState(false);
   const [alert, setAlert] = useState(() => location.state?.alert || null);
-  
+
   //  useEffect(() => {
 
   //   if (location.state?.alert) {
@@ -82,7 +83,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-  
+
     setAlert(null);
     setError({});
 
@@ -164,12 +165,13 @@ const Login = () => {
       );
 
       setRedirect(true);
+      const authenticated = await checkAuth();
 
-      
-      // Give the success alert/loader a moment
-      setTimeout(() => {
-       navigate("/portal/dashboard");
-      }, 1000);
+      if (authenticated) {
+        navigate("/portal/dashboard", { replace: true });
+      } else {
+        setRedirect(false);
+      }
     } catch (err) {
       console.error("Login error:", err);
 
@@ -493,9 +495,9 @@ const Login = () => {
 
             </form>
 
-          
-                {/* SIGN UP
-            ======================================== */} 
+
+            {/* SIGN UP
+            ======================================== */}
 
             <div className="mt-8 text-center">
 
@@ -511,7 +513,7 @@ const Login = () => {
 
             </div>
 
-        
+
 
 
 

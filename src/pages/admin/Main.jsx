@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-
+import "../../components/common/Loader.css"
+import ContentLoading from "../../components/admin/ContentLoading.jsx";
+import AdminStatCard from "../../components/admin/AdminStatCard.jsx";
+import AdminSection from "../../components/admin/AdminSection.jsx";
+import QuickAction from "../../components/admin/QuickAction.jsx"
+import AdminEmptyState from "../../components/admin/AdminEmptyState.jsx";
+import CollectionTrendChart from "../../components/admin/CollectionTrendChart.jsx"
+import {getAdminMembers} from "../../services/adminService.js";
 import {
   Users,
   UserCheck,
@@ -13,22 +20,10 @@ import {
   BarChart3,
 } from "lucide-react";
 
-import {
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-} from "recharts";
-
 import { getAdminDashboard } from "../../services/adminService.js";
 
-// ========================================
-// HELPERS
-// ========================================
 
+// HELPERS---------
 const formatCurrency = (amount = 0) => {
   return new Intl.NumberFormat("en-NG", {
     style: "currency",
@@ -57,204 +52,6 @@ const formatDate = (date) => {
   });
 };
 
-// ========================================
-// ADMIN PAGE HEADER
-// ========================================
-
-const AdminPageHeader = () => {
-  return (
-    <div>
-      <h1 className="text-xl font-semibold text-(--primary)">
-        Admin Dashboard
-      </h1>
-
-      <p className="text-sm text-(--secondary) mt-1">
-        Overview of membership, payments and OlivetNOSA activities.
-      </p>
-    </div>
-  );
-};
-
-// ========================================
-// ADMIN STAT CARD
-// ========================================
-
-const AdminStatCard = ({
-  icon: Icon,
-  iconClass,
-  iconBg,
-  label,
-  value,
-  description,
-  badge,
-  dark = false,
-}) => {
-  return (
-    <div
-      className={
-        dark
-          ? "bg-(--primary) text-white rounded p-5"
-          : "bg-(--bg-white) border border-(--border) rounded p-5"
-      }
-    >
-      <div className="flex items-center justify-between">
-        <div
-          className={
-            dark
-              ? "w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center"
-              : `w-10 h-10 rounded-lg ${iconBg} ${iconClass} flex items-center justify-center`
-          }
-        >
-          <Icon size={19} />
-        </div>
-
-        <span
-          className={
-            dark
-              ? "text-xs text-white/60"
-              : "text-xs text-(--text-muted)"
-          }
-        >
-          {badge}
-        </span>
-      </div>
-
-      <p
-        className={
-          dark
-            ? "text-sm text-white/70 mt-5"
-            : "text-sm text-(--secondary) mt-5"
-        }
-      >
-        {label}
-      </p>
-
-      <h2
-        className={
-          dark
-            ? "text-2xl font-bold mt-1"
-            : "text-2xl font-bold text-(--primary) mt-1"
-        }
-      >
-        {value}
-      </h2>
-
-      <p
-        className={
-          dark
-            ? "text-xs text-white/50 mt-2"
-            : "text-xs text-(--text-muted) mt-2"
-        }
-      >
-        {description}
-      </p>
-    </div>
-  );
-};
-
-// ========================================
-// ADMIN SECTION
-// ========================================
-
-const AdminSection = ({
-  title,
-  description,
-  icon: Icon,
-  children,
-}) => {
-  return (
-    <div className="bg-(--bg-white) border border-(--border) rounded overflow-hidden">
-      <div className="p-5 border-b border-(--border)">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="font-semibold text-(--primary)">
-              {title}
-            </h2>
-
-            {description && (
-              <p className="text-sm text-(--secondary) mt-1">
-                {description}
-              </p>
-            )}
-          </div>
-
-          {Icon && (
-            <Icon
-              size={20}
-              className="text-(--secondary)"
-            />
-          )}
-        </div>
-      </div>
-
-      {children}
-    </div>
-  );
-};
-
-// ========================================
-// QUICK ACTION
-// ========================================
-
-const QuickAction = ({
-  icon: Icon,
-  title,
-  description,
-  onClick,
-}) => {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="
-        p-5
-        text-left
-        hover:bg-(--bg-light)/50
-        transition
-      "
-    >
-      <Icon
-        size={19}
-        className="text-(--primary)"
-      />
-
-      <p className="text-sm font-semibold text-(--primary) mt-4">
-        {title}
-      </p>
-
-      <p className="text-xs text-(--text-muted) mt-1">
-        {description}
-      </p>
-    </button>
-  );
-};
-
-// ========================================
-// EMPTY STATE
-// ========================================
-
-const AdminEmptyState = ({
-  icon: Icon,
-  message,
-}) => {
-  return (
-    <div className="p-8 text-center">
-      <Icon
-        size={22}
-        className="mx-auto text-(--text-muted)"
-      />
-
-      <p className="text-sm text-(--secondary) mt-3">
-        {message}
-      </p>
-    </div>
-  );
-};
-
-// ========================================
-// RECENT MEMBER
-// ========================================
-
 const RecentMember = ({ member }) => {
   return (
     <div className="flex items-center justify-between gap-4 p-5 border-b border-(--border) last:border-b-0">
@@ -282,118 +79,6 @@ const RecentMember = ({ member }) => {
     </div>
   );
 };
-
-// ========================================
-// COLLECTION TREND CHART
-// ========================================
-
-const CollectionTrendChart = ({ data = [] }) => {
-  const formatAmount = (value) => {
-    return `₦${Number(value || 0).toLocaleString()}`;
-  };
-
-  return (
-    <AdminSection
-      title="Monthly Collection"
-      description="Successful payments received this year."
-      icon={BarChart3}
-    >
-      <div className="h-[300px] w-full p-4 sm:p-5">
-        {data.length === 0 ? (
-          <div className="h-full flex flex-col items-center justify-center">
-            <BarChart3
-              size={22}
-              className="text-(--text-muted)"
-            />
-
-            <p className="text-sm text-(--secondary) mt-3">
-              No collection data available yet.
-            </p>
-          </div>
-        ) : (
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart
-              data={data}
-              margin={{
-                top: 10,
-                right: 15,
-                left: 10,
-                bottom: 5,
-              }}
-            >
-              <CartesianGrid
-                strokeDasharray="3 3"
-                vertical={false}
-                stroke="var(--border)"
-              />
-
-              <XAxis
-                dataKey="month"
-                axisLine={false}
-                tickLine={false}
-                tick={{
-                  fontSize: 11,
-                  fill: "var(--text-muted)",
-                }}
-              />
-
-              <YAxis
-                axisLine={false}
-                tickLine={false}
-                tick={{
-                  fontSize: 11,
-                  fill: "var(--text-muted)",
-                }}
-                tickFormatter={(value) => {
-                  if (value >= 1000000) {
-                    return `₦${(value / 1000000).toFixed(1)}M`;
-                  }
-
-                  if (value >= 1000) {
-                    return `₦${(value / 1000).toFixed(0)}k`;
-                  }
-
-                  return `₦${value}`;
-                }}
-                width={65}
-              />
-
-              <Tooltip
-                formatter={(value) => [
-                  formatAmount(value),
-                  "Collected",
-                ]}
-                contentStyle={{
-                  background: "var(--bg-white)",
-                  border: "1px solid var(--border)",
-                  borderRadius: "8px",
-                  fontSize: "12px",
-                }}
-              />
-
-              <Line
-                type="monotone"
-                dataKey="amount"
-                stroke="var(--primary)"
-                strokeWidth={2}
-                dot={{
-                  r: 3,
-                }}
-                activeDot={{
-                  r: 5,
-                }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        )}
-      </div>
-    </AdminSection>
-  );
-};
-
-// ========================================
-// RECENT PAYMENT
-// ========================================
 
 const RecentPayment = ({ payment }) => {
   const memberName =
@@ -429,18 +114,11 @@ const RecentPayment = ({ payment }) => {
   );
 };
 
-// ========================================
-// MAIN DASHBOARD
-// ========================================
-
 const Main = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
-  // ========================================
-  // LOAD DASHBOARD
-  // ========================================
+  const [memberData, setMembersData] = useState(null)
 
   const loadDashboard = async () => {
     try {
@@ -460,7 +138,7 @@ const Main = () => {
 
       setError(
         error.message ||
-          "Failed to load admin dashboard."
+        "Failed to load admin dashboard."
       );
     } finally {
       setLoading(false);
@@ -469,38 +147,18 @@ const Main = () => {
 
   useEffect(() => {
     loadDashboard();
+    
+
+    
   }, []);
 
-  // ========================================
-  // LOADING
-  // ========================================
 
-  if (loading) {
+    if (loading) {
     return (
-      <div className="p-4">
-        <div className="space-y-5 animate-pulse">
-          <div>
-            <div className="h-5 w-40 bg-(--bg-light) rounded" />
-
-            <div className="h-4 w-72 bg-(--bg-light) rounded mt-2" />
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
-            {[1, 2, 3, 4].map((item) => (
-              <div
-                key={item}
-                className="h-40 bg-(--bg-white) border border-(--border) rounded"
-              />
-            ))}
-          </div>
-        </div>
-      </div>
+      <ContentLoading />
     );
   }
 
-  // ========================================
-  // ERROR
-  // ========================================
 
   if (error) {
     return (
@@ -538,41 +196,31 @@ const Main = () => {
     );
   }
 
-  // ========================================
-  // DATA
-  // ========================================
-
   const members = data?.members || {};
-
   const finance = data?.finance || {};
+  const recentMembers = data?.recentMembers || [];
+  const recentPayments = data?.recentPayments || [];
+  const collectionTrend = data?.charts?.collectionTrend || [];
 
-  const recentMembers =
-    data?.recentMembers || [];
 
-  const recentPayments =
-    data?.recentPayments || [];
-
-  const collectionTrend =
-    data?.charts?.collectionTrend || [];
-
-  // ========================================
-  // RENDER
-  // ========================================
 
   return (
     <div className="p-4">
       <div className="space-y-5">
 
-        {/* ========================================
-            HEADER
-        ======================================== */}
+        {/* HEADER */}
+        <div className="">
+          <h1 className="text-xl font-semibold text-(--primary)">
+            Admin Dashboard
+          </h1>
 
-        <AdminPageHeader />
+          <p className="text-sm text-(--secondary) mt-1">
+            Overview of membership, payments and OlivetNOSA activities.
+          </p>
+        </div>
 
-        {/* ========================================
-            OVERVIEW CARDS
-        ======================================== */}
 
+        {/* OVERVIEW CARDS */}
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
           <AdminStatCard
             icon={Users}
@@ -616,11 +264,13 @@ const Main = () => {
           />
         </div>
 
-        {/* ========================================
-            FINANCIAL OVERVIEW
-        ======================================== */}
 
+
+
+        {/* FINANCIAL OVERVIEW */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+
+          {/* obligation overview */}
           <div className="lg:col-span-2">
             <AdminSection
               title="Financial Overview"
@@ -667,10 +317,13 @@ const Main = () => {
             </AdminSection>
           </div>
 
-          {/* ========================================
-              PENDING PAYMENTS
-          ======================================== */}
 
+
+
+
+
+
+          {/* PENDING PAYMENTS */}
           <div className="bg-(--bg-white) border border-(--border) rounded p-5">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-(--warning-light) text-(--warning) flex items-center justify-center">
@@ -712,18 +365,22 @@ const Main = () => {
           </div>
         </div>
 
-        {/* ========================================
-            MONTHLY COLLECTION GRAPH
-        ======================================== */}
 
-        <CollectionTrendChart
-          data={collectionTrend}
-        />
 
-        {/* ========================================
-            QUICK ACTIONS
-        ======================================== */}
 
+
+
+
+        {/* MONTHLY COLLECTION GRAPH */}
+        <CollectionTrendChart data={collectionTrend} />
+
+
+
+
+
+
+
+        {/* QUICK ACTIONS */}
         <AdminSection
           title="Quick Actions"
           description="Common administrative tasks."
@@ -755,14 +412,15 @@ const Main = () => {
           </div>
         </AdminSection>
 
-        {/* ========================================
-            RECENT ACTIVITY
-        ======================================== */}
 
+
+
+
+
+
+        {/* -----RECENT ACTIVITY----- */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-
           {/* RECENT REGISTRATIONS */}
-
           <AdminSection
             title="Recent Registrations"
             description="Latest members who joined the portal."
@@ -784,8 +442,10 @@ const Main = () => {
             )}
           </AdminSection>
 
-          {/* RECENT PAYMENTS */}
 
+
+
+          {/* RECENT PAYMENTS */}
           <AdminSection
             title="Recent Payments"
             description="Latest payment activity."
