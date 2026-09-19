@@ -24,6 +24,10 @@ const Profile = () => {
     .filter(Boolean)
     .join(" ");
 
+
+
+    console.log(user);
+
   const getInitials = () => {
     const first = user?.firstName?.charAt(0) || "";
     const last = user?.lastName?.charAt(0) || "";

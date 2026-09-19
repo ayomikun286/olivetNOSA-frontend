@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,  } from "react";
+import { useNavigate } from "react-router-dom";
 import "../../components/common/Loader.css"
 import ContentLoading from "../../components/admin/ContentLoading.jsx";
 import AdminStatCard from "../../components/admin/AdminStatCard.jsx";
@@ -6,7 +7,8 @@ import AdminSection from "../../components/admin/AdminSection.jsx";
 import QuickAction from "../../components/admin/QuickAction.jsx"
 import AdminEmptyState from "../../components/admin/AdminEmptyState.jsx";
 import CollectionTrendChart from "../../components/admin/CollectionTrendChart.jsx"
-import {getAdminMembers} from "../../services/adminService.js";
+import { getAdminMembers } from "../../services/adminService.js";
+import CollectionBreakdown from "../../components/admin/CollectionBreakdown.jsx";
 import {
   Users,
   UserCheck,
@@ -21,6 +23,7 @@ import {
 } from "lucide-react";
 
 import { getAdminDashboard } from "../../services/adminService.js";
+import { Navigate } from "react-router-dom";
 
 
 // HELPERS---------
@@ -118,7 +121,8 @@ const Main = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [memberData, setMembersData] = useState(null)
+  const [memberData, setMembersData] = useState(null);
+    const navigate = useNavigate();
 
   const loadDashboard = async () => {
     try {
@@ -129,6 +133,7 @@ const Main = () => {
 
       console.log("Admin dashboard data:", result);
 
+   
       setData(result);
     } catch (error) {
       console.error(
@@ -147,13 +152,13 @@ const Main = () => {
 
   useEffect(() => {
     loadDashboard();
-    
 
-    
+
+
   }, []);
 
 
-    if (loading) {
+  if (loading) {
     return (
       <ContentLoading />
     );
@@ -221,47 +226,48 @@ const Main = () => {
 
 
         {/* OVERVIEW CARDS */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
-          <AdminStatCard
-            icon={Users}
-            iconBg="bg-(--primary-light)"
-            iconClass="text-(--primary)"
-            badge="Membership"
-            label="Total Members"
-            value={members.total || 0}
-            description="Registered members"
-          />
+        <div className="flex w-full gap-3  space-y-2 lg:flex-rol md:flex-rol flex-col">
+          <div className="flex-1 min-w-0">
+            <CollectionBreakdown
+              data={data?.charts?.collectionByCategory || []}
+              totalCollected={finance.totalCollected || 0}
+            />
+          </div>
+          <div className="w-full md:max-w-[400px] space-y-2 ">
+            <AdminStatCard
+              icon={Users}
+              iconBg="bg-(--primary-light)"
+              iconClass="text-(--primary)"
+              badge="Membership"
+              label="Total Members"
+              value={members.total || 0}
+              description="Registered members"
+            />
 
-          <AdminStatCard
-            icon={UserCheck}
-            iconBg="bg-(--success-light)"
-            iconClass="text-(--success)"
-            badge="Active"
-            label="Active Members"
-            value={members.active || 0}
-            description="Approved members"
-          />
+            <AdminStatCard
+              icon={UserCheck}
+              iconBg="bg-(--success-light)"
+              iconClass="text-(--success)"
+              badge="Active"
+              label="Active Members"
+              value={members.active || 0}
+              description="Approved members"
+            />
 
-          <AdminStatCard
-            icon={Clock3}
-            iconBg="bg-(--warning-light)"
-            iconClass="text-(--warning)"
-            badge="Attention"
-            label="Pending Approval"
-            value={members.pending || 0}
-            description="Members awaiting approval"
-          />
+            <AdminStatCard
+              icon={Clock3}
+              iconBg="bg-(--warning-light)"
+              iconClass="text-(--warning)"
+              badge="Attention"
+              label="Pending Approval"
+              value={members.pending || 0}
+              description="Members awaiting approval"
+            />
 
-          <AdminStatCard
-            icon={CircleDollarSign}
-            dark
-            badge="This year"
-            label="Total Collected"
-            value={formatCurrency(
-              finance.yearlyCollected || 0
-            )}
-            description="Successful payments"
-          />
+
+
+          </div>
+
         </div>
 
 
@@ -347,6 +353,7 @@ const Main = () => {
 
             <button
               type="button"
+              onClick={()=> navigate("/portal/admin/dashboard/payments")}
               className="
                 inline-flex
                 items-center
@@ -389,23 +396,27 @@ const Main = () => {
             <QuickAction
               icon={UserPlus}
               title="Manage Members"
+              onClick={() => navigate("/portal/admin/dashboard/members")}
               description="Review and manage member accounts."
             />
 
             <QuickAction
               icon={ClipboardList}
               title="Manage Obligations"
+              onClick={() => navigate("/portal/admin/dashboard/obligations")}
               description="Create and assign obligations."
             />
 
             <QuickAction
               icon={CreditCard}
               title="View Payments"
+              onClick={() => navigate("/portal/admin/dashboard/payments")}
               description="Review recent transactions."
             />
 
             <QuickAction
               icon={BarChart3}
+               onClick={() => navigate("/portal/admin/dashboard/financial-reports")}
               title="Financial Reports"
               description="View financial summaries and reports."
             />

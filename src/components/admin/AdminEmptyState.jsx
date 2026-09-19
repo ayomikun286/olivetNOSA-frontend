@@ -11,7 +11,7 @@ const AdminEmptyState = ({
         className="mx-auto text-(--text-muted)"
       />
 
-      <p className="text-sm text-(--secondary) mt-3">
+      <p className="text-sm text-(--primary) mt-3">
         {message}
       </p>
     </div>

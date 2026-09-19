@@ -16,6 +16,8 @@ const MemberDetailsDrawer = ({
     member,
     open,
     onClose,
+    loading,
+    ApproveMember
 }) => {
     if (!open || !member) return null;
 
@@ -33,6 +35,11 @@ const MemberDetailsDrawer = ({
         suspended: "bg-(--danger-light) text-(--danger)",
     };
 
+
+   
+
+   
+
     return (
         <>
             {/* BACKDROP */}
@@ -44,20 +51,20 @@ const MemberDetailsDrawer = ({
             {/* DRAWER */}
             <aside
                 className="
-                    fixed
-                    top-0
-                    right-0
-                    z-50
-                    h-full
-                    w-full
-                    max-w-md
-                    bg-(--bg-white)
-                    border-l
-                    border-(--border)
-                    shadow-xl
-                    flex
-                    flex-col
-                    "
+                            fixed
+                            top-0
+                            right-0
+                            z-50
+                            h-full
+                            w-full
+                            max-w-md
+                            bg-(--bg-white)
+                            border-l
+                            border-(--border)
+                            shadow-xl
+                            flex
+                            flex-col
+                            "
                         >
                         {/* HEADER */}
                         <div className="px-5 py-4 border-b border-(--border) flex items-center justify-between">
@@ -123,14 +130,14 @@ const MemberDetailsDrawer = ({
                                             {fullName}
                                         </h3>
 
-                                        <p className="text-xs text-(--secondary) mt-0.5 truncate">
+                                        <p className="text-xs text-(--text-muted) mt-0.5 truncate">
                                             {member.email}
                                         </p>
 
                                         <div className="flex flex-wrap items-center gap-2 mt-2">
 
                                             <span
-                                                className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium capitalize ${statusStyles[member.status] ||
+                                                className={`inline-flex items-center px-2.5 py-1 rounded text-xs font-medium capitalize ${statusStyles[member.status] ||
                                                     "bg-(--bg-soft) text-(--secondary)"
                                                     }`}
                                             >
@@ -150,11 +157,11 @@ const MemberDetailsDrawer = ({
 
                                 {/* ALUMNI ID */}
                                 <div className="mt-5 p-3 rounded-lg bg-(--bg-soft)">
-                                    <p className="text-[11px] font-medium uppercase tracking-wide text-(--secondary)">
+                                    <p className="text-[11px] font-medium uppercase tracking-wide text-(--primary)">
                                         Alumni ID
                                     </p>
 
-                                    <p className="text-sm font-semibold text-(--primary) mt-1">
+                                    <p className="text-sm font-semibold text-(--text-muted) mt-1">
                                         {member.alumniId || "Not assigned"}
                                     </p>
                                 </div>
@@ -162,7 +169,7 @@ const MemberDetailsDrawer = ({
 
                             {/* PERSONAL INFORMATION */}
                             <section className="px-5 py-5 border-b border-(--border)">
-                                <h4 className="text-xs font-semibold uppercase tracking-wide text-(--secondary)">
+                                <h4 className="text-xs font-semibold uppercase tracking-wide text-(--primary)">
                                     Personal Information
                                 </h4>
 
@@ -203,7 +210,7 @@ const MemberDetailsDrawer = ({
 
                             {/* ASSOCIATION */}
                             <section className="px-5 py-5 border-b border-(--border)">
-                                <h4 className="text-xs font-semibold uppercase tracking-wide text-(--secondary)">
+                                <h4 className="text-xs font-semibold uppercase tracking-wide text-(--primary)">
                                     Association
                                 </h4>
 
@@ -226,7 +233,7 @@ const MemberDetailsDrawer = ({
 
                             {/* ACCOUNT */}
                             <section className="px-5 py-5">
-                                <h4 className="text-xs font-semibold uppercase tracking-wide text-(--secondary)">
+                                <h4 className="text-xs font-semibold uppercase tracking-wide text-(--primary)">
                                     Account
                                 </h4>
 
@@ -277,34 +284,35 @@ const MemberDetailsDrawer = ({
                         <div className="px-5 py-4 border-t border-(--border)  bg-(--bg-white)">
 
                             {member.status === "active" && (
-                    <button
-                        type="button"
-                        className="
-                        w-full
-                        inline-flex
-                        items-center
-                        justify-center
-                        gap-2
-                        px-4
-                        py-2.5
-                        rounded
-                        border
-                        border-(--danger)
-                        text-(--danger)
-                        text-sm
-                        font-semibold
-                        hover:bg-(--danger-light)
-                        transition-colors
-                    "
+                                 <button
+                                        type="button"
+                                        disabled={loading}
+                                        className="
+                                        w-full
+                                        inline-flex
+                                        items-center
+                                        justify-center
+                                        gap-2
+                                        px-4
+                                        py-2.5
+                                        rounded
+                                        border
+                                        border-(--success)
+                                        text-(--success)
+                                        text-sm
+                                        font-semibold
+                                        transition-colors
+                                    "
                                 >
-                                    <UserX size={16} />
-                                    Suspend Member
+                                    <UserCheck size={16} />
+                                     Member Approved
                                 </button>
                             )}
 
                             {member.status === "suspended" && (
                                 <button
                                     type="button"
+                                    disabled={loading}
                                     className="
                                             w-full
                                             inline-flex
@@ -330,6 +338,8 @@ const MemberDetailsDrawer = ({
                             {member.status === "pending" && (
                                 <button
                                     type="button"
+                                    onClick={()=> ApproveMember(member._id)}
+                                     disabled={loading}
                                     className="
                                         w-full
                                         inline-flex
@@ -348,7 +358,7 @@ const MemberDetailsDrawer = ({
                                     "
                                 >
                                     <UserCheck size={16} />
-                                    Approve Member
+                                    {loading ? "Approving..." : "Approve Member"}
                                 </button>
                             )}
 
@@ -369,12 +379,12 @@ const InfoRow = ({
             <div className="w-8 h-8 shrink-0 rounded-lg bg-(--bg-soft) flex items-center justify-center">
                 <Icon
                     size={15}
-                    className="text-(--secondary)"
+                    className="text-(--text-muted)"
                 />
             </div>
 
             <div className="min-w-0">
-                <p className="text-[11px] text-(--secondary)">
+                <p className="text-[11px] text-(--text-muted)">
                     {label}
                 </p>
 

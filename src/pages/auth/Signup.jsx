@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 
 import NosaLoader from "../../components/common/NosaLoader.jsx";
 
-import { getChapters } from "../../services/chapterService.js";
 
 import Alert from "../../components/common/Alert.jsx";
 
@@ -243,15 +242,12 @@ const Signup = () => {
         "You must accept the Terms of Use and Privacy Policy.";
     }
 
-    // ========================================
-    // STOP IF VALIDATION FAILED
-    // ========================================
+    
 
     if (Object.keys(newErrors).length > 0) {
       setError(newErrors);
 
-      // Don't replace the more specific password alert
-      // if the passwords are the actual problem.
+      
       if (
         !(
           newErrors.confirmPassword &&

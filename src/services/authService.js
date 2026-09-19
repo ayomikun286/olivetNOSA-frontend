@@ -363,3 +363,61 @@ export const resetPassword = async (
     };
   }
 };
+
+
+
+
+
+// ===========//
+
+export const setPassword = async (
+  token,
+  password,
+  confirmPassword
+) => {
+  const response = await fetch(
+    `${API}/api/auth/set-password`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        token,
+        password,
+        confirmPassword,
+      }),
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Unable to set password."
+    );
+  }
+
+  return data;
+};
+
+export const verifyAccountSetup = async (token) => {
+  const response = await fetch(
+    `${API}/api/auth/activate-account?token=${encodeURIComponent(token)}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "This activation link is invalid or has expired."
+    );
+  }
+
+  return data;
+};

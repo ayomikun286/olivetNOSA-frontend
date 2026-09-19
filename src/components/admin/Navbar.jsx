@@ -6,7 +6,7 @@ import {
   Settings,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
-import NotificationDropdown from "../common/NotificationDropdown.jsx";
+import NotificationDropdown from "../admin/AdminNotificationDropDown.jsx";
 
 const Navbar = ({
   setIsOpen,
@@ -132,7 +132,7 @@ const Navbar = ({
 
                 {/* Identity */}
                 <div className="min-w-0">
-                  <p className="truncate font-semibold text-(--primary)">
+                  <p className="truncate uppercase font-semibold text-(--primary)">
                     {firstName} {lastName}
                   </p>
 

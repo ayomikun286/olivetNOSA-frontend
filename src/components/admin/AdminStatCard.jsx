@@ -29,7 +29,7 @@ const AdminStatCard = ({
           <Icon size={19} />
         </div>
 
-        <span
+        {/* <span
           className={
             dark
               ? "text-xs text-white/60"
@@ -37,14 +37,14 @@ const AdminStatCard = ({
           }
         >
           {badge}
-        </span>
+        </span> */}
       </div>
 
       <p
         className={
           dark
             ? "text-sm text-white/70 mt-5"
-            : "text-sm text-(--secondary) mt-5"
+            : "text-sm text-(--primary) mt-5"
         }
       >
         {label}
@@ -53,8 +53,8 @@ const AdminStatCard = ({
       <h2
         className={
           dark
-            ? "text-2xl font-bold mt-1"
-            : "text-2xl font-bold text-(--primary) mt-1"
+            ? "text-5xl font-bold mt-1"
+            : "text-5xl font-bold text-(--primary) mt-1"
         }
       >
         {value}

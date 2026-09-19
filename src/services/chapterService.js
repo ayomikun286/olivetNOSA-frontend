@@ -3,23 +3,31 @@ import API from "../config/app.js";
 
 
 export const getChapters = async () => {
-    try {
+  try {
+    const res = await fetch(
+      `${API}/api/chapters`
+    );
 
-        const res = await fetch(`${API}/api/chapters`)
+    const data = await res.json();
 
-
-        if (!res.ok) {
-            throw new Error("Failed to fetch year sets");
-        }
-
-
-        const data = await res.json();
-         return data.data;
-
-    } catch (err) {
-        console.error(err);
+    if (!res.ok) {
+      throw new Error(
+        data.message ||
+        "Failed to fetch chapters."
+      );
     }
-}
+
+    return data.data;
+
+  } catch (err) {
+    console.error(
+      "Get chapters error:",
+      err
+    );
+
+    throw err;
+  }
+};
 
 
 
