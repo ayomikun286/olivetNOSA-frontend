@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 
 import PageTitle from "../../components/common/PageTitle.jsx";
-
+import {getChapters} from "../../services/chapterService.js";
 import { useNavigate, Link } from "react-router-dom";
 
 import { Sign_up } from "../../services/authService.js";
