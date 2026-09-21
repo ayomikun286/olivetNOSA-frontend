@@ -13,19 +13,27 @@ import {
     AlertCircle,
     WalletCards,
     CircleDollarSign,
+    X,
+    Loader2,
 } from "lucide-react";
 
-import Notifications from "../../components/member/Notifications.jsx";
+
 import PaymentHistory from "../../components/member/PaymentHistory.jsx";
 import QuickActions from "../../components/member/QuickActions.jsx";
 import MembershipStatus from "../../components/member/MembershipStatus.jsx";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { getMyObligation } from "../../services/obligationService.js";
+import NotificationsCard from "../../components/member/NotificationsCard.jsx";
 
 const Main = () => {
     const { user } = useAuth();
     const [obligations, setObligations] = useState([]);
     const [loadingObligations, setLoadingObligations] = useState(true);
+
+    const [paymentModal, setPaymentModal] = useState(null);
+    const [paymentAmount, setPaymentAmount] = useState("");
+    const [paymentLoading, setPaymentLoading] = useState(false);
+    const [paymentError, setPaymentError] = useState("");
 
     useEffect(() => {
         const fetchObligations = async () => {
@@ -40,6 +48,86 @@ const Main = () => {
         };
         fetchObligations();
     }, []);
+
+
+
+
+
+    const handlePayNow = (obligation) => {
+        const amountDue = Number(obligation.amountDue || 0);
+        const amountPaid = Number(obligation.amountPaid || 0);
+
+        const outstanding = Math.max(amountDue - amountPaid, 0);
+
+        setPaymentModal({
+            ...obligation,
+            outstanding,
+        });
+
+        setPaymentAmount(outstanding.toString());
+        setPaymentError("");
+    };
+
+
+    const handleInitializePayment = async () => {
+        if (!paymentModal) return;
+
+        const amount = Number(paymentAmount);
+
+        if (!Number.isInteger(amount) || amount <= 0) {
+            setPaymentError("Please enter a valid whole-naira payment amount.");
+            return;
+        }
+
+        if (amount > paymentModal.outstanding) {
+            setPaymentError(
+                `Amount cannot exceed the outstanding balance of ${formatCurrency(
+                    paymentModal.outstanding
+                )}.`
+            );
+            return;
+        }
+
+        setPaymentLoading(true);
+        setPaymentError("");
+
+        try {
+            const response = await fetch(
+                `${import.meta.env.VITE_API_URL}/api/payments/initialize`,
+                {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        obligationAssignmentId: paymentModal._id,
+                        amount,
+                    }),
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(
+                    data.message || "Failed to initialize payment."
+                );
+            }
+
+            // Send member to Paystack checkout
+            window.location.href = data.authorizationUrl;
+        } catch (error) {
+            console.error("Payment initialization error:", error);
+
+            setPaymentError(
+                error.message || "Unable to initialize payment."
+            );
+
+            setPaymentLoading(false);
+        }
+    };
+
 
     // ========================================
     // INDIVIDUAL OBLIGATIONS
@@ -290,9 +378,9 @@ const Main = () => {
                                                 style={{
                                                     width: totalObligation
                                                         ? `${Math.min(
-                                                              (amountPaid / totalObligation) * 100,
-                                                              100
-                                                          )}%`
+                                                            (amountPaid / totalObligation) * 100,
+                                                            100
+                                                        )}%`
                                                         : "0%",
                                                 }}
                                             />
@@ -304,8 +392,8 @@ const Main = () => {
                                             <span>
                                                 {totalObligation
                                                     ? Math.round(
-                                                          (amountPaid / totalObligation) * 100
-                                                      )
+                                                        (amountPaid / totalObligation) * 100
+                                                    )
                                                     : 0}
                                                 %
                                             </span>
@@ -365,11 +453,10 @@ const Main = () => {
 
                                     <p className="text-xs text-(--text-muted) mt-2">
                                         {unpaidObligations.length
-                                            ? `${unpaidObligations.length} outstanding obligation${
-                                                  unpaidObligations.length > 1
-                                                      ? "s"
-                                                      : ""
-                                              }`
+                                            ? `${unpaidObligations.length} outstanding obligation${unpaidObligations.length > 1
+                                                ? "s"
+                                                : ""
+                                            }`
                                             : "You're all caught up"}
                                     </p>
                                 </div>
@@ -527,11 +614,10 @@ const Main = () => {
                                                             </p>
 
                                                             <p
-                                                                className={`text-sm font-semibold mt-0.5 ${
-                                                                    remaining > 0
-                                                                        ? "text-(--primary)"
-                                                                        : "text-(--success)"
-                                                                }`}
+                                                                className={`text-sm font-semibold mt-0.5 ${remaining > 0
+                                                                    ? "text-(--primary)"
+                                                                    : "text-(--success)"
+                                                                    }`}
                                                             >
                                                                 {formatCurrency(remaining)}
                                                             </p>
@@ -541,6 +627,7 @@ const Main = () => {
                                                         {!isPaid && (
                                                             <button
                                                                 type="button"
+                                                                onClick={() => handlePayNow(item)}
                                                                 className="inline-flex items-center justify-center gap-1.5 bg-(--primary) text-white px-4 py-2 rounded-(--radius-sm) text-xs font-semibold hover:bg-(--primary-dark) transition shrink-0"
                                                             >
                                                                 Pay now
@@ -554,6 +641,8 @@ const Main = () => {
                                     })
                                 )}
                             </div>
+
+
                         </div>
 
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -567,10 +656,120 @@ const Main = () => {
 
                     <aside className="flex flex-col space-y-8">
                         <MembershipStatus />
-                        <Notifications />
+                        <NotificationsCard />
                     </aside>
                 </div>
             </div>
+
+            {paymentModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+                    <div className="w-full max-w-md bg-white rounded shadow-xl overflow-hidden">
+
+                        {/* HEADER */}
+                        <div className="flex items-center justify-between px-6 py-5 border-b border-slate-200">
+                            <div>
+                                <h3 className="text-lg font-bold text-(--primary-dark)">
+                                    Make Payment
+                                </h3>
+
+                                <p className="text-sm text-slate-500 mt-1">
+                                    {paymentModal.obligation?.name ||
+                                        "Obligation Payment"}
+                                </p>
+                            </div>
+
+                            <button
+                                type="button"
+                                disabled={paymentLoading}
+                                onClick={() => {
+                                    setPaymentModal(null);
+                                    setPaymentError("");
+                                }}
+                                className="p-2 rounded-full hover:bg-slate-100 transition disabled:opacity-50"
+                            >
+                                <X size={18} />
+                            </button>
+                        </div>
+
+                        {/* BODY */}
+                        <div className="p-6 space-y-5">
+
+                            {/* OUTSTANDING */}
+                            <div className="rounded-(--radius-sm) bg-(--primary-light) p-4">
+                                <p className="text-xs text-slate-500">
+                                    Outstanding Balance
+                                </p>
+
+                                <p className="text-2xl font-bold text-(--primary-dark) mt-1">
+                                    {formatCurrency(paymentModal.outstanding)}
+                                </p>
+                            </div>
+
+                            {/* AMOUNT */}
+                            <div>
+                                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                                    Amount to Pay
+                                </label>
+
+                                <div className="relative">
+                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-semibold">
+                                        ₦
+                                    </span>
+
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        max={paymentModal.outstanding}
+                                        step="1"
+                                        value={paymentAmount}
+                                        onChange={(e) => {
+                                            setPaymentAmount(e.target.value);
+                                            setPaymentError("");
+                                        }}
+                                        disabled={paymentLoading}
+                                        className="w-full border border-slate-300 rounded-(--radius-sm) pl-9 pr-4 py-3 text-sm outline-none focus:border-(--primary) focus:ring-2 focus:ring-(--primary)/10"
+                                        placeholder="Enter amount"
+                                    />
+                                </div>
+
+                                <p className="text-xs text-slate-500 mt-2">
+                                    You can pay any amount up to your outstanding balance.
+                                </p>
+                            </div>
+
+                            {/* ERROR */}
+                            {paymentError && (
+                                <div className="rounded-(--radius-sm) bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600">
+                                    {paymentError}
+                                </div>
+                            )}
+
+                            {/* CONTINUE */}
+                            <button
+                                type="button"
+                                onClick={handleInitializePayment}
+                                disabled={paymentLoading}
+                                className="w-full inline-flex items-center justify-center gap-2 bg-(--primary) text-white py-3 rounded text-sm font-semibold hover:bg-(--primary-dark) transition disabled:opacity-60 disabled:cursor-not-allowed"
+                            >
+                                {paymentLoading ? (
+                                    <>
+                                        <Loader2
+                                            size={17}
+                                            className="animate-spin"
+                                        />
+                                        Preparing payment...
+                                    </>
+                                ) : (
+                                    <>
+                                        <CreditCard size={17} />
+                                        Continue to Payment
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

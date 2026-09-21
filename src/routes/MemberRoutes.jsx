@@ -13,7 +13,7 @@ import Notifications from "../pages/member/Notifications.jsx";
 import PaymentHistory from "../pages/member/PaymentHistory.jsx";
 import HelpSupport from "../pages/member/HelpSupport.jsx";
 import Directory from "../pages/member/Directory.jsx";
-
+import Events from "../pages/member/Events.jsx";
 const MemberRoutes = () => {
   return (
     <Routes>
@@ -38,6 +38,8 @@ const MemberRoutes = () => {
           <Route path="help-support" element={<HelpSupport />} />
 
           <Route path="directory" element={<Directory />} />
+
+          <Route path="events" element={<Events />} />
 
         </Route>
 

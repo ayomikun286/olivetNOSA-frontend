@@ -144,7 +144,7 @@ const Navbar = ({
             </div>
 
             {/* ================= PROFILE ================= */}
-            <NavLink
+            {/* <NavLink
               to="/portal/admin/dashboard/profile"
               onClick={() => setDropDown(false)}
               className="
@@ -157,7 +157,7 @@ const Navbar = ({
             >
               <User size={17} />
               <span>My Profile</span>
-            </NavLink>
+            </NavLink> */}
 
             {/* ================= SETTINGS ================= */}
             <NavLink

@@ -1,6 +1,8 @@
 import React, {
   createContext,
   useContext,
+  useEffect,
+  useRef,
   useState,
 } from "react";
 
@@ -8,16 +10,63 @@ import API from "../config/app.js";
 
 const AuthContext = createContext(null);
 
+const INACTIVITY_LIMIT = 20 * 60 * 1000; // 20 minutes
+const ACTIVITY_KEY = "nosa_last_activity";
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [authError, setAuthError] = useState(null);
 
-  const checkAuth = async () => {
+  const activityTimeoutRef = useRef(null);
+
+  // --------------------------------
+  // LOGOUT
+  // --------------------------------
+  const logout = async () => {
+    try {
+      await fetch(`${API}/user/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      setUser(null);
+      setAuthError(null);
+      localStorage.removeItem(ACTIVITY_KEY);
+
+      if (activityTimeoutRef.current) {
+        clearInterval(activityTimeoutRef.current);
+        activityTimeoutRef.current = null;
+      }
+
+      window.history.replaceState(null, "", "/portal/login");
+    }
+  };
+
+  // --------------------------------
+  // CHECK AUTH
+  // --------------------------------
+  const checkAuth = async (silent = false) => {
+  if (!silent) {
     setLoading(true);
-    setAuthError(null);
+  }
 
     try {
+      const lastActivity = Number(
+        localStorage.getItem(ACTIVITY_KEY)
+      );
+
+      // Expire if inactive for 2 hours
+      if (
+        lastActivity &&
+        Date.now() - lastActivity >= INACTIVITY_LIMIT
+      ) {
+        await logout();
+        return false;
+      }
+
       const response = await fetch(`${API}/auth/me`, {
         method: "GET",
         credentials: "include",
@@ -33,6 +82,7 @@ export const AuthProvider = ({ children }) => {
 
       if (response.status === 401) {
         setUser(null);
+        localStorage.removeItem(ACTIVITY_KEY);
         return false;
       }
 
@@ -51,7 +101,15 @@ export const AuthProvider = ({ children }) => {
 
       if (data?.success && data?.data) {
         setUser(data.data);
-        // console.log(data.data)
+
+        // Only create an activity timestamp if one doesn't exist.
+        if (!lastActivity) {
+          localStorage.setItem(
+            ACTIVITY_KEY,
+            Date.now().toString()
+          );
+        }
+
         return true;
       }
 
@@ -63,7 +121,6 @@ export const AuthProvider = ({ children }) => {
       });
 
       return false;
-
     } catch (error) {
       console.error("Auth check failed:", error);
 
@@ -76,25 +133,86 @@ export const AuthProvider = ({ children }) => {
       });
 
       return false;
-
     } finally {
       setLoading(false);
     }
   };
 
-  const logout = async () => {
-    try {
-      await fetch(`${API}/user/logout`, {
-        method: "POST",
-        credentials: "include",
+  // --------------------------------
+  // TRACK USER ACTIVITY
+  // --------------------------------
+  useEffect(() => {
+    if (!user) return;
+
+    let lastRecordedActivity = Number(
+      localStorage.getItem(ACTIVITY_KEY)
+    ) || 0;
+
+    const updateActivity = () => {
+      const now = Date.now();
+
+      // Only update once every 30 seconds
+      if (now - lastRecordedActivity < 30 * 1000) {
+        return;
+      }
+
+      lastRecordedActivity = now;
+
+      localStorage.setItem(
+        ACTIVITY_KEY,
+        now.toString()
+      );
+    };
+
+    const events = [
+      "mousemove",
+      "keydown",
+      "click",
+      "scroll",
+      "touchstart",
+    ];
+
+    events.forEach((event) => {
+      window.addEventListener(event, updateActivity);
+    });
+
+    return () => {
+      events.forEach((event) => {
+        window.removeEventListener(event, updateActivity);
       });
-    } catch (error) {
-      console.error("Logout error:", error);
-    } finally {
-      setUser(null);
-      setAuthError(null);
-    }
-  };
+    };
+  }, [user]);
+
+  // --------------------------------
+  // CHECK FOR INACTIVITY
+  // --------------------------------
+  useEffect(() => {
+    if (!user) return;
+
+    const checkInactivity = () => {
+      const lastActivity = Number(
+        localStorage.getItem(ACTIVITY_KEY)
+      );
+
+      if (
+        lastActivity &&
+        Date.now() - lastActivity >= INACTIVITY_LIMIT
+      ) {
+        logout();
+      }
+    };
+
+    // Check every minute
+    activityTimeoutRef.current = setInterval(
+      checkInactivity,
+      60 * 1000
+    );
+
+    return () => {
+      clearInterval(activityTimeoutRef.current);
+      activityTimeoutRef.current = null;
+    };
+  }, [user]);
 
   return (
     <AuthContext.Provider

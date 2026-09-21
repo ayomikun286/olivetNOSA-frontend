@@ -18,25 +18,25 @@ const QuickActions = ({ hasOutstanding }) => {
       label: "View Obligations",
       description: "See your assigned contributions",
       icon: ReceiptText,
-      path: "/dashboard/obligations",
+      path: "my-obligation",
     },
     {
       label: "Update Profile",
       description: "Keep your information up to date",
       icon: UserRound,
-      path: "/dashboard/profile",
+      path: "profile",
     },
     {
       label: "Alumni Directory",
       description: "Connect with fellow Olivetians",
       icon: Users,
-      path: "/dashboard/directory",
+      path: "directory",
     },
     {
       label: "Events & News",
       description: "Stay updated with OlivetNOSA",
       icon: CalendarDays,
-      path: "/dashboard/events",
+      path: "events",
     },
   ];
 
@@ -46,7 +46,7 @@ const QuickActions = ({ hasOutstanding }) => {
       label: "My Leadership",
       description: "Manage your leadership responsibilities",
       icon: Users,
-      path: "/dashboard/leadership",
+      path: "year-set",
     });
   }
 

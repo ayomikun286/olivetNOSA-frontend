@@ -13,9 +13,19 @@ const ProtectedRoute = () => {
 
   const location = useLocation();
 
-  useEffect(() => {
-    checkAuth();
-  }, []);
+useEffect(() => {
+  checkAuth();
+
+  const handlePageShow = () => {
+    checkAuth(true);
+  };
+
+  window.addEventListener("pageshow", handlePageShow);
+
+  return () => {
+    window.removeEventListener("pageshow", handlePageShow);
+  };
+}, []);
 
   if (loading) {
     return <NosaLoader />;
@@ -55,7 +65,7 @@ const ProtectedRoute = () => {
           state: {
             alert: {
               type: "error",
-              title: "Network error",
+              title: "Session expired",
               message: "Please log in to access your account.",
             },
           },

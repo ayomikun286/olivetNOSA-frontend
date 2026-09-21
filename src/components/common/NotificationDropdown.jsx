@@ -25,14 +25,13 @@ const NotificationDropdown = () => {
 
     const [open, setOpen] = useState(false);
     const [notifications, setNotifications] = useState([]);
+    const [unreadCount, setUnreadCount] = useState(0);
     const [loading, setLoading] = useState(false);
     const [markingAll, setMarkingAll] = useState(false);
 
     const dropdownRef = useRef(null);
 
-    const unreadCount = notifications.filter(
-        (notification) => !notification.isRead
-    ).length;
+
 
     const fetchNotifications = async () => {
         try {
@@ -41,6 +40,7 @@ const NotificationDropdown = () => {
             const data = await getMyNotifications();
 
             setNotifications(data.notifications || []);
+            setUnreadCount(data.unreadCount || 0);
         } catch (error) {
             console.error(
                 "Notification dropdown error:",
@@ -50,6 +50,7 @@ const NotificationDropdown = () => {
             setLoading(false);
         }
     };
+
 
     useEffect(() => {
         fetchNotifications();
@@ -90,19 +91,21 @@ const NotificationDropdown = () => {
                 setNotifications((current) =>
                     current.map((item) =>
                         item._id === notification._id
-                            ? {
-                                  ...item,
-                                  isRead: true,
-                              }
+                            ? { ...item, isRead: true }
                             : item
                     )
+                );
+
+                setUnreadCount((current) =>
+                    Math.max(0, current - 1)
                 );
             }
 
             if (notification.link) {
                 navigate(notification.link);
-                setOpen(false);
             }
+
+            setOpen(false);
         } catch (error) {
             console.error(
                 "Mark notification read error:",
@@ -125,6 +128,8 @@ const NotificationDropdown = () => {
                     isRead: true,
                 }))
             );
+
+            setUnreadCount(0);
         } catch (error) {
             console.error(
                 "Mark all notifications error:",
@@ -233,17 +238,17 @@ const NotificationDropdown = () => {
                             border-(--bg-white)
                         "
                     >
-                        {unreadCount > 9
-                            ? "9+"
+                        {unreadCount > 99
+                            ? "99+"
                             : unreadCount}
                     </span>
                 )}
             </button>
 
             {/* Dropdown */}
-           {open && (
-    <div
-        className="
+            {open && (
+                <div
+                    className="
             fixed
             left-2
             right-2
@@ -263,10 +268,11 @@ const NotificationDropdown = () => {
             sm:right-0
             sm:top-full
             sm:mt-3
+            max-h-[500px]
             sm:w-[360px]
             sm:max-w-[360px]
         "
-    >
+                >
                     {/* Header */}
                     <div className="px-4 py-4 border-b border-(--border)">
                         <div className="flex items-center justify-between gap-4">
@@ -352,10 +358,9 @@ const NotificationDropdown = () => {
                                             py-3.5
                                             transition
                                             hover:bg-(--bg-light)/60
-                                            ${
-                                                !notification.isRead
-                                                    ? "bg-(--primary-light)/20"
-                                                    : ""
+                                            ${!notification.isRead
+                                                ? "bg-(--primary-light)/20"
+                                                : ""
                                             }
                                         `}
                                     >
@@ -370,10 +375,9 @@ const NotificationDropdown = () => {
                                                     flex
                                                     items-center
                                                     justify-center
-                                                    ${
-                                                        notification.isRead
-                                                            ? "bg-(--bg-light) text-(--text-muted)"
-                                                            : "bg-(--primary-light) text-(--primary)"
+                                                    ${notification.isRead
+                                                        ? "bg-(--bg-light) text-(--text-muted)"
+                                                        : "bg-(--primary-light) text-(--primary)"
                                                     }
                                                 `}
                                             >
@@ -392,10 +396,9 @@ const NotificationDropdown = () => {
                                                                 text-xs
                                                                 truncate
                                                                 min-w-0
-                                                                ${
-                                                                    notification.isRead
-                                                                        ? "font-medium"
-                                                                        : "font-semibold"
+                                                                ${notification.isRead
+                                                                    ? "font-medium"
+                                                                    : "font-semibold"
                                                                 }
                                                                 text-(--primary)
                                                             `}

@@ -9,9 +9,16 @@ import {
     CircleDollarSign,
 } from "lucide-react";
 
-import { getMyPayments } from "../../services/paymentService.js";
-
+import { getMyPayments, verifyPayment, } from "../../services/paymentService.js";
+import {
+    useSearchParams,
+} from "react-router-dom";
 const PaymentHistory = () => {
+
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [verifying, setVerifying] = useState(false);
+
+    const [verificationMessage, setVerificationMessage] = useState("");
     const [payments, setPayments] = useState([]);
 
     const [summary, setSummary] = useState({
@@ -24,12 +31,16 @@ const PaymentHistory = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
+
     useEffect(() => {
         const loadPayments = async () => {
             try {
                 setLoading(true);
+                setError("");
 
                 const data = await getMyPayments();
+
+                console.log(data)
 
                 setPayments(data.payments || []);
 
@@ -49,15 +60,76 @@ const PaymentHistory = () => {
 
                 setError(
                     error.message ||
-                        "Failed to load payment history."
+                    "Failed to load payment history."
                 );
             } finally {
                 setLoading(false);
             }
         };
 
-        loadPayments();
-    }, []);
+
+
+        const verifyReturnedPayment = async () => {
+            const paymentStatus = searchParams.get("payment");
+            const reference = searchParams.get("reference");
+
+            // Nothing to verify
+            if (!paymentStatus) {
+                await loadPayments();
+                return;
+            }
+
+            // Payment failed or Paystack callback did not return a reference
+            if (paymentStatus === "failed") {
+                setVerificationMessage(
+                    "Your payment could not be completed. You can try again from your outstanding obligations."
+                );
+
+                await loadPayments();
+
+                setSearchParams({});
+                return;
+            }
+
+            // Verify successful Paystack return
+            if (paymentStatus !== "verify" || !reference) {
+                await loadPayments();
+                return;
+            }
+
+            try {
+                setVerifying(true);
+                setVerificationMessage("Verifying your payment...");
+                setError("");
+
+                const data = await verifyPayment(reference);
+
+                if (data.success) {
+                    setVerificationMessage(
+                        "Payment successful. Your payment history has been updated."
+                    );
+                } else {
+                    setVerificationMessage(
+                        data.message || "Payment was not successful."
+                    );
+                }
+
+                await loadPayments();
+
+                setSearchParams({});
+            } catch (error) {
+                console.error("Payment verification error:", error);
+
+                setError(
+                    error.message ||
+                    "We could not verify your payment."
+                );
+            } finally {
+                setVerifying(false);
+            }
+        };
+        verifyReturnedPayment();
+    }, [searchParams, setSearchParams]);
 
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat("en-NG", {
@@ -143,6 +215,33 @@ const PaymentHistory = () => {
                         View your previous payments and transaction status.
                     </p>
                 </div>
+
+                {(verifying || verificationMessage) && (
+                    <div className="border border-(--primary)/20 bg-(--primary-light) rounded p-4">
+                        <div className="flex items-start gap-3">
+                            {verifying ? (
+                                <div className="w-5 h-5 border-2 border-(--primary)/20 border-t-(--primary) rounded-full animate-spin shrink-0 mt-0.5" />
+                            ) : (
+                                <CheckCircle2
+                                    size={18}
+                                    className="text-(--success) shrink-0 mt-0.5"
+                                />
+                            )}
+
+                            <div>
+                                <p className="text-sm font-medium text-(--primary)">
+                                    {verificationMessage}
+                                </p>
+
+                                {verifying && (
+                                    <p className="text-xs text-(--secondary) mt-1">
+                                        Please wait while we confirm the transaction with Paystack.
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {/* ERROR */}
                 {error && (

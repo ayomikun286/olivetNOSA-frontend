@@ -8,6 +8,7 @@ import {
   Users,
   MapPin,
   Bell,
+  CalendarDays,
   HelpCircle,
   LogOut,
   ContactRound,
@@ -180,7 +181,7 @@ const Sidebar = ({ setIsOpen }) => {
 
               {isChapterLeader && (
                 <NavLink
-                  to="/portal/member/dashboard/Chapter "
+                  to="/portal/member/dashboard/chapter "
                   className={linkClass}
                   onClick={handleLinkClick}
                 >
@@ -205,6 +206,15 @@ const Sidebar = ({ setIsOpen }) => {
             >
               <Bell className={iconClass} />
               <span>Notifications</span>
+            </NavLink>
+
+            <NavLink
+              to="/portal/member/dashboard/events"
+              className={linkClass}
+              onClick={handleLinkClick}
+            >
+              <CalendarDays className={iconClass} />
+              <span>Events</span>
             </NavLink>
           </div>
         </div>

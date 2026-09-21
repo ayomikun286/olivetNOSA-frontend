@@ -5,7 +5,7 @@ import {
   User,
   Settings,
 } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate, } from "react-router-dom";
 import NotificationDropdown from "../common/NotificationDropdown.jsx";
 
 const Navbar = ({
@@ -17,6 +17,7 @@ const Navbar = ({
 }) => {
   const [dropDown, setDropDown] = useState(false);
   const dropdownRef = useRef(null);
+  const navigate = useNavigate();
 
   // Close profile dropdown when clicking outside
   useEffect(() => {
@@ -95,9 +96,8 @@ const Navbar = ({
             {/* Chevron */}
             <ChevronDown
               size={16}
-              className={`text-(--primary) transition-transform duration-300 ${
-                dropDown ? "rotate-180" : ""
-              }`}
+              className={`text-(--primary) transition-transform duration-300 ${dropDown ? "rotate-180" : ""
+                }`}
             />
           </button>
 
@@ -113,10 +113,9 @@ const Navbar = ({
               bg-(--bg-light)
               shadow-lg
               transition-all duration-200
-              ${
-                dropDown
-                  ? "visible scale-100 opacity-100"
-                  : "invisible scale-95 opacity-0"
+              ${dropDown
+                ? "visible scale-100 opacity-100"
+                : "invisible scale-95 opacity-0"
               }
             `}
           >
@@ -183,7 +182,11 @@ const Navbar = ({
             <div className="border-t border-(--secondary)/20">
               <button
                 type="button"
-                onClick={logout}
+                onClick={async () => {
+                  setDropDown(false);
+                  await logout();
+                  navigate("/portal/login", { replace: true });
+                }}
                 className="
                   flex w-full items-center gap-3
                   px-4 py-3
