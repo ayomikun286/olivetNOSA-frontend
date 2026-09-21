@@ -129,7 +129,7 @@ const Dashboard = () => {
         </section>
 
         {/* main content */}
-        <section className='main  w-full  flex flex-col overflow-y-auto overflow-x-hidden'>
+        <section className='main  w-full  flex flex-col '>
           <Navbar
             setIsOpen={setIsOpen}
             alumniId={alumniId}
