@@ -130,12 +130,17 @@ const Dashboard = () => {
 
         {/* main content */}
         <section className='main  w-full  flex flex-col overflow-y-auto overflow-x-hidden'>
-          <Navbar setIsOpen={setIsOpen} alumniId={alumniId} firstName={firstName} year={user?.graduationYear} logout={logout} />
+          <Navbar
+            setIsOpen={setIsOpen}
+            alumniId={alumniId}
+            firstName={firstName}
+            year={user?.graduationYear}
+            logout={logout}
+          />
 
-
-
-          {/* pages switch  */}
-          <Outlet />
+          <div className="flex-1 overflow-y-auto">
+            <Outlet />
+          </div>
         </section>
 
 
