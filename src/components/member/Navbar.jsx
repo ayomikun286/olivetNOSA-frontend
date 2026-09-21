@@ -43,7 +43,7 @@ const Navbar = ({
   const initial = firstName?.charAt(0)?.toUpperCase() || "U";
 
   return (
-    <nav className="flex items-center justify-between border-b border-b-(--secondary)/50 bg-(--bg-light) px-4 py-3 md:px-8">
+    <nav className="flex sticky top-0 z-40  items-center justify-between border-b border-b-(--secondary)/50 bg-(--bg-light) px-4 py-3 md:px-8">
 
       {/* ================= LEFT ================= */}
       <button

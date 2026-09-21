@@ -105,6 +105,17 @@ const PaymentHistory = () => {
                 const data = await verifyPayment(reference);
 
                 if (data.success) {
+                    window.dispatchEvent(
+                        new CustomEvent("nosa:payment-success", {
+                            detail: {
+                                title: "Payment Successful",
+                                message: `Your payment of ₦${data.payment?.amount?.toLocaleString() || ""
+                                    } was successful.`,
+                                link: "/portal/member/dashboard/payment-history",
+                            },
+                        })
+                    );
+
                     setVerificationMessage(
                         "Payment successful. Your payment history has been updated."
                     );

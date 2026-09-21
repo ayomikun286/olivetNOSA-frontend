@@ -97,6 +97,26 @@ const Dashboard = () => {
     };
   }, [user?._id]);
 
+  useEffect(() => {
+    const handlePaymentSuccess = (event) => {
+        const notification = event.detail;
+
+        setAlertNotification(notification);
+    };
+
+    window.addEventListener(
+        "nosa:payment-success",
+        handlePaymentSuccess
+    );
+
+    return () => {
+        window.removeEventListener(
+            "nosa:payment-success",
+            handlePaymentSuccess
+        );
+    };
+}, []);
+
   return (
     <>
 
