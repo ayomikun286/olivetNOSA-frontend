@@ -162,7 +162,7 @@ const Sidebar = ({ setIsOpen }) => {
         </div>
 
         {/* ================= LEADERSHIP ================= */}
-        {(isYearSetLeader || isChapterLeader) && (
+        {/* {(isYearSetLeader || isChapterLeader) && (
           <div>
             <p className={sectionTitle}>Leadership</p>
 
@@ -192,7 +192,37 @@ const Sidebar = ({ setIsOpen }) => {
 
             </div>
           </div>
-        )}
+        )} */}
+
+         <div>
+            <p className={sectionTitle}>Leadership</p>
+
+            <div className="space-y-1">
+
+              
+                <NavLink
+                  to="/portal/member/dashboard/year-set"
+                  className={linkClass}
+                  onClick={handleLinkClick}
+                >
+                  <Users className={iconClass} />
+                  <span>My Year Set</span>
+                </NavLink>
+             
+
+             
+                <NavLink
+                  to="/portal/member/dashboard/chapter "
+                  className={linkClass}
+                  onClick={handleLinkClick}
+                >
+                  <MapPin className={iconClass} />
+                  <span>My Chapter</span>
+                </NavLink>
+           
+
+            </div>
+          </div>
 
         {/* ================= COMMUNICATION ================= */}
         <div>

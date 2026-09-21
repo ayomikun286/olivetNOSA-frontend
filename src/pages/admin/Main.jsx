@@ -226,49 +226,50 @@ const Main = () => {
 
 
         {/* OVERVIEW CARDS */}
-        <div className="flex w-full gap-3  space-y-2 lg:flex-rol md:flex-rol flex-col">
-          <div className="flex-1 min-w-0">
-            <CollectionBreakdown
-              data={data?.charts?.collectionByCategory || []}
-              totalCollected={finance.totalCollected || 0}
-            />
-          </div>
-          <div className="w-full md:max-w-[400px] space-y-2 ">
-            <AdminStatCard
-              icon={Users}
-              iconBg="bg-(--primary-light)"
-              iconClass="text-(--primary)"
-              badge="Membership"
-              label="Total Members"
-              value={members.total || 0}
-              description="Registered members"
-            />
+       <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_400px] gap-3 w-full">
+  
+  {/* Collection Breakdown */}
+  <div className="w-full min-w-0">
+    <CollectionBreakdown
+      data={data?.charts?.collectionByCategory || []}
+      totalCollected={finance.totalCollected || 0}
+    />
+  </div>
 
-            <AdminStatCard
-              icon={UserCheck}
-              iconBg="bg-(--success-light)"
-              iconClass="text-(--success)"
-              badge="Active"
-              label="Active Members"
-              value={members.active || 0}
-              description="Approved members"
-            />
+  {/* Stats Cards */}
+  <div className="w-full space-y-2">
+    <AdminStatCard
+      icon={Users}
+      iconBg="bg-(--primary-light)"
+      iconClass="text-(--primary)"
+      badge="Membership"
+      label="Total Members"
+      value={members.total || 0}
+      description="Registered members"
+    />
 
-            <AdminStatCard
-              icon={Clock3}
-              iconBg="bg-(--warning-light)"
-              iconClass="text-(--warning)"
-              badge="Attention"
-              label="Pending Approval"
-              value={members.pending || 0}
-              description="Members awaiting approval"
-            />
+    <AdminStatCard
+      icon={UserCheck}
+      iconBg="bg-(--success-light)"
+      iconClass="text-(--success)"
+      badge="Active"
+      label="Active Members"
+      value={members.active || 0}
+      description="Approved members"
+    />
 
+    <AdminStatCard
+      icon={Clock3}
+      iconBg="bg-(--warning-light)"
+      iconClass="text-(--warning)"
+      badge="Attention"
+      label="Pending Approval"
+      value={members.pending || 0}
+      description="Members awaiting approval"
+    />
+  </div>
 
-
-          </div>
-
-        </div>
+</div>
 
 
 

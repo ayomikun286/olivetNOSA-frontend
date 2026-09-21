@@ -14,7 +14,8 @@ const CollectionBreakdown = ({
   data = [],
   totalCollected = 0,
 }) => {
-    console.log(data, totalCollected)
+    console.log("chat data",data)
+    console.log("total ", totalCollected)
   const formatCurrency = (amount = 0) => {
     return new Intl.NumberFormat("en-NG", {
       style: "currency",
