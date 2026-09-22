@@ -64,6 +64,8 @@ const MyYearSet = () => {
     const members = yearSetData?.members || [];
     const recentActivity = yearSetData?.recentActivity || [];
 
+    console.log(recentActivity)
+
     const totalDue = Number(summary?.totalDue || 0);
     const amountPaid = Number(summary?.amountPaid || 0);
     const outstanding = Number(summary?.outstanding || 0);
@@ -188,18 +190,16 @@ const MyYearSet = () => {
                         PAGE INTRO
                     ======================================== */}
 
-                    <div className="flex flex-col p-4 rounded shadow sm:flex-row sm:items-end sm:justify-between gap-3">
+                    <div className="flex flex-col mb-5  sm:flex-row sm:items-end sm:justify-between gap-3">
                         <div>
-                            <p className="text-xs font-semibold uppercase tracking-wide text-(--secondary)">
-                                Leadership
-                            </p>
-
-                            <h1 className="text-xl md:text-2xl font-semibold text-(--primary) mt-1">
-                                My Year Set
+                           
+                       
+                              <h1 className="text-xl md:text-2xl font-semibold text-(--primary) mt-1">
+                                Year Set Contributions
                             </h1>
 
                             <p className="text-sm text-(--secondary) mt-1">
-                                Manage your year set membership and official contributions.
+                               Track your year set's financial responsibility.
                             </p>
                         </div>
 
@@ -247,16 +247,6 @@ const MyYearSet = () => {
                     ======================================== */}
 
                     <div className="space-y-3">
-                        <div>
-                            <h2 className="text-lg font-semibold text-(--primary)">
-                                Year Set Contributions
-                            </h2>
-
-                            <p className="text-sm text-(--secondary)">
-                                Track your year set's financial responsibility.
-                            </p>
-                        </div>
-
                         <div className="grid grid-cols-1 lg:grid-cols-4 gap-3">
 
                             {/* MAIN BALANCE */}
@@ -585,21 +575,21 @@ const MyYearSet = () => {
                                                             type="button"
                                                             onClick={() => handlePayNow(item)}
                                                             className="
-        inline-flex
-        items-center
-        justify-center
-        gap-1.5
-        bg-(--primary)
-        text-white
-        px-4
-        py-2
-        rounded-(--radius-sm)
-        text-xs
-        font-semibold
-        hover:bg-(--primary-dark)
-        transition
-        shrink-0
-    "
+                                                                    inline-flex
+                                                                    items-center
+                                                                    justify-center
+                                                                    gap-1.5
+                                                                    bg-(--primary)
+                                                                    text-white
+                                                                    px-4
+                                                                    py-2
+                                                                    rounded
+                                                                    text-xs
+                                                                    font-semibold
+                                                                    hover:bg-(--primary-dark)
+                                                                    transition
+                                                                    shrink-0
+                                                                "
                                                         >
                                                             Pay now
                                                             <ArrowUpRight size={14} />
@@ -662,10 +652,12 @@ const MyYearSet = () => {
                                     </p>
                                 </div>
                             ) : (
-                                <div className="divide-y divide-(--border) max-h-[430px] overflow-y-auto scrollbar-hide">
+                                <div className="divide-y divide-(--border) max-h-125 overflow-y-auto scrollbar-hide">
                                     {members.slice(0, 5).map((member) => (
+    //   later fix for leader  to view user details ----------------------------------------||||                              
                                         <div
                                             key={member._id}
+                                            onClick={console.log("member leader view ",member._id)}
                                             className="p-5 hover:bg-(--bg-light)/50 transition"
                                         >
                                             <div className="flex items-center justify-between gap-4">
@@ -800,18 +792,18 @@ const MyYearSet = () => {
                                         }
                                     }}
                                     className="
-        mt-5 w-full
-        inline-flex items-center justify-center gap-2
-        bg-(--primary)
-        text-white
-        px-4 py-2.5
-        rounded-(--radius-sm)
-        text-xs font-semibold
-        hover:bg-(--primary-dark)
-        disabled:opacity-50
-        disabled:cursor-not-allowed
-        transition-all
-    "
+                                            mt-5 w-full
+                                            inline-flex items-center justify-center gap-2
+                                            bg-(--primary)
+                                            text-white
+                                            px-4 py-2.5
+                                            rounded
+                                            text-xs font-semibold
+                                            hover:bg-(--primary-dark)
+                                            disabled:opacity-50
+                                            disabled:cursor-not-allowed
+                                            transition-all
+                                        "
                                 >
                                     Make Year Set Payment
                                     <ArrowUpRight size={14} />
@@ -824,7 +816,7 @@ const MyYearSet = () => {
                         RECENT ACTIVITY
                     ======================================== */}
 
-                    <section className="bg-(--bg-white) border border-(--border) rounded overflow-hidden">
+                    <section className="bg-(--bg-white) border border-(--border) rounded max-h-125 scroll-none ">
                         <div className="p-5 border-b border-(--border)">
                             <div className="flex items-center gap-2">
                                 <CircleDollarSign
@@ -847,9 +839,46 @@ const MyYearSet = () => {
                                 {recentActivity.map((activity, index) => (
                                     <div
                                         key={activity._id || index}
-                                        className="p-5"
+                                        className="p-5 flex items-center justify-between gap-4"
                                     >
-                                        {/* Payment activity will appear here */}
+                                        <div className="flex items-center gap-3 min-w-0">
+                                            <div className="w-9 h-9 rounded-full bg-green-50 flex items-center justify-center shrink-0">
+                                                <CheckCircle2
+                                                    size={18}
+                                                    className="text-green-600"
+                                                />
+                                            </div>
+
+                                            <div className="min-w-0">
+                                                <p className="text-sm font-medium text-(--primary)">
+                                                    {activity.obligationAssignment?.obligation?.name ||
+                                                        "Year Set Payment"}
+                                                </p>
+
+                                                <p className="text-[11px] text-(--text-muted) mt-1">
+                                                    {activity.paidAt
+                                                        ? new Date(activity.paidAt).toLocaleDateString(
+                                                            "en-NG",
+                                                            {
+                                                                day: "numeric",
+                                                                month: "short",
+                                                                year: "numeric",
+                                                            }
+                                                        )
+                                                        : "Payment date unavailable"}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div className="text-right shrink-0">
+                                            <p className="text-sm font-semibold text-green-600">
+                                                +₦{Number(activity.amount || 0).toLocaleString()}
+                                            </p>
+
+                                            <p className="text-[11px] text-(--text-muted) mt-1">
+                                                Successful
+                                            </p>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
@@ -873,6 +902,9 @@ const MyYearSet = () => {
                 </div>
 
             </div>
+
+
+            {/* payment module */}
             {paymentModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
                     <div className="w-full max-w-md bg-white rounded shadow-xl overflow-hidden">

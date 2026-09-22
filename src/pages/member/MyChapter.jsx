@@ -8,13 +8,16 @@ import {
     CalendarDays,
     UserRound,
     ArrowUpRight,
-    MapPin,
     CheckCircle2,
+    X,
+    CreditCard,
+    Loader2,
+    MapPin,
 } from "lucide-react";
 
-import { getChapterObligation } from "../../services/chapterService.js";
 import PageTitle from "../../components/common/PageTitle.jsx";
 import { useAuth } from "../../context/AuthContext.jsx";
+import { getChapterObligation } from "../../services/chapterService.js";
 
 const MyChapter = () => {
     const { user } = useAuth();
@@ -22,6 +25,19 @@ const MyChapter = () => {
     const [chapterData, setChapterData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+
+    // ========================================
+    // PAYMENT STATE
+    // ========================================
+
+    const [paymentModal, setPaymentModal] = useState(null);
+    const [paymentAmount, setPaymentAmount] = useState("");
+    const [paymentLoading, setPaymentLoading] = useState(false);
+    const [paymentError, setPaymentError] = useState("");
+
+    // ========================================
+    // FETCH CHAPTER
+    // ========================================
 
     useEffect(() => {
         const fetchChapter = async () => {
@@ -31,7 +47,7 @@ const MyChapter = () => {
 
                 const data = await getChapterObligation();
 
-                console.log(data);
+                console.log("Chapter data:", data);
 
                 setChapterData(data);
             } catch (err) {
@@ -67,17 +83,21 @@ const MyChapter = () => {
     const recentActivity =
         chapterData?.recentActivity || [];
 
-    const totalDue =
-        Number(summary?.totalDue || 0);
+    const totalDue = Number(
+        summary?.totalDue || 0
+    );
 
-    const amountPaid =
-        Number(summary?.amountPaid || 0);
+    const amountPaid = Number(
+        summary?.amountPaid || 0
+    );
 
-    const outstanding =
-        Number(summary?.outstanding || 0);
+    const outstanding = Number(
+        summary?.outstanding || 0
+    );
 
-    const memberCount =
-        Number(summary?.memberCount || 0);
+    const memberCount = Number(
+        summary?.memberCount || 0
+    );
 
     const contributionProgress =
         totalDue > 0
@@ -112,34 +132,154 @@ const MyChapter = () => {
         );
     };
 
-    const getObligationStatus = (status) => {
-        switch (status) {
-            case "paid":
-                return {
-                    label: "Paid",
-                    className: "text-(--success)",
-                };
+    const getObligationStatus = (
+        obligation,
+        remaining
+    ) => {
+        if (remaining <= 0) {
+            return {
+                label: "Paid",
+                className:
+                    "text-(--success) bg-(--success-light)",
+                icon: CheckCircle2,
+            };
+        }
 
-            case "partial":
-            case "partially_paid":
-                return {
-                    label: "Partially Paid",
-                    className: "text-(--warning)",
-                };
+        if (
+            obligation?.status === "partial" ||
+            obligation?.status === "partially_paid"
+        ) {
+            return {
+                label: "Partially Paid",
+                className:
+                    "text-(--warning) bg-(--warning-light)",
+                icon: AlertCircle,
+            };
+        }
 
-            case "overdue":
-                return {
-                    label: "Overdue",
-                    className: "text-(--danger)",
-                };
+        if (obligation?.status === "overdue") {
+            return {
+                label: "Overdue",
+                className:
+                    "text-(--danger) bg-(--danger-light)",
+                icon: AlertCircle,
+            };
+        }
 
-            default:
-                return {
-                    label: "Pending",
-                    className: "text-(--secondary)",
-                };
+        return {
+            label: "Outstanding",
+            className:
+                "text-(--warning) bg-(--warning-light)",
+            icon: AlertCircle,
+        };
+    };
+
+    // ========================================
+    // PAYMENT
+    // ========================================
+
+    const handlePayNow = (obligation) => {
+        const amountDue = Number(
+            obligation.amountDue || 0
+        );
+
+        const amountPaid = Number(
+            obligation.amountPaid || 0
+        );
+
+        const outstandingAmount = Math.max(
+            amountDue - amountPaid,
+            0
+        );
+
+        setPaymentModal({
+            ...obligation,
+            outstanding: outstandingAmount,
+        });
+
+        setPaymentAmount(
+            outstandingAmount.toString()
+        );
+
+        setPaymentError("");
+    };
+
+    const handleInitializePayment = async () => {
+        if (!paymentModal) return;
+
+        const amount = Number(paymentAmount);
+
+        if (
+            !Number.isFinite(amount) ||
+            amount <= 0
+        ) {
+            setPaymentError(
+                "Please enter a valid payment amount."
+            );
+            return;
+        }
+
+        if (amount > paymentModal.outstanding) {
+            setPaymentError(
+                `Amount cannot exceed the outstanding balance of ₦${paymentModal.outstanding.toLocaleString()}.`
+            );
+            return;
+        }
+
+        setPaymentLoading(true);
+        setPaymentError("");
+
+        try {
+            const response = await fetch(
+                `${import.meta.env.VITE_API_URL}/api/payments/initialize`,
+                {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type":
+                            "application/json",
+                    },
+                    body: JSON.stringify({
+                        obligationAssignmentId:
+                            paymentModal._id,
+                        amount,
+                    }),
+                }
+            );
+
+            const data =
+                await response.json();
+
+            if (
+                !response.ok ||
+                !data.success
+            ) {
+                throw new Error(
+                    data.message ||
+                    "Failed to initialize payment."
+                );
+            }
+
+            window.location.href =
+                data.authorizationUrl;
+        } catch (error) {
+            console.error(
+                "Payment initialization error:",
+                error
+            );
+
+            setPaymentError(
+                error.message ||
+                "Unable to initialize payment."
+            );
+
+            setPaymentLoading(false);
         }
     };
+
+    // ========================================
+    // RENDER
+    // ========================================
 
     return (
         <>
@@ -152,37 +292,40 @@ const MyChapter = () => {
                         PAGE INTRO
                     ======================================== */}
 
-                    <div className="flex flex-col p-4 rounded shadow sm:flex-row sm:items-end sm:justify-between gap-3">
+                    <div className="flex flex-col mb-5 sm:flex-row sm:items-end sm:justify-between gap-3">
                         <div>
-                            <p className="text-xs font-semibold uppercase tracking-wide text-(--secondary)">
-                                Leadership
-                            </p>
-
                             <h1 className="text-xl md:text-2xl font-semibold text-(--primary) mt-1">
-                                My Chapter
+                                Chapter Contributions
                             </h1>
 
                             <p className="text-sm text-(--secondary) mt-1">
-                                Manage your chapter membership and official contributions.
+                                Track your chapter's financial responsibility.
                             </p>
                         </div>
 
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-md bg-(--primary-light) text-(--primary) flex items-center justify-center">
-                                <MapPin size={19} />
+                                <Users size={19} />
                             </div>
 
                             <div>
                                 <p className="text-sm font-semibold text-(--primary)">
-                                    {chapter?.name || "Chapter"}
+                                    {chapter?.name ||
+                                        "Chapter"}
                                 </p>
 
-                                <p className="text-xs text-(--text-muted) mt-0.5">
-                                    {chapter?.code || "—"}
+                                <p className="text-xs text-(--text-muted) mt-0.5 flex items-center gap-1">
+                                    {chapter?.code ||
+                                        "—"}
 
-                                    {chapter?.country
-                                        ? ` • ${chapter.country}`
-                                        : ""}
+                                    {chapter?.country && (
+                                        <>
+                                            <span>•</span>
+                                            <span>
+                                                {chapter.country}
+                                            </span>
+                                        </>
+                                    )}
                                 </p>
                             </div>
                         </div>
@@ -211,17 +354,7 @@ const MyChapter = () => {
                         FINANCIAL OVERVIEW
                     ======================================== */}
 
-                    <div className="space-y-3 py-3">
-                        <div>
-                            <h2 className="text-lg font-semibold text-(--primary)">
-                                Chapter Contributions
-                            </h2>
-
-                            <p className="text-sm text-(--secondary)/80">
-                                Track your chapter's financial responsibility.
-                            </p>
-                        </div>
-
+                    <div className="space-y-3">
                         <div className="grid grid-cols-1 lg:grid-cols-4 gap-3">
 
                             {/* MAIN BALANCE */}
@@ -244,7 +377,8 @@ const MyChapter = () => {
                                         </div>
 
                                         {!loading &&
-                                            outstanding > 0 && (
+                                            outstanding >
+                                            0 && (
                                                 <span className="text-xs bg-(--secondary) text-(--primary) px-2 py-1 rounded font-semibold">
                                                     Action needed
                                                 </span>
@@ -299,12 +433,14 @@ const MyChapter = () => {
                                 </div>
                             </div>
 
-                            {/* AMOUNT PAID */}
+                            {/* PAID */}
 
                             <div className="rounded bg-(--bg-white) border border-(--border) p-5">
                                 <div className="flex items-center justify-between">
                                     <div className="w-10 h-10 rounded-lg bg-green-50 text-(--success) flex items-center justify-center">
-                                        <CheckCircle2 size={20} />
+                                        <CheckCircle2
+                                            size={20}
+                                        />
                                     </div>
 
                                     <span className="text-xs text-(--text-muted)">
@@ -359,98 +495,117 @@ const MyChapter = () => {
                         </div>
                     </div>
 
-
-
-
                     {/* ========================================
                         CHAPTER OBLIGATIONS
                     ======================================== */}
 
                     <section className="bg-(--bg-white) border border-(--border) rounded overflow-hidden">
-                        <div className="p-5 border-b border-(--border)">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-lg bg-(--primary-light) text-(--primary) flex items-center justify-center">
-                                    <CircleDollarSign size={19} />
-                                </div>
 
-                                <div>
-                                    <h2 className="font-semibold text-(--primary)">
-                                        Chapter Obligations
-                                    </h2>
+                        <div className="p-5 border-b border-(--border) flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div>
+                                <h2 className="font-semibold text-(--primary)">
+                                    Chapter Obligations
+                                </h2>
 
-                                    <p className="text-sm text-(--secondary) mt-1">
-                                        Financial obligations assigned to your chapter.
-                                    </p>
-                                </div>
+                                <p className="text-sm text-(--secondary) mt-1">
+                                    View all financial obligations assigned to your chapter.
+                                </p>
+                            </div>
+
+                            <div className="flex items-center gap-2 text-xs text-(--secondary)">
+                                <CircleDollarSign size={15} />
+
+                                {obligations.length} obligation
+                                {obligations.length !== 1
+                                    ? "s"
+                                    : ""}
                             </div>
                         </div>
 
                         {loading ? (
-                            <div className="p-8 text-center text-sm text-(--secondary)">
-                                Loading obligations...
+                            <div className="p-10 text-center">
+                                <p className="text-sm text-(--secondary)">
+                                    Loading obligations...
+                                </p>
                             </div>
-                        ) : obligations.length === 0 ? (
+                        ) : obligations.length ===
+                            0 ? (
                             <div className="p-10 text-center">
                                 <div className="w-12 h-12 mx-auto rounded-full bg-(--primary-light) text-(--primary) flex items-center justify-center">
-                                    <CircleDollarSign size={22} />
+                                    <CheckCircle2
+                                        size={22}
+                                    />
                                 </div>
 
-                                <h3 className="font-semibold mt-4 text-(--primary)">
-                                    No chapter obligations
+                                <h3 className="font-semibold text-(--primary) mt-4">
+                                    No obligations assigned
                                 </h3>
 
-                                <p className="text-sm text-(--secondary) mt-1 max-w-sm mx-auto">
-                                    There are currently no financial obligations assigned to your chapter.
+                                <p className="text-sm text-(--secondary) mt-1 max-w-md mx-auto">
+                                    There are currently no financial obligations assigned to this chapter.
                                 </p>
                             </div>
                         ) : (
                             <div className="divide-y divide-(--border) max-h-[450px] overflow-y-auto scrollbar-hide">
-                                {obligations.map((item) => {
-                                    const amountDue =
-                                        Number(
-                                            item.amountDue || 0
-                                        );
 
-                                    const amountPaid =
-                                        Number(
-                                            item.amountPaid || 0
-                                        );
+                                {obligations.map(
+                                    (item) => {
+                                        const due =
+                                            Number(
+                                                item.amountDue ||
+                                                0
+                                            );
 
-                                    const obligationOutstanding =
-                                        Math.max(
-                                            amountDue -
-                                            amountPaid,
-                                            0
-                                        );
+                                        const paid =
+                                            Number(
+                                                item.amountPaid ||
+                                                0
+                                            );
 
-                                    const progress =
-                                        amountDue > 0
-                                            ? Math.min(
-                                                (amountPaid /
-                                                    amountDue) *
-                                                100,
-                                                100
-                                            )
-                                            : 0;
+                                        const remaining =
+                                            Math.max(
+                                                due -
+                                                paid,
+                                                0
+                                            );
 
-                                    const status =
-                                        getObligationStatus(
-                                            item.status
-                                        );
+                                        const progress =
+                                            due
+                                                ? Math.min(
+                                                    (paid /
+                                                        due) *
+                                                    100,
+                                                    100
+                                                )
+                                                : 0;
 
-                                    return (
-                                        <div
-                                            key={item._id}
-                                            className="p-5 hover:bg-(--bg-light)/50 transition"
-                                        >
-                                            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                                        const status =
+                                            getObligationStatus(
+                                                item,
+                                                remaining
+                                            );
 
-                                                {/* OBLIGATION INFO */}
+                                        const StatusIcon =
+                                            status.icon;
 
-                                                <div className="min-w-0">
-                                                    <div className="flex items-start gap-3">
-                                                        <div className="w-9 h-9 shrink-0 rounded-lg bg-(--primary-light) text-(--primary) flex items-center justify-center">
-                                                            <Wallet size={17} />
+                                        return (
+                                            <div
+                                                key={
+                                                    item._id
+                                                }
+                                                className="p-5 sm:p-6"
+                                            >
+                                                <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+
+                                                    {/* OBLIGATION INFO */}
+
+                                                    <div className="flex items-start gap-3.5 min-w-0">
+                                                        <div className="w-10 h-10 shrink-0 rounded-lg bg-(--primary-light) text-(--primary) flex items-center justify-center">
+                                                            <CircleDollarSign
+                                                                size={
+                                                                    18
+                                                                }
+                                                            />
                                                         </div>
 
                                                         <div className="min-w-0">
@@ -461,125 +616,163 @@ const MyChapter = () => {
                                                                     "Chapter Obligation"}
                                                             </h3>
 
-                                                            <p className="text-xs text-(--secondary) mt-1">
+                                                            <p className="text-xs text-(--secondary) mt-1 leading-relaxed max-w-2xl">
                                                                 {item
                                                                     .obligation
                                                                     ?.description ||
-                                                                    "Official chapter financial obligation."}
+                                                                    "Official chapter contribution"}
                                                             </p>
+
+                                                            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2.5 text-xs text-(--text-muted)">
+                                                                <span className="flex items-center gap-1">
+                                                                    <CalendarDays
+                                                                        size={
+                                                                            13
+                                                                        }
+                                                                    />
+
+                                                                    Due{" "}
+                                                                    {formatDate(
+                                                                        item.dueDate
+                                                                    )}
+                                                                </span>
+
+                                                                <span className="flex items-center gap-1">
+                                                                    <MapPin
+                                                                        size={
+                                                                            13
+                                                                        }
+                                                                    />
+
+                                                                    Chapter
+                                                                </span>
+                                                            </div>
                                                         </div>
                                                     </div>
 
-                                                    {item.dueDate && (
-                                                        <div className="flex items-center gap-1.5 mt-4 text-xs text-(--text-muted)">
-                                                            <CalendarDays
-                                                                size={
-                                                                    14
-                                                                }
-                                                            />
+                                                    {/* AMOUNT + STATUS */}
 
-                                                            Due{" "}
-                                                            {formatDate(
-                                                                item.dueDate
-                                                            )}
-                                                        </div>
-                                                    )}
-                                                </div>
-
-                                                {/* AMOUNTS */}
-
-                                                <div className="lg:min-w-[220px]">
-                                                    <div className="flex items-center justify-between gap-4">
-                                                        <div>
+                                                    <div className="flex items-center justify-between lg:justify-end gap-4 shrink-0">
+                                                        <div className="lg:text-right">
                                                             <p className="text-[11px] text-(--text-muted)">
                                                                 Amount due
                                                             </p>
 
-                                                            <p className="text-sm font-semibold text-(--primary) mt-1">
+                                                            <p className="text-sm font-semibold text-(--primary) mt-0.5">
                                                                 {formatCurrency(
-                                                                    amountDue
+                                                                    due
                                                                 )}
                                                             </p>
                                                         </div>
 
-                                                        <div className="text-right">
-                                                            <p className="text-[11px] text-(--text-muted)">
-                                                                Outstanding
-                                                            </p>
-
-                                                            <p className="text-sm font-semibold text-(--primary) mt-1">
-                                                                {formatCurrency(
-                                                                    obligationOutstanding
-                                                                )}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-
-                                                    {/* PROGRESS */}
-
-                                                    <div className="mt-4">
-                                                        <div className="h-1.5 bg-(--bg-light) rounded-full overflow-hidden">
-                                                            <div
-                                                                className="h-full bg-(--secondary) rounded-full transition-all duration-500"
-                                                                style={{
-                                                                    width: `${progress}%`,
-                                                                }}
-                                                            />
-                                                        </div>
-
-                                                        <div className="flex items-center justify-between mt-2">
-                                                            <span className="text-[11px] text-(--text-muted)">
-                                                                {formatCurrency(
-                                                                    amountPaid
-                                                                )}{" "}
-                                                                paid
-                                                            </span>
-
-                                                            <span className="text-[11px] font-medium text-(--primary)">
-                                                                {Math.round(
-                                                                    progress
-                                                                )}
-                                                                %
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            {/* STATUS */}
-
-                                            <div className="flex items-center justify-between mt-5 pt-4 border-t border-(--border)">
-                                                <span
-                                                    className={`text-[11px] font-semibold uppercase tracking-wide ${status.className}`}
-                                                >
-                                                    {status.label}
-                                                </span>
-
-                                                {obligationOutstanding >
-                                                    0 && (
-                                                        <button
-                                                            type="button"
-                                                            disabled
-                                                            className="
-                                                            inline-flex items-center gap-1.5
-                                                            text-xs font-semibold
-                                                            text-(--primary)
-                                                            opacity-60
-                                                            cursor-not-allowed
-                                                        "
+                                                        <span
+                                                            className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-full ${status.className}`}
                                                         >
-                                                            Pay now
-                                                            <ArrowUpRight
+                                                            <StatusIcon
                                                                 size={
                                                                     13
                                                                 }
                                                             />
-                                                        </button>
-                                                    )}
+
+                                                            {
+                                                                status.label
+                                                            }
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                {/* PAYMENT PROGRESS */}
+
+                                                <div className="mt-5 pt-4 border-t border-(--border)">
+                                                    <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+
+                                                        <div className="flex-1 min-w-0">
+                                                            <div className="flex items-center justify-between mb-2">
+                                                                <span className="text-xs text-(--secondary)">
+                                                                    {paid >
+                                                                        0
+                                                                        ? `${formatCurrency(
+                                                                            paid
+                                                                        )} paid`
+                                                                        : "No payment recorded"}
+                                                                </span>
+
+                                                                <span className="text-xs font-semibold text-(--primary)">
+                                                                    {Math.round(
+                                                                        progress
+                                                                    )}
+                                                                    %
+                                                                </span>
+                                                            </div>
+
+                                                            <div className="h-1.5 bg-(--bg-light) rounded-full overflow-hidden">
+                                                                <div
+                                                                    className="h-full bg-(--success) rounded-full transition-all"
+                                                                    style={{
+                                                                        width: `${progress}%`,
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="sm:w-32 shrink-0">
+                                                            <p className="text-[11px] text-(--text-muted)">
+                                                                Outstanding
+                                                            </p>
+
+                                                            <p
+                                                                className={`text-sm font-semibold mt-0.5 ${remaining >
+                                                                        0
+                                                                        ? "text-(--primary)"
+                                                                        : "text-(--success)"
+                                                                    }`}
+                                                            >
+                                                                {formatCurrency(
+                                                                    remaining
+                                                                )}
+                                                            </p>
+                                                        </div>
+
+                                                        {remaining >
+                                                            0 && (
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() =>
+                                                                        handlePayNow(
+                                                                            item
+                                                                        )
+                                                                    }
+                                                                    className="
+                                                                    inline-flex
+                                                                    items-center
+                                                                    justify-center
+                                                                    gap-1.5
+                                                                    bg-(--primary)
+                                                                    text-white
+                                                                    px-4
+                                                                    py-2
+                                                                    rounded
+                                                                    text-xs
+                                                                    font-semibold
+                                                                    hover:bg-(--primary-dark)
+                                                                    transition
+                                                                    shrink-0
+                                                                "
+                                                                >
+                                                                    Pay now
+                                                                    <ArrowUpRight
+                                                                        size={
+                                                                            14
+                                                                        }
+                                                                    />
+                                                                </button>
+                                                            )}
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    );
-                                })}
+                                        );
+                                    }
+                                )}
                             </div>
                         )}
                     </section>
@@ -590,9 +783,10 @@ const MyChapter = () => {
 
                     <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_320px] gap-4">
 
-                        {/* CHAPTER MEMBERS */}
+                        {/* MEMBERS */}
 
                         <section className="bg-(--bg-white) border border-(--border) rounded overflow-hidden">
+
                             <div className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-(--border)">
                                 <div>
                                     <h2 className="font-semibold text-(--primary)">
@@ -608,7 +802,8 @@ const MyChapter = () => {
                                     <Users size={15} />
 
                                     {memberCount} member
-                                    {memberCount !== 1
+                                    {memberCount !==
+                                        1
                                         ? "s"
                                         : ""}
                                 </div>
@@ -618,7 +813,8 @@ const MyChapter = () => {
                                 <div className="p-8 text-center text-sm text-(--secondary)">
                                     Loading members...
                                 </div>
-                            ) : members.length === 0 ? (
+                            ) : members.length ===
+                                0 ? (
                                 <div className="p-10 text-center">
                                     <div className="w-12 h-12 mx-auto rounded-full bg-(--primary-light) text-(--primary) flex items-center justify-center">
                                         <Users size={22} />
@@ -628,80 +824,101 @@ const MyChapter = () => {
                                         No members found
                                     </h3>
 
-                                    <p className="text-sm text-(--secondary) mt-1 max-w-sm mx-auto">
+                                    <p className="text-sm text-(--secondary) mt-1">
                                         No active members are currently assigned to this chapter.
                                     </p>
                                 </div>
                             ) : (
-                                <div className="divide-y divide-(--border) max-h-[430px] overflow-y-auto scrollbar-hide">
+                                <div className="divide-y divide-(--border) max-h-125 overflow-y-auto scrollbar-hide">
                                     {members
-                                        .slice(0, 5)
-                                        .map((member) => (
-                                            <div
-                                                key={member._id}
-                                                className="p-5 hover:bg-(--bg-light)/50 transition"
-                                            >
-                                                <div className="flex items-center justify-between gap-4">
-                                                    <div className="flex items-center gap-3.5 min-w-0">
-                                                        <div className="w-10 h-10 shrink-0 rounded-lg bg-(--primary-light) text-(--primary) flex items-center justify-center">
-                                                            <UserRound size={18} />
+                                        .slice(
+                                            0,
+                                            5
+                                        )
+                                        .map(
+                                            (
+                                                member
+                                            ) => (
+                                                <div
+                                                    key={
+                                                        member._id
+                                                    }
+                                                    className="p-5 hover:bg-(--bg-light)/50 transition"
+                                                >
+                                                    <div className="flex items-center justify-between gap-4">
+
+                                                        <div className="flex items-center gap-3.5 min-w-0">
+                                                            <div className="w-10 h-10 shrink-0 rounded-lg bg-(--primary-light) text-(--primary) flex items-center justify-center">
+                                                                <UserRound
+                                                                    size={
+                                                                        18
+                                                                    }
+                                                                />
+                                                            </div>
+
+                                                            <div className="min-w-0">
+                                                                <h3 className="text-sm font-semibold text-(--primary) truncate">
+                                                                    {
+                                                                        member.firstName
+                                                                    }{" "}
+                                                                    {member.middleName
+                                                                        ? `${member.middleName} `
+                                                                        : ""}
+                                                                    {
+                                                                        member.lastName
+                                                                    }
+                                                                </h3>
+
+                                                                <p className="text-xs text-(--secondary) mt-1">
+                                                                    {member.alumniId ||
+                                                                        "No Alumni ID"}
+                                                                </p>
+                                                            </div>
                                                         </div>
 
-                                                        <div className="min-w-0">
-                                                            <h3 className="text-sm font-semibold text-(--primary) truncate">
-                                                                {
-                                                                    member.firstName
-                                                                }{" "}
-                                                                {member.middleName
-                                                                    ? `${member.middleName} `
-                                                                    : ""}
-                                                                {
-                                                                    member.lastName
-                                                                }
-                                                            </h3>
+                                                        <div className="text-right shrink-0">
+                                                            <p className="text-xs font-semibold text-(--primary)">
+                                                                {member
+                                                                    .yearSet
+                                                                    ?.name ||
+                                                                    "—"}
+                                                            </p>
 
-                                                            <p className="text-xs text-(--secondary) mt-1">
-                                                                {member.alumniId ||
-                                                                    "No Alumni ID"}
+                                                            <p className="text-xs text-(--text-muted) mt-1">
+                                                                Class of{" "}
+                                                                {member.graduationYear ||
+                                                                    "—"}
                                                             </p>
                                                         </div>
                                                     </div>
-
-                                                    <div className="text-right shrink-0">
-                                                        <p className="text-xs font-semibold text-(--primary)">
-                                                            {member.yearSet
-                                                                ?.name ||
-                                                                "—"}
-                                                        </p>
-
-                                                        <p className="text-xs text-(--text-muted) mt-1">
-                                                            Class of{" "}
-                                                            {member.graduationYear ||
-                                                                "—"}
-                                                        </p>
-                                                    </div>
                                                 </div>
-                                            </div>
-                                        ))}
+                                            )
+                                        )}
                                 </div>
                             )}
 
-                            {members.length > 5 && (
-                                <div className="border-t border-(--border) p-4 text-center">
-                                    <button
-                                        type="button"
-                                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-(--primary) hover:text-(--secondary) transition"
-                                    >
-                                        View all members
-                                        <ArrowUpRight size={14} />
-                                    </button>
-                                </div>
-                            )}
+                            {members.length >
+                                5 && (
+                                    <div className="border-t border-(--border) p-4 text-center">
+                                        <button
+                                            type="button"
+                                            className="inline-flex items-center gap-1.5 text-xs font-semibold text-(--primary) hover:text-(--secondary) transition"
+                                        >
+                                            View all members
+                                            <ArrowUpRight
+                                                size={
+                                                    14
+                                                }
+                                            />
+                                        </button>
+                                    </div>
+                                )}
                         </section>
 
-                        {/* CHAPTER PAYMENT */}
+                        {/* PAYMENT */}
 
                         <section className="bg-(--bg-white) border border-(--border) rounded overflow-hidden">
+
                             <div className="p-5 border-b border-(--border)">
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 rounded-lg bg-(--secondary-light) text-(--secondary) flex items-center justify-center">
@@ -721,7 +938,7 @@ const MyChapter = () => {
                             </div>
 
                             <div className="p-5">
-                                <p className="text-xs text-(--text-muted)">
+                                <p className="text-xs text-(--secondary)">
                                     Outstanding
                                 </p>
 
@@ -771,15 +988,40 @@ const MyChapter = () => {
                                     type="button"
                                     disabled={
                                         loading ||
-                                        outstanding <= 0
+                                        outstanding <=
+                                        0
                                     }
+                                    onClick={() => {
+                                        const outstandingObligation =
+                                            obligations.find(
+                                                (
+                                                    item
+                                                ) =>
+                                                    Number(
+                                                        item.amountDue ||
+                                                        0
+                                                    ) >
+                                                    Number(
+                                                        item.amountPaid ||
+                                                        0
+                                                    )
+                                            );
+
+                                        if (
+                                            outstandingObligation
+                                        ) {
+                                            handlePayNow(
+                                                outstandingObligation
+                                            );
+                                        }
+                                    }}
                                     className="
                                         mt-5 w-full
                                         inline-flex items-center justify-center gap-2
                                         bg-(--primary)
                                         text-white
                                         px-4 py-2.5
-                                        rounded-(--radius-sm)
+                                        rounded
                                         text-xs font-semibold
                                         hover:bg-(--primary-dark)
                                         disabled:opacity-50
@@ -788,18 +1030,20 @@ const MyChapter = () => {
                                     "
                                 >
                                     Make Chapter Payment
-                                    <ArrowUpRight size={14} />
+                                    <ArrowUpRight
+                                        size={14}
+                                    />
                                 </button>
                             </div>
                         </section>
                     </div>
 
-
                     {/* ========================================
                         RECENT ACTIVITY
                     ======================================== */}
 
-                    <section className="bg-(--bg-white) border border-(--border) rounded overflow-hidden">
+                    <section className="bg-(--bg-white) border border-(--border) rounded max-h-125 scroll-none">
+
                         <div className="p-5 border-b border-(--border)">
                             <div className="flex items-center gap-2">
                                 <CircleDollarSign
@@ -817,21 +1061,62 @@ const MyChapter = () => {
                             </p>
                         </div>
 
-                        {recentActivity.length > 0 ? (
+                        {recentActivity.length >
+                            0 ? (
                             <div className="divide-y max-h-[400px] overflow-y-auto scrollbar-hide divide-(--border)">
-                                {recentActivity.map(
-                                    (activity, index) => (
-                                        <div
-                                            key={
-                                                activity._id ||
-                                                index
-                                            }
-                                            className="p-5"
-                                        >
-                                            {/* Payment activity will appear here */}
+                                {recentActivity.map((activity, index) => (
+                                    <div
+                                        key={activity._id || index}
+                                        className="p-5 flex items-center justify-between gap-4"
+                                    >
+                                        <div className="flex items-center gap-3 min-w-0">
+                                            <div className="w-9 h-9 rounded-full bg-green-50 flex items-center justify-center shrink-0">
+                                                <CheckCircle2
+                                                    size={18}
+                                                    className="text-green-600"
+                                                />
+                                            </div>
+
+                                            <div className="min-w-0">
+                                                <p className="text-sm font-medium text-(--primary)">
+                                                    {activity
+                                                        .obligationAssignment
+                                                        ?.obligation
+                                                        ?.name ||
+                                                        "Chapter Payment"}
+                                                </p>
+
+                                                <p className="text-[11px] text-(--text-muted) mt-1">
+                                                    {activity.paidAt
+                                                        ? new Date(
+                                                            activity.paidAt
+                                                        ).toLocaleDateString(
+                                                            "en-NG",
+                                                            {
+                                                                day: "numeric",
+                                                                month: "short",
+                                                                year: "numeric",
+                                                            }
+                                                        )
+                                                        : "Payment date unavailable"}
+                                                </p>
+                                            </div>
                                         </div>
-                                    )
-                                )}
+
+                                        <div className="text-right shrink-0">
+                                            <p className="text-sm font-semibold text-green-600">
+                                                +₦
+                                                {Number(
+                                                    activity.amount || 0
+                                                ).toLocaleString()}
+                                            </p>
+
+                                            <p className="text-[11px] text-(--text-muted) mt-1">
+                                                Successful
+                                            </p>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         ) : (
                             <div className="p-8 text-center">
@@ -852,6 +1137,163 @@ const MyChapter = () => {
                     </section>
                 </div>
             </div>
+
+            {/* ========================================
+                PAYMENT MODAL
+            ======================================== */}
+
+            {paymentModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+                    <div className="w-full max-w-md bg-white rounded shadow-xl overflow-hidden">
+
+                        {/* HEADER */}
+
+                        <div className="flex items-center justify-between px-6 py-5 border-b border-slate-200">
+                            <div>
+                                <h3 className="text-lg font-bold text-(--primary-dark)">
+                                    Make Payment
+                                </h3>
+
+                                <p className="text-sm text-slate-500 mt-1">
+                                    {paymentModal
+                                        .obligation
+                                        ?.name ||
+                                        "Chapter Obligation"}
+                                </p>
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    if (
+                                        !paymentLoading
+                                    ) {
+                                        setPaymentModal(
+                                            null
+                                        );
+
+                                        setPaymentError(
+                                            ""
+                                        );
+                                    }
+                                }}
+                                className="p-2 rounded-full hover:bg-slate-100 transition"
+                            >
+                                <X size={18} />
+                            </button>
+                        </div>
+
+                        {/* BODY */}
+
+                        <div className="p-6 space-y-5">
+
+                            {/* OUTSTANDING */}
+
+                            <div className="rounded-(--radius-sm) bg-(--primary-light) p-4">
+                                <p className="text-xs text-slate-500">
+                                    Outstanding Balance
+                                </p>
+
+                                <p className="text-2xl font-bold text-(--primary-dark) mt-1">
+                                    ₦
+                                    {paymentModal.outstanding.toLocaleString()}
+                                </p>
+                            </div>
+
+                            {/* AMOUNT */}
+
+                            <div>
+                                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                                    Amount to Pay
+                                </label>
+
+                                <div className="relative">
+                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-semibold">
+                                        ₦
+                                    </span>
+
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        max={
+                                            paymentModal.outstanding
+                                        }
+                                        value={
+                                            paymentAmount
+                                        }
+                                        onChange={(
+                                            e
+                                        ) => {
+                                            setPaymentAmount(
+                                                e
+                                                    .target
+                                                    .value
+                                            );
+
+                                            setPaymentError(
+                                                ""
+                                            );
+                                        }}
+                                        disabled={
+                                            paymentLoading
+                                        }
+                                        className="w-full border border-slate-300 rounded-(--radius-sm) pl-9 pr-4 py-3 text-sm outline-none focus:border-(--primary) focus:ring-2 focus:ring-(--primary)/10"
+                                        placeholder="Enter amount"
+                                    />
+                                </div>
+
+                                <p className="text-xs text-slate-500 mt-2">
+                                    You can pay any amount up to your outstanding balance.
+                                </p>
+                            </div>
+
+                            {/* ERROR */}
+
+                            {paymentError && (
+                                <div className="rounded-(--radius-sm) bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600">
+                                    {paymentError}
+                                </div>
+                            )}
+
+                            {/* CONTINUE */}
+
+                            <button
+                                type="button"
+                                onClick={
+                                    handleInitializePayment
+                                }
+                                disabled={
+                                    paymentLoading
+                                }
+                                className="w-full inline-flex items-center justify-center gap-2 bg-(--primary) text-white py-3 rounded text-sm font-semibold hover:bg-(--primary-dark) transition disabled:opacity-60 disabled:cursor-not-allowed"
+                            >
+                                {paymentLoading ? (
+                                    <>
+                                        <Loader2
+                                            size={
+                                                17
+                                            }
+                                            className="animate-spin"
+                                        />
+
+                                        Preparing payment...
+                                    </>
+                                ) : (
+                                    <>
+                                        <CreditCard
+                                            size={
+                                                17
+                                            }
+                                        />
+
+                                        Continue to Payment
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 };
