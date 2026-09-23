@@ -36,6 +36,7 @@ const Profile = () => {
     const loadProfile = async () => {
       try {
         const response = await getMemberProfile();
+        console.log(response)
 
         if (response?.success) {
           setProfile(response.data);
@@ -149,6 +150,8 @@ const Profile = () => {
       };
 
       const response = await updateMemberProfile(payload);
+
+      alert(response.message)
 
       if (response?.success) {
         setProfile((prev) => ({

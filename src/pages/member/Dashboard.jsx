@@ -4,7 +4,6 @@ import { Outlet, useNavigate } from "react-router-dom";
 import PageTitle from "../../components/common/PageTitle.jsx";
 import { useAuth } from "../../context/AuthContext.jsx";
 import Sidebar from "../../components/member/Sidebar.jsx";
-import Footer from "../../components/member/Footer.jsx";
 import Navbar from "../../components/member/Navbar.jsx";
 import NotificationAlert from "../../components/common/NotificationAlert.jsx";
 import { getMemberProfile } from "../../services/authService.js";
@@ -30,13 +29,13 @@ const Dashboard = () => {
   const email = user?.email || "";
   const alumniId = user?.alumniId
   const isEmailVerified = user?.isEmailVerified ?? false;
- const isProfileIncomplete =
-  !memberProfile?.phone ||
-  !memberProfile?.profile?.country ||
-  !memberProfile?.profile?.city ||
-  !memberProfile?.profile?.professionalHeadline ||
-  !memberProfile?.profile?.employmentStatus ||
-  !memberProfile?.profile?.profession;
+  const isProfileIncomplete =
+    !memberProfile?.phone ||
+    !memberProfile?.profile?.country ||
+    !memberProfile?.profile?.city ||
+    !memberProfile?.profile?.professionalHeadline ||
+    !memberProfile?.profile?.employmentStatus ||
+    !memberProfile?.profile?.profession;
 
 
   // LOGOUT
@@ -104,42 +103,42 @@ const Dashboard = () => {
 
   useEffect(() => {
     const handlePaymentSuccess = (event) => {
-        const notification = event.detail;
+      const notification = event.detail;
 
-        setAlertNotification(notification);
+      setAlertNotification(notification);
     };
 
     window.addEventListener(
-        "nosa:payment-success",
-        handlePaymentSuccess
+      "nosa:payment-success",
+      handlePaymentSuccess
     );
 
     return () => {
-        window.removeEventListener(
-            "nosa:payment-success",
-            handlePaymentSuccess
-        );
+      window.removeEventListener(
+        "nosa:payment-success",
+        handlePaymentSuccess
+      );
     };
-}, []);
+  }, []);
 
 
-useEffect(() => {
-  if (!user?._id) return;
+  useEffect(() => {
+    if (!user?._id) return;
 
-  const loadProfile = async () => {
-    try {
-      const response = await getMemberProfile();
+    const loadProfile = async () => {
+      try {
+        const response = await getMemberProfile();
 
-      if (response?.success) {
-        setMemberProfile(response.data);
+        if (response?.success) {
+          setMemberProfile(response.data);
+        }
+      } catch (error) {
+        console.error("Failed to load member profile:", error);
       }
-    } catch (error) {
-      console.error("Failed to load member profile:", error);
-    }
-  };
+    };
 
-  loadProfile();
-}, [user?._id]);
+    loadProfile();
+  }, [user?._id]);
 
   return (
     <>
@@ -183,32 +182,32 @@ useEffect(() => {
           />
 
           <div className="flex-1 overflow-y-auto">
-  {isProfileIncomplete && (
-  <div className="px-4 pt-4 md:px-6">
-    <div className="flex flex-col gap-3 rounded border border-(--border) bg-(--bg-white) px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-      <div>
-        <h3 className="text-sm font-semibold text-(--text-primary)">
-          Complete your profile
-        </h3>
+            {isProfileIncomplete && (
+              <div className="px-4 pt-4 md:px-6">
+                <div className="flex flex-col gap-3 rounded border border-(--border) bg-(--bg-white) px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <h3 className="text-sm font-semibold text-(--text-primary)">
+                      Complete your profile
+                    </h3>
 
-        <p className="mt-0.5 text-xs text-(--text-secondary)">
-          Add your details to keep your OlivetNOSA profile up to date.
-        </p>
-      </div>
+                    <p className="mt-0.5 text-xs text-(--text-secondary)">
+                      Add your details to keep your OlivetNOSA profile up to date.
+                    </p>
+                  </div>
 
-      <button
-        type="button"
-        onClick={() => navigate("/dashboard/profile")}
-        className="shrink-0 text-sm font-medium text-(--primary) hover:underline"
-      >
-        Complete Profile
-      </button>
-    </div>
-  </div>
-)}
+                  <button
+                    type="button"
+                    onClick={() => navigate("/portal/member/dashboard/profile")}
+                    className="shrink-0 text-sm font-medium text-(--primary) hover:underline"
+                  >
+                    Complete Profile
+                  </button>
+                </div>
+              </div>
+            )}
 
-  <Outlet />
-</div>
+            <Outlet />
+          </div>
         </section>
 
 
