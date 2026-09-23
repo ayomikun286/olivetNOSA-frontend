@@ -421,3 +421,46 @@ export const verifyAccountSetup = async (token) => {
 
   return data;
 };
+
+
+
+export const getMemberProfile = async () => {
+  const response = await fetch(
+    `${API}/auth/profile`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message 
+    );
+  }
+
+  return data;
+};
+
+export const updateMemberProfile = async (profileData) => {
+  const response = await fetch(`${API}/auth/profile`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(profileData),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Unable to update profile."
+    );
+  }
+
+  return data;
+};

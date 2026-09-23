@@ -41,6 +41,7 @@ const Notifications = () => {
 
                 const data = await getMyNotifications();
 
+
                 setNotifications(data.notifications || []);
             } catch (err) {
                 console.error(

@@ -7,7 +7,7 @@ import Sidebar from "../../components/member/Sidebar.jsx";
 import Footer from "../../components/member/Footer.jsx";
 import Navbar from "../../components/member/Navbar.jsx";
 import NotificationAlert from "../../components/common/NotificationAlert.jsx";
-
+import { getMemberProfile } from "../../services/authService.js";
 
 
 import { getMyNotifications } from "../../services/notificationService.js";
@@ -21,9 +21,8 @@ const Dashboard = () => {
 
 
   const [isOpen, setIsOpen] = useState(false)
-  const [alertNotification, setAlertNotification] =
-    useState(null);
-
+  const [alertNotification, setAlertNotification] = useState(null);
+  const [memberProfile, setMemberProfile] = useState(null);
   const latestNotificationRef = useRef(null);
 
 
@@ -31,7 +30,13 @@ const Dashboard = () => {
   const email = user?.email || "";
   const alumniId = user?.alumniId
   const isEmailVerified = user?.isEmailVerified ?? false;
-  // const [pageSection, setPageSection] = useState('Dashboard');
+ const isProfileIncomplete =
+  !memberProfile?.phone ||
+  !memberProfile?.profile?.country ||
+  !memberProfile?.profile?.city ||
+  !memberProfile?.profile?.professionalHeadline ||
+  !memberProfile?.profile?.employmentStatus ||
+  !memberProfile?.profile?.profession;
 
 
   // LOGOUT
@@ -117,6 +122,25 @@ const Dashboard = () => {
     };
 }, []);
 
+
+useEffect(() => {
+  if (!user?._id) return;
+
+  const loadProfile = async () => {
+    try {
+      const response = await getMemberProfile();
+
+      if (response?.success) {
+        setMemberProfile(response.data);
+      }
+    } catch (error) {
+      console.error("Failed to load member profile:", error);
+    }
+  };
+
+  loadProfile();
+}, [user?._id]);
+
   return (
     <>
 
@@ -159,8 +183,32 @@ const Dashboard = () => {
           />
 
           <div className="flex-1 overflow-y-auto">
-            <Outlet />
-          </div>
+  {isProfileIncomplete && (
+  <div className="px-4 pt-4 md:px-6">
+    <div className="flex flex-col gap-3 rounded border border-(--border) bg-(--bg-white) px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <h3 className="text-sm font-semibold text-(--text-primary)">
+          Complete your profile
+        </h3>
+
+        <p className="mt-0.5 text-xs text-(--text-secondary)">
+          Add your details to keep your OlivetNOSA profile up to date.
+        </p>
+      </div>
+
+      <button
+        type="button"
+        onClick={() => navigate("/dashboard/profile")}
+        className="shrink-0 text-sm font-medium text-(--primary) hover:underline"
+      >
+        Complete Profile
+      </button>
+    </div>
+  </div>
+)}
+
+  <Outlet />
+</div>
         </section>
 
 

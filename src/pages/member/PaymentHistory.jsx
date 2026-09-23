@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-
+import PaymentDetailsModal from "../../components/member/PaymentDetailsModal.jsx";
 import {
     CheckCircle2,
     Clock3,
@@ -17,7 +17,7 @@ const PaymentHistory = () => {
 
     const [searchParams, setSearchParams] = useSearchParams();
     const [verifying, setVerifying] = useState(false);
-
+    const [selectedPayment, setSelectedPayment] = useState(null);
     const [verificationMessage, setVerificationMessage] = useState("");
     const [payments, setPayments] = useState([]);
 
@@ -439,6 +439,7 @@ const PaymentHistory = () => {
                                     return (
                                         <div
                                             key={payment._id}
+                                            onClick={() => setSelectedPayment(payment)}
                                             className="p-5 sm:p-6 hover:bg-(--bg-light)/40 transition"
                                         >
                                             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
@@ -518,6 +519,10 @@ const PaymentHistory = () => {
                     )}
                 </div>
             </div>
+            <PaymentDetailsModal
+                payment={selectedPayment}
+                onClose={() => setSelectedPayment(null)}
+            />
         </div>
     );
 };
