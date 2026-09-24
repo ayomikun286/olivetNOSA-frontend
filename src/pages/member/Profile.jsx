@@ -10,6 +10,7 @@ import {
   CalendarDays,
   ShieldCheck,
   Eye,
+  House
 } from "lucide-react";
 import {
   getMemberProfile,
@@ -25,7 +26,7 @@ const Profile = () => {
 
 
 
-  const [profile, setProfile] = useState(null);
+  const [myProfile, setMyProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
 
@@ -36,10 +37,10 @@ const Profile = () => {
     const loadProfile = async () => {
       try {
         const response = await getMemberProfile();
-        console.log(response)
+       
 
         if (response?.success) {
-          setProfile(response.data);
+          setMyProfile(response.data);
           setFormData({
             firstName: response.data.firstName || "",
             middleName: response.data.middleName || "",
@@ -60,7 +61,10 @@ const Profile = () => {
     loadProfile();
   }, []);
 
-  const member = profile || user;
+  const member = myProfile ;
+   
+  const house = member?.profile?.schoolHouse;
+
 
   const fullName = [
     member?.firstName,
@@ -744,7 +748,7 @@ const Profile = () => {
                         value={formData?.profile?.professionalHeadline || ""}
                         onChange={handleProfileChange}
                         className="w-full px-3 py-2.5 text-sm border border-(--border) rounded bg-(--bg-white) text-(--primary) outline-none focus:border-(--primary)"
-                        placeholder="e.g. Full-Stack JavaScript Developer"
+                        
                       />
                     </div>
 
@@ -785,7 +789,7 @@ const Profile = () => {
                         value={formData?.profile?.jobTitle || ""}
                         onChange={handleProfileChange}
                         className="w-full px-3 py-2.5 text-sm border border-(--border) rounded bg-(--bg-white) text-(--primary) outline-none focus:border-(--primary)"
-                        placeholder="e.g. Software Engineer"
+                        
                       />
                     </div>
 
@@ -833,7 +837,7 @@ const Profile = () => {
                         value={formData?.profile?.profession || ""}
                         onChange={handleProfileChange}
                         className="w-full px-3 py-2.5 text-sm border border-(--border) rounded bg-(--bg-white) text-(--primary) outline-none focus:border-(--primary)"
-                        placeholder="e.g. Software Development"
+                       
                       />
                     </div>
 
@@ -853,7 +857,8 @@ const Profile = () => {
                         }
                         onChange={handleArrayProfileChange}
                         className="w-full px-3 py-2.5 text-sm border border-(--border) rounded bg-(--bg-white) text-(--primary) outline-none focus:border-(--primary)"
-                        placeholder="e.g. JavaScript, Leadership, Project Management"
+                        
+                        
                       />
 
                       <p className="text-[11px] text-(--text-muted) mt-1">
@@ -1391,7 +1396,7 @@ const Profile = () => {
                     />
 
                     <p className="text-sm font-medium text-(--primary)">
-                      {member?.profile?.preferredName || "—"}
+                      {member?.profile?.preferredName || "—"} 
                     </p>
                   </div>
                 </div>
@@ -1484,6 +1489,23 @@ const Profile = () => {
 
                       <p className="text-sm font-medium text-(--primary)">
                         {member?.chapter?.name || "Not yet assigned"}
+                      </p>
+                    </div>
+                  </div>
+                  {/* school house */}
+                  <div>
+                    <p className="text-xs text-(--text-muted)">
+                      House
+                    </p>
+
+                    <div className="flex items-center gap-2 mt-1">
+                      <House
+                        size={15}
+                        className="text-(--secondary)"
+                      />
+
+                      <p className="text-sm font-medium text-(--primary)">
+                        {house || "_"}
                       </p>
                     </div>
                   </div>

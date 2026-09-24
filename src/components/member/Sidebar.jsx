@@ -22,7 +22,7 @@ const handleLinkClick = () => {
   setIsOpen(false);
 };
 const Sidebar = ({ setIsOpen }) => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
   const isYearSetLeader =
     user?.yearSet?.leader?.toString() === user?.id?.toString();
@@ -244,6 +244,11 @@ const Sidebar = ({ setIsOpen }) => {
 
         <button
           type="button"
+          onClick={async () => {
+                
+                  await logout();
+                  
+                }}
           className="
             group w-full flex items-center gap-4
             px-3 py-2.5 rounded-lg
@@ -254,6 +259,7 @@ const Sidebar = ({ setIsOpen }) => {
           "
         >
           <LogOut
+          
             className="
               h-[17px] w-[17px]
               transition-transform duration-300

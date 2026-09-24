@@ -17,7 +17,7 @@ const Navbar = ({
 }) => {
   const [dropDown, setDropDown] = useState(false);
   const dropdownRef = useRef(null);
-  const navigate = useNavigate();
+
 
   // Close profile dropdown when clicking outside
   useEffect(() => {
@@ -185,7 +185,7 @@ const Navbar = ({
                 onClick={async () => {
                   setDropDown(false);
                   await logout();
-                  navigate("/portal/login", { replace: true });
+                 
                 }}
                 className="
                   flex w-full items-center gap-3

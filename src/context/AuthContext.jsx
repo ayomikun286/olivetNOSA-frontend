@@ -7,7 +7,7 @@ import React, {
 } from "react";
 
 import API from "../config/app.js";
-
+import { NavLink, useNavigate, } from "react-router-dom";
 const AuthContext = createContext(null);
 
 const INACTIVITY_LIMIT = 20 * 60 * 1000; // 20 minutes
@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [authError, setAuthError] = useState(null);
-
+    const navigate = useNavigate();
   const activityTimeoutRef = useRef(null);
 
   // --------------------------------
@@ -25,10 +25,15 @@ export const AuthProvider = ({ children }) => {
   // --------------------------------
   const logout = async () => {
     try {
-      await fetch(`${API}/user/logout`, {
+    const out =  await fetch(`${API}/user/logout`, {
         method: "POST",
         credentials: "include",
       });
+
+      if(out.ok){
+         navigate("/portal/login", { replace: true });
+      }
+      
     } catch (error) {
       console.error("Logout error:", error);
     } finally {

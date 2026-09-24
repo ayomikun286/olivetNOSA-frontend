@@ -441,6 +441,7 @@ export const getMemberProfile = async () => {
     );
   }
 
+  console.log(data)
   return data;
 };
 

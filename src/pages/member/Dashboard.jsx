@@ -29,20 +29,8 @@ const Dashboard = () => {
   const email = user?.email || "";
   const alumniId = user?.alumniId
   const isEmailVerified = user?.isEmailVerified ?? false;
-  const isProfileIncomplete =
-    !memberProfile?.phone ||
-    !memberProfile?.profile?.country ||
-    !memberProfile?.profile?.city ||
-    !memberProfile?.profile?.professionalHeadline ||
-    !memberProfile?.profile?.employmentStatus ||
-    !memberProfile?.profile?.profession;
 
 
-  // LOGOUT
-  // ----------------------------------------
-  const handleLogout = async () => {
-    await logout();
-  };
 
   useEffect(() => {
     if (!user?._id) return;
@@ -123,22 +111,35 @@ const Dashboard = () => {
 
 
   useEffect(() => {
-    if (!user?._id) return;
+     const loadProfile = async () => {
+       try {
+         const response = await getMemberProfile();
+         console.log(response)
+ 
+         if (response?.success) {
+           setMemberProfile(response.data);
+          
+         }
+         console.log(response)
+       } catch (error) {
+         console.error("Failed to load member profile:", error);
+       } finally {
+        
+       }
+     };
+ 
+     loadProfile();
+   }, []);
 
-    const loadProfile = async () => {
-      try {
-        const response = await getMemberProfile();
 
-        if (response?.success) {
-          setMemberProfile(response.data);
-        }
-      } catch (error) {
-        console.error("Failed to load member profile:", error);
-      }
-    };
+  const isProfileIncomplete = !memberProfile?.phone ||
+    !memberProfile?.profile?.country ||
+    !memberProfile?.profile?.city ||
+    !memberProfile?.profile?.profession;
 
-    loadProfile();
-  }, [user?._id]);
+
+    
+   
 
   return (
     <>
