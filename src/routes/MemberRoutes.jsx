@@ -14,6 +14,7 @@ import PaymentHistory from "../pages/member/PaymentHistory.jsx";
 import HelpSupport from "../pages/member/HelpSupport.jsx";
 import Directory from "../pages/member/Directory.jsx";
 import Events from "../pages/member/Events.jsx";
+import Memorials from "../pages/member/Memorials.jsx";
 import MemberNewsEventDetails from "../pages/member/MemberNewsEventDetails.jsx";
 const MemberRoutes = () => {
   return (
@@ -42,9 +43,9 @@ const MemberRoutes = () => {
 
           <Route path="events" element={<Events />} />
 
-          <Route path="events/:slug" element={<MemberNewsEventDetails />}
-/>
 
+          <Route path="events/:slug" element={<MemberNewsEventDetails />}/>
+           <Route path="memorials" element={<Memorials />} />
         </Route>
 
       </Route>

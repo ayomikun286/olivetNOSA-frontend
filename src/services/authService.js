@@ -513,3 +513,89 @@ export const uploadProfilePhoto = async (file) => {
 
   return data;
 };
+
+
+// ============================================================
+// GET PUBLIC MEMORIALS
+// ============================================================
+
+export const getMemorials = async ({
+  search = "",
+  schoolSet = "",
+  graduationYear = "",
+} = {}) => {
+  try {
+    const params = new URLSearchParams();
+
+    if (search.trim()) {
+      params.set("search", search.trim());
+    }
+
+    if (schoolSet) {
+      params.set("schoolSet", schoolSet);
+    }
+
+    if (graduationYear) {
+      params.set("graduationYear", graduationYear);
+    }
+
+    const query = params.toString();
+
+    const response = await fetch(
+      `${API}/api/memorials${query ? `?${query}` : ""}`,
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || "Unable to load memorials."
+      );
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Get memorials error:", error);
+
+    throw new Error(
+      error.message || "Unable to load memorials."
+    );
+  }
+};
+
+
+// ============================================================
+// GET MEMORIAL BY ID
+// ============================================================
+
+export const getMemorialById = async (id) => {
+  try {
+    const response = await fetch(
+      `${API}/api/memorials/${id}`,
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || "Unable to load memorial."
+      );
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Get memorial by ID error:", error);
+
+    throw new Error(
+      error.message || "Unable to load memorial."
+    );
+  }
+};

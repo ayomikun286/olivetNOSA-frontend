@@ -12,6 +12,8 @@ import Olivetians from "../pages/public/Olivetians.jsx";
 import NotFound from "../pages/public/NotFound";
 import Programs from "../pages/public/Programs.jsx";
 import NewsEventDetails from "../pages/public/NewsEventDetails.jsx";
+import InLovingMemory from "../pages/public/InLovingMemory.jsx";
+
 export default function PublicRoutes() {
   return (
     <Routes>
@@ -30,6 +32,8 @@ export default function PublicRoutes() {
       path="/news-events/:slug"
       element={<NewsEventDetails />}
     />
+
+    <Route path="/in-loving-memory" element={<InLovingMemory />} />
       <Route path="/gallery" element={<Gallery />} />
 
       <Route path="/contact" element={<Contact />} />

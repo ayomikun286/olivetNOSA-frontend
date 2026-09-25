@@ -12,7 +12,7 @@ import {
 
 const Navbar = () => {
 
-    const location = useLocation();
+  const location = useLocation();
   const [mobileMenu, setMobileMenu] = useState(false);
   const [mobileAbout, setMobileAbout] = useState(false);
   const [mobileNosa, setMobileNosa] = useState(false);
@@ -22,7 +22,7 @@ const Navbar = () => {
   // =========================================
   // SCROLL DETECTION
   // =========================================
-    // =========================================
+  // =========================================
   // HASH SCROLLING
   // =========================================
   useEffect(() => {
@@ -211,7 +211,7 @@ const Navbar = () => {
           MAIN NAVBAR
       ====================================================== */}
       <div
-        className={`transition-all duration-500 ease-in-out ${hideTopBar ? "md:-translate-y-[53px]" : "translate-y-0"
+        className={`transition-all duration-500  ease-in-out ${hideTopBar ? "md:-translate-y-[53px]" : "translate-y-0"
           }`}
       >
         <div
@@ -237,7 +237,7 @@ const Navbar = () => {
             <div className="leading-none">
 
               <p className="text-lg font-bold tracking-wide text-[var(--primary-dark)] transition-colors duration-500 max-w-35">
-               OBHS 
+                OBHS
               </p>
 
               <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-primary transition-colors duration-500 max-w-50">
@@ -353,6 +353,19 @@ const Navbar = () => {
                   </Link>
 
                   <Link
+                    to="/in-loving-memory"
+                    className={dropdownItemClass}
+                  >
+                    <span className="block font-semibold text-[var(--primary)]">
+                      In Loving Memory
+                    </span>
+
+                    <span className="mt-1 block text-xs text-slate-400">
+                      Honouring our Olivetian legacy
+                    </span>
+                  </Link>
+
+                  <Link
                     to="/nosa-leadership"
                     className={dropdownItemClass}
                   >
@@ -393,7 +406,7 @@ const Navbar = () => {
               Olivetians
             </NavLink>
 
-             {/* Programs */}
+            {/* Programs */}
             <NavLink
               to="/programs"
               className={navLinkClass}
@@ -419,7 +432,7 @@ const Navbar = () => {
               Gallery
             </NavLink>
 
-            
+
 
 
 
@@ -439,7 +452,7 @@ const Navbar = () => {
           ================================================= */}
           <Link
             to="/portal/signup"
-            className="hidden md:flex group items-center gap-2 border border-[var(--primary)]  px-5 py-2.5 text-sm font-semibold text-[var(--primary-dark)] transition-all duration-300 hover:shadow-md "
+            className="hidden md:flex group items-center  gap-2 border border-[var(--primary)]  px-5 py-2.5 text-sm font-semibold text-[var(--primary-dark)] transition-all duration-300 hover:shadow-md "
           >
             Join NOSA
             <ArrowRight
@@ -573,6 +586,18 @@ const Navbar = () => {
                     >
                       About NOSA
                     </Link>
+                    <Link
+                      to="/in-loving-memory"
+                      className={dropdownItemClass}
+                    >
+                      <span className="block font-semibold text-[var(--primary)]">
+                        In Loving Memory
+                      </span>
+
+                      <span className="mt-1 block text-xs text-slate-400">
+                        Honouring our Olivetian legacy
+                      </span>
+                    </Link>
 
                     <Link
                       to="/nosa-leadership"
@@ -610,7 +635,7 @@ const Navbar = () => {
                 Olivetians
               </NavLink>
 
-                      {/* News & Events */}
+              {/* News & Events */}
               <NavLink
                 to="/programs"
                 onClick={() => setMobileMenu(false)}

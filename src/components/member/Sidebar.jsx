@@ -12,8 +12,8 @@ import {
   HelpCircle,
   LogOut,
   ContactRound,
+  HeartHandshake,
 } from "lucide-react";
-
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
@@ -158,6 +158,15 @@ const Sidebar = ({ setIsOpen }) => {
               <ContactRound className={iconClass} />
               <span>Directory</span>
             </NavLink>
+
+            <NavLink
+              to="/portal/member/dashboard/memorials"
+              className={linkClass}
+              onClick={handleLinkClick}
+            >
+              <HeartHandshake className={iconClass} />
+              <span>In Loving Memory</span>
+            </NavLink>
           </div>
         </div>
 
@@ -194,7 +203,7 @@ const Sidebar = ({ setIsOpen }) => {
           </div>
         )}
 
-        
+
 
         {/* ================= COMMUNICATION ================= */}
         <div>
@@ -245,10 +254,10 @@ const Sidebar = ({ setIsOpen }) => {
         <button
           type="button"
           onClick={async () => {
-                
-                  await logout();
-                  
-                }}
+
+            await logout();
+
+          }}
           className="
             group w-full flex items-center gap-4
             px-3 py-2.5 rounded-lg
@@ -259,7 +268,7 @@ const Sidebar = ({ setIsOpen }) => {
           "
         >
           <LogOut
-          
+
             className="
               h-[17px] w-[17px]
               transition-transform duration-300
