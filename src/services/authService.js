@@ -519,9 +519,14 @@ export const uploadProfilePhoto = async (file) => {
 // GET PUBLIC MEMORIALS
 // ============================================================
 
+// ============================================================
+// GET PUBLIC MEMORIALS
+// ============================================================
+
 export const getMemorials = async ({
   search = "",
   schoolSet = "",
+  yearsAttended = "",
   graduationYear = "",
 } = {}) => {
   try {
@@ -533,6 +538,10 @@ export const getMemorials = async ({
 
     if (schoolSet) {
       params.set("schoolSet", schoolSet);
+    }
+
+    if (yearsAttended) {
+      params.set("yearsAttended", yearsAttended);
     }
 
     if (graduationYear) {
@@ -567,7 +576,6 @@ export const getMemorials = async ({
   }
 };
 
-
 // ============================================================
 // GET MEMORIAL BY ID
 // ============================================================
@@ -599,3 +607,94 @@ export const getMemorialById = async (id) => {
     );
   }
 };
+
+
+
+// ============================================================
+// CREATE MEMORIAL SUBMISSION
+// ============================================================
+
+export const createMemorialSubmission = async (formData) => {
+  try {
+    const response = await fetch(
+      `${API}/api/memorial-submissions`,
+      {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      }
+    );
+
+    const contentType =
+      response.headers.get("content-type") || "";
+
+    let data;
+
+    if (contentType.includes("application/json")) {
+      data = await response.json();
+    } else {
+      const text = await response.text();
+
+      data = {
+        message:
+          text || "Server returned an invalid response.",
+      };
+    }
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || "Unable to submit remembrance."
+      );
+    }
+
+    return data;
+  } catch (error) {
+    console.error(
+      "Create memorial submission error:",
+      error
+    );
+
+    throw new Error(
+      error.message || "Unable to submit remembrance."
+    );
+  }
+};
+
+
+// ============================================================
+// GET MY MEMORIAL SUBMISSIONS
+// ============================================================
+
+export const getMyMemorialSubmissions = async () => {
+  try {
+    const response = await fetch(
+      `${API}/api/memorial-submissions/mine`,
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message ||
+          "Unable to load your memorial submissions."
+      );
+    }
+
+    return data;
+  } catch (error) {
+    console.error(
+      "Get my memorial submissions error:",
+      error
+    );
+
+    throw new Error(
+      error.message ||
+        "Unable to load your memorial submissions."
+    );
+  }
+};
+

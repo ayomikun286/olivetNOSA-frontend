@@ -167,11 +167,15 @@ const Login = () => {
       setRedirect(true);
       const authenticated = await checkAuth();
 
-      if (authenticated) {
-        navigate("/portal/dashboard", { replace: true });
-      } else {
-        setRedirect(false);
-      }
+if (authenticated) {
+  navigate(
+    location.state?.redirectTo ||
+      "/portal/member/dashboard",
+    { replace: true }
+  );
+} else {
+  setRedirect(false);
+}
     } catch (err) {
       console.error("Login error:", err);
 

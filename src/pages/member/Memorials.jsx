@@ -1,4 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
+
+import { useNavigate, useParams } from "react-router-dom";
+
 import {
   Search,
   HeartHandshake,
@@ -15,7 +18,6 @@ import {
 } from "../../services/authService";
 
 import ContentLoading from "../../components/admin/ContentLoading";
-
 
 // ============================================================
 // MEMORIAL SECTION
@@ -34,7 +36,6 @@ const MemorialSection = ({ title, children }) => {
     </section>
   );
 };
-
 
 // ============================================================
 // MEMORIAL ITEM
@@ -62,27 +63,33 @@ const MemorialItem = ({ label, value }) => {
   );
 };
 
-
 // ============================================================
 // MAIN COMPONENT
 // ============================================================
 
 const Memorials = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
   const [memorials, setMemorials] = useState([]);
 
   const [search, setSearch] = useState("");
   const [schoolSet, setSchoolSet] = useState("");
-  const [graduationYear, setGraduationYear] = useState("");
+  const [yearsAttended, setYearsAttended] =
+    useState("");
+  const [graduationYear, setGraduationYear] =
+    useState("");
 
   const [loading, setLoading] = useState(true);
-  const [loadingDetails, setLoadingDetails] = useState(false);
+  const [loadingDetails, setLoadingDetails] =
+    useState(false);
 
   const [error, setError] = useState("");
-  const [detailsError, setDetailsError] = useState("");
+  const [detailsError, setDetailsError] =
+    useState("");
 
   const [selectedMemorial, setSelectedMemorial] =
     useState(null);
-
 
   // ==========================================================
   // LOAD MEMORIALS
@@ -97,6 +104,7 @@ const Memorials = () => {
         const response = await getMemorials({
           search,
           schoolSet,
+          yearsAttended,
           graduationYear,
         });
 
@@ -123,71 +131,102 @@ const Memorials = () => {
     };
 
     loadMemorials();
-  }, [search, schoolSet, graduationYear]);
-
+  }, [
+    search,
+    schoolSet,
+    graduationYear,
+    yearsAttended,
+  ]);
 
   // ==========================================================
   // FILTER OPTIONS
   // ==========================================================
 
   const schoolSets = useMemo(() => {
-    return [...new Set(
-      memorials
-        .map((memorial) => memorial.schoolSet)
-        .filter(Boolean)
-    )].sort();
+    return [
+      ...new Set(
+        memorials
+          .map((memorial) => memorial.schoolSet)
+          .filter(Boolean)
+      ),
+    ].sort();
   }, [memorials]);
-
 
   const graduationYears = useMemo(() => {
-    return [...new Set(
-      memorials
-        .map((memorial) => memorial.graduationYear)
-        .filter(Boolean)
-    )].sort((a, b) => b - a);
+    return [
+      ...new Set(
+        memorials
+          .map(
+            (memorial) =>
+              memorial.graduationYear
+          )
+          .filter(Boolean)
+      ),
+    ].sort((a, b) => b - a);
   }, [memorials]);
 
+  const yearsAttendedOptions = useMemo(() => {
+    return [
+      ...new Set(
+        memorials
+          .map(
+            (memorial) =>
+              memorial.yearsAttended
+          )
+          .filter(Boolean)
+      ),
+    ].sort();
+  }, [memorials]);
 
   // ==========================================================
-  // OPEN MEMORIAL
+  // LOAD MEMORIAL FROM ROUTE
   // ==========================================================
 
-  const handleViewMemorial = async (memorial) => {
-    try {
+  useEffect(() => {
+    if (!id) {
+      setSelectedMemorial(null);
       setDetailsError("");
-      setLoadingDetails(true);
+      return;
+    }
 
-      setSelectedMemorial({
-        ...memorial,
-        loading: true,
-      });
+    const loadMemorialFromRoute = async () => {
+      try {
+        setDetailsError("");
+        setLoadingDetails(true);
 
-      const response =
-        await getMemorialById(memorial._id);
+        setSelectedMemorial({
+          _id: id,
+          loading: true,
+        });
 
-      if (response?.success) {
-        setSelectedMemorial(response.data);
-      } else {
-        throw new Error(
-          response?.message ||
+        const response =
+          await getMemorialById(id);
+
+        if (response?.success) {
+          setSelectedMemorial(response.data);
+        } else {
+          throw new Error(
+            response?.message ||
+              "Unable to load memorial details."
+          );
+        }
+      } catch (error) {
+        console.error(
+          "Failed to load memorial from route:",
+          error
+        );
+
+        setDetailsError(
+          error.message ||
             "Unable to load memorial details."
         );
+      } finally {
+        setLoadingDetails(false);
       }
-    } catch (error) {
-      console.error(
-        "Failed to load memorial:",
-        error
-      );
+    };
 
-      setDetailsError(
-        error.message ||
-          "Unable to load memorial details."
-      );
-    } finally {
-      setLoadingDetails(false);
-    }
-  };
-
+    loadMemorialFromRoute();
+  }, [id]);
 
   // ==========================================================
   // CLOSE MEMORIAL
@@ -196,8 +235,14 @@ const Memorials = () => {
   const handleCloseMemorial = () => {
     setSelectedMemorial(null);
     setDetailsError("");
-  };
 
+    if (id) {
+      navigate(
+        "/portal/member/dashboard/memorials",
+        { replace: true }
+      );
+    }
+  };
 
   // ==========================================================
   // HELPERS
@@ -205,9 +250,6 @@ const Memorials = () => {
 
   const getMemorialId = (memorial) =>
     memorial?._id || memorial?.id;
-
-  const getYearSet = (memorial) =>
-    memorial?.schoolSet || "";
 
   const getInitials = (memorial) =>
     memorial?.fullName
@@ -220,7 +262,6 @@ const Memorials = () => {
       .join("")
       .toUpperCase() || "O";
 
-
   // ==========================================================
   // LOADING
   // ==========================================================
@@ -229,18 +270,15 @@ const Memorials = () => {
     return <ContentLoading />;
   }
 
-
   return (
     <div className="p-4">
       <div className="space-y-5">
-
         {/* ====================================================
             PAGE HEADER
         ==================================================== */}
 
         <div>
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h1 className="text-xl font-semibold text-(--primary)">
                 In Loving Memory
@@ -252,29 +290,39 @@ const Memorials = () => {
               </p>
             </div>
 
-            <div className="flex items-center gap-2 text-xs text-(--secondary)">
-              <HeartHandshake size={15} />
+            <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+              <div className="flex items-center gap-2 text-xs text-(--secondary)">
+                <HeartHandshake size={15} />
 
-              <span>
-                {memorials.length}{" "}
-                {memorials.length === 1
-                  ? "memorial"
-                  : "memorials"}
-              </span>
+                <span>
+                  {memorials.length}{" "}
+                  {memorials.length === 1
+                    ? "memorial"
+                    : "memorials"}
+                </span>
+              </div>
+
+              <button
+                type="button"
+                onClick={() =>
+                  navigate(
+                    "/portal/member/dashboard/memorials/submit"
+                  )
+                }
+                className=" inline-flex items-center justify-center rounded border border-(--primary) px-4 py-2 text-sm font-medium text-(--primary) transition hover:bg-(--primary) hover:text-white"
+              >
+                Share a Remembrance
+              </button>
             </div>
-
           </div>
         </div>
-
 
         {/* ====================================================
             SEARCH & FILTERS
         ==================================================== */}
 
-        <div className="bg-(--bg-white) border border-(--border) rounded p-4">
-
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-[1fr_200px_180px]">
-
+        <div className="rounded border border-(--border) bg-(--bg-white) p-4">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-[1fr_180px_180px_180px]">
             {/* SEARCH */}
 
             <div className="relative">
@@ -293,7 +341,6 @@ const Memorials = () => {
                 className="w-full rounded border border-(--border) bg-transparent py-2.5 pl-10 pr-3 text-sm text-(--secondary) outline-none transition focus:border-(--primary)"
               />
             </div>
-
 
             {/* SCHOOL SET */}
 
@@ -317,7 +364,6 @@ const Memorials = () => {
                 </option>
               ))}
             </select>
-
 
             {/* GRADUATION YEAR */}
 
@@ -344,10 +390,34 @@ const Memorials = () => {
               ))}
             </select>
 
+            {/* YEARS ATTENDED */}
+
+            <select
+              value={yearsAttended}
+              onChange={(e) =>
+                setYearsAttended(
+                  e.target.value
+                )
+              }
+              className="w-full rounded border border-(--border) bg-(--bg-white) px-3 py-2.5 text-sm text-(--secondary) outline-none transition focus:border-(--primary)"
+            >
+              <option value="">
+                All Years Attended
+              </option>
+
+              {yearsAttendedOptions.map(
+                (years) => (
+                  <option
+                    key={years}
+                    value={years}
+                  >
+                    {years}
+                  </option>
+                )
+              )}
+            </select>
           </div>
-
         </div>
-
 
         {/* ====================================================
             ERROR
@@ -355,9 +425,7 @@ const Memorials = () => {
 
         {error && (
           <div className="rounded border border-(--danger)/20 bg-(--danger)/5 p-4">
-
             <div className="flex items-start gap-3">
-
               <X
                 size={18}
                 className="mt-0.5 shrink-0 text-(--danger)"
@@ -366,12 +434,9 @@ const Memorials = () => {
               <p className="text-sm text-(--danger)">
                 {error}
               </p>
-
             </div>
-
           </div>
         )}
-
 
         {/* ====================================================
             EMPTY
@@ -379,8 +444,7 @@ const Memorials = () => {
 
         {!error &&
           memorials.length === 0 && (
-            <div className="bg-(--bg-white) border border-(--border) rounded p-12 text-center">
-
+            <div className="rounded border border-(--border) bg-(--bg-white) p-12 text-center">
               <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-(--primary-light) text-(--primary)">
                 <HeartHandshake size={21} />
               </div>
@@ -393,10 +457,8 @@ const Memorials = () => {
                 Try searching with a different
                 name or changing the filters.
               </p>
-
             </div>
           )}
-
 
         {/* ====================================================
             MEMORIAL GRID
@@ -405,20 +467,17 @@ const Memorials = () => {
         {!error &&
           memorials.length > 0 && (
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
-
               {memorials.map((memorial) => (
-
                 <div
-                  key={getMemorialId(memorial)}
-                  className="bg-(--bg-white) border border-(--border) rounded overflow-hidden transition hover:border-(--primary)/30"
+                  key={getMemorialId(
+                    memorial
+                  )}
+                  className="overflow-hidden rounded border border-(--border) bg-(--bg-white) transition hover:border-(--primary)/30"
                 >
-
                   <div className="p-5">
-
                     {/* MEMORIAL INFO */}
 
                     <div className="flex items-start gap-3.5">
-
                       {memorial.photograph ? (
                         <img
                           src={
@@ -438,14 +497,15 @@ const Memorials = () => {
                       )}
 
                       <div className="min-w-0">
-
                         <h2 className="truncate text-sm font-semibold text-(--primary)">
                           {memorial.fullName}
                         </h2>
 
                         {memorial.schoolSet && (
                           <p className="mt-0.5 text-[11px] text-(--text-muted)">
-                            {memorial.schoolSet}
+                            {
+                              memorial.schoolSet
+                            }
                           </p>
                         )}
 
@@ -456,34 +516,29 @@ const Memorials = () => {
                             }
                           </p>
                         )}
-
                       </div>
-
                     </div>
-
 
                     {/* DETAILS */}
 
                     <div className="mt-5 space-y-2.5 border-t border-(--border) pt-4">
-
                       {memorial.yearsAttended && (
                         <div className="flex items-center gap-2 text-xs text-(--secondary)">
-
                           <CalendarDays
                             size={15}
                             className="shrink-0 text-(--primary)"
                           />
 
                           <span>
-                            {memorial.yearsAttended}
+                            {
+                              memorial.yearsAttended
+                            }
                           </span>
-
                         </div>
                       )}
 
                       {memorial.graduationYear && (
                         <div className="flex items-center gap-2 text-xs text-(--secondary)">
-
                           <GraduationCap
                             size={15}
                             className="shrink-0 text-(--primary)"
@@ -495,24 +550,21 @@ const Memorials = () => {
                               memorial.graduationYear
                             }
                           </span>
-
                         </div>
                       )}
-
                     </div>
-
                   </div>
-
 
                   {/* CARD FOOTER */}
 
                   <div className="border-t border-(--border) px-5 py-3">
-
                     <button
                       type="button"
                       onClick={() =>
-                        handleViewMemorial(
-                          memorial
+                        navigate(
+                          `/portal/member/dashboard/memorials/${getMemorialId(
+                            memorial
+                          )}`
                         )
                       }
                       className="flex w-full items-center justify-center gap-2 text-sm font-medium text-(--primary) transition hover:opacity-80"
@@ -521,18 +573,12 @@ const Memorials = () => {
 
                       View Memorial
                     </button>
-
                   </div>
-
                 </div>
-
               ))}
-
             </div>
           )}
-
       </div>
-
 
       {/* ======================================================
           MEMORIAL DRAWER
@@ -540,7 +586,6 @@ const Memorials = () => {
 
       {selectedMemorial && (
         <div className="fixed inset-0 z-50">
-
           {/* OVERLAY */}
 
           <button
@@ -550,17 +595,13 @@ const Memorials = () => {
             className="absolute inset-0 bg-black/30"
           />
 
-
           {/* DRAWER */}
 
           <aside className="absolute right-0 top-0 h-full w-full max-w-xl overflow-y-auto bg-(--bg-white) shadow-xl">
-
             {/* DRAWER HEADER */}
 
             <div className="sticky top-0 z-10 flex items-center justify-between border-b border-(--border) bg-(--bg-white) px-5 py-4">
-
               <div className="flex items-center gap-2">
-
                 <HeartHandshake
                   size={17}
                   className="text-(--primary)"
@@ -569,7 +610,6 @@ const Memorials = () => {
                 <h2 className="text-sm font-semibold text-(--primary)">
                   Memorial
                 </h2>
-
               </div>
 
               <button
@@ -579,30 +619,24 @@ const Memorials = () => {
               >
                 <X size={18} />
               </button>
-
             </div>
-
 
             {/* DRAWER CONTENT */}
 
             <div className="space-y-6 p-5">
-
               {/* ==================================================
                   LOADING DETAILS
               ================================================== */}
 
               {loadingDetails && (
                 <div className="py-12 text-center">
-
                   <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-(--border) border-t-(--primary)" />
 
                   <p className="mt-3 text-sm text-(--secondary)">
                     Loading memorial...
                   </p>
-
                 </div>
               )}
-
 
               {/* ==================================================
                   DETAILS ERROR
@@ -611,9 +645,7 @@ const Memorials = () => {
               {!loadingDetails &&
                 detailsError && (
                   <div className="rounded border border-(--danger)/20 bg-(--danger)/5 p-4">
-
                     <div className="flex items-start gap-3">
-
                       <X
                         size={18}
                         className="mt-0.5 shrink-0 text-(--danger)"
@@ -622,12 +654,9 @@ const Memorials = () => {
                       <p className="text-sm text-(--danger)">
                         {detailsError}
                       </p>
-
                     </div>
-
                   </div>
                 )}
-
 
               {/* ==================================================
                   MEMORIAL DETAILS
@@ -637,11 +666,9 @@ const Memorials = () => {
                 !detailsError &&
                 !selectedMemorial.loading && (
                   <>
-
                     {/* IDENTITY */}
 
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-
                       {selectedMemorial.photograph ? (
                         <img
                           src={
@@ -661,7 +688,6 @@ const Memorials = () => {
                       )}
 
                       <div>
-
                         <h3 className="text-lg font-semibold text-(--primary)">
                           {
                             selectedMemorial.fullName
@@ -683,11 +709,8 @@ const Memorials = () => {
                             }
                           </p>
                         )}
-
                       </div>
-
                     </div>
-
 
                     {/* OLIVET BACKGROUND */}
 
@@ -695,7 +718,6 @@ const Memorials = () => {
                       selectedMemorial.yearsAttended ||
                       selectedMemorial.graduationYear) && (
                       <MemorialSection title="Olivet Background">
-
                         <MemorialItem
                           label="School Set"
                           value={
@@ -716,96 +738,80 @@ const Memorials = () => {
                             selectedMemorial.graduationYear
                           }
                         />
-
                       </MemorialSection>
                     )}
-
 
                     {/* REMEMBRANCE */}
 
                     {selectedMemorial.shortRemembrance && (
                       <MemorialSection title="Remembrance">
-
                         <MemorialItem
                           label="Remembered As"
                           value={
                             selectedMemorial.shortRemembrance
                           }
                         />
-
                       </MemorialSection>
                     )}
-
 
                     {/* BIOGRAPHY */}
 
                     {selectedMemorial.biography && (
                       <MemorialSection title="Biography">
-
                         <MemorialItem
                           label="Biography"
                           value={
                             selectedMemorial.biography
                           }
                         />
-
                       </MemorialSection>
                     )}
-
 
                     {/* CONTRIBUTIONS */}
 
                     {selectedMemorial.contributions && (
                       <MemorialSection title="Contributions">
-
                         <MemorialItem
                           label="Contributions"
                           value={
                             selectedMemorial.contributions
                           }
                         />
-
                       </MemorialSection>
                     )}
-
 
                     {/* MEMORIES */}
 
                     {selectedMemorial.memories && (
                       <MemorialSection title="Memories">
-
                         <MemorialItem
                           label="Memories"
                           value={
                             selectedMemorial.memories
                           }
                         />
-
                       </MemorialSection>
                     )}
-
 
                     {/* MEMORIAL SERVICE */}
 
                     {selectedMemorial.memorialService && (
                       <MemorialSection title="Memorial Service">
-
                         <MemorialItem
                           label="Service Details"
                           value={
                             selectedMemorial.memorialService
                           }
                         />
-
                       </MemorialSection>
                     )}
 
-
                     {/* ADDITIONAL PHOTOGRAPHS */}
 
-                    {selectedMemorial.additionalPhotos?.length > 0 && (
+                    {selectedMemorial
+                      .additionalPhotos
+                      ?.length > 0 && (
                       <section>
-
                         <h3 className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-(--primary)">
                           <Images size={14} />
 
@@ -813,10 +819,11 @@ const Memorials = () => {
                         </h3>
 
                         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-
                           {selectedMemorial.additionalPhotos.map(
-                            (photo, index) => (
-
+                            (
+                              photo,
+                              index
+                            ) => (
                               <div
                                 key={
                                   photo._id ||
@@ -825,33 +832,27 @@ const Memorials = () => {
                                 }
                                 className="overflow-hidden rounded border border-(--border)"
                               >
-
                                 <img
-                                  src={photo.url}
-                                  alt={`${selectedMemorial.fullName} memorial photo ${index + 1}`}
+                                  src={
+                                    photo.url
+                                  }
+                                  alt={`${selectedMemorial.fullName} memorial photo ${
+                                    index + 1
+                                  }`}
                                   className="aspect-square w-full object-cover transition hover:scale-[1.02]"
                                 />
-
                               </div>
-
                             )
                           )}
-
                         </div>
-
                       </section>
                     )}
-
                   </>
                 )}
-
             </div>
-
           </aside>
-
         </div>
       )}
-
     </div>
   );
 };
