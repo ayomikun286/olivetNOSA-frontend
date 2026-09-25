@@ -181,7 +181,7 @@ const Sidebar = ({ setIsOpen }) => {
 
               {isChapterLeader && (
                 <NavLink
-                  to="/portal/member/dashboard/chapter "
+                  to="/portal/member/dashboard/chapter"
                   className={linkClass}
                   onClick={handleLinkClick}
                 >
