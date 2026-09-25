@@ -170,7 +170,7 @@ const Login = () => {
 if (authenticated) {
   navigate(
     location.state?.redirectTo ||
-      "/portal/member/dashboard",
+      "/portal/dashboard",
     { replace: true }
   );
 } else {

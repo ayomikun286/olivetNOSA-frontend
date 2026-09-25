@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
     const out =  await fetch(`${API}/user/logout`, {
-        method: "POST",
+        method: "GET",
         credentials: "include",
       });
 
