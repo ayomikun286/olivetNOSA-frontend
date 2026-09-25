@@ -8,7 +8,7 @@ import {
     Receipt,
     CircleDollarSign,
 } from "lucide-react";
-
+import ContentLoading from "../../components/admin/ContentLoading.jsx";
 import { getMyPayments, verifyPayment, } from "../../services/paymentService.js";
 import {
     useSearchParams,
@@ -29,6 +29,7 @@ const PaymentHistory = () => {
     });
 
     const [loading, setLoading] = useState(true);
+
     const [error, setError] = useState("");
 
 
@@ -67,6 +68,9 @@ const PaymentHistory = () => {
             }
         };
 
+
+
+       
 
 
         const verifyReturnedPayment = async () => {
@@ -211,6 +215,12 @@ const PaymentHistory = () => {
                 };
         }
     };
+
+      if(loading){
+        return (
+      <ContentLoading />
+    );
+    }
 
     return (
         <div className="p-4">

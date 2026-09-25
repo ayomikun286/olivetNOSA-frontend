@@ -11,7 +11,7 @@ import NotificationDropdown from "../common/NotificationDropdown.jsx";
 const Navbar = ({
   setIsOpen,
   firstName,
-  year,
+ profilePhoto,
   logout,
   alumniId,
 }) => {
@@ -74,8 +74,13 @@ const Navbar = ({
             aria-label="Open profile menu"
           >
             {/* Avatar */}
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-(--secondary) font-bold text-(--primary)">
-              {initial}
+            <span className="flex h-9 w-9 overflow-hidden shrink-0 items-center justify-center rounded-full bg-(--secondary) font-bold text-(--primary)">
+              {profilePhoto ? (<img
+                  src={profilePhoto}
+                  alt={firstName || "Profile photo"}
+                  className="h-full w-full rounded-full object-cover"
+                />):(initial)}
+             
             </span>
 
             {/* Name + Alumni ID */}
@@ -126,7 +131,11 @@ const Navbar = ({
 
                 {/* Avatar */}
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-(--secondary) text-base font-bold text-(--primary)">
-                  {initial}
+                   {profilePhoto ? (<img
+                  src={profilePhoto}
+                  alt={firstName || "Profile photo"}
+                  className="h-full w-full rounded-full object-cover"
+                />):( initial)}
                 </span>
 
                 {/* Identity */}

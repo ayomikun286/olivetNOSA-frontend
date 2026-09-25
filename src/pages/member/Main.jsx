@@ -17,7 +17,7 @@ import {
     Loader2,
 } from "lucide-react";
 
-
+import ContentLoading from "../../components/admin/ContentLoading.jsx"
 import PaymentHistory from "../../components/member/PaymentHistory.jsx";
 import QuickActions from "../../components/member/QuickActions.jsx";
 import MembershipStatus from "../../components/member/MembershipStatus.jsx";
@@ -29,7 +29,7 @@ const Main = () => {
     const { user } = useAuth();
     const [obligations, setObligations] = useState([]);
     const [loadingObligations, setLoadingObligations] = useState(true);
-
+    const [loading, setLoading] = useState(true)
     const [paymentModal, setPaymentModal] = useState(null);
     const [paymentAmount, setPaymentAmount] = useState("");
     const [paymentLoading, setPaymentLoading] = useState(false);
@@ -40,6 +40,10 @@ const Main = () => {
             try {
                 const data = await getMyObligation();
                 setObligations(data?.assignments || []);
+
+               
+                    setLoading(false)
+             
             } catch (error) {
                 console.error("Failed to fetch obligations:", error);
             } finally {
@@ -48,6 +52,12 @@ const Main = () => {
         };
         fetchObligations();
     }, []);
+
+     if (loading) {
+    return (
+      <ContentLoading />
+    );
+  }
 
 
 

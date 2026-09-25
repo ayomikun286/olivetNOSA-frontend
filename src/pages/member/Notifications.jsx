@@ -30,9 +30,7 @@ const Notifications = () => {
     const [error, setError] = useState("");
     const [markingAll, setMarkingAll] = useState(false);
 
-    /**
-     * Fetch notifications
-     */
+   
     useEffect(() => {
         const fetchNotifications = async () => {
             try {
@@ -61,16 +59,12 @@ const Notifications = () => {
         fetchNotifications();
     }, []);
 
-    /**
-     * Unread count
-     */
+   
     const unreadCount = notifications.filter(
         (notification) => !notification.isRead
     ).length;
 
-    /**
-     * Filter notifications
-     */
+   
     const filteredNotifications =
         filter === "unread"
             ? notifications.filter(
@@ -78,9 +72,6 @@ const Notifications = () => {
               )
             : notifications;
 
-    /**
-     * Get notification icon
-     */
     const getNotificationIcon = (type) => {
         switch (type) {
             case "payment":

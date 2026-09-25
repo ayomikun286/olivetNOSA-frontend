@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 
 import { getMyObligation } from "../../services/obligationService.js";
-
+import ContentLoading from "../../components/admin/ContentLoading.jsx"
 const Obligations = () => {
     const [obligations, setObligations] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -69,6 +69,12 @@ const Obligations = () => {
             }
         );
     };
+
+    if(loading){
+        return (
+      <ContentLoading />
+    );
+    }
 
     const totalDue = obligations.reduce(
         (total, item) =>

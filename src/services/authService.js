@@ -445,6 +445,31 @@ export const getMemberProfile = async () => {
   return data;
 };
 
+
+// getDirectoryMembers
+export const getDirectoryMembers = async () => {
+  const response = await fetch(
+    `${API}/api/directory`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message 
+    );
+  }
+
+  console.log(data)
+  return data;
+};
+
+
+
 export const updateMemberProfile = async (profileData) => {
   const response = await fetch(`${API}/auth/profile`, {
     method: "PUT",
@@ -460,6 +485,29 @@ export const updateMemberProfile = async (profileData) => {
   if (!response.ok) {
     throw new Error(
       data.message || "Unable to update profile."
+    );
+  }
+
+  return data;
+};
+
+
+export const uploadProfilePhoto = async (file) => {
+  const formData = new FormData();
+
+  formData.append("profilePhoto", file);
+
+  const response = await fetch(`${API}/auth/profile/photo`, {
+    method: "PUT",
+    credentials: "include",
+    body: formData,
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Unable to upload profile photo."
     );
   }
 

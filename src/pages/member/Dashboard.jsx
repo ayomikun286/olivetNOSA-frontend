@@ -22,6 +22,7 @@ const Dashboard = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [alertNotification, setAlertNotification] = useState(null);
   const [memberProfile, setMemberProfile] = useState(null);
+  const [profileLoading, setProfileLoading] = useState(true);
   const latestNotificationRef = useRef(null);
 
 
@@ -29,7 +30,7 @@ const Dashboard = () => {
   const email = user?.email || "";
   const alumniId = user?.alumniId
   const isEmailVerified = user?.isEmailVerified ?? false;
-
+  
 
 
   useEffect(() => {
@@ -114,17 +115,17 @@ const Dashboard = () => {
      const loadProfile = async () => {
        try {
          const response = await getMemberProfile();
-         console.log(response)
+       
  
          if (response?.success) {
            setMemberProfile(response.data);
           
          }
-         console.log(response)
+        
        } catch (error) {
          console.error("Failed to load member profile:", error);
        } finally {
-        
+        setProfileLoading(false)
        }
      };
  
@@ -138,6 +139,9 @@ const Dashboard = () => {
     !memberProfile?.profile?.profession;
 
 
+    const profilePhoto = memberProfile?.profile?.profilePhoto;
+
+  
     
    
 
@@ -180,10 +184,11 @@ const Dashboard = () => {
             firstName={firstName}
             year={user?.graduationYear}
             logout={logout}
+            profilePhoto={profilePhoto}
           />
 
           <div className="flex-1 overflow-y-auto">
-            {isProfileIncomplete && (
+            {!setProfileLoading && isProfileIncomplete && (
               <div className="px-4 pt-4 md:px-6">
                 <div className="flex flex-col gap-3 rounded border border-(--border) bg-(--bg-white) px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
                   <div>

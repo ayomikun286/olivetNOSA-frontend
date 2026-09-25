@@ -10,13 +10,16 @@ import {
   CalendarDays,
   ShieldCheck,
   Eye,
-  House
+  House,
+  Camera
 } from "lucide-react";
 import {
   getMemberProfile,
-  updateMemberProfile
+  updateMemberProfile,
+  uploadProfilePhoto
 
 } from "../../services/authService.js";
+import ContentLoading from "../../components/admin/ContentLoading.jsx"
 
 
 import { useAuth } from "../../context/AuthContext.jsx";
@@ -26,18 +29,20 @@ const Profile = () => {
 
 
 
+
   const [myProfile, setMyProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
-
+  
   const [formData, setFormData] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
 
   useEffect(() => {
     const loadProfile = async () => {
       try {
         const response = await getMemberProfile();
-       
+
 
         if (response?.success) {
           setMyProfile(response.data);
@@ -61,8 +66,8 @@ const Profile = () => {
     loadProfile();
   }, []);
 
-  const member = myProfile ;
-   
+  const member = myProfile;
+
   const house = member?.profile?.schoolHouse;
 
 
@@ -75,7 +80,11 @@ const Profile = () => {
     .join(" ");
 
 
-
+ if (loading) {
+    return (
+      <ContentLoading />
+    );
+  }
 
 
   const getInitials = () => {
@@ -158,7 +167,7 @@ const Profile = () => {
       alert(response.message)
 
       if (response?.success) {
-        setProfile((prev) => ({
+        setMyProfile((prev) => ({
           ...prev,
           ...response.data,
         }));
@@ -189,6 +198,42 @@ const Profile = () => {
         [name]: value,
       },
     }));
+  };
+
+  const handlePhotoUpload = async (e) => {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("Please select an image file.");
+      e.target.value = "";
+      return;
+    }
+
+    try {
+      setUploadingPhoto(true);
+
+      const response = await uploadProfilePhoto(file);
+
+      if (response?.success) {
+        setMyProfile((prev) => ({
+          ...prev,
+          profile: {
+            ...prev.profile,
+            profilePhoto: response.data.profilePhoto,
+          },
+        }));
+      }
+
+      alert(response.message || "Profile photo uploaded successfully.");
+    } catch (error) {
+      console.error("Failed to upload profile photo:", error);
+      alert(error.message || "Unable to upload profile photo.");
+    } finally {
+      setUploadingPhoto(false);
+      e.target.value = "";
+    }
   };
 
   return (
@@ -222,11 +267,39 @@ const Profile = () => {
         <div className="bg-(--bg-white) border border-(--border) rounded overflow-hidden">
           <div className="p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-4">
 
-            {/* AVATAR */}
-            <div className="w-16 h-16 shrink-0 rounded-full bg-(--primary-light) text-(--primary) flex items-center justify-center">
-              <span className="text-lg font-semibold">
-                {getInitials() || <UserRound size={25} />}
-              </span>
+
+            {/* PROFILE PHOTO */}
+            <div className="relative shrink-0">
+              {member?.profile?.profilePhoto ? (
+                <img
+                  src={member.profile.profilePhoto}
+                  alt={fullName || "Profile photo"}
+                  className="h-16 w-16 rounded-full object-cover"
+                />
+              ) : (
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-(--primary-light) text-(--primary)">
+                  <span className="text-lg font-semibold">
+                    {getInitials() || <UserRound size={25} />}
+                  </span>
+                </div>
+              )}
+
+              <label
+                htmlFor="profile-photo-upload"
+                className="absolute -bottom-1 -right-1 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border-2 border-(--bg-white) bg-(--primary) text-white transition hover:opacity-90"
+                title="Change profile photo"
+              >
+                <Camera size={13} />
+
+                <input
+                  id="profile-photo-upload"
+                  type="file"
+                  accept="image/*"
+                  onChange={handlePhotoUpload}
+                  disabled={uploadingPhoto}
+                  className="hidden"
+                />
+              </label>
             </div>
 
             {/* BASIC INFO */}
@@ -748,7 +821,7 @@ const Profile = () => {
                         value={formData?.profile?.professionalHeadline || ""}
                         onChange={handleProfileChange}
                         className="w-full px-3 py-2.5 text-sm border border-(--border) rounded bg-(--bg-white) text-(--primary) outline-none focus:border-(--primary)"
-                        
+
                       />
                     </div>
 
@@ -789,7 +862,7 @@ const Profile = () => {
                         value={formData?.profile?.jobTitle || ""}
                         onChange={handleProfileChange}
                         className="w-full px-3 py-2.5 text-sm border border-(--border) rounded bg-(--bg-white) text-(--primary) outline-none focus:border-(--primary)"
-                        
+
                       />
                     </div>
 
@@ -837,7 +910,7 @@ const Profile = () => {
                         value={formData?.profile?.profession || ""}
                         onChange={handleProfileChange}
                         className="w-full px-3 py-2.5 text-sm border border-(--border) rounded bg-(--bg-white) text-(--primary) outline-none focus:border-(--primary)"
-                       
+
                       />
                     </div>
 
@@ -857,8 +930,8 @@ const Profile = () => {
                         }
                         onChange={handleArrayProfileChange}
                         className="w-full px-3 py-2.5 text-sm border border-(--border) rounded bg-(--bg-white) text-(--primary) outline-none focus:border-(--primary)"
-                        
-                        
+
+
                       />
 
                       <p className="text-[11px] text-(--text-muted) mt-1">
@@ -1396,7 +1469,7 @@ const Profile = () => {
                     />
 
                     <p className="text-sm font-medium text-(--primary)">
-                      {member?.profile?.preferredName || "—"} 
+                      {member?.profile?.preferredName || "—"}
                     </p>
                   </div>
                 </div>

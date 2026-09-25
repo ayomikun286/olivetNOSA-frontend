@@ -215,7 +215,7 @@ const Navbar = () => {
           }`}
       >
         <div
-          className={`flex items-center justify-between gap-20 border px-6 py-5   transition-all duration-500 md:justify-center md:px-2 ${scrolled
+          className={`flex items-center justify-between md:gap-20 border px-3 md:px-6 py-5   transition-all duration-500 md:justify-center md:px-2 ${scrolled
             ? "border-slate-200 bg-white"
             : "border-slate-200 bg-white shadow"
             }`}
@@ -240,7 +240,7 @@ const Navbar = () => {
                OBHS 
               </p>
 
-              <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-primary transition-colors duration-500 max-w-50">
+              <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-primary transition-colors duration-500 max-w-50">
                 Global Old Students Association Website
               </p>
 
