@@ -241,7 +241,7 @@ const Profile = () => {
       <div className="space-y-4">
 
         {/* PAGE HEADER */}
-        <div className="flex items-start flex-wrap justify-between gap-4">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
             <h1 className="text-xl font-semibold text-(--primary)">
               My Profile
@@ -256,8 +256,21 @@ const Profile = () => {
             <button
               type="button"
               onClick={() => setEditing(true)}
-              className="px-4 py-2 text-sm font-medium rounded bg-(--primary) text-white hover:opacity-90 transition"
-            >
+              className="
+                          h-9
+                          px-3.5
+                          rounded
+                          bg-(--primary)
+                          text-white
+                          text-xs
+                          font-semibold
+                          inline-flex
+                          items-center
+                          justify-center
+                          gap-2
+                          hover:opacity-90
+                          transition-opacity
+                        " >
               Edit Profile
             </button>
           )}

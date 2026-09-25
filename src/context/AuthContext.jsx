@@ -10,7 +10,7 @@ import API from "../config/app.js";
 import { NavLink, useNavigate, } from "react-router-dom";
 const AuthContext = createContext(null);
 
-const INACTIVITY_LIMIT = 20 * 60 * 1000; // 20 minutes
+const INACTIVITY_LIMIT = 5 * 60 * 1000; // 20 minutes
 const ACTIVITY_KEY = "nosa_last_activity";
 
 export const AuthProvider = ({ children }) => {

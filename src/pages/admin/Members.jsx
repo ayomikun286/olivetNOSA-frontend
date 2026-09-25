@@ -402,13 +402,13 @@ const Members = () => {
         {/* HEADER */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
          <div>
-           <h1 className="text-xl font-semibold text-(--primary)">
-            Members
-          </h1>
+              <h1 className="text-xl font-semibold text-(--primary)">
+                Members
+              </h1>
 
-          <p className="text-sm text-(--secondary) mt-1">
-            Manage and monitor OlivetNOSA members.
-          </p>
+              <p className="text-sm text-(--secondary) mt-1">
+                Manage and monitor OlivetNOSA members.
+              </p>
          </div>
 
            <button
