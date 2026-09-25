@@ -97,7 +97,7 @@ export default function Home() {
     };
 
     return (
-        <main className="min-h-screen bg-white text-[var(--primary-dark)] overflow-x-hidden mt-8 md:mt-15">
+        <main className="min-h-screen bg-white text-[var(--primary-dark)] overflow-x-hidden mt-10 md:mt-15">
             <PageTitle title="OlivetNOSA | Olivet Nigerian School Alumni Association" />
 
             <header>
