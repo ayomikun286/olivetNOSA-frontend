@@ -57,7 +57,13 @@ const formatDate = (date) => {
 
 const RecentMember = ({ member }) => {
   return (
-    <div className="flex items-center justify-between gap-4 p-5 border-b border-(--border) last:border-b-0">
+    <div
+    onClick={() =>
+        window.location.assign(
+          "/portal/admin/dashboard/members"
+        )
+      }
+     className="flex items-center justify-between gap-4 p-5 border-b border-(--border) last:border-b-0">
       <div className="min-w-0">
         <p className="text-sm font-medium text-(--primary) truncate">
           {formatName(member)}
@@ -89,8 +95,62 @@ const RecentPayment = ({ payment }) => {
     payment.user?.email ||
     "Unknown member";
 
+  const status = String(
+    payment.status || payment.paymentStatus || ""
+  ).toLowerCase();
+
+  const getStatusStyles = () => {
+    switch (status) {
+      case "success":
+      case "successful":
+      case "paid":
+      case "completed":
+        return {
+          amount: "text-(--success)",
+          badge: "bg-(--success-light) text-(--success)",
+          label: "Successful",
+        };
+
+      case "pending":
+        return {
+          amount: "text-(--warning)",
+          badge: "bg-(--warning-light) text-(--warning)",
+          label: "Pending",
+        };
+
+      case "failed":
+      case "cancelled":
+      case "canceled":
+        return {
+          amount: "text-(--danger)",
+          badge: "bg-(--danger-light) text-(--danger)",
+          label:
+            status === "failed"
+              ? "Failed"
+              : "Cancelled",
+        };
+
+      default:
+        return {
+          amount: "text-(--success)",
+          badge: "bg-(--success-light) text-(--success)",
+          label: "Successful",
+        };
+    }
+  };
+
+  const statusStyles = getStatusStyles();
+
   return (
-    <div className="flex items-center justify-between gap-4 p-5 border-b border-(--border) last:border-b-0">
+    <button
+      type="button"
+      onClick={() =>
+        window.location.assign(
+          "/portal/admin/dashboard/payments"
+        )
+      }
+      className="w-full flex items-center justify-between gap-4 p-5 border-b border-(--border) last:border-b-0 text-left hover:bg-(--bg-light) transition cursor-pointer"
+    >
       <div className="min-w-0">
         <p className="text-sm font-medium text-(--primary) truncate">
           {memberName}
@@ -100,10 +160,18 @@ const RecentPayment = ({ payment }) => {
           {payment.obligationAssignment?.obligation?.name ||
             "Payment"}
         </p>
+
+        <span
+          className={`inline-flex mt-2 px-2 py-1 rounded text-[10px] font-medium ${statusStyles.badge}`}
+        >
+          {statusStyles.label}
+        </span>
       </div>
 
       <div className="text-right shrink-0">
-        <p className="text-sm font-semibold text-(--success)">
+        <p
+          className={`text-sm font-semibold ${statusStyles.amount}`}
+        >
           {formatCurrency(payment.amount)}
         </p>
 
@@ -113,9 +181,10 @@ const RecentPayment = ({ payment }) => {
           )}
         </p>
       </div>
-    </div>
+    </button>
   );
 };
+
 
 const Main = () => {
   const [data, setData] = useState(null);
