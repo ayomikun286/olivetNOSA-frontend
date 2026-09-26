@@ -37,6 +37,25 @@ const Profile = () => {
   const [formData, setFormData] = useState(null);
   const [saving, setSaving] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [notification, setNotification] = useState(null);
+
+  useEffect(() => {
+    if (!notification) return;
+
+    const timer = setTimeout(() => {
+      setNotification(null);
+    }, 4000);
+
+    return () => clearTimeout(timer);
+  }, [notification]);
+
+  const showNotification = (type, title, message) => {
+    setNotification({
+      type,
+      title,
+      message,
+    });
+  };
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -164,8 +183,6 @@ const Profile = () => {
 
       const response = await updateMemberProfile(payload);
 
-      alert(response.message)
-
       if (response?.success) {
         setMyProfile((prev) => ({
           ...prev,
@@ -180,9 +197,28 @@ const Profile = () => {
         });
 
         setEditing(false);
+
+        showNotification(
+          "success",
+          "Profile updated",
+          response.message || "Your profile has been updated successfully."
+        );
+      } else {
+        showNotification(
+          "error",
+          "Profile update failed",
+          response?.message ||
+            "Unable to update your profile. Please try again."
+        );
       }
     } catch (error) {
       console.error("Failed to update profile:", error);
+
+      showNotification(
+        "error",
+        "Profile update failed",
+        error.message || "Unable to update your profile. Please try again."
+      );
     } finally {
       setSaving(false);
     }
@@ -205,8 +241,24 @@ const Profile = () => {
 
     if (!file) return;
 
+    const MAX_FILE_SIZE = 10 * 1024 * 1024;
+
     if (!file.type.startsWith("image/")) {
-      alert("Please select an image file.");
+      showNotification(
+        "error",
+        "Invalid image",
+        "Please select a valid image file."
+      );
+      e.target.value = "";
+      return;
+    }
+
+    if (file.size > MAX_FILE_SIZE) {
+      showNotification(
+        "error",
+        "Image is too large",
+        "Please select an image smaller than 10MB."
+      );
       e.target.value = "";
       return;
     }
@@ -224,12 +276,29 @@ const Profile = () => {
             profilePhoto: response.data.profilePhoto,
           },
         }));
-      }
 
-      alert(response.message || "Profile photo uploaded successfully.");
+        showNotification(
+          "success",
+          "Profile photo updated",
+          response.message ||
+            "Your profile photo has been uploaded successfully."
+        );
+      } else {
+        showNotification(
+          "error",
+          "Photo upload failed",
+          response?.message || "Unable to upload your profile photo."
+        );
+      }
     } catch (error) {
       console.error("Failed to upload profile photo:", error);
-      alert(error.message || "Unable to upload profile photo.");
+
+      showNotification(
+        "error",
+        "Photo upload failed",
+        error.message ||
+          "Unable to upload your profile photo. Please try again."
+      );
     } finally {
       setUploadingPhoto(false);
       e.target.value = "";
@@ -239,6 +308,37 @@ const Profile = () => {
   return (
     <div className="p-4">
       <div className="space-y-4">
+
+        {notification && (
+          <div
+            className={`fixed top-4 right-4 z-[100] w-[min(380px,calc(100vw-2rem))] rounded border px-4 py-3 shadow-lg ${
+              notification.type === "success"
+                ? "border-(--success) bg-(--success-light) text-(--success)"
+                : "border-red-200 bg-red-50 text-red-700"
+            }`}
+            role="alert"
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-sm font-semibold">
+                  {notification.title}
+                </p>
+                <p className="text-xs mt-1">
+                  {notification.message}
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setNotification(null)}
+                className="shrink-0 text-current opacity-70 hover:opacity-100"
+                aria-label="Dismiss notification"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* PAGE HEADER */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -299,10 +399,23 @@ const Profile = () => {
 
               <label
                 htmlFor="profile-photo-upload"
-                className="absolute -bottom-1 -right-1 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border-2 border-(--bg-white) bg-(--primary) text-white transition hover:opacity-90"
-                title="Change profile photo"
+                className={`absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full border-2 border-(--bg-white) bg-(--primary) text-white transition ${
+                  uploadingPhoto
+                    ? "cursor-not-allowed opacity-80"
+                    : "cursor-pointer hover:opacity-90"
+                }`}
+                title={
+                  uploadingPhoto ? "Uploading photo..." : "Change profile photo"
+                }
               >
-                <Camera size={13} />
+                {uploadingPhoto ? (
+                  <span
+                    className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/40 border-t-white"
+                    aria-label="Uploading"
+                  />
+                ) : (
+                  <Camera size={13} />
+                )}
 
                 <input
                   id="profile-photo-upload"

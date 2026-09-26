@@ -13,6 +13,8 @@ import {
   LogOut,
   ContactRound,
   HeartHandshake,
+  NotebookTabs 
+ 
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
@@ -217,6 +219,15 @@ const Sidebar = ({ setIsOpen }) => {
             >
               <Bell className={iconClass} />
               <span>Notifications</span>
+            </NavLink>
+
+             <NavLink
+              to="/portal/member/dashboard/calendar"
+              className={linkClass}
+              onClick={handleLinkClick}
+            >
+              <NotebookTabs  className={iconClass} />
+              <span>Calendar</span>
             </NavLink>
 
             <NavLink

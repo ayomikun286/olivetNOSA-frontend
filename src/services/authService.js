@@ -698,3 +698,78 @@ export const getMyMemorialSubmissions = async () => {
   }
 };
 
+
+
+
+
+
+export const getCalendarEvents = async ({
+  year,
+  month,
+  category,
+  status,
+} = {}) => {
+  try {
+    const params = new URLSearchParams();
+
+    if (year) params.append("year", year);
+    if (month) params.append("month", month);
+    if (category) params.append("category", category);
+    if (status) params.append("status", status);
+
+    const query = params.toString();
+
+    const response = await fetch(
+      `${API}/api/calendar${query ? `?${query}` : ""}`,
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || "Unable to load calendar events."
+      );
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Get calendar events error:", error);
+
+    throw new Error(
+      error.message || "Unable to load calendar events."
+    );
+  }
+};
+
+
+export const getCalendarEvent = async (id) => {
+  try {
+    const response = await fetch(
+      `${API}/api/calendar/${id}`,
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || "Unable to load calendar event."
+      );
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Get calendar event error:", error);
+
+    throw new Error(
+      error.message || "Unable to load calendar event."
+    );
+  }
+};
