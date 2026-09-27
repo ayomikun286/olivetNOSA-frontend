@@ -17,11 +17,11 @@ import {
 } from "lucide-react";
 
 import { getMyObligation } from "../../services/obligationService.js";
-import ContentLoading from "../../components/admin/ContentLoading.jsx"
+import ContentLoading from "../../components/admin/ContentLoading.jsx";
+
 const Obligations = () => {
     const [obligations, setObligations] = useState([]);
     const [loading, setLoading] = useState(true);
-
     const [paymentModal, setPaymentModal] = useState(null);
     const [paymentAmount, setPaymentAmount] = useState("");
     const [paymentLoading, setPaymentLoading] = useState(false);
@@ -31,8 +31,10 @@ const Obligations = () => {
         const fetchObligations = async () => {
             try {
                 const data = await getMyObligation();
+
                 const individual = (data?.assignments || []).filter(
-                    (item) => item.obligation?.category === "individual"
+                    (item) =>
+                        item.obligation?.category === "individual"
                 );
 
                 setObligations(individual);
@@ -49,6 +51,14 @@ const Obligations = () => {
         fetchObligations();
     }, []);
 
+    const activeObligations = obligations.filter(
+        (item) => item.obligation?.isActive === true
+    );
+
+    const inactiveObligations = obligations.filter(
+        (item) => item.obligation?.isActive === false
+    );
+
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat("en-NG", {
             style: "currency",
@@ -60,40 +70,71 @@ const Obligations = () => {
     const formatDate = (date) => {
         if (!date) return "—";
 
-        return new Date(date).toLocaleDateString(
-            "en-NG",
-            {
-                day: "numeric",
-                month: "short",
-                year: "numeric",
-            }
-        );
+        return new Date(date).toLocaleDateString("en-NG", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+        });
     };
 
-    if(loading){
-        return (
-      <ContentLoading />
-    );
+    if (loading) {
+        return <ContentLoading />;
     }
 
-    const totalDue = obligations.reduce(
-        (total, item) =>
-            total + Number(item.amountDue || 0),
-        0
-    );
+  // ========================================
+// CURRENT FINANCIAL TOTALS
+// ========================================
 
-    const totalPaid = obligations.reduce(
-        (total, item) =>
-            total + Number(item.amountPaid || 0),
-        0
-    );
+// Only ACTIVE obligations count toward
+// the current amount due.
+const totalDue = activeObligations.reduce(
+    (total, item) =>
+        total + Number(item.amountDue || 0),
+    0
+);
 
-    const outstanding = Math.max(
-        totalDue - totalPaid,
-        0
-    );
+// All recorded payments are shown here,
+// including payments made against obligations
+// that later became inactive.
+const totalPaid = obligations.reduce(
+    (total, item) =>
+        total + Number(item.amountPaid || 0),
+    0
+);
+
+// Only payments against ACTIVE obligations
+// reduce the current outstanding balance.
+const activePaid = activeObligations.reduce(
+    (total, item) =>
+        total + Number(item.amountPaid || 0),
+    0
+);
+
+// Current outstanding balance only.
+const outstanding = Math.max(
+    totalDue - activePaid,
+    0
+);
+
+    // ========================================
+    // STATUS
+    // ========================================
 
     const getStatus = (item) => {
+        const isInactive =
+            item.obligation?.isActive === false;
+
+        // Inactive obligations are historical.
+        // They must not appear as pending/partial/overdue.
+        if (isInactive) {
+            return {
+                label: "Inactive",
+                icon: Clock3,
+                className:
+                    "text-slate-500 bg-slate-100",
+            };
+        }
+
         const due = Number(item.amountDue || 0);
         const paid = Number(item.amountPaid || 0);
 
@@ -157,9 +198,17 @@ const Obligations = () => {
         }
     };
 
-
+    // ========================================
+    // PAYMENT
+    // ========================================
 
     const handlePayNow = (obligation) => {
+        // Extra frontend protection.
+        // Backend also blocks inactive obligations.
+        if (obligation.obligation?.isActive !== true) {
+            return;
+        }
+
         const amountDue = Number(
             obligation.amountDue || 0
         );
@@ -173,12 +222,16 @@ const Obligations = () => {
             0
         );
 
+        if (outstanding <= 0) {
+            return;
+        }
+
         setPaymentModal({
             ...obligation,
             outstanding,
         });
 
-        // Default to the full outstanding balance
+        // Default to the full outstanding balance.
         setPaymentAmount(
             outstanding.toString()
         );
@@ -186,9 +239,19 @@ const Obligations = () => {
         setPaymentError("");
     };
 
-
     const handleInitializePayment = async () => {
         if (!paymentModal) return;
+
+        // Extra protection in case an inactive obligation
+        // somehow reaches the modal.
+        if (
+            paymentModal.obligation?.isActive !== true
+        ) {
+            setPaymentError(
+                "This obligation is inactive and cannot receive payments."
+            );
+            return;
+        }
 
         const amount = Number(paymentAmount);
 
@@ -234,11 +297,11 @@ const Obligations = () => {
             if (!response.ok || !data.success) {
                 throw new Error(
                     data.message ||
-                    "Failed to initialize payment."
+                        "Failed to initialize payment."
                 );
             }
 
-            // Redirect member to Paystack checkout
+            // Redirect member to Paystack checkout.
             window.location.href =
                 data.authorizationUrl;
         } catch (error) {
@@ -249,7 +312,7 @@ const Obligations = () => {
 
             setPaymentError(
                 error.message ||
-                "Unable to initialize payment."
+                    "Unable to initialize payment."
             );
 
             setPaymentLoading(false);
@@ -296,9 +359,9 @@ const Obligations = () => {
                         </h2>
 
                         <p className="text-xs text-(--text-muted) mt-2">
-                            Across {obligations.length}{" "}
-                            obligation
-                            {obligations.length !== 1
+                            Across {activeObligations.length}{" "}
+                            active obligation
+                            {activeObligations.length !== 1
                                 ? "s"
                                 : ""}
                         </p>
@@ -324,9 +387,9 @@ const Obligations = () => {
                             {formatCurrency(totalPaid)}
                         </h2>
 
-                        <p className="text-xs text-(--text-muted) mt-2">
-                            Payments recorded
-                        </p>
+                       <p className="text-xs text-(--text-muted) mt-2">
+    Total payments recorded
+</p>
                     </div>
 
                     {/* OUTSTANDING */}
@@ -368,9 +431,8 @@ const Obligations = () => {
                             </h2>
 
                             <p className="text-sm text-(--secondary) mt-1">
-                                Your individual, year set and
-                                chapter contributions.
-                            </p>
+    Your individual membership contributions and payment status.
+</p>
                         </div>
 
                         <div className="flex items-center gap-2 text-xs text-(--secondary)">
@@ -384,13 +446,7 @@ const Obligations = () => {
                     </div>
 
                     {/* CONTENT */}
-                    {loading ? (
-                        <div className="p-12 text-center">
-                            <p className="text-sm text-(--secondary)">
-                                Loading your obligations...
-                            </p>
-                        </div>
-                    ) : obligations.length === 0 ? (
+                    {obligations.length === 0 ? (
                         <div className="p-12 text-center">
                             <div className="w-12 h-12 mx-auto rounded-full bg-(--primary-light) text-(--primary) flex items-center justify-center">
                                 <CheckCircle2 size={22} />
@@ -408,8 +464,13 @@ const Obligations = () => {
                         </div>
                     ) : (
                         <div className="divide-y max-h-[400px] overflow-y-auto scrollbar-hide divide-(--border)">
-
                             {obligations.map((item) => {
+                                const isActive =
+                                    item.obligation?.isActive === true;
+
+                                const isInactive =
+                                    item.obligation?.isActive === false;
+
                                 const due = Number(
                                     item.amountDue || 0
                                 );
@@ -418,18 +479,16 @@ const Obligations = () => {
                                     item.amountPaid || 0
                                 );
 
-                                const remaining =
-                                    Math.max(
-                                        due - paid,
-                                        0
-                                    );
+                                const remaining = Math.max(
+                                    due - paid,
+                                    0
+                                );
 
                                 const progress = due
                                     ? Math.min(
-                                        (paid / due) *
-                                        100,
-                                        100
-                                    )
+                                          (paid / due) * 100,
+                                          100
+                                      )
                                     : 0;
 
                                 const status =
@@ -449,7 +508,6 @@ const Obligations = () => {
                                         key={item._id}
                                         className="p-5 sm:p-6"
                                     >
-
                                         {/* TOP */}
                                         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
 
@@ -457,15 +515,14 @@ const Obligations = () => {
 
                                                 <div className="w-10 h-10 shrink-0 rounded-lg bg-(--primary-light) text-(--primary) flex items-center justify-center">
                                                     <CategoryIcon
-                                                        size={
-                                                            18
-                                                        }
+                                                        size={18}
                                                     />
                                                 </div>
 
                                                 <div className="min-w-0">
 
                                                     <div className="flex flex-wrap items-center gap-2">
+
                                                         <h3 className="text-sm font-semibold text-(--primary)">
                                                             {item
                                                                 .obligation
@@ -480,6 +537,13 @@ const Obligations = () => {
                                                                     ?.category
                                                             )}
                                                         </span>
+
+                                                        {isInactive && (
+                                                            <span className="text-[10px] font-medium px-2 py-1 rounded-full bg-slate-100 text-slate-500">
+                                                                Inactive
+                                                            </span>
+                                                        )}
+
                                                     </div>
 
                                                     <p className="text-xs text-(--secondary) mt-1 leading-relaxed max-w-2xl">
@@ -490,12 +554,9 @@ const Obligations = () => {
                                                     </p>
 
                                                     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2.5 text-xs text-(--text-muted)">
-
                                                         <span className="flex items-center gap-1">
                                                             <CalendarDays
-                                                                size={
-                                                                    13
-                                                                }
+                                                                size={13}
                                                             />
 
                                                             Due{" "}
@@ -503,8 +564,8 @@ const Obligations = () => {
                                                                 item.dueDate
                                                             )}
                                                         </span>
-
                                                     </div>
+
                                                 </div>
                                             </div>
 
@@ -527,15 +588,12 @@ const Obligations = () => {
                                                     className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-full ${status.className}`}
                                                 >
                                                     <StatusIcon
-                                                        size={
-                                                            13
-                                                        }
+                                                        size={13}
                                                     />
 
-                                                    {
-                                                        status.label
-                                                    }
+                                                    {status.label}
                                                 </span>
+
                                             </div>
                                         </div>
 
@@ -549,11 +607,10 @@ const Obligations = () => {
                                                     <div className="flex items-center justify-between mb-2">
 
                                                         <span className="text-xs text-(--secondary)">
-                                                            {paid >
-                                                                0
+                                                            {paid > 0
                                                                 ? `${formatCurrency(
-                                                                    paid
-                                                                )} paid`
+                                                                      paid
+                                                                  )} paid`
                                                                 : "No payment recorded"}
                                                         </span>
 
@@ -576,21 +633,26 @@ const Obligations = () => {
                                                         />
 
                                                     </div>
+
                                                 </div>
 
-                                                {/* OUTSTANDING */}
+                                                {/* BALANCE */}
                                                 <div className="sm:w-32 shrink-0">
 
                                                     <p className="text-[11px] text-(--text-muted)">
-                                                        Outstanding
+                                                        {isInactive
+                                                            ? "Historical balance"
+                                                            : "Outstanding"}
                                                     </p>
 
                                                     <p
-                                                        className={`text-sm font-semibold mt-0.5 ${remaining >
-                                                            0
-                                                            ? "text-(--primary)"
-                                                            : "text-(--success)"
-                                                            }`}
+                                                        className={`text-sm font-semibold mt-0.5 ${
+                                                            remaining > 0
+                                                                ? isInactive
+                                                                    ? "text-slate-500"
+                                                                    : "text-(--primary)"
+                                                                : "text-(--success)"
+                                                        }`}
                                                     >
                                                         {formatCurrency(
                                                             remaining
@@ -600,46 +662,51 @@ const Obligations = () => {
                                                 </div>
 
                                                 {/* PAY */}
-                                                {remaining > 0 && (
-                                                    <button
-                                                        type="button"
-                                                        onClick={() =>
-                                                            handlePayNow(item)
-                                                        }
-                                                        className="inline-flex items-center justify-center gap-1.5 bg-(--primary) text-white px-4 py-2 rounded-(--radius-sm) text-xs font-semibold hover:bg-(--primary-dark) transition shrink-0"
-                                                    >
-                                                        Pay now
-                                                        <ArrowUpRight size={14} />
-                                                    </button>
-                                                )}
+                                                {isActive &&
+                                                    remaining > 0 && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() =>
+                                                                handlePayNow(
+                                                                    item
+                                                                )
+                                                            }
+                                                            className="inline-flex items-center justify-center gap-1.5 bg-(--primary) text-white px-4 py-2 rounded-(--radius-sm) text-xs font-semibold hover:bg-(--primary-dark) transition shrink-0"
+                                                        >
+                                                            Pay now
+                                                            <ArrowUpRight
+                                                                size={14}
+                                                            />
+                                                        </button>
+                                                    )}
+
                                             </div>
                                         </div>
                                     </div>
                                 );
                             })}
-
-
-
-
-
                         </div>
                     )}
                 </div>
             </div>
 
+            {/* PAYMENT MODAL */}
             {paymentModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+
                     <div className="w-full max-w-md bg-white rounded shadow-xl overflow-hidden">
 
-                        {/* Header */}
+                        {/* HEADER */}
                         <div className="flex items-center justify-between px-6 py-5 border-b border-slate-200">
+
                             <div>
                                 <h3 className="text-lg font-bold text-(--primary-dark)">
                                     Make Payment
                                 </h3>
 
                                 <p className="text-sm text-slate-500 mt-1">
-                                    {paymentModal.obligation?.name ||
+                                    {paymentModal.obligation
+                                        ?.name ||
                                         "Obligation Payment"}
                                 </p>
                             </div>
@@ -656,13 +723,15 @@ const Obligations = () => {
                             >
                                 <X size={18} />
                             </button>
+
                         </div>
 
-                        {/* Body */}
+                        {/* BODY */}
                         <div className="p-6 space-y-5">
 
-                            {/* Outstanding */}
+                            {/* OUTSTANDING */}
                             <div className="rounded-(--radius-sm) bg-(--primary-light) p-4">
+
                                 <p className="text-xs text-slate-500">
                                     Outstanding Balance
                                 </p>
@@ -671,15 +740,18 @@ const Obligations = () => {
                                     ₦
                                     {paymentModal.outstanding.toLocaleString()}
                                 </p>
+
                             </div>
 
-                            {/* Amount */}
+                            {/* AMOUNT */}
                             <div>
+
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">
                                     Amount to Pay
                                 </label>
 
                                 <div className="relative">
+
                                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-semibold">
                                         ₦
                                     </span>
@@ -697,29 +769,35 @@ const Obligations = () => {
                                             );
                                             setPaymentError("");
                                         }}
-                                        disabled={paymentLoading}
+                                        disabled={
+                                            paymentLoading
+                                        }
                                         className="w-full border border-slate-300 rounded-(--radius-sm) pl-9 pr-4 py-3 text-sm outline-none focus:border-(--primary) focus:ring-2 focus:ring-(--primary)/10"
                                         placeholder="Enter amount"
                                     />
+
                                 </div>
 
                                 <p className="text-xs text-slate-500 mt-2">
                                     You can pay any amount up to your
                                     outstanding balance.
                                 </p>
+
                             </div>
 
-                            {/* Error */}
+                            {/* ERROR */}
                             {paymentError && (
                                 <div className="rounded-(--radius-sm) bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600">
                                     {paymentError}
                                 </div>
                             )}
 
-                            {/* Button */}
+                            {/* BUTTON */}
                             <button
                                 type="button"
-                                onClick={handleInitializePayment}
+                                onClick={
+                                    handleInitializePayment
+                                }
                                 disabled={paymentLoading}
                                 className="w-full inline-flex items-center justify-center gap-2 bg-(--primary) text-white py-3 rounded text-sm font-semibold hover:bg-(--primary-dark) transition disabled:opacity-60 disabled:cursor-not-allowed"
                             >
@@ -738,6 +816,7 @@ const Obligations = () => {
                                     </>
                                 )}
                             </button>
+
                         </div>
                     </div>
                 </div>

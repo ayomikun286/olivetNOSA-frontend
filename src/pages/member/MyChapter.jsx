@@ -13,6 +13,7 @@ import {
     CreditCard,
     Loader2,
     MapPin,
+    Clock3,
 } from "lucide-react";
 
 import PageTitle from "../../components/common/PageTitle.jsx";
@@ -55,7 +56,7 @@ const MyChapter = () => {
 
                 setError(
                     err.message ||
-                    "Failed to load chapter information."
+                        "Failed to load chapter information."
                 );
             } finally {
                 setLoading(false);
@@ -83,28 +84,63 @@ const MyChapter = () => {
     const recentActivity =
         chapterData?.recentActivity || [];
 
-    const totalDue = Number(
-        summary?.totalDue || 0
+    // ========================================
+    // FINANCIAL CALCULATIONS
+    // ========================================
+
+    // Only active obligations count toward
+    // the chapter's current financial position.
+    const activeObligations = obligations.filter(
+        (item) =>
+            item.obligation?.isActive === true
     );
 
-    const amountPaid = Number(
-        summary?.amountPaid || 0
+    // Current obligations only.
+    const totalDue = activeObligations.reduce(
+        (total, item) =>
+            total + Number(item.amountDue || 0),
+        0
     );
 
-    const outstanding = Number(
-        summary?.outstanding || 0
+    // All recorded payments, including payments
+    // made before an obligation became inactive.
+    const amountPaid = obligations.reduce(
+        (total, item) =>
+            total + Number(item.amountPaid || 0),
+        0
+    );
+
+    // Only payments against active obligations
+    // count toward the current financial position.
+    const activeAmountPaid =
+        activeObligations.reduce(
+            (total, item) =>
+                total + Number(item.amountPaid || 0),
+            0
+        );
+
+    // Current outstanding balance only.
+    const outstanding = Math.max(
+        totalDue - activeAmountPaid,
+        0
     );
 
     const memberCount = Number(
-        summary?.memberCount || 0
+        summary?.memberCount ||
+            members.length ||
+            0
     );
 
+    // Current progress only.
+    // Historical inactive payments must not
+    // inflate the current contribution percentage.
     const contributionProgress =
         totalDue > 0
             ? Math.min(
-                (amountPaid / totalDue) * 100,
-                100
-            )
+                  (activeAmountPaid / totalDue) *
+                      100,
+                  100
+              )
             : 0;
 
     // ========================================
@@ -136,6 +172,20 @@ const MyChapter = () => {
         obligation,
         remaining
     ) => {
+        // Inactive always takes priority over
+        // paid/partial/overdue status.
+        if (
+            obligation?.obligation?.isActive ===
+            false
+        ) {
+            return {
+                label: "Inactive",
+                className:
+                    "text-(--text-muted) bg-(--bg-light)",
+                icon: Clock3,
+            };
+        }
+
         if (remaining <= 0) {
             return {
                 label: "Paid",
@@ -147,7 +197,8 @@ const MyChapter = () => {
 
         if (
             obligation?.status === "partial" ||
-            obligation?.status === "partially_paid"
+            obligation?.status ===
+                "partially_paid"
         ) {
             return {
                 label: "Partially Paid",
@@ -157,7 +208,9 @@ const MyChapter = () => {
             };
         }
 
-        if (obligation?.status === "overdue") {
+        if (
+            obligation?.status === "overdue"
+        ) {
             return {
                 label: "Overdue",
                 className:
@@ -179,6 +232,15 @@ const MyChapter = () => {
     // ========================================
 
     const handlePayNow = (obligation) => {
+        // Never allow payment against an
+        // inactive obligation.
+        if (
+            obligation?.obligation?.isActive !==
+            true
+        ) {
+            return;
+        }
+
         const amountDue = Number(
             obligation.amountDue || 0
         );
@@ -191,6 +253,10 @@ const MyChapter = () => {
             amountDue - amountPaid,
             0
         );
+
+        if (outstandingAmount <= 0) {
+            return;
+        }
 
         setPaymentModal({
             ...obligation,
@@ -207,6 +273,19 @@ const MyChapter = () => {
     const handleInitializePayment = async () => {
         if (!paymentModal) return;
 
+        // Defensive protection against an
+        // inactive obligation.
+        if (
+            paymentModal?.obligation?.isActive !==
+            true
+        ) {
+            setPaymentError(
+                "This obligation is currently inactive and cannot receive payments."
+            );
+
+            return;
+        }
+
         const amount = Number(paymentAmount);
 
         if (
@@ -216,13 +295,18 @@ const MyChapter = () => {
             setPaymentError(
                 "Please enter a valid payment amount."
             );
+
             return;
         }
 
-        if (amount > paymentModal.outstanding) {
+        if (
+            amount >
+            paymentModal.outstanding
+        ) {
             setPaymentError(
                 `Amount cannot exceed the outstanding balance of ₦${paymentModal.outstanding.toLocaleString()}.`
             );
+
             return;
         }
 
@@ -256,7 +340,7 @@ const MyChapter = () => {
             ) {
                 throw new Error(
                     data.message ||
-                    "Failed to initialize payment."
+                        "Failed to initialize payment."
                 );
             }
 
@@ -270,7 +354,7 @@ const MyChapter = () => {
 
             setPaymentError(
                 error.message ||
-                "Unable to initialize payment."
+                    "Unable to initialize payment."
             );
 
             setPaymentLoading(false);
@@ -287,7 +371,6 @@ const MyChapter = () => {
 
             <div className="p-4">
                 <div className="space-y-4">
-
                     {/* ========================================
                         PAGE INTRO
                     ======================================== */}
@@ -299,7 +382,9 @@ const MyChapter = () => {
                             </h1>
 
                             <p className="text-sm text-(--secondary) mt-1">
-                                Track your chapter's financial responsibility.
+                                Track your
+                                chapter's financial
+                                responsibility.
                             </p>
                         </div>
 
@@ -320,9 +405,14 @@ const MyChapter = () => {
 
                                     {chapter?.country && (
                                         <>
-                                            <span>•</span>
                                             <span>
-                                                {chapter.country}
+                                                •
+                                            </span>
+
+                                            <span>
+                                                {
+                                                    chapter.country
+                                                }
                                             </span>
                                         </>
                                     )}
@@ -356,7 +446,6 @@ const MyChapter = () => {
 
                     <div className="space-y-3">
                         <div className="grid grid-cols-1 lg:grid-cols-4 gap-3">
-
                             {/* MAIN BALANCE */}
 
                             <div className="lg:col-span-2 rounded bg-(--primary) text-white p-5 relative overflow-hidden">
@@ -372,15 +461,17 @@ const MyChapter = () => {
                                             </div>
 
                                             <span className="text-sm text-white/75">
-                                                Outstanding balance
+                                                Outstanding
+                                                balance
                                             </span>
                                         </div>
 
                                         {!loading &&
                                             outstanding >
-                                            0 && (
+                                                0 && (
                                                 <span className="text-xs bg-(--secondary) text-(--primary) px-2 py-1 rounded font-semibold">
-                                                    Action needed
+                                                    Action
+                                                    needed
                                                 </span>
                                             )}
                                     </div>
@@ -389,17 +480,18 @@ const MyChapter = () => {
                                         {loading
                                             ? "—"
                                             : formatCurrency(
-                                                outstanding
-                                            )}
+                                                  outstanding
+                                              )}
                                     </h3>
 
                                     <p className="text-sm text-white/65 mt-1">
-                                        remaining from{" "}
+                                        remaining
+                                        from{" "}
                                         {loading
                                             ? "—"
                                             : formatCurrency(
-                                                totalDue
-                                            )}
+                                                  totalDue
+                                              )}
                                     </p>
 
                                     <div className="mt-5 h-2 rounded-full bg-white/10 overflow-hidden">
@@ -418,16 +510,16 @@ const MyChapter = () => {
                                             {loading
                                                 ? "—"
                                                 : `${formatCurrency(
-                                                    amountPaid
-                                                )} paid`}
+                                                      amountPaid
+                                                  )} paid`}
                                         </span>
 
                                         <span>
                                             {loading
                                                 ? "—"
                                                 : `${Math.round(
-                                                    contributionProgress
-                                                )}%`}
+                                                      contributionProgress
+                                                  )}%`}
                                         </span>
                                     </div>
                                 </div>
@@ -439,7 +531,9 @@ const MyChapter = () => {
                                 <div className="flex items-center justify-between">
                                     <div className="w-10 h-10 rounded-lg bg-green-50 text-(--success) flex items-center justify-center">
                                         <CheckCircle2
-                                            size={20}
+                                            size={
+                                                20
+                                            }
                                         />
                                     </div>
 
@@ -456,12 +550,14 @@ const MyChapter = () => {
                                     {loading
                                         ? "—"
                                         : formatCurrency(
-                                            amountPaid
-                                        )}
+                                              amountPaid
+                                          )}
                                 </h3>
 
                                 <p className="text-xs text-(--text-muted) mt-2">
-                                    Official chapter payments
+                                    Total payments
+                                    recorded for
+                                    this chapter
                                 </p>
                             </div>
 
@@ -489,7 +585,8 @@ const MyChapter = () => {
                                 </h3>
 
                                 <p className="text-xs text-(--text-muted) mt-2">
-                                    Members assigned to this chapter
+                                    Members assigned
+                                    to this chapter
                                 </p>
                             </div>
                         </div>
@@ -500,23 +597,30 @@ const MyChapter = () => {
                     ======================================== */}
 
                     <section className="bg-(--bg-white) border border-(--border) rounded overflow-hidden">
-
                         <div className="p-5 border-b border-(--border) flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                             <div>
                                 <h2 className="font-semibold text-(--primary)">
-                                    Chapter Obligations
+                                    Chapter
+                                    Obligations
                                 </h2>
 
                                 <p className="text-sm text-(--secondary) mt-1">
-                                    View all financial obligations assigned to your chapter.
+                                    View all financial
+                                    obligations
+                                    assigned to your
+                                    chapter.
                                 </p>
                             </div>
 
                             <div className="flex items-center gap-2 text-xs text-(--secondary)">
-                                <CircleDollarSign size={15} />
+                                <CircleDollarSign
+                                    size={15}
+                                />
 
-                                {obligations.length} obligation
-                                {obligations.length !== 1
+                                {obligations.length}{" "}
+                                obligation
+                                {obligations.length !==
+                                1
                                     ? "s"
                                     : ""}
                             </div>
@@ -525,11 +629,12 @@ const MyChapter = () => {
                         {loading ? (
                             <div className="p-10 text-center">
                                 <p className="text-sm text-(--secondary)">
-                                    Loading obligations...
+                                    Loading
+                                    obligations...
                                 </p>
                             </div>
                         ) : obligations.length ===
-                            0 ? (
+                          0 ? (
                             <div className="p-10 text-center">
                                 <div className="w-12 h-12 mx-auto rounded-full bg-(--primary-light) text-(--primary) flex items-center justify-center">
                                     <CheckCircle2
@@ -538,45 +643,62 @@ const MyChapter = () => {
                                 </div>
 
                                 <h3 className="font-semibold text-(--primary) mt-4">
-                                    No obligations assigned
+                                    No obligations
+                                    assigned
                                 </h3>
 
                                 <p className="text-sm text-(--secondary) mt-1 max-w-md mx-auto">
-                                    There are currently no financial obligations assigned to this chapter.
+                                    There are
+                                    currently no
+                                    financial
+                                    obligations
+                                    assigned to this
+                                    chapter.
                                 </p>
                             </div>
                         ) : (
                             <div className="divide-y divide-(--border) max-h-[450px] overflow-y-auto scrollbar-hide">
-
                                 {obligations.map(
                                     (item) => {
                                         const due =
                                             Number(
                                                 item.amountDue ||
-                                                0
+                                                    0
                                             );
 
                                         const paid =
                                             Number(
                                                 item.amountPaid ||
-                                                0
+                                                    0
                                             );
+
+                                        const isActive =
+                                            item
+                                                .obligation
+                                                ?.isActive ===
+                                            true;
+
+                                        const isInactive =
+                                            item
+                                                .obligation
+                                                ?.isActive ===
+                                            false;
 
                                         const remaining =
                                             Math.max(
                                                 due -
-                                                paid,
+                                                    paid,
                                                 0
                                             );
 
                                         const progress =
                                             due
                                                 ? Math.min(
-                                                    (paid /
-                                                        due) *
-                                                    100,
-                                                    100
-                                                )
+                                                      (paid /
+                                                          due) *
+                                                          100,
+                                                      100
+                                                  )
                                                 : 0;
 
                                         const status =
@@ -596,7 +718,6 @@ const MyChapter = () => {
                                                 className="p-5 sm:p-6"
                                             >
                                                 <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-
                                                     {/* OBLIGATION INFO */}
 
                                                     <div className="flex items-start gap-3.5 min-w-0">
@@ -655,7 +776,8 @@ const MyChapter = () => {
                                                     <div className="flex items-center justify-between lg:justify-end gap-4 shrink-0">
                                                         <div className="lg:text-right">
                                                             <p className="text-[11px] text-(--text-muted)">
-                                                                Amount due
+                                                                Amount
+                                                                due
                                                             </p>
 
                                                             <p className="text-sm font-semibold text-(--primary) mt-0.5">
@@ -685,15 +807,14 @@ const MyChapter = () => {
 
                                                 <div className="mt-5 pt-4 border-t border-(--border)">
                                                     <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-
                                                         <div className="flex-1 min-w-0">
                                                             <div className="flex items-center justify-between mb-2">
                                                                 <span className="text-xs text-(--secondary)">
                                                                     {paid >
-                                                                        0
+                                                                    0
                                                                         ? `${formatCurrency(
-                                                                            paid
-                                                                        )} paid`
+                                                                              paid
+                                                                          )} paid`
                                                                         : "No payment recorded"}
                                                                 </span>
 
@@ -717,15 +838,18 @@ const MyChapter = () => {
 
                                                         <div className="sm:w-32 shrink-0">
                                                             <p className="text-[11px] text-(--text-muted)">
-                                                                Outstanding
+                                                                {isInactive
+                                                                    ? "Historical balance"
+                                                                    : "Outstanding"}
                                                             </p>
 
                                                             <p
-                                                                className={`text-sm font-semibold mt-0.5 ${remaining >
-                                                                        0
+                                                                className={`text-sm font-semibold mt-0.5 ${
+                                                                    remaining >
+                                                                    0
                                                                         ? "text-(--primary)"
                                                                         : "text-(--success)"
-                                                                    }`}
+                                                                }`}
                                                             >
                                                                 {formatCurrency(
                                                                     remaining
@@ -733,8 +857,13 @@ const MyChapter = () => {
                                                             </p>
                                                         </div>
 
-                                                        {remaining >
-                                                            0 && (
+                                                        {/* PAY NOW
+                                                            ONLY FOR ACTIVE
+                                                            OBLIGATIONS */}
+
+                                                        {isActive &&
+                                                            remaining >
+                                                                0 && (
                                                                 <button
                                                                     type="button"
                                                                     onClick={() =>
@@ -743,23 +872,24 @@ const MyChapter = () => {
                                                                         )
                                                                     }
                                                                     className="
-                                                                    inline-flex
-                                                                    items-center
-                                                                    justify-center
-                                                                    gap-1.5
-                                                                    bg-(--primary)
-                                                                    text-white
-                                                                    px-4
-                                                                    py-2
-                                                                    rounded
-                                                                    text-xs
-                                                                    font-semibold
-                                                                    hover:bg-(--primary-dark)
-                                                                    transition
-                                                                    shrink-0
-                                                                "
+                                                                        inline-flex
+                                                                        items-center
+                                                                        justify-center
+                                                                        gap-1.5
+                                                                        bg-(--primary)
+                                                                        text-white
+                                                                        px-4
+                                                                        py-2
+                                                                        rounded
+                                                                        text-xs
+                                                                        font-semibold
+                                                                        hover:bg-(--primary-dark)
+                                                                        transition
+                                                                        shrink-0
+                                                                    "
                                                                 >
                                                                     Pay now
+
                                                                     <ArrowUpRight
                                                                         size={
                                                                             14
@@ -782,11 +912,9 @@ const MyChapter = () => {
                     ======================================== */}
 
                     <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_320px] gap-4">
-
                         {/* MEMBERS */}
 
                         <section className="bg-(--bg-white) border border-(--border) rounded overflow-hidden">
-
                             <div className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-(--border)">
                                 <div>
                                     <h2 className="font-semibold text-(--primary)">
@@ -794,16 +922,19 @@ const MyChapter = () => {
                                     </h2>
 
                                     <p className="text-sm text-(--secondary) mt-1">
-                                        Active members assigned to your chapter.
+                                        Active members
+                                        assigned to your
+                                        chapter.
                                     </p>
                                 </div>
 
                                 <div className="flex items-center gap-2 text-xs text-(--secondary)">
                                     <Users size={15} />
 
-                                    {memberCount} member
+                                    {memberCount}{" "}
+                                    member
                                     {memberCount !==
-                                        1
+                                    1
                                         ? "s"
                                         : ""}
                                 </div>
@@ -814,27 +945,31 @@ const MyChapter = () => {
                                     Loading members...
                                 </div>
                             ) : members.length ===
-                                0 ? (
+                              0 ? (
                                 <div className="p-10 text-center">
                                     <div className="w-12 h-12 mx-auto rounded-full bg-(--primary-light) text-(--primary) flex items-center justify-center">
-                                        <Users size={22} />
+                                        <Users
+                                            size={22}
+                                        />
                                     </div>
 
                                     <h3 className="font-semibold mt-4 text-(--primary)">
-                                        No members found
+                                        No members
+                                        found
                                     </h3>
 
                                     <p className="text-sm text-(--secondary) mt-1">
-                                        No active members are currently assigned to this chapter.
+                                        No active
+                                        members are
+                                        currently
+                                        assigned to
+                                        this chapter.
                                     </p>
                                 </div>
                             ) : (
                                 <div className="divide-y divide-(--border) max-h-125 overflow-y-auto scrollbar-hide">
                                     {members
-                                        .slice(
-                                            0,
-                                            5
-                                        )
+                                        .slice(0, 5)
                                         .map(
                                             (
                                                 member
@@ -846,7 +981,6 @@ const MyChapter = () => {
                                                     className="p-5 hover:bg-(--bg-light)/50 transition"
                                                 >
                                                     <div className="flex items-center justify-between gap-4">
-
                                                         <div className="flex items-center gap-3.5 min-w-0">
                                                             <div className="w-10 h-10 shrink-0 rounded-lg bg-(--primary-light) text-(--primary) flex items-center justify-center">
                                                                 <UserRound
@@ -885,7 +1019,8 @@ const MyChapter = () => {
                                                             </p>
 
                                                             <p className="text-xs text-(--text-muted) mt-1">
-                                                                Class of{" "}
+                                                                Class
+                                                                of{" "}
                                                                 {member.graduationYear ||
                                                                     "—"}
                                                             </p>
@@ -899,26 +1034,27 @@ const MyChapter = () => {
 
                             {members.length >
                                 5 && (
-                                    <div className="border-t border-(--border) p-4 text-center">
-                                        <button
-                                            type="button"
-                                            className="inline-flex items-center gap-1.5 text-xs font-semibold text-(--primary) hover:text-(--secondary) transition"
-                                        >
-                                            View all members
-                                            <ArrowUpRight
-                                                size={
-                                                    14
-                                                }
-                                            />
-                                        </button>
-                                    </div>
-                                )}
+                                <div className="border-t border-(--border) p-4 text-center">
+                                    <button
+                                        type="button"
+                                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-(--primary) hover:text-(--secondary) transition"
+                                    >
+                                        View all
+                                        members
+
+                                        <ArrowUpRight
+                                            size={
+                                                14
+                                            }
+                                        />
+                                    </button>
+                                </div>
+                            )}
                         </section>
 
                         {/* PAYMENT */}
 
                         <section className="bg-(--bg-white) border border-(--border) rounded overflow-hidden">
-
                             <div className="p-5 border-b border-(--border)">
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 rounded-lg bg-(--secondary-light) text-(--secondary) flex items-center justify-center">
@@ -927,11 +1063,13 @@ const MyChapter = () => {
 
                                     <div>
                                         <h2 className="font-semibold text-(--primary)">
-                                            Chapter Payment
+                                            Chapter
+                                            Payment
                                         </h2>
 
                                         <p className="text-xs text-(--secondary) mt-1">
-                                            Official contribution
+                                            Official
+                                            contribution
                                         </p>
                                     </div>
                                 </div>
@@ -946,8 +1084,8 @@ const MyChapter = () => {
                                     {loading
                                         ? "—"
                                         : formatCurrency(
-                                            outstanding
-                                        )}
+                                              outstanding
+                                          )}
                                 </h3>
 
                                 <div className="mt-5 space-y-3">
@@ -960,8 +1098,8 @@ const MyChapter = () => {
                                             {loading
                                                 ? "—"
                                                 : formatCurrency(
-                                                    amountPaid
-                                                )}
+                                                      amountPaid
+                                                  )}
                                         </span>
                                     </div>
 
@@ -974,14 +1112,18 @@ const MyChapter = () => {
                                             {loading
                                                 ? "—"
                                                 : formatCurrency(
-                                                    totalDue
-                                                )}
+                                                      totalDue
+                                                  )}
                                         </span>
                                     </div>
                                 </div>
 
                                 <p className="text-xs text-(--text-muted) leading-relaxed mt-5">
-                                    Collect contributions from your chapter members and make the official payment through the portal.
+                                    Collect contributions
+                                    from your chapter
+                                    members and make
+                                    the official payment
+                                    through the portal.
                                 </p>
 
                                 <button
@@ -989,22 +1131,31 @@ const MyChapter = () => {
                                     disabled={
                                         loading ||
                                         outstanding <=
-                                        0
+                                            0
                                     }
                                     onClick={() => {
+                                        // Only select an
+                                        // ACTIVE obligation
+                                        // with an outstanding
+                                        // balance.
+
                                         const outstandingObligation =
                                             obligations.find(
                                                 (
                                                     item
                                                 ) =>
+                                                    item
+                                                        .obligation
+                                                        ?.isActive ===
+                                                        true &&
                                                     Number(
                                                         item.amountDue ||
-                                                        0
+                                                            0
                                                     ) >
-                                                    Number(
-                                                        item.amountPaid ||
-                                                        0
-                                                    )
+                                                        Number(
+                                                            item.amountPaid ||
+                                                                0
+                                                        )
                                             );
 
                                         if (
@@ -1029,7 +1180,9 @@ const MyChapter = () => {
                                         transition-all
                                     "
                                 >
-                                    Make Chapter Payment
+                                    Make Chapter
+                                    Payment
+
                                     <ArrowUpRight
                                         size={14}
                                     />
@@ -1043,7 +1196,6 @@ const MyChapter = () => {
                     ======================================== */}
 
                     <section className="bg-(--bg-white) border border-(--border) rounded max-h-125 scroll-none">
-
                         <div className="p-5 border-b border-(--border)">
                             <div className="flex items-center gap-2">
                                 <CircleDollarSign
@@ -1057,66 +1209,79 @@ const MyChapter = () => {
                             </div>
 
                             <p className="text-sm text-(--secondary) mt-1">
-                                Recent financial activity from your chapter.
+                                Recent financial
+                                activity from your
+                                chapter.
                             </p>
                         </div>
 
                         {recentActivity.length >
-                            0 ? (
+                        0 ? (
                             <div className="divide-y max-h-[400px] overflow-y-auto scrollbar-hide divide-(--border)">
-                                {recentActivity.map((activity, index) => (
-                                    <div
-                                        key={activity._id || index}
-                                        className="p-5 flex items-center justify-between gap-4"
-                                    >
-                                        <div className="flex items-center gap-3 min-w-0">
-                                            <div className="w-9 h-9 rounded-full bg-green-50 flex items-center justify-center shrink-0">
-                                                <CheckCircle2
-                                                    size={18}
-                                                    className="text-green-600"
-                                                />
+                                {recentActivity.map(
+                                    (
+                                        activity,
+                                        index
+                                    ) => (
+                                        <div
+                                            key={
+                                                activity._id ||
+                                                index
+                                            }
+                                            className="p-5 flex items-center justify-between gap-4"
+                                        >
+                                            <div className="flex items-center gap-3 min-w-0">
+                                                <div className="w-9 h-9 rounded-full bg-green-50 flex items-center justify-center shrink-0">
+                                                    <CheckCircle2
+                                                        size={
+                                                            18
+                                                        }
+                                                        className="text-green-600"
+                                                    />
+                                                </div>
+
+                                                <div className="min-w-0">
+                                                    <p className="text-sm font-medium text-(--primary)">
+                                                        {activity
+                                                            .obligationAssignment
+                                                            ?.obligation
+                                                            ?.name ||
+                                                            "Chapter Payment"}
+                                                    </p>
+
+                                                    <p className="text-[11px] text-(--text-muted) mt-1">
+                                                        {activity.paidAt
+                                                            ? new Date(
+                                                                  activity.paidAt
+                                                              ).toLocaleDateString(
+                                                                  "en-NG",
+                                                                  {
+                                                                      day: "numeric",
+                                                                      month: "short",
+                                                                      year: "numeric",
+                                                                  }
+                                                              )
+                                                            : "Payment date unavailable"}
+                                                    </p>
+                                                </div>
                                             </div>
 
-                                            <div className="min-w-0">
-                                                <p className="text-sm font-medium text-(--primary)">
-                                                    {activity
-                                                        .obligationAssignment
-                                                        ?.obligation
-                                                        ?.name ||
-                                                        "Chapter Payment"}
+                                            <div className="text-right shrink-0">
+                                                <p className="text-sm font-semibold text-green-600">
+                                                    +₦
+                                                    {Number(
+                                                        activity.amount ||
+                                                            0
+                                                    ).toLocaleString()}
                                                 </p>
 
                                                 <p className="text-[11px] text-(--text-muted) mt-1">
-                                                    {activity.paidAt
-                                                        ? new Date(
-                                                            activity.paidAt
-                                                        ).toLocaleDateString(
-                                                            "en-NG",
-                                                            {
-                                                                day: "numeric",
-                                                                month: "short",
-                                                                year: "numeric",
-                                                            }
-                                                        )
-                                                        : "Payment date unavailable"}
+                                                    Successful
                                                 </p>
                                             </div>
                                         </div>
-
-                                        <div className="text-right shrink-0">
-                                            <p className="text-sm font-semibold text-green-600">
-                                                +₦
-                                                {Number(
-                                                    activity.amount || 0
-                                                ).toLocaleString()}
-                                            </p>
-
-                                            <p className="text-[11px] text-(--text-muted) mt-1">
-                                                Successful
-                                            </p>
-                                        </div>
-                                    </div>
-                                ))}
+                                    )
+                                )}
                             </div>
                         ) : (
                             <div className="p-8 text-center">
@@ -1126,11 +1291,14 @@ const MyChapter = () => {
                                 />
 
                                 <p className="mt-3 text-sm font-medium text-(--primary)">
-                                    No recent activity
+                                    No recent
+                                    activity
                                 </p>
 
                                 <p className="mt-1 text-xs text-(--secondary)">
-                                    Transactions and updates will appear here.
+                                    Transactions and
+                                    updates will appear
+                                    here.
                                 </p>
                             </div>
                         )}
@@ -1145,7 +1313,6 @@ const MyChapter = () => {
             {paymentModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
                     <div className="w-full max-w-md bg-white rounded shadow-xl overflow-hidden">
-
                         {/* HEADER */}
 
                         <div className="flex items-center justify-between px-6 py-5 border-b border-slate-200">
@@ -1186,12 +1353,12 @@ const MyChapter = () => {
                         {/* BODY */}
 
                         <div className="p-6 space-y-5">
-
                             {/* OUTSTANDING */}
 
                             <div className="rounded-(--radius-sm) bg-(--primary-light) p-4">
                                 <p className="text-xs text-slate-500">
-                                    Outstanding Balance
+                                    Outstanding
+                                    Balance
                                 </p>
 
                                 <p className="text-2xl font-bold text-(--primary-dark) mt-1">
@@ -1225,8 +1392,7 @@ const MyChapter = () => {
                                             e
                                         ) => {
                                             setPaymentAmount(
-                                                e
-                                                    .target
+                                                e.target
                                                     .value
                                             );
 
@@ -1243,7 +1409,10 @@ const MyChapter = () => {
                                 </div>
 
                                 <p className="text-xs text-slate-500 mt-2">
-                                    You can pay any amount up to your outstanding balance.
+                                    You can pay any
+                                    amount up to your
+                                    outstanding
+                                    balance.
                                 </p>
                             </div>
 
@@ -1276,7 +1445,8 @@ const MyChapter = () => {
                                             className="animate-spin"
                                         />
 
-                                        Preparing payment...
+                                        Preparing
+                                        payment...
                                     </>
                                 ) : (
                                     <>
@@ -1286,7 +1456,8 @@ const MyChapter = () => {
                                             }
                                         />
 
-                                        Continue to Payment
+                                        Continue to
+                                        Payment
                                     </>
                                 )}
                             </button>
