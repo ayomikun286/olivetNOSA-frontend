@@ -356,7 +356,7 @@ const Main = () => {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 p-5">
                 <div>
                   <p className="text-xs text-(--text-muted)">
-                    Total Obligations
+                    Current Obligations
                   </p>
 
                   <p className="text-lg font-semibold text-(--primary) mt-1">

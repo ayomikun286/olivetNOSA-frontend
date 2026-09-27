@@ -437,7 +437,7 @@ const Members = () => {
         </div>
 
         {/* OVERVIEW CARDS */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
 
           <AdminStatCard
             icon={Users}
@@ -469,7 +469,7 @@ const Members = () => {
             description="Awaiting approval"
           />
 
-          <AdminStatCard
+          {/* <AdminStatCard
             icon={UserCheck}
             iconBg="bg-(--danger-light)"
             iconClass="text-(--danger)"
@@ -477,7 +477,7 @@ const Members = () => {
             label="Suspended"
             value={members.suspended || 0}
             description="Currently suspended"
-          />
+          /> */}
 
         </div>
 

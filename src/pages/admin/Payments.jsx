@@ -7,18 +7,16 @@ import PaymentDetailsDrawer from "../../components/admin/PaymentDetailsDrawer.js
 import Alert from "../../components/common/Alert.jsx";
 
 import {
-    CreditCard,
     CheckCircle2,
     Clock3,
     XCircle,
-    Wallet,
     Eye,
     Search,
     ChevronLeft,
     ChevronRight,
     AlertCircle,
     ArrowUpRight,
-    Banknote
+    Banknote,
 } from "lucide-react";
 
 import {
@@ -29,6 +27,9 @@ import {
 const AdminPayments = () => {
     const [paymentsData, setPaymentsData] = useState(null);
     const [summary, setSummary] = useState(null);
+    const [collectionBreakdown, setCollectionBreakdown] =
+        useState(null);
+
     const [pagination, setPagination] = useState(null);
 
     const [loading, setLoading] = useState(true);
@@ -40,14 +41,18 @@ const AdminPayments = () => {
     const [search, setSearch] = useState("");
     const [statusFilter, setStatusFilter] = useState("");
     const [gatewayFilter, setGatewayFilter] = useState("");
-    const [paymentMethodFilter, setPaymentMethodFilter] = useState("");
+    const [paymentMethodFilter, setPaymentMethodFilter] =
+        useState("");
+
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
 
     const [currentPage, setCurrentPage] = useState(1);
 
     const [selectedPayment, setSelectedPayment] = useState(null);
-    const [paymentDrawerOpen, setPaymentDrawerOpen] = useState(false);
+    const [paymentDrawerOpen, setPaymentDrawerOpen] =
+        useState(false);
+
     const [paymentDetailsLoading, setPaymentDetailsLoading] =
         useState(false);
 
@@ -74,14 +79,27 @@ const AdminPayments = () => {
             });
 
             setPaymentsData(result?.payments || []);
+
             setSummary(result?.summary || null);
+
+            setCollectionBreakdown(
+                result?.collectionBreakdown || null
+            );
+
             setPagination(result?.pagination || null);
-            setCurrentPage(result?.pagination?.page || page);
+
+            setCurrentPage(
+                result?.pagination?.page || page
+            );
         } catch (error) {
-            console.error("Admin payments error:", error);
+            console.error(
+                "Admin payments error:",
+                error
+            );
 
             setError(
-                error.message || "Failed to load admin payments."
+                error.message ||
+                    "Failed to load admin payments."
             );
         } finally {
             setPaymentsLoading(false);
@@ -154,7 +172,10 @@ const AdminPayments = () => {
     // FORMATTERS
     // ========================================
 
-    const formatCurrency = (amount, currency = "NGN") => {
+    const formatCurrency = (
+        amount,
+        currency = "NGN"
+    ) => {
         return new Intl.NumberFormat("en-NG", {
             style: "currency",
             currency,
@@ -182,7 +203,7 @@ const AdminPayments = () => {
         if (!method) return "—";
 
         return method
-            .replace(/[_-]/g, " ")
+            .replace(/[\_-]/g, " ")
             .replace(/\b\w/g, (letter) =>
                 letter.toUpperCase()
             );
@@ -192,7 +213,7 @@ const AdminPayments = () => {
         if (!gateway) return "—";
 
         return gateway
-            .replace(/[_-]/g, " ")
+            .replace(/[\_-]/g, " ")
             .replace(/\b\w/g, (letter) =>
                 letter.toUpperCase()
             );
@@ -224,6 +245,67 @@ const AdminPayments = () => {
     };
 
     // ========================================
+    // COLLECTION DATA
+    // ========================================
+
+    const collectionItems = [
+        {
+            key: "individual",
+            label: "Individual",
+            description:
+                "Individual member payments",
+            amount: Number(
+                collectionBreakdown?.individual
+                    ?.amount || 0
+            ),
+            transactions: Number(
+                collectionBreakdown?.individual
+                    ?.transactions || 0
+            ),
+        },
+
+        {
+            key: "yearSet",
+            label: "Year Set",
+            description:
+                "Year Set payments",
+            amount: Number(
+                collectionBreakdown?.yearSet
+                    ?.amount || 0
+            ),
+            transactions: Number(
+                collectionBreakdown?.yearSet
+                    ?.transactions || 0
+            ),
+        },
+
+        {
+            key: "chapter",
+            label: "Chapter",
+            description:
+                "Chapter payments",
+            amount: Number(
+                collectionBreakdown?.chapter
+                    ?.amount || 0
+            ),
+            transactions: Number(
+                collectionBreakdown?.chapter
+                    ?.transactions || 0
+            ),
+        },
+    ];
+
+    const totalCollection = Number(
+        collectionBreakdown?.total?.amount || 0
+    );
+
+    const totalCollectionTransactions =
+        Number(
+            collectionBreakdown?.total
+                ?.transactions || 0
+        );
+
+    // ========================================
     // TABLE COLUMNS
     // ========================================
 
@@ -231,6 +313,7 @@ const AdminPayments = () => {
         {
             key: "member",
             label: "Member",
+
             render: (payment) => {
                 const user = payment.user;
 
@@ -247,7 +330,8 @@ const AdminPayments = () => {
                         </p>
 
                         <p className="text-xs text-(--text-muted) mt-0.5">
-                            {user?.email || "No email"}
+                            {user?.email ||
+                                "No email"}
                         </p>
                     </div>
                 );
@@ -257,9 +341,11 @@ const AdminPayments = () => {
         {
             key: "alumniId",
             label: "Alumni ID",
+
             render: (payment) => (
                 <span className="font-medium text-(--primary)">
-                    {payment.user?.alumniId || "—"}
+                    {payment.user?.alumniId ||
+                        "—"}
                 </span>
             ),
         },
@@ -267,16 +353,21 @@ const AdminPayments = () => {
         {
             key: "obligation",
             label: "Obligation",
+
             render: (payment) => (
                 <div>
                     <p className="font-medium text-(--primary)">
-                        {payment.obligationAssignment
-                            ?.obligation?.name || "—"}
+                        {payment
+                            .obligationAssignment
+                            ?.obligation?.name ||
+                            "—"}
                     </p>
 
                     <p className="text-xs text-(--text-muted) mt-0.5 capitalize">
-                        {payment.obligationAssignment
-                            ?.obligation?.category || "—"}
+                        {payment
+                            .obligationAssignment
+                            ?.obligation
+                            ?.category || "—"}
                     </p>
                 </div>
             ),
@@ -285,6 +376,7 @@ const AdminPayments = () => {
         {
             key: "amount",
             label: "Amount",
+
             render: (payment) => (
                 <span className="font-semibold text-(--primary)">
                     {formatCurrency(
@@ -298,6 +390,7 @@ const AdminPayments = () => {
         {
             key: "method",
             label: "Method",
+
             render: (payment) => (
                 <div>
                     <p className="text-sm text-(--primary)">
@@ -307,7 +400,9 @@ const AdminPayments = () => {
                     </p>
 
                     <p className="text-xs text-(--text-muted) mt-0.5">
-                        {formatGateway(payment.gateway)}
+                        {formatGateway(
+                            payment.gateway
+                        )}
                     </p>
                 </div>
             ),
@@ -316,13 +411,15 @@ const AdminPayments = () => {
         {
             key: "status",
             label: "Status",
+
             render: (payment) => (
                 <span
                     className={`inline-flex items-center px-2.5 py-1 rounded text-xs font-medium capitalize ${getStatusStyle(
                         payment.status
                     )}`}
                 >
-                    {payment.status || "Unknown"}
+                    {payment.status ||
+                        "Unknown"}
                 </span>
             ),
         },
@@ -330,9 +427,12 @@ const AdminPayments = () => {
         {
             key: "paidAt",
             label: "Paid Date",
+
             render: (payment) => (
                 <span className="text-sm text-(--secondary)">
-                    {formatDate(payment.paidAt)}
+                    {formatDate(
+                        payment.paidAt
+                    )}
                 </span>
             ),
         },
@@ -340,11 +440,14 @@ const AdminPayments = () => {
         {
             key: "actions",
             label: "Action",
+
             render: (payment) => (
                 <button
                     type="button"
                     onClick={() =>
-                        handleViewPayment(payment)
+                        handleViewPayment(
+                            payment
+                        )
                     }
                     className="inline-flex items-center gap-1.5 text-xs font-semibold text-(--primary) hover:text-(--primary-dark) transition-colors"
                 >
@@ -364,10 +467,14 @@ const AdminPayments = () => {
 
     const canGoNext =
         pagination &&
-        pagination.page < pagination.totalPages;
+        pagination.page <
+            pagination.totalPages;
 
     const handlePrevious = () => {
-        if (!canGoPrevious || paymentsLoading) {
+        if (
+            !canGoPrevious ||
+            paymentsLoading
+        ) {
             return;
         }
 
@@ -375,7 +482,10 @@ const AdminPayments = () => {
     };
 
     const handleNext = () => {
-        if (!canGoNext || paymentsLoading) {
+        if (
+            !canGoNext ||
+            paymentsLoading
+        ) {
             return;
         }
 
@@ -422,11 +532,15 @@ const AdminPayments = () => {
 
                     <button
                         type="button"
-                        onClick={() => loadPayments(1)}
+                        onClick={() =>
+                            loadPayments(1)
+                        }
                         className="inline-flex items-center gap-1.5 text-xs font-semibold text-(--primary) mt-4 hover:text-(--primary-dark)"
                     >
                         Try again
-                        <ArrowUpRight size={14} />
+                        <ArrowUpRight
+                            size={14}
+                        />
                     </button>
                 </div>
             </div>
@@ -435,22 +549,26 @@ const AdminPayments = () => {
 
     return (
         <div className="p-4">
-
-            {pageLoading && <ContentLoading />}
+            {pageLoading && (
+                <ContentLoading />
+            )}
 
             <div className="space-y-5">
-
                 {/* ALERT */}
+
                 {alert && (
                     <Alert
                         type={alert.type}
                         title={alert.title}
                         message={alert.message}
-                        onClose={() => setAlert(null)}
+                        onClose={() =>
+                            setAlert(null)
+                        }
                     />
                 )}
 
                 {/* HEADER */}
+
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                     <div>
                         <h1 className="text-xl font-semibold text-(--primary)">
@@ -458,77 +576,262 @@ const AdminPayments = () => {
                         </h1>
 
                         <p className="text-sm text-(--secondary) mt-1">
-                            Monitor and manage OlivetNOSA payment transactions.
+                            Monitor and manage
+                            OlivetNOSA payment
+                            transactions.
                         </p>
                     </div>
                 </div>
 
                 {/* OVERVIEW CARDS */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-3">
 
-                   <AdminStatCard
-    icon={Banknote}
-    iconBg="bg-(--primary-light)"
-    iconClass="text-(--primary)"
-    badge="Received"
-    label="Total Received"
-    value={`₦${Number(summary?.totalReceived ?? 0).toLocaleString("en-NG")}`}
-    description="Successfully received"
-/>
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
+                    <AdminStatCard
+                        icon={Banknote}
+                        iconBg="bg-(--primary-light)"
+                        iconClass="text-(--primary)"
+                        badge="Received"
+                        label="Total Received"
+                        value={`₦${Number(
+                            summary?.totalReceived ??
+                                0
+                        ).toLocaleString(
+                            "en-NG"
+                        )}`}
+                        description="Successfully received"
+                    />
 
-<AdminStatCard
-    icon={CheckCircle2}
-    iconBg="bg-(--success-light)"
-    iconClass="text-(--success)"
-    badge="Successful"
-    label="Successful"
-    value={summary?.successful ?? 0}
-    description="Completed payments"
-/>
+                    <AdminStatCard
+                        icon={CheckCircle2}
+                        iconBg="bg-(--success-light)"
+                        iconClass="text-(--success)"
+                        badge="Successful"
+                        label="Successful"
+                        value={
+                            summary?.successful ??
+                            0
+                        }
+                        description="Completed payments"
+                    />
 
-<AdminStatCard
-    icon={Clock3}
-    iconBg="bg-(--warning-light)"
-    iconClass="text-(--warning)"
-    badge="Pending"
-    label="Pending"
-    value={summary?.pending ?? 0}
-    description="Awaiting completion"
-/>
+                    <AdminStatCard
+                        icon={Clock3}
+                        iconBg="bg-(--warning-light)"
+                        iconClass="text-(--warning)"
+                        badge="Pending"
+                        label="Pending"
+                        value={
+                            summary?.pending ??
+                            0
+                        }
+                        description="Awaiting completion"
+                    />
 
-<AdminStatCard
-    icon={XCircle}
-    iconBg="bg-(--danger-light)"
-    iconClass="text-(--danger)"
-    badge="Failed"
-    label="Failed"
-    value={summary?.failed ?? 0}
-    description="Unsuccessful payments"
-/>
-
+                    <AdminStatCard
+                        icon={XCircle}
+                        iconBg="bg-(--danger-light)"
+                        iconClass="text-(--danger)"
+                        badge="Failed"
+                        label="Failed"
+                        value={
+                            summary?.failed ??
+                            0
+                        }
+                        description="Unsuccessful payments"
+                    />
                 </div>
 
-                {/* PAYMENTS TABLE */}
-                <div className="bg-(--bg-white) border border-(--border) rounded overflow-hidden">
+                {/* =====================================================
+                    COLLECTION OVERVIEW
+                ====================================================== */}
 
-                    {/* TABLE HEADER */}
+                <section className="bg-(--bg-white) border border-(--border) rounded overflow-hidden">
+                    {/* SECTION HEADER */}
+
                     <div className="px-5 py-4 border-b border-(--border)">
+                        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+                            <div>
+                                <h2 className="text-sm font-semibold text-(--primary)">
+                                    Collection Overview
+                                </h2>
 
+                                <p className="text-xs text-(--secondary) mt-1">
+                                    Successfully
+                                    received
+                                    payments grouped
+                                    by obligation
+                                    category.
+                                </p>
+                            </div>
+
+                            <div className="inline-flex items-center gap-2 self-start lg:self-auto px-3 py-2 rounded bg-(--success-light)">
+                                <CheckCircle2
+                                    size={14}
+                                    className="text-(--success)"
+                                />
+
+                                <span className="text-xs font-medium text-(--success)">
+                                    Successful
+                                    collections
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* COLLECTION CONTENT */}
+
+                    <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr]">
+                        {/* TOTAL */}
+
+                        <div className="p-5 border-b lg:border-b-0 lg:border-r border-(--border)">
+                            <p className="text-xs font-medium text-(--secondary)">
+                                Total Collected
+                            </p>
+
+                            <p className="text-2xl font-semibold text-(--primary) mt-2">
+                                {formatCurrency(
+                                    totalCollection
+                                )}
+                            </p>
+
+                            <p className="text-xs text-(--text-muted) mt-1">
+                                {totalCollectionTransactions.toLocaleString(
+                                    "en-NG"
+                                )}{" "}
+                                successful
+                                transaction
+                                {totalCollectionTransactions ===
+                                1
+                                    ? ""
+                                    : "s"}
+                            </p>
+
+                            <div className="mt-5 rounded bg-(--bg-soft) p-3">
+                                <p className="text-[11px] font-medium uppercase tracking-wide text-(--text-muted)">
+                                    Collection period
+                                </p>
+
+                                <p className="text-xs font-medium text-(--primary) mt-1">
+                                    {startDate ||
+                                    endDate
+                                        ? `${startDate || "Start"} → ${
+                                              endDate ||
+                                              "Present"
+                                          }`
+                                        : "All available transactions"}
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* CATEGORY BREAKDOWN */}
+
+                        <div className="p-5">
+                            <div className="space-y-5">
+                                {collectionItems.map(
+                                    (item) => {
+                                        const percentage =
+                                            totalCollection >
+                                            0
+                                                ? (item.amount /
+                                                      totalCollection) *
+                                                  100
+                                                : 0;
+
+                                        return (
+                                            <div
+                                                key={
+                                                    item.key
+                                                }
+                                            >
+                                                <div className="flex items-start justify-between gap-4">
+                                                    <div>
+                                                        <p className="text-sm font-semibold text-(--primary)">
+                                                            {
+                                                                item.label
+                                                            }
+                                                        </p>
+
+                                                        <p className="text-xs text-(--secondary) mt-0.5">
+                                                            {
+                                                                item.description
+                                                            }
+                                                        </p>
+                                                    </div>
+
+                                                    <div className="text-right">
+                                                        <p className="text-sm font-semibold text-(--primary)">
+                                                            {formatCurrency(
+                                                                item.amount
+                                                            )}
+                                                        </p>
+
+                                                        <p className="text-xs text-(--text-muted) mt-0.5">
+                                                            {item.transactions.toLocaleString(
+                                                                "en-NG"
+                                                            )}{" "}
+                                                            transaction
+                                                            {item.transactions ===
+                                                            1
+                                                                ? ""
+                                                                : "s"}
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+                                                <div className="mt-2 h-2 overflow-hidden rounded-full bg-(--bg-soft)">
+                                                    <div
+                                                        className="h-full rounded-full bg-(--primary) transition-all duration-500"
+                                                        style={{
+                                                            width: `${Math.min(
+                                                                percentage,
+                                                                100
+                                                            )}%`,
+                                                        }}
+                                                    />
+                                                </div>
+
+                                                <div className="mt-1 flex justify-end">
+                                                    <span className="text-[11px] font-medium text-(--text-muted)">
+                                                        {percentage.toFixed(
+                                                            1
+                                                        )}
+                                                        %
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        );
+                                    }
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* =====================================================
+                    PAYMENTS TABLE
+                ====================================================== */}
+
+                <div className="bg-(--bg-white) border border-(--border) rounded overflow-hidden">
+                    {/* TABLE HEADER */}
+
+                    <div className="px-5 py-4 border-b border-(--border)">
                         <div className="flex flex-col gap-4">
-
                             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-
                                 <div>
                                     <h2 className="text-sm font-semibold text-(--primary)">
-                                        Payment Transactions
+                                        Payment
+                                        Transactions
                                     </h2>
 
                                     <p className="text-xs text-(--secondary) mt-1">
-                                        View and monitor member payment transactions.
+                                        View and monitor
+                                        member payment
+                                        transactions.
                                     </p>
                                 </div>
 
                                 {/* SEARCH */}
+
                                 <div className="relative w-full lg:w-72">
                                     <Search
                                         size={15}
@@ -537,27 +840,38 @@ const AdminPayments = () => {
 
                                     <input
                                         type="text"
-                                        value={search}
-                                        onChange={(event) =>
+                                        value={
+                                            search
+                                        }
+                                        onChange={(
+                                            event
+                                        ) =>
                                             setSearch(
-                                                event.target.value
+                                                event
+                                                    .target
+                                                    .value
                                             )
                                         }
                                         placeholder="Search payments..."
                                         className="w-full h-9 pl-9 pr-3 rounded border border-(--border) bg-(--bg-white) text-sm text-(--primary) outline-none focus:border-(--primary)"
                                     />
                                 </div>
-
                             </div>
 
                             {/* FILTERS */}
-                            <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2">
 
+                            <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2">
                                 <select
-                                    value={statusFilter}
-                                    onChange={(event) =>
+                                    value={
+                                        statusFilter
+                                    }
+                                    onChange={(
+                                        event
+                                    ) =>
                                         setStatusFilter(
-                                            event.target.value
+                                            event
+                                                .target
+                                                .value
                                         )
                                     }
                                     className="h-9 px-3 rounded border border-(--border) bg-(--bg-white) text-xs text-(--primary) outline-none focus:border-(--primary)"
@@ -584,10 +898,16 @@ const AdminPayments = () => {
                                 </select>
 
                                 <select
-                                    value={gatewayFilter}
-                                    onChange={(event) =>
+                                    value={
+                                        gatewayFilter
+                                    }
+                                    onChange={(
+                                        event
+                                    ) =>
                                         setGatewayFilter(
-                                            event.target.value
+                                            event
+                                                .target
+                                                .value
                                         )
                                     }
                                     className="h-9 px-3 rounded border border-(--border) bg-(--bg-white) text-xs text-(--primary) outline-none focus:border-(--primary)"
@@ -606,10 +926,16 @@ const AdminPayments = () => {
                                 </select>
 
                                 <select
-                                    value={paymentMethodFilter}
-                                    onChange={(event) =>
+                                    value={
+                                        paymentMethodFilter
+                                    }
+                                    onChange={(
+                                        event
+                                    ) =>
                                         setPaymentMethodFilter(
-                                            event.target.value
+                                            event
+                                                .target
+                                                .value
                                         )
                                     }
                                     className="h-9 px-3 rounded border border-(--border) bg-(--bg-white) text-xs text-(--primary) outline-none focus:border-(--primary)"
@@ -641,10 +967,16 @@ const AdminPayments = () => {
 
                                 <input
                                     type="date"
-                                    value={startDate}
-                                    onChange={(event) =>
+                                    value={
+                                        startDate
+                                    }
+                                    onChange={(
+                                        event
+                                    ) =>
                                         setStartDate(
-                                            event.target.value
+                                            event
+                                                .target
+                                                .value
                                         )
                                     }
                                     className="h-9 px-3 rounded border border-(--border) bg-(--bg-white) text-xs text-(--primary) outline-none focus:border-(--primary)"
@@ -653,9 +985,13 @@ const AdminPayments = () => {
                                 <input
                                     type="date"
                                     value={endDate}
-                                    onChange={(event) =>
+                                    onChange={(
+                                        event
+                                    ) =>
                                         setEndDate(
-                                            event.target.value
+                                            event
+                                                .target
+                                                .value
                                         )
                                     }
                                     className="h-9 px-3 rounded border border-(--border) bg-(--bg-white) text-xs text-(--primary) outline-none focus:border-(--primary)"
@@ -664,45 +1000,62 @@ const AdminPayments = () => {
                                 {hasFilters && (
                                     <button
                                         type="button"
-                                        onClick={clearFilters}
+                                        onClick={
+                                            clearFilters
+                                        }
                                         className="h-9 px-3 rounded border border-(--border) bg-(--bg-soft) text-xs font-medium text-(--secondary) hover:text-(--primary) transition-colors"
                                     >
-                                        Clear Filters
+                                        Clear
+                                        Filters
                                     </button>
                                 )}
-
                             </div>
-
                         </div>
                     </div>
 
                     {/* TABLE */}
+
                     <AdminTable
-                        columns={paymentColumns}
-                        data={paymentsData || []}
-                        loading={paymentsLoading}
+                        columns={
+                            paymentColumns
+                        }
+                        data={
+                            paymentsData || []
+                        }
+                        loading={
+                            paymentsLoading
+                        }
                         rowKey="_id"
                         emptyMessage="No payment transactions found."
                     />
 
                     {/* PAGINATION */}
-                    {pagination &&
-                        pagination.total > 0 && (
-                            <div className="px-5 py-3 border-t border-(--border) flex items-center justify-between">
 
+                    {pagination &&
+                        pagination.total >
+                            0 && (
+                            <div className="px-5 py-3 border-t border-(--border) flex items-center justify-between">
                                 <p className="text-xs text-(--primary)">
-                                    Page {pagination.page} of{" "}
-                                    {pagination.totalPages}
+                                    Page{" "}
+                                    {
+                                        pagination.page
+                                    }{" "}
+                                    of{" "}
+                                    {
+                                        pagination.totalPages
+                                    }
 
                                     <span className="mx-1">
                                         •
                                     </span>
 
-                                    {pagination.total} payments
+                                    {
+                                        pagination.total
+                                    }{" "}
+                                    payments
                                 </p>
 
                                 <div className="flex items-center gap-2">
-
                                     <button
                                         type="button"
                                         disabled={
@@ -715,7 +1068,9 @@ const AdminPayments = () => {
                                         className="w-8 h-8 inline-flex items-center justify-center rounded border border-(--border) text-(--secondary) hover:text-(--primary) hover:bg-(--bg-soft) disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                                     >
                                         <ChevronLeft
-                                            size={16}
+                                            size={
+                                                16
+                                            }
                                         />
                                     </button>
 
@@ -725,32 +1080,41 @@ const AdminPayments = () => {
                                             !canGoNext ||
                                             paymentsLoading
                                         }
-                                        onClick={handleNext}
+                                        onClick={
+                                            handleNext
+                                        }
                                         className="w-8 h-8 inline-flex items-center justify-center rounded border border-(--border) text-(--secondary) hover:text-(--primary) hover:bg-(--bg-soft) disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                                     >
                                         <ChevronRight
-                                            size={16}
+                                            size={
+                                                16
+                                            }
                                         />
                                     </button>
-
                                 </div>
                             </div>
                         )}
-
                 </div>
-
             </div>
 
             {/* PAYMENT DETAILS DRAWER */}
+
             <PaymentDetailsDrawer
-                payment={selectedPayment}
-                open={paymentDrawerOpen}
-                loading={paymentDetailsLoading}
+                payment={
+                    selectedPayment
+                }
+                open={
+                    paymentDrawerOpen
+                }
+                loading={
+                    paymentDetailsLoading
+                }
                 onClose={() =>
-                    setPaymentDrawerOpen(false)
+                    setPaymentDrawerOpen(
+                        false
+                    )
                 }
             />
-
         </div>
     );
 };

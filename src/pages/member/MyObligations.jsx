@@ -81,40 +81,40 @@ const Obligations = () => {
         return <ContentLoading />;
     }
 
-  // ========================================
-// CURRENT FINANCIAL TOTALS
-// ========================================
+    // ========================================
+    // CURRENT FINANCIAL TOTALS
+    // ========================================
 
-// Only ACTIVE obligations count toward
-// the current amount due.
-const totalDue = activeObligations.reduce(
-    (total, item) =>
-        total + Number(item.amountDue || 0),
-    0
-);
+    // Only ACTIVE obligations count toward
+    // the current amount due.
+    const totalDue = activeObligations.reduce(
+        (total, item) =>
+            total + Number(item.amountDue || 0),
+        0
+    );
 
-// All recorded payments are shown here,
-// including payments made against obligations
-// that later became inactive.
-const totalPaid = obligations.reduce(
-    (total, item) =>
-        total + Number(item.amountPaid || 0),
-    0
-);
+    // All recorded payments are shown here,
+    // including payments made against obligations
+    // that later became inactive.
+    const totalPaid = obligations.reduce(
+        (total, item) =>
+            total + Number(item.amountPaid || 0),
+        0
+    );
 
-// Only payments against ACTIVE obligations
-// reduce the current outstanding balance.
-const activePaid = activeObligations.reduce(
-    (total, item) =>
-        total + Number(item.amountPaid || 0),
-    0
-);
+    // Only payments against ACTIVE obligations
+    // reduce the current outstanding balance.
+    const activePaid = activeObligations.reduce(
+        (total, item) =>
+            total + Number(item.amountPaid || 0),
+        0
+    );
 
-// Current outstanding balance only.
-const outstanding = Math.max(
-    totalDue - activePaid,
-    0
-);
+    // Current outstanding balance only.
+    const outstanding = Math.max(
+        totalDue - activePaid,
+        0
+    );
 
     // ========================================
     // STATUS
@@ -297,7 +297,7 @@ const outstanding = Math.max(
             if (!response.ok || !data.success) {
                 throw new Error(
                     data.message ||
-                        "Failed to initialize payment."
+                    "Failed to initialize payment."
                 );
             }
 
@@ -312,7 +312,7 @@ const outstanding = Math.max(
 
             setPaymentError(
                 error.message ||
-                    "Unable to initialize payment."
+                "Unable to initialize payment."
             );
 
             setPaymentLoading(false);
@@ -351,7 +351,7 @@ const outstanding = Math.max(
                         </div>
 
                         <p className="text-sm text-(--secondary) mt-5">
-                            Total amount due
+                            Total obligation for the current year
                         </p>
 
                         <h2 className="text-2xl font-bold text-(--primary) mt-1">
@@ -387,9 +387,9 @@ const outstanding = Math.max(
                             {formatCurrency(totalPaid)}
                         </h2>
 
-                       <p className="text-xs text-(--text-muted) mt-2">
-    Total payments recorded
-</p>
+                        <p className="text-xs text-(--text-muted) mt-2">
+                            Total payments recorded
+                        </p>
                     </div>
 
                     {/* OUTSTANDING */}
@@ -431,8 +431,8 @@ const outstanding = Math.max(
                             </h2>
 
                             <p className="text-sm text-(--secondary) mt-1">
-    Your individual membership contributions and payment status.
-</p>
+                                Your individual membership contributions and payment status.
+                            </p>
                         </div>
 
                         <div className="flex items-center gap-2 text-xs text-(--secondary)">
@@ -486,9 +486,9 @@ const outstanding = Math.max(
 
                                 const progress = due
                                     ? Math.min(
-                                          (paid / due) * 100,
-                                          100
-                                      )
+                                        (paid / due) * 100,
+                                        100
+                                    )
                                     : 0;
 
                                 const status =
@@ -609,8 +609,8 @@ const outstanding = Math.max(
                                                         <span className="text-xs text-(--secondary)">
                                                             {paid > 0
                                                                 ? `${formatCurrency(
-                                                                      paid
-                                                                  )} paid`
+                                                                    paid
+                                                                )} paid`
                                                                 : "No payment recorded"}
                                                         </span>
 
@@ -646,13 +646,12 @@ const outstanding = Math.max(
                                                     </p>
 
                                                     <p
-                                                        className={`text-sm font-semibold mt-0.5 ${
-                                                            remaining > 0
+                                                        className={`text-sm font-semibold mt-0.5 ${remaining > 0
                                                                 ? isInactive
                                                                     ? "text-slate-500"
                                                                     : "text-(--primary)"
                                                                 : "text-(--success)"
-                                                        }`}
+                                                            }`}
                                                     >
                                                         {formatCurrency(
                                                             remaining

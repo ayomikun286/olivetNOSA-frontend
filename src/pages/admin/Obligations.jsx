@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+
 import {
   WalletCards,
   CircleDollarSign,
@@ -33,30 +34,19 @@ const Obligations = () => {
   // ========================================
 
   const [obligations, setObligations] = useState([]);
-
   const [loading, setLoading] = useState(true);
-
   const [error, setError] = useState("");
-
   const [saving, setSaving] = useState(false);
-
-  const [statusLoading, setStatusLoading] =
-    useState(false);
+  const [statusLoading, setStatusLoading] = useState(false);
 
   // ========================================
   // FILTERS
   // ========================================
 
-  const [activeCategory, setActiveCategory] =
-    useState("");
-
+  const [activeCategory, setActiveCategory] = useState("");
   const [search, setSearch] = useState("");
-
-  const [statusFilter, setStatusFilter] =
-    useState("");
-
-  const [currentPage, setCurrentPage] =
-    useState(1);
+  const [statusFilter, setStatusFilter] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const itemsPerPage = 10;
 
@@ -64,17 +54,10 @@ const Obligations = () => {
   // MODALS
   // ========================================
 
-  const [createModalOpen, setCreateModalOpen] =
-    useState(false);
-
-  const [viewModalOpen, setViewModalOpen] =
-    useState(false);
-
-  const [editModalOpen, setEditModalOpen] =
-    useState(false);
-
-  const [selectedObligation, setSelectedObligation] =
-    useState(null);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [viewModalOpen, setViewModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedObligation, setSelectedObligation] = useState(null);
 
   // ========================================
   // ALERT
@@ -121,14 +104,10 @@ const Obligations = () => {
           : []
       );
     } catch (error) {
-      console.error(
-        "Load obligations error:",
-        error
-      );
+      console.error("Load obligations error:", error);
 
       setError(
-        error.message ||
-          "Unable to load obligations."
+        error.message || "Unable to load obligations."
       );
     } finally {
       setLoading(false);
@@ -143,10 +122,7 @@ const Obligations = () => {
   // ALERT HELPER
   // ========================================
 
-  const showAlert = (
-    type,
-    message
-  ) => {
+  const showAlert = (type, message) => {
     setAlert({
       type,
       message,
@@ -165,15 +141,21 @@ const Obligations = () => {
     ).length;
 
     const individual = obligations.filter(
-      (item) =>
-        item.category === "individual"
-    ).length;
+  (item) =>
+    item.isActive === true &&
+    item.category === "individual"
+  ).length;
+
+   
+
+  
 
     const group = obligations.filter(
-      (item) =>
-        item.category === "yearSet" ||
-        item.category === "chapter"
-    ).length;
+  (item) =>
+    item.isActive === true &&
+    (item.category === "yearSet" ||
+      item.category === "chapter")
+).length;
 
     return {
       total,
@@ -184,42 +166,68 @@ const Obligations = () => {
   }, [obligations]);
 
   // ========================================
+  // CURRENT YEAR OBLIGATION BREAKDOWN
+  // ========================================
+
+  const currentYear = new Date().getFullYear();
+
+  const obligationBreakdown = useMemo(() => {
+    const currentYearActive = obligations.filter(
+      (item) =>
+        item.isActive &&
+        Number(item.year) === currentYear
+    );
+
+    return {
+      individual: currentYearActive.filter(
+        (item) => item.category === "individual"
+      ),
+
+      yearSet: currentYearActive.filter(
+        (item) => item.category === "yearSet"
+      ),
+
+      chapter: currentYearActive.filter(
+        (item) => item.category === "chapter"
+      ),
+
+      total: currentYearActive.length,
+    };
+  }, [obligations, currentYear]);
+
+  // ========================================
   // FILTER
   // ========================================
 
   const filteredObligations = useMemo(() => {
-    const normalizedSearch =
-      search.trim().toLowerCase();
+    const normalizedSearch = search.trim().toLowerCase();
 
-    return obligations.filter(
-      (obligation) => {
-        const matchesCategory =
-          !activeCategory ||
-          obligation.category ===
-            activeCategory;
+    return obligations.filter((obligation) => {
+      const matchesCategory =
+        !activeCategory ||
+        obligation.category === activeCategory;
 
-        const matchesSearch =
-          !normalizedSearch ||
-          obligation.name
-            ?.toLowerCase()
-            .includes(normalizedSearch) ||
-          obligation.description
-            ?.toLowerCase()
-            .includes(normalizedSearch);
+      const matchesSearch =
+        !normalizedSearch ||
+        obligation.name
+          ?.toLowerCase()
+          .includes(normalizedSearch) ||
+        obligation.description
+          ?.toLowerCase()
+          .includes(normalizedSearch);
 
-        const matchesStatus =
-          !statusFilter ||
-          (statusFilter === "active"
-            ? obligation.isActive
-            : !obligation.isActive);
+      const matchesStatus =
+        !statusFilter ||
+        (statusFilter === "active"
+          ? obligation.isActive
+          : !obligation.isActive);
 
-        return (
-          matchesCategory &&
-          matchesSearch &&
-          matchesStatus
-        );
-      }
-    );
+      return (
+        matchesCategory &&
+        matchesSearch &&
+        matchesStatus
+      );
+    });
   }, [
     obligations,
     activeCategory,
@@ -234,38 +242,29 @@ const Obligations = () => {
   const totalPages = Math.max(
     1,
     Math.ceil(
-      filteredObligations.length /
-        itemsPerPage
+      filteredObligations.length / itemsPerPage
     )
   );
 
   const paginatedObligations =
     filteredObligations.slice(
-      (currentPage - 1) *
-        itemsPerPage,
+      (currentPage - 1) * itemsPerPage,
       currentPage * itemsPerPage
     );
 
-  const canGoPrevious =
-    currentPage > 1;
-
-  const canGoNext =
-    currentPage < totalPages;
+  const canGoPrevious = currentPage > 1;
+  const canGoNext = currentPage < totalPages;
 
   const handlePrevious = () => {
     if (!canGoPrevious) return;
 
-    setCurrentPage(
-      (page) => page - 1
-    );
+    setCurrentPage((page) => page - 1);
   };
 
   const handleNext = () => {
     if (!canGoNext) return;
 
-    setCurrentPage(
-      (page) => page + 1
-    );
+    setCurrentPage((page) => page + 1);
   };
 
   // ========================================
@@ -298,12 +297,8 @@ const Obligations = () => {
     resetForm();
   };
 
-  const openViewModal = (
-    obligation
-  ) => {
-    setSelectedObligation(
-      obligation
-    );
+  const openViewModal = (obligation) => {
+    setSelectedObligation(obligation);
     setViewModalOpen(true);
   };
 
@@ -314,41 +309,30 @@ const Obligations = () => {
     setSelectedObligation(null);
   };
 
-  const openEditModal = (
-    obligation
-  ) => {
-    setSelectedObligation(
-      obligation
-    );
+  const openEditModal = (obligation) => {
+    setSelectedObligation(obligation);
 
     setForm({
       name: obligation.name || "",
-      description:
-        obligation.description || "",
-      category:
-        obligation.category ||
-        "individual",
-      amount:
-        obligation.amount ?? "",
+      description: obligation.description || "",
+      category: obligation.category || "individual",
+      amount: obligation.amount ?? "",
       year:
         obligation.year ||
         new Date().getFullYear(),
+
       dueDate: obligation.dueDate
-        ? new Date(
-            obligation.dueDate
-          )
+        ? new Date(obligation.dueDate)
             .toISOString()
             .split("T")[0]
         : "",
+
       paymentPlans:
-        obligation.paymentPlans
-          ?.length
+        obligation.paymentPlans?.length
           ? obligation.paymentPlans.map(
               (plan) => ({
-                frequency:
-                  plan.frequency,
-                amount:
-                  plan.amount ?? "",
+                frequency: plan.frequency,
+                amount: plan.amount ?? "",
                 isActive:
                   plan.isActive !== false,
               })
@@ -378,10 +362,7 @@ const Obligations = () => {
   // FORM INPUT
   // ========================================
 
-  const handleFormChange = (
-    field,
-    value
-  ) => {
+  const handleFormChange = (field, value) => {
     setForm((previous) => ({
       ...previous,
       [field]: value,
@@ -424,14 +405,9 @@ const Obligations = () => {
     }));
   };
 
-  const removePaymentPlan = (
-    index
-  ) => {
+  const removePaymentPlan = (index) => {
     setForm((previous) => {
-      if (
-        previous.paymentPlans.length <=
-        1
-      ) {
+      if (previous.paymentPlans.length <= 1) {
         return previous;
       }
 
@@ -456,6 +432,7 @@ const Obligations = () => {
         "error",
         "Obligation name is required."
       );
+
       return false;
     }
 
@@ -467,6 +444,7 @@ const Obligations = () => {
         "error",
         "Please enter a valid obligation amount."
       );
+
       return false;
     }
 
@@ -478,12 +456,11 @@ const Obligations = () => {
         "error",
         "Please enter a valid obligation year."
       );
+
       return false;
     }
 
-    for (
-      const plan of form.paymentPlans
-    ) {
+    for (const plan of form.paymentPlans) {
       if (
         !plan.frequency ||
         plan.amount === "" ||
@@ -493,6 +470,7 @@ const Obligations = () => {
           "error",
           "Please complete all payment plan fields."
         );
+
         return false;
       }
     }
@@ -517,22 +495,15 @@ const Obligations = () => {
 
       year: Number(form.year),
 
-      dueDate:
-        form.dueDate || null,
+      dueDate: form.dueDate || null,
 
       paymentPlans:
-        form.paymentPlans.map(
-          (plan) => ({
-            frequency:
-              plan.frequency,
-
-            amount:
-              Number(plan.amount),
-
-            isActive:
-              plan.isActive !== false,
-          })
-        ),
+        form.paymentPlans.map((plan) => ({
+          frequency: plan.frequency,
+          amount: Number(plan.amount),
+          isActive:
+            plan.isActive !== false,
+        })),
     };
   };
 
@@ -540,9 +511,7 @@ const Obligations = () => {
   // CREATE
   // ========================================
 
-  const handleCreate = async (
-    event
-  ) => {
+  const handleCreate = async (event) => {
     event.preventDefault();
 
     if (!validateForm()) {
@@ -589,9 +558,7 @@ const Obligations = () => {
   // UPDATE
   // ========================================
 
-  const handleUpdate = async (
-    event
-  ) => {
+  const handleUpdate = async (event) => {
     event.preventDefault();
 
     if (!selectedObligation?._id) {
@@ -599,6 +566,7 @@ const Obligations = () => {
         "error",
         "Obligation could not be identified."
       );
+
       return;
     }
 
@@ -646,55 +614,56 @@ const Obligations = () => {
   // TOGGLE STATUS
   // ========================================
 
-  const handleToggleStatus =
-    async (obligation) => {
-      if (!obligation?._id) {
-        return;
-      }
+  const handleToggleStatus = async (
+    obligation
+  ) => {
+    if (!obligation?._id) {
+      return;
+    }
 
-      try {
-        setStatusLoading(true);
+    try {
+      setStatusLoading(true);
 
-        const result =
-          await toggleObligationStatus(
-            obligation._id
-          );
-
-        showAlert(
-          "success",
-          result?.message ||
-            "Obligation status updated successfully."
+      const result =
+        await toggleObligationStatus(
+          obligation._id
         );
 
-        const updatedObligation =
-          result?.obligation;
+      showAlert(
+        "success",
+        result?.message ||
+          "Obligation status updated successfully."
+      );
 
-        if (
-          selectedObligation?._id ===
-            obligation._id &&
+      const updatedObligation =
+        result?.obligation;
+
+      if (
+        selectedObligation?._id ===
+          obligation._id &&
+        updatedObligation
+      ) {
+        setSelectedObligation(
           updatedObligation
-        ) {
-          setSelectedObligation(
-            updatedObligation
-          );
-        }
-
-        await loadObligations();
-      } catch (error) {
-        console.error(
-          "Toggle obligation status error:",
-          error
         );
-
-        showAlert(
-          "error",
-          error.message ||
-            "Failed to update obligation status."
-        );
-      } finally {
-        setStatusLoading(false);
       }
-    };
+
+      await loadObligations();
+    } catch (error) {
+      console.error(
+        "Toggle obligation status error:",
+        error
+      );
+
+      showAlert(
+        "error",
+        error.message ||
+          "Failed to update obligation status."
+      );
+    } finally {
+      setStatusLoading(false);
+    }
+  };
 
   // ========================================
   // TABLE COLUMNS
@@ -732,9 +701,8 @@ const Obligations = () => {
 
         return (
           <span className="text-(--secondary)">
-            {labels[
-              obligation.category
-            ] || obligation.category}
+            {labels[obligation.category] ||
+              obligation.category}
           </span>
         );
       },
@@ -760,13 +728,11 @@ const Obligations = () => {
 
       render: (obligation) => (
         <span className="capitalize text-(--secondary)">
-          {obligation.paymentPlans
-            ?.length
+          {obligation.paymentPlans?.length
             ? obligation.paymentPlans
                 .filter(
                   (plan) =>
-                    plan.isActive !==
-                    false
+                    plan.isActive !== false
                 )
                 .map(
                   (plan) =>
@@ -838,9 +804,7 @@ const Obligations = () => {
             transition-colors
           "
           onClick={() =>
-            openViewModal(
-              obligation
-            )
+            openViewModal(obligation)
           }
         >
           <Eye size={15} />
@@ -857,8 +821,8 @@ const Obligations = () => {
   return (
     <div className="p-4">
       <div className="space-y-5">
-
         {/* ALERT */}
+
         {alert && (
           <Alert
             type={alert.type}
@@ -870,8 +834,8 @@ const Obligations = () => {
         )}
 
         {/* HEADER */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
 
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
             <h1 className="text-xl font-semibold text-(--primary)">
               Obligations
@@ -885,9 +849,7 @@ const Obligations = () => {
 
           <button
             type="button"
-            onClick={
-              openCreateModal
-            }
+            onClick={openCreateModal}
             className="
               h-9
               px-3.5
@@ -907,12 +869,11 @@ const Obligations = () => {
             <Plus size={15} />
             Create Obligation
           </button>
-
         </div>
 
         {/* OVERVIEW CARDS */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
 
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
           <AdminStatCard
             icon={WalletCards}
             iconBg="bg-(--primary-light)"
@@ -952,32 +913,39 @@ const Obligations = () => {
             value={stats.group}
             description="Year Set & Chapter"
           />
-
         </div>
 
+        {/* CURRENT YEAR OBLIGATION BREAKDOWN */}
+
+        <ObligationBreakdown
+          breakdown={obligationBreakdown}
+          currentYear={currentYear}
+        />
+
         {/* ERROR */}
+
         {error && (
-          <div className="
-            bg-(--danger-light)
-            border
-            border-(--danger)
-            rounded
-            px-4
-            py-3
-            flex
-            items-center
-            justify-between
-            gap-3
-          ">
+          <div
+            className="
+              bg-(--danger-light)
+              border
+              border-(--danger)
+              rounded
+              px-4
+              py-3
+              flex
+              items-center
+              justify-between
+              gap-3
+            "
+          >
             <p className="text-xs text-(--danger)">
               {error}
             </p>
 
             <button
               type="button"
-              onClick={
-                loadObligations
-              }
+              onClick={loadObligations}
               className="
                 text-xs
                 font-semibold
@@ -991,13 +959,12 @@ const Obligations = () => {
         )}
 
         {/* OBLIGATION TABLE */}
+
         <div className="bg-(--bg-white) border border-(--border) rounded overflow-hidden">
-
           {/* TABLE HEADER */}
+
           <div className="px-5 py-4 border-b border-(--border)">
-
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-
               <div>
                 <h2 className="text-sm font-semibold text-(--primary)">
                   All Obligations
@@ -1010,10 +977,9 @@ const Obligations = () => {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-2">
-
                 {/* SEARCH */}
-                <div className="relative">
 
+                <div className="relative">
                   <Search
                     size={15}
                     className="
@@ -1033,9 +999,8 @@ const Obligations = () => {
                       setSearch(
                         e.target.value
                       );
-                      setCurrentPage(
-                        1
-                      );
+
+                      setCurrentPage(1);
                     }}
                     className="
                       h-9
@@ -1053,19 +1018,18 @@ const Obligations = () => {
                       focus:border-(--primary)
                     "
                   />
-
                 </div>
 
                 {/* CATEGORY */}
+
                 <select
                   value={activeCategory}
                   onChange={(e) => {
                     setActiveCategory(
                       e.target.value
                     );
-                    setCurrentPage(
-                      1
-                    );
+
+                    setCurrentPage(1);
                   }}
                   className="
                     h-9
@@ -1097,15 +1061,15 @@ const Obligations = () => {
                 </select>
 
                 {/* STATUS */}
+
                 <select
                   value={statusFilter}
                   onChange={(e) => {
                     setStatusFilter(
                       e.target.value
                     );
-                    setCurrentPage(
-                      1
-                    );
+
+                    setCurrentPage(1);
                   }}
                   className="
                     h-9
@@ -1131,21 +1095,15 @@ const Obligations = () => {
                     Inactive
                   </option>
                 </select>
-
               </div>
-
             </div>
-
           </div>
 
           {/* TABLE */}
+
           <AdminTable
-            columns={
-              obligationColumns
-            }
-            data={
-              paginatedObligations
-            }
+            columns={obligationColumns}
+            data={paginatedObligations}
             loading={loading}
             rowKey="_id"
             emptyMessage={
@@ -1156,18 +1114,19 @@ const Obligations = () => {
           />
 
           {/* PAGINATION */}
-          {filteredObligations.length >
-            0 && (
-            <div className="
-              px-5
-              py-3
-              border-t
-              border-(--border)
-              flex
-              items-center
-              justify-between
-            ">
 
+          {filteredObligations.length > 0 && (
+            <div
+              className="
+                px-5
+                py-3
+                border-t
+                border-(--border)
+                flex
+                items-center
+                justify-between
+              "
+            >
               <p className="text-xs text-(--primary)">
                 Page{" "}
                 <span className="font-medium">
@@ -1182,22 +1141,15 @@ const Obligations = () => {
                   •
                 </span>
 
-                {
-                  filteredObligations.length
-                }{" "}
+                {filteredObligations.length}{" "}
                 obligations
               </p>
 
               <div className="flex items-center gap-2">
-
                 <button
                   type="button"
-                  onClick={
-                    handlePrevious
-                  }
-                  disabled={
-                    !canGoPrevious
-                  }
+                  onClick={handlePrevious}
+                  disabled={!canGoPrevious}
                   className="
                     w-8
                     h-8
@@ -1214,19 +1166,13 @@ const Obligations = () => {
                     transition-colors
                   "
                 >
-                  <ChevronLeft
-                    size={16}
-                  />
+                  <ChevronLeft size={16} />
                 </button>
 
                 <button
                   type="button"
-                  onClick={
-                    handleNext
-                  }
-                  disabled={
-                    !canGoNext
-                  }
+                  onClick={handleNext}
+                  disabled={!canGoNext}
                   className="
                     w-8
                     h-8
@@ -1243,23 +1189,15 @@ const Obligations = () => {
                     transition-colors
                   "
                 >
-                  <ChevronRight
-                    size={16}
-                  />
+                  <ChevronRight size={16} />
                 </button>
-
               </div>
-
             </div>
           )}
-
         </div>
-
       </div>
 
-      {/* ==================================================
-          CREATE OBLIGATION MODAL
-      ================================================== */}
+      {/* CREATE OBLIGATION MODAL */}
 
       {createModalOpen && (
         <ObligationFormModal
@@ -1267,9 +1205,7 @@ const Obligations = () => {
           description="Create a new NOSA financial obligation and payment plan."
           form={form}
           saving={saving}
-          onChange={
-            handleFormChange
-          }
+          onChange={handleFormChange}
           onPaymentPlanChange={
             handlePaymentPlanChange
           }
@@ -1279,19 +1215,13 @@ const Obligations = () => {
           onRemovePaymentPlan={
             removePaymentPlan
           }
-          onSubmit={
-            handleCreate
-          }
-          onClose={
-            closeCreateModal
-          }
+          onSubmit={handleCreate}
+          onClose={closeCreateModal}
           submitLabel="Create Obligation"
         />
       )}
 
-      {/* ==================================================
-          EDIT OBLIGATION MODAL
-      ================================================== */}
+      {/* EDIT OBLIGATION MODAL */}
 
       {editModalOpen && (
         <ObligationFormModal
@@ -1299,9 +1229,7 @@ const Obligations = () => {
           description="Update the financial obligation and payment plan."
           form={form}
           saving={saving}
-          onChange={
-            handleFormChange
-          }
+          onChange={handleFormChange}
           onPaymentPlanChange={
             handlePaymentPlanChange
           }
@@ -1311,32 +1239,20 @@ const Obligations = () => {
           onRemovePaymentPlan={
             removePaymentPlan
           }
-          onSubmit={
-            handleUpdate
-          }
-          onClose={
-            closeEditModal
-          }
+          onSubmit={handleUpdate}
+          onClose={closeEditModal}
           submitLabel="Save Changes"
         />
       )}
 
-      {/* ==================================================
-          VIEW OBLIGATION MODAL
-      ================================================== */}
+      {/* VIEW OBLIGATION MODAL */}
 
       {viewModalOpen &&
         selectedObligation && (
           <ObligationViewModal
-            obligation={
-              selectedObligation
-            }
-            statusLoading={
-              statusLoading
-            }
-            onClose={
-              closeViewModal
-            }
+            obligation={selectedObligation}
+            statusLoading={statusLoading}
+            onClose={closeViewModal}
             onEdit={() =>
               openEditModal(
                 selectedObligation
@@ -1353,6 +1269,303 @@ const Obligations = () => {
   );
 };
 
+// ======================================================
+// CURRENT YEAR OBLIGATION BREAKDOWN
+// ======================================================
+
+const ObligationBreakdown = ({
+  breakdown,
+  currentYear,
+}) => {
+  const total = breakdown.total;
+
+  const categories = [
+    {
+      key: "individual",
+      label: "Individual",
+      items: breakdown.individual,
+      className: "text-(--primary)",
+      stroke: "var(--primary)",
+    },
+
+    {
+      key: "yearSet",
+      label: "Year Set",
+      items: breakdown.yearSet,
+      className: "text-(--warning)",
+      stroke: "var(--warning)",
+    },
+
+    {
+      key: "chapter",
+      label: "Chapter",
+      items: breakdown.chapter,
+      className: "text-(--success)",
+      stroke: "var(--success)",
+    },
+  ];
+
+  const radius = 70;
+  const circumference =
+    2 * Math.PI * radius;
+
+  let accumulated = 0;
+
+  return (
+    <div className="bg-(--bg-white) border border-(--border) rounded overflow-hidden">
+      {/* HEADER */}
+
+      <div className="px-5 py-4 border-b border-(--border)">
+        <div>
+          <h2 className="text-sm font-semibold text-(--primary)">
+            Current Year Obligation Breakdown
+          </h2>
+
+          <p className="text-xs text-(--secondary) mt-1">
+            Active financial obligations
+            configured for {currentYear}.
+          </p>
+        </div>
+      </div>
+
+      {/* CONTENT */}
+
+      <div className="p-5">
+        <div className="grid grid-cols-1 lg:grid-cols-[0.8fr_1.2fr] gap-6">
+          {/* DONUT */}
+
+          <div className="min-h-[360px] flex flex-col items-center justify-center rounded border border-(--border) bg-(--bg-light) p-5">
+            <div className="relative w-52 h-52">
+              <svg
+                viewBox="0 0 180 180"
+                className="w-full h-full -rotate-90"
+              >
+                {/* BACKGROUND RING */}
+
+                <circle
+                  cx="90"
+                  cy="90"
+                  r={radius}
+                  fill="none"
+                  stroke="var(--border)"
+                  strokeWidth="22"
+                />
+
+                {/* CATEGORY SEGMENTS */}
+
+                {total > 0 &&
+                  categories.map(
+                    (category) => {
+                      const count =
+                        category.items.length;
+
+                      const percentage =
+                        count / total;
+
+                      const dashLength =
+                        percentage *
+                        circumference;
+
+                      const dashOffset =
+                        -accumulated *
+                        circumference;
+
+                      accumulated +=
+                        percentage;
+
+                      return (
+                        <circle
+                          key={category.key}
+                          cx="90"
+                          cy="90"
+                          r={radius}
+                          fill="none"
+                          stroke={
+                            category.stroke
+                          }
+                          strokeWidth="22"
+                          strokeDasharray={`${dashLength} ${
+                            circumference -
+                            dashLength
+                          }`}
+                          strokeDashoffset={
+                            dashOffset
+                          }
+                          strokeLinecap="butt"
+                        />
+                      );
+                    }
+                  )}
+              </svg>
+
+              {/* CENTER */}
+
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className="text-3xl font-semibold text-(--primary)">
+                  {total}
+                </span>
+
+                <span className="text-xs text-(--secondary)">
+                  Active obligations
+                </span>
+              </div>
+            </div>
+
+            {/* LEGEND */}
+
+            <div className="mt-6 grid grid-cols-3 gap-4 w-full">
+              {categories.map(
+                (category) => (
+                  <div
+                    key={category.key}
+                    className="text-center"
+                  >
+                    <div className="flex items-center justify-center gap-1.5">
+                      <span
+                        className="w-2 h-2 rounded-full"
+                        style={{
+                          backgroundColor:
+                            category.stroke,
+                        }}
+                      />
+
+                      <span className="text-[11px] text-(--secondary)">
+                        {category.label}
+                      </span>
+                    </div>
+
+                    <p className="text-sm font-semibold text-(--primary) mt-1">
+                      {category.items.length}
+                    </p>
+                  </div>
+                )
+              )}
+            </div>
+          </div>
+
+          {/* BREAKDOWN CARDS */}
+
+          <div className="space-y-4">
+            {categories.map(
+              (category) => {
+                const totalAmount =
+                  category.items.reduce(
+                    (sum, item) =>
+                      sum +
+                      Number(
+                        item.amount || 0
+                      ),
+                    0
+                  );
+
+                return (
+                  <div
+                    key={category.key}
+                    className="
+                      rounded
+                      border
+                      border-(--border)
+                      bg-(--bg-light)
+                      p-4
+                    "
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <p className="text-xs text-(--secondary)">
+                          {category.label}
+                        </p>
+
+                        <p className="text-lg font-semibold text-(--primary) mt-1">
+                          ₦
+                          {totalAmount.toLocaleString()}
+                        </p>
+                      </div>
+
+                      <span
+                        className={`text-[11px] font-medium ${category.className}`}
+                      >
+                        {category.items.length}{" "}
+                        {category.items.length ===
+                        1
+                          ? "obligation"
+                          : "obligations"}
+                      </span>
+                    </div>
+
+                    <div className="mt-3 pt-3 border-t border-(--border) space-y-2">
+                      {category.items.length >
+                      0 ? (
+                        category.items.map(
+                          (item) => (
+                            <div
+                              key={item._id}
+                              className="
+                                flex
+                                items-center
+                                justify-between
+                                gap-3
+                              "
+                            >
+                              <div className="min-w-0">
+                                <p className="text-xs font-medium text-(--primary) truncate">
+                                  {item.name}
+                                </p>
+
+                                {item
+                                  .paymentPlans
+                                  ?.length >
+                                  0 && (
+                                  <p className="text-[10px] text-(--text-muted) mt-0.5 capitalize">
+                                    {item.paymentPlans
+                                      .filter(
+                                        (
+                                          plan
+                                        ) =>
+                                          plan.isActive !==
+                                          false
+                                      )
+                                      .map(
+                                        (
+                                          plan
+                                        ) =>
+                                          plan.frequency
+                                      )
+                                      .join(
+                                        ", "
+                                      )}
+                                  </p>
+                                )}
+                              </div>
+
+                              <span className="text-xs font-semibold text-(--primary) whitespace-nowrap">
+                                ₦
+                                {Number(
+                                  item.amount ||
+                                    0
+                                ).toLocaleString()}
+                              </span>
+                            </div>
+                          )
+                        )
+                      ) : (
+                        <p className="text-xs text-(--text-muted)">
+                          No active{" "}
+                          {category.label.toLowerCase()}{" "}
+                          obligations configured
+                          for {currentYear}.
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                );
+              }
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 // ======================================================
 // OBLIGATION FORM MODAL
@@ -1372,39 +1585,45 @@ const ObligationFormModal = ({
   submitLabel,
 }) => {
   return (
-    <div className="
-      fixed
-      inset-0
-      z-50
-      flex
-      items-center
-      justify-center
-      p-4
-      bg-black/40
-    ">
-      <div className="
-        w-full
-        max-w-2xl
-        max-h-[90vh]
-        overflow-y-auto
-        bg-(--bg-white)
-        rounded
-        border
-        border-(--border)
-        shadow-xl
-      ">
-
-        {/* HEADER */}
-        <div className="
-          px-5
-          py-4
-          border-b
+    <div
+      className="
+        fixed
+        inset-0
+        z-50
+        flex
+        items-center
+        justify-center
+        p-4
+        bg-black/40
+      "
+    >
+      <div
+        className="
+          w-full
+          max-w-2xl
+          max-h-[90vh]
+          overflow-y-auto
+          bg-(--bg-white)
+          rounded
+          border
           border-(--border)
-          flex
-          items-center
-          justify-between
-          gap-4
-        ">
+          shadow-xl
+        "
+      >
+        {/* HEADER */}
+
+        <div
+          className="
+            px-5
+            py-4
+            border-b
+            border-(--border)
+            flex
+            items-center
+            justify-between
+            gap-4
+          "
+        >
           <div>
             <h2 className="text-sm font-semibold text-(--primary)">
               {title}
@@ -1437,14 +1656,14 @@ const ObligationFormModal = ({
         </div>
 
         {/* FORM */}
+
         <form
           onSubmit={onSubmit}
           className="p-5 space-y-5"
         >
-
           {/* BASIC INFORMATION */}
-          <div className="space-y-3">
 
+          <div className="space-y-3">
             <h3 className="text-xs font-semibold text-(--primary)">
               Basic Information
             </h3>
@@ -1487,9 +1706,7 @@ const ObligationFormModal = ({
               </label>
 
               <textarea
-                value={
-                  form.description
-                }
+                value={form.description}
                 onChange={(e) =>
                   onChange(
                     "description",
@@ -1517,16 +1734,13 @@ const ObligationFormModal = ({
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-
               <div>
                 <label className="block text-xs font-medium text-(--primary) mb-1.5">
                   Category
                 </label>
 
                 <select
-                  value={
-                    form.category
-                  }
+                  value={form.category}
                   onChange={(e) =>
                     onChange(
                       "category",
@@ -1591,25 +1805,25 @@ const ObligationFormModal = ({
                   "
                 />
               </div>
-
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-
               <div>
                 <label className="block text-xs font-medium text-(--primary) mb-1.5">
                   Total Amount
                 </label>
 
                 <div className="relative">
-                  <span className="
-                    absolute
-                    left-3
-                    top-1/2
-                    -translate-y-1/2
-                    text-xs
-                    text-(--secondary)
-                  ">
+                  <span
+                    className="
+                      absolute
+                      left-3
+                      top-1/2
+                      -translate-y-1/2
+                      text-xs
+                      text-(--secondary)
+                    "
+                  >
                     ₦
                   </span>
 
@@ -1617,9 +1831,7 @@ const ObligationFormModal = ({
                     type="number"
                     min="0"
                     step="0.01"
-                    value={
-                      form.amount
-                    }
+                    value={form.amount}
                     onChange={(e) =>
                       onChange(
                         "amount",
@@ -1664,9 +1876,7 @@ const ObligationFormModal = ({
 
                   <input
                     type="date"
-                    value={
-                      form.dueDate
-                    }
+                    value={form.dueDate}
                     onChange={(e) =>
                       onChange(
                         "dueDate",
@@ -1690,31 +1900,27 @@ const ObligationFormModal = ({
                   />
                 </div>
               </div>
-
             </div>
-
           </div>
 
           {/* PAYMENT PLANS */}
+
           <div className="space-y-3">
-
             <div className="flex items-center justify-between gap-3">
-
               <div>
                 <h3 className="text-xs font-semibold text-(--primary)">
                   Payment Plans
                 </h3>
 
                 <p className="text-[11px] text-(--secondary) mt-1">
-                  Add the available ways members can satisfy this obligation.
+                  Add the available ways members
+                  can satisfy this obligation.
                 </p>
               </div>
 
               <button
                 type="button"
-                onClick={
-                  onAddPaymentPlan
-                }
+                onClick={onAddPaymentPlan}
                 className="
                   h-8
                   px-2.5
@@ -1734,16 +1940,11 @@ const ObligationFormModal = ({
                 <Plus size={14} />
                 Add Plan
               </button>
-
             </div>
 
             <div className="space-y-2">
-
               {form.paymentPlans.map(
-                (
-                  plan,
-                  index
-                ) => (
+                (plan, index) => (
                   <div
                     key={index}
                     className="
@@ -1754,9 +1955,7 @@ const ObligationFormModal = ({
                       bg-(--bg-light)
                     "
                   >
-
                     <div className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto] gap-2">
-
                       <div>
                         <label className="block text-[11px] font-medium text-(--primary) mb-1">
                           Frequency
@@ -1766,9 +1965,7 @@ const ObligationFormModal = ({
                           value={
                             plan.frequency
                           }
-                          onChange={(
-                            e
-                          ) =>
+                          onChange={(e) =>
                             onPaymentPlanChange(
                               index,
                               "frequency",
@@ -1808,14 +2005,16 @@ const ObligationFormModal = ({
                         </label>
 
                         <div className="relative">
-                          <span className="
-                            absolute
-                            left-3
-                            top-1/2
-                            -translate-y-1/2
-                            text-xs
-                            text-(--secondary)
-                          ">
+                          <span
+                            className="
+                              absolute
+                              left-3
+                              top-1/2
+                              -translate-y-1/2
+                              text-xs
+                              text-(--secondary)
+                            "
+                          >
                             ₦
                           </span>
 
@@ -1826,9 +2025,7 @@ const ObligationFormModal = ({
                             value={
                               plan.amount
                             }
-                            onChange={(
-                              e
-                            ) =>
+                            onChange={(e) =>
                               onPaymentPlanChange(
                                 index,
                                 "amount",
@@ -1853,7 +2050,6 @@ const ObligationFormModal = ({
                       </div>
 
                       <div className="flex items-end">
-
                         <button
                           type="button"
                           onClick={() =>
@@ -1863,8 +2059,7 @@ const ObligationFormModal = ({
                           }
                           disabled={
                             form.paymentPlans
-                              .length <=
-                            1
+                              .length <= 1
                           }
                           className="
                             w-9
@@ -1883,34 +2078,29 @@ const ObligationFormModal = ({
                           "
                           title="Remove payment plan"
                         >
-                          <X
-                            size={15}
-                          />
+                          <X size={15} />
                         </button>
-
                       </div>
-
                     </div>
-
                   </div>
                 )
               )}
-
             </div>
-
           </div>
 
           {/* ACTIONS */}
-          <div className="
-            pt-2
-            border-t
-            border-(--border)
-            flex
-            items-center
-            justify-end
-            gap-2
-          ">
 
+          <div
+            className="
+              pt-2
+              border-t
+              border-(--border)
+              flex
+              items-center
+              justify-end
+              gap-2
+            "
+          >
             <button
               type="button"
               onClick={onClose}
@@ -1964,15 +2154,12 @@ const ObligationFormModal = ({
                 ? "Saving..."
                 : submitLabel}
             </button>
-
           </div>
-
         </form>
       </div>
     </div>
   );
 };
-
 
 // ======================================================
 // VIEW OBLIGATION MODAL
@@ -2006,43 +2193,47 @@ const ObligationViewModal = ({
       : "No due date";
 
   return (
-    <div className="
-      fixed
-      inset-0
-      z-50
-      flex
-      items-center
-      justify-center
-      p-4
-      bg-black/40
-    ">
-      <div className="
-        w-full
-        max-w-lg
-        max-h-[90vh]
-        overflow-y-auto
-        bg-(--bg-white)
-        rounded
-        border
-        border-(--border)
-        shadow-xl
-      ">
-
-        {/* HEADER */}
-        <div className="
-          px-5
-          py-4
-          border-b
+    <div
+      className="
+        fixed
+        inset-0
+        z-50
+        flex
+        items-center
+        justify-center
+        p-4
+        bg-black/40
+      "
+    >
+      <div
+        className="
+          w-full
+          max-w-lg
+          max-h-[90vh]
+          overflow-y-auto
+          bg-(--bg-white)
+          rounded
+          border
           border-(--border)
-          flex
-          items-start
-          justify-between
-          gap-4
-        ">
+          shadow-xl
+        "
+      >
+        {/* HEADER */}
 
+        <div
+          className="
+            px-5
+            py-4
+            border-b
+            border-(--border)
+            flex
+            items-start
+            justify-between
+            gap-4
+          "
+        >
           <div>
             <div className="flex items-center gap-2">
-
               <h2 className="text-sm font-semibold text-(--primary)">
                 {obligation.name}
               </h2>
@@ -2067,7 +2258,6 @@ const ObligationViewModal = ({
                   ? "Active"
                   : "Inactive"}
               </span>
-
             </div>
 
             <p className="text-xs text-(--secondary) mt-1">
@@ -2079,9 +2269,7 @@ const ObligationViewModal = ({
           <button
             type="button"
             onClick={onClose}
-            disabled={
-              statusLoading
-            }
+            disabled={statusLoading}
             className="
               w-8
               h-8
@@ -2096,64 +2284,51 @@ const ObligationViewModal = ({
           >
             <X size={17} />
           </button>
-
         </div>
 
         {/* DETAILS */}
+
         <div className="p-5 space-y-4">
-
           <div className="grid grid-cols-2 gap-3">
-
             <DetailItem
               label="Category"
               value={
                 categoryLabels[
                   obligation.category
-                ] ||
-                obligation.category
+                ] || obligation.category
               }
             />
 
             <DetailItem
               label="Year"
-              value={
-                obligation.year
-              }
+              value={obligation.year}
             />
 
             <DetailItem
               label="Total Amount"
               value={`₦${Number(
-                obligation.amount ||
-                  0
+                obligation.amount || 0
               ).toLocaleString()}`}
             />
 
             <DetailItem
               label="Due Date"
-              value={
-                formattedDueDate
-              }
+              value={formattedDueDate}
             />
-
           </div>
 
           {/* PAYMENT PLANS */}
-          <div>
 
+          <div>
             <p className="text-xs font-semibold text-(--primary) mb-2">
               Payment Plans
             </p>
 
             <div className="space-y-2">
-
               {obligation.paymentPlans
                 ?.length ? (
                 obligation.paymentPlans.map(
-                  (
-                    plan,
-                    index
-                  ) => (
+                  (plan, index) => (
                     <div
                       key={index}
                       className="
@@ -2169,21 +2344,16 @@ const ObligationViewModal = ({
                         bg-(--bg-light)
                       "
                     >
-
                       <span className="text-xs capitalize text-(--secondary)">
-                        {
-                          plan.frequency
-                        }
+                        {plan.frequency}
                       </span>
 
                       <span className="text-xs font-semibold text-(--primary)">
                         ₦
                         {Number(
-                          plan.amount ||
-                            0
+                          plan.amount || 0
                         ).toLocaleString()}
                       </span>
-
                     </div>
                   )
                 )
@@ -2192,18 +2362,19 @@ const ObligationViewModal = ({
                   No payment plans configured.
                 </p>
               )}
-
             </div>
-
           </div>
 
           {/* CREATED */}
+
           {obligation.createdBy && (
-            <div className="
-              pt-3
-              border-t
-              border-(--border)
-            ">
+            <div
+              className="
+                pt-3
+                border-t
+                border-(--border)
+              "
+            >
               <p className="text-[11px] text-(--text-muted)">
                 Created by
               </p>
@@ -2218,8 +2389,7 @@ const ObligationViewModal = ({
               {obligation.createdBy.email && (
                 <p className="text-[11px] text-(--secondary) mt-0.5">
                   {
-                    obligation
-                      .createdBy
+                    obligation.createdBy
                       .email
                   }
                 </p>
@@ -2228,24 +2398,22 @@ const ObligationViewModal = ({
           )}
 
           {/* ACTIONS */}
-          <div className="
-            pt-3
-            border-t
-            border-(--border)
-            flex
-            items-center
-            justify-end
-            gap-2
-          ">
 
+          <div
+            className="
+              pt-3
+              border-t
+              border-(--border)
+              flex
+              items-center
+              justify-end
+              gap-2
+            "
+          >
             <button
               type="button"
-              onClick={
-                onToggleStatus
-              }
-              disabled={
-                statusLoading
-              }
+              onClick={onToggleStatus}
+              disabled={statusLoading}
               className={`
                 h-9
                 px-3
@@ -2273,9 +2441,7 @@ const ObligationViewModal = ({
                   className="animate-spin"
                 />
               ) : (
-                <Power
-                  size={14}
-                />
+                <Power size={14} />
               )}
 
               {obligation.isActive
@@ -2285,12 +2451,8 @@ const ObligationViewModal = ({
 
             <button
               type="button"
-              onClick={
-                onEdit
-              }
-              disabled={
-                statusLoading
-              }
+              onClick={onEdit}
+              disabled={statusLoading}
               className="
                 h-9
                 px-3
@@ -2308,20 +2470,15 @@ const ObligationViewModal = ({
                 transition-opacity
               "
             >
-              <Pencil
-                size={14}
-              />
+              <Pencil size={14} />
               Edit
             </button>
-
           </div>
-
         </div>
       </div>
     </div>
   );
 };
-
 
 // ======================================================
 // DETAIL ITEM
@@ -2332,13 +2489,15 @@ const DetailItem = ({
   value,
 }) => {
   return (
-    <div className="
-      p-3
-      rounded
-      border
-      border-(--border)
-      bg-(--bg-light)
-    ">
+    <div
+      className="
+        p-3
+        rounded
+        border
+        border-(--border)
+        bg-(--bg-light)
+      "
+    >
       <p className="text-[11px] text-(--text-muted)">
         {label}
       </p>
