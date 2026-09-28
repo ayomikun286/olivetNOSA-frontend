@@ -204,6 +204,8 @@ const Main = () => {
 
    
       setData(result);
+
+      console.log(result)
     } catch (error) {
       console.error(
         "Admin dashboard error:",
@@ -360,8 +362,8 @@ const Main = () => {
                   </p>
 
                   <p className="text-lg font-semibold text-(--primary) mt-1">
-                    {formatCurrency(
-                      finance.totalObligations || 0
+                   {formatCurrency(
+                      finance.isActive ? finance.totalObligations : 0
                     )}
                   </p>
                 </div>

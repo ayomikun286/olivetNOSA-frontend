@@ -86,8 +86,9 @@ const Sidebar = ({ setIsOpen }) => {
             OBHS
           </p>
 
-          <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/90">
-            ADMIN PORTAL
+          <p className="text-[8px] font-bold uppercase tracking-[0.22em] text-white/90">
+            GLOBAL OLD STUDENTS
+            ASSOCIATION WEBSITE
           </p>
         </div>
       </div>

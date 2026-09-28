@@ -13,8 +13,8 @@ import {
   LogOut,
   ContactRound,
   HeartHandshake,
-  NotebookTabs 
- 
+  NotebookTabs
+
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
@@ -90,12 +90,13 @@ const Sidebar = ({ setIsOpen }) => {
         </div>
 
         <div className="leading-none">
-          <p className="text-lg font-bold tracking-wide text-white">
+          <p className="text-lg font-bold tracking-wide text-white leading-7 tracking-1">
             OBHS
           </p>
 
-          <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/90">
-            ALUMNI PORTAL
+          <p className="text-[8px] font-bold uppercase tracking-[0.22em] text-white/90">
+            GLOBAL OLD STUDENTS
+            ASSOCIATION WEBSITE
           </p>
         </div>
       </div>
@@ -221,12 +222,12 @@ const Sidebar = ({ setIsOpen }) => {
               <span>Notifications</span>
             </NavLink>
 
-             <NavLink
+            <NavLink
               to="/portal/member/dashboard/calendar"
               className={linkClass}
               onClick={handleLinkClick}
             >
-              <NotebookTabs  className={iconClass} />
+              <NotebookTabs className={iconClass} />
               <span>Calendar</span>
             </NavLink>
 
