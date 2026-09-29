@@ -686,10 +686,10 @@ const MyYearSet = () => {
 
                                                     <span
                                                         className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-full ${isInactive
-                                                                ? "text-slate-500 bg-slate-100"
-                                                                : isPaid
-                                                                    ? "text-(--success) bg-(--success-light)"
-                                                                    : "text-(--warning) bg-(--warning-light)"
+                                                            ? "text-slate-500 bg-slate-100"
+                                                            : isPaid
+                                                                ? "text-(--success) bg-(--success-light)"
+                                                                : "text-(--warning) bg-(--warning-light)"
                                                             }`}
                                                     >
 
@@ -776,11 +776,11 @@ const MyYearSet = () => {
 
                                                         <p
                                                             className={`text-sm font-semibold mt-0.5 ${remaining >
-                                                                    0
-                                                                    ? isInactive
-                                                                        ? "text-slate-500"
-                                                                        : "text-(--primary)"
-                                                                    : "text-(--success)"
+                                                                0
+                                                                ? isInactive
+                                                                    ? "text-slate-500"
+                                                                    : "text-(--primary)"
+                                                                : "text-(--success)"
                                                                 }`}
                                                         >
                                                             {formatCurrency(

@@ -82,14 +82,11 @@ const Sidebar = ({ setIsOpen }) => {
         </div>
 
         <div className="leading-none">
-          <p className="text-lg font-bold tracking-wide text-white">
-            OBHS
-          </p>
-
-          <p className="text-[8px] font-bold uppercase tracking-[0.22em] text-white/90">
+          <p className="text-[11px] font-bold tracking-wide text-white leading-4 tracking-1">
             GLOBAL OLD STUDENTS
             ASSOCIATION WEBSITE
           </p>
+
         </div>
       </div>
 

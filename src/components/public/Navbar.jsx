@@ -236,13 +236,13 @@ const Navbar = () => {
 
             <div className="leading-none">
 
-              <p className="text-lg font-bold tracking-wide text-[var(--primary-dark)] transition-colors duration-500 max-w-35">
-                OBHS
-              </p>
-
-              <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-primary transition-colors duration-500 max-w-50">
+              <p className="text-sm font-bold tracking-wide text-[var(--primary-dark)] transition-colors duration-500 max-w-35">
                 Global Old Students Association Website
               </p>
+
+              {/* <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-primary transition-colors duration-500 max-w-50">
+                Global Old Students Association Website
+              </p> */}
 
             </div>
 
