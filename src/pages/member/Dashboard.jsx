@@ -149,7 +149,7 @@ const Dashboard = () => {
     <>
 
       <main className='flex h-screen overflow-x-hidden w-screen'>
-        <PageTitle title="Member Dashboard | OlivetNOSA" />
+        <PageTitle title="Member Dashboard | OlivetGOSA" />
 
         {/*sidebar*/}
         <section className={`

@@ -90,7 +90,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <PageTitle title="Admin Dashboard | OlivetNOSA" />
+      <PageTitle title="Admin Dashboard | OlivetGOSA" />
 
       <main className="flex h-screen w-screen overflow-x-hidden">
 
