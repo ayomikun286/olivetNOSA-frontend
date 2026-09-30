@@ -348,7 +348,7 @@ const Profile = () => {
             </h1>
 
             <p className="text-sm text-(--secondary) mt-1">
-              View and manage your OlivetNOSA member information.
+              View and manage your OlivetGOSA member information.
             </p>
           </div>
 
@@ -1619,7 +1619,7 @@ const Profile = () => {
                       </h2>
 
                       <p className="text-xs text-(--secondary) mt-0.5">
-                        Your OlivetNOSA membership details.
+                        Your OlivetGOSA membership details.
                       </p>
                     </div>
                   </div>
@@ -1980,7 +1980,7 @@ const Profile = () => {
                 </h2>
 
                 <p className="text-xs text-(--secondary) mt-0.5">
-                  Your OlivetNOSA account status.
+                  Your OlivetGOSA account status.
                 </p>
               </div>
             </div>

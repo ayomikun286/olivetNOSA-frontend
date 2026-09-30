@@ -108,7 +108,7 @@ export default function NewsEvents() {
   if (loading) {
     return (
       <main className="min-h-screen bg-white">
-        <PageTitle title="News & Events | OlivetNOSA" />
+        <PageTitle title="News & Events | OlivetGOSA" />
         <Navbar />
 
         <div className="flex min-h-[60vh] items-center justify-center">
@@ -125,7 +125,7 @@ export default function NewsEvents() {
   if (error) {
     return (
       <main className="min-h-screen bg-white">
-        <PageTitle title="News & Events | OlivetNOSA" />
+        <PageTitle title="News & Events | OlivetGOSA" />
         <Navbar />
 
         <div className="flex min-h-[60vh] items-center justify-center px-5">
@@ -141,7 +141,7 @@ export default function NewsEvents() {
 
   return (
     <main className="mt-0 bg-white text-[var(--primary-dark)] md:mt-15">
-      <PageTitle title="News & Events | OlivetNOSA" />
+      <PageTitle title="News & Events | OlivetGOSA" />
       <Navbar />
 
       {/* =====================================================

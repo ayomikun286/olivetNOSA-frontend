@@ -251,7 +251,7 @@ const Notifications = () => {
 
                     <p className="text-sm text-(--secondary) mt-1">
                         Stay updated with your account,
-                        payments and important NOSA
+                        payments and important GOSA
                         activities.
                     </p>
                 </div>

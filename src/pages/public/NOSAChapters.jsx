@@ -20,7 +20,7 @@ import PageTitle  from "../../components/common/PageTitle.jsx";
 export default function NOSAChapters() {
   return (
     <main className="min-h-screen bg-white text-(--primary-dark) mt-0 md:mt-15 overflow-x-hidden">
-      <PageTitle title="Chapters | OlivetNOSA" />
+      <PageTitle title="Chapters | OlivetGOSA" />
       {/* =========================================================
           NAVBAR
       ========================================================= */}
@@ -50,7 +50,7 @@ export default function NOSAChapters() {
                 className="mb-7 flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.28em] text-[var(--secondary-light)]"
               >
                 <span className="h-px w-10 bg-[var(--secondary)]" />
-                NOSA Chapters
+                GOSA Chapters
               </div>
 
               <h1
@@ -79,7 +79,7 @@ export default function NOSAChapters() {
                 className="mt-10 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between"
               >
                 <p className="max-w-xl text-base leading-8 text-white/75 sm:text-lg">
-                  NOSA chapters bring Olivetians together within their local
+                  GOSA chapters bring Olivetians together within their local
                   communities while keeping them connected to the wider
                   National Old Students' Association.
                 </p>
@@ -124,7 +124,7 @@ export default function NOSAChapters() {
               "
             >
               <p className="text-xs uppercase tracking-[0.25em] text-white/45">
-                National Old Students' Association
+                Global Old Students' Association
               </p>
 
               <p className="text-sm italic text-white/55">
@@ -167,7 +167,7 @@ export default function NOSAChapters() {
                 <p className="text-base leading-8 text-[var(--text-muted)]">
                   Through the chapter network, members can reconnect with
                   fellow Olivetians, participate in activities and contribute
-                  to the wider work of NOSA while remaining part of a shared
+                  to the wider work of GOSA while remaining part of a shared
                   Olivetian heritage.
                 </p>
               </div>
@@ -197,7 +197,7 @@ export default function NOSAChapters() {
 
               <div className="mt-5 flex items-start justify-between border-t border-black/10 pt-4">
                 <p className="text-xs uppercase tracking-[0.22em] text-[var(--text-muted)]">
-                  OlivetNOSA
+                  OlivetGOSA
                 </p>
 
                 <p className="max-w-xs text-right text-sm leading-6 text-[var(--text-muted)]">
@@ -225,7 +225,7 @@ export default function NOSAChapters() {
 
               <p className="mt-6 text-lg leading-8 text-[var(--text-muted)]">
                 They are also part of something larger. Each chapter remains
-                connected to the wider NOSA community, creating a network that
+                connected to the wider GOSA community, creating a network that
                 reaches beyond individual locations.
               </p>
 
@@ -317,7 +317,7 @@ export default function NOSAChapters() {
 
             <div data-aos="fade-left">
               <p className="max-w-3xl text-xl leading-9 text-[var(--primary-dark)] sm:text-2xl">
-                A chapter is one part of the wider OlivetNOSA network. Its
+                A chapter is one part of the wider OlivetGOSA network. Its
                 strength comes from the relationships created locally and the
                 connection those relationships maintain with the association
                 as a whole.
@@ -348,7 +348,7 @@ export default function NOSAChapters() {
 
                 <div className="grid gap-8 py-8 md:grid-cols-[0.3fr_1fr]">
                   <div className="text-sm font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
-                    NOSA
+                    GOSA
                   </div>
 
                   <p className="max-w-xl text-base leading-7 text-[var(--text-muted)]">
@@ -386,7 +386,7 @@ export default function NOSAChapters() {
             <div data-aos="fade-left">
               <p className="max-w-3xl text-xl leading-9 text-white/70 sm:text-2xl">
                 Chapters create a practical way for members to take part in
-                the life of NOSA. Connection can lead to collaboration,
+                the life of GOSA. Connection can lead to collaboration,
                 support and meaningful contribution to the Olivet community.
               </p>
 
@@ -469,7 +469,7 @@ export default function NOSAChapters() {
               </h2>
 
               <p className="mt-7 max-w-md leading-7 text-[var(--text-muted)]">
-                As the OlivetNOSA chapter network grows, information about
+                As the OlivetGOSA chapter network grows, information about
                 recognised chapters and their communities can be made
                 available here.
               </p>
@@ -499,7 +499,7 @@ export default function NOSAChapters() {
                   <p className="max-w-xl text-lg leading-8 text-[var(--text-muted)]">
                     Chapter information will be published as the official
                     chapter directory is established and maintained by
-                    OlivetNOSA.
+                    OlivetGOSA.
                   </p>
 
                   <p className="mt-5 max-w-xl text-sm leading-7 text-[var(--text-muted)]">
@@ -553,7 +553,7 @@ export default function NOSAChapters() {
             data-aos-delay="200"
             className="mx-auto mt-8 max-w-2xl text-lg leading-8 text-[var(--primary-dark)]/65"
           >
-            Register with OlivetNOSA and remain connected to the alumni
+            Register with OlivetGOSA and remain connected to the alumni
             community through the wider association and its member network.
           </p>
 
@@ -579,7 +579,7 @@ export default function NOSAChapters() {
                 hover:bg-[var(--primary)]
               "
             >
-              Join OlivetNOSA
+              Join OlivetGOSA
               <ArrowUpRight size={18} />
             </a>
           </div>

@@ -577,7 +577,7 @@ const AdminPayments = () => {
 
                         <p className="text-sm text-(--secondary) mt-1">
                             Monitor and manage
-                            OlivetNOSA payment
+                            OlivetGOSA payment
                             transactions.
                         </p>
                     </div>

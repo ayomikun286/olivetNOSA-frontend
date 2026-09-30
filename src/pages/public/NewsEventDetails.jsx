@@ -74,7 +74,7 @@ export default function NewsEventDetails() {
     if (loading) {
         return (
             <main className="min-h-screen bg-white">
-                <PageTitle title="Loading | OlivetNOSA" />
+                <PageTitle title="Loading | OlivetGOSA" />
                 <Navbar />
 
                 <div className="flex min-h-[60vh] items-center justify-center">
@@ -91,7 +91,7 @@ export default function NewsEventDetails() {
     if (error || !item) {
         return (
             <main className="min-h-screen bg-white">
-                <PageTitle title="Not Found | OlivetNOSA" />
+                <PageTitle title="Not Found | OlivetGOSA" />
                 <Navbar />
 
                 <section className="flex min-h-[70vh] items-center justify-center px-5">
@@ -129,7 +129,7 @@ export default function NewsEventDetails() {
     return (
         <main className="mt-0 bg-white text-[var(--primary-dark)] md:mt-15">
             <PageTitle
-                title={`${item.title || "Details"} | OlivetNOSA`}
+                title={`${item.title || "Details"} | OlivetGOSA`}
             />
 
             <Navbar />
@@ -311,7 +311,7 @@ export default function NewsEventDetails() {
                     className="mx-auto max-w-4xl px-5 text-center sm:px-8"
                 >
                     <p className="mb-5 text-xs font-semibold uppercase tracking-[0.28em] text-[var(--secondary)]">
-                        OlivetNOSA
+                        OlivetGOSA
                     </p>
 
                     <h2 className="text-4xl font-semibold leading-tight tracking-[-0.025em] sm:text-5xl">

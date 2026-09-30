@@ -46,7 +46,7 @@ const Contact = () => {
   return (
     <main className="mt-0 overflow-x-hidden bg-white text-[var(--primary-dark)] md:mt-15">
       
-      <PageTitle title="Contact | OlivetNOSA" />
+      <PageTitle title="Contact | OlivetGOSA" />
       <Navbar />
 
       {/* =====================================================
@@ -149,7 +149,7 @@ const Contact = () => {
               data-aos-delay="100"
             >
               <p className="max-w-2xl text-base leading-8 text-[var(--text-muted)] sm:text-lg">
-                Have a question about NOSA, membership, an event,
+                Have a question about GOSA, membership, an event,
                 an initiative, or reconnecting with fellow
                 Olivetians? Get in touch with us.
               </p>
@@ -341,7 +341,7 @@ const Contact = () => {
                 </h3>
 
                 <p className="mt-3 max-w-md text-sm leading-7 text-[var(--text-muted)]">
-                  Thank you for reaching out to OlivetNOSA.
+                  Thank you for reaching out to OlivetGOSA.
                   Your message has been received and someone
                   from the team will get back to you.
                 </p>
@@ -426,7 +426,7 @@ const Contact = () => {
                     </option>
 
                     <option value="initiative">
-                      NOSA Initiative
+                      GOSA Initiative
                     </option>
 
                     <option value="partnership">

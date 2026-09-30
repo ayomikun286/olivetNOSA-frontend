@@ -842,7 +842,7 @@ const Obligations = () => {
             </h1>
 
             <p className="text-sm text-(--secondary) mt-1">
-              Manage NOSA financial obligations,
+              Manage GOSA financial obligations,
               dues and payment plans.
             </p>
           </div>
@@ -971,7 +971,7 @@ const Obligations = () => {
                 </h2>
 
                 <p className="text-xs text-(--secondary) mt-1">
-                  View and manage registered NOSA
+                  View and manage registered GOSA
                   financial obligations.
                 </p>
               </div>

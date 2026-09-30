@@ -151,7 +151,7 @@ export default function InLovingMemory() {
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-white text-(--primary-dark) mt-0 md:mt-15">
-      <PageTitle title="In Loving Memory | OlivetNOSA" />
+      <PageTitle title="In Loving Memory | OlivetGOSA" />
 
       {/* =========================================================
           NAVBAR
@@ -271,7 +271,7 @@ export default function InLovingMemory() {
           >
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-xs uppercase tracking-[0.25em] text-white/35">
-                National Old Students' Association
+                Global Old Students' Association
               </p>
 
               <p className="text-sm italic text-white/45">

@@ -75,7 +75,7 @@ const Olivetians = () => {
   return (
     <main className="overflow-x-hidden bg-white text-[var(--primary-dark)] mt-0 md:mt-15">
      
-      <PageTitle title="Olivetians | OlivetNOSA" />
+      <PageTitle title="Olivetians | OlivetGOSA" />
       <Navbar />
 
       {/* =========================================================
@@ -651,7 +651,7 @@ const Olivetians = () => {
             className="mx-auto mt-6 max-w-2xl leading-8 text-white/60"
           >
             Join the Olivetian community, keep your profile updated, reconnect
-            with your year set and stay informed about the work of NOSA.
+            with your year set and stay informed about the work of GOSA.
           </p>
 
           <div
@@ -674,7 +674,7 @@ const Olivetians = () => {
               to="/about-nosa"
               className="inline-flex items-center gap-3 border border-white/20 px-7 py-4 text-sm font-medium text-white transition hover:bg-white/10"
             >
-              Learn About NOSA
+              Learn About GOSA
             </Link>
           </div>
         </div>

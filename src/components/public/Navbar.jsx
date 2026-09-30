@@ -324,10 +324,10 @@ const Navbar = () => {
             <div className="group relative">
 
               <NavLink
-                to="/about-nosa"
+                to="/about-gosa"
                 className={dropdownNavLinkClass}
               >
-                NOSA
+                GOSA
 
                 <ChevronDown
                   size={14}
@@ -340,11 +340,11 @@ const Navbar = () => {
                 <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl">
 
                   <Link
-                    to="/about-nosa"
+                    to="/about-gosa"
                     className={dropdownItemClass}
                   >
                     <span className="block font-semibold text-[var(--primary)]">
-                      About NOSA
+                      About GOSA
                     </span>
 
                     <span className="mt-1 block text-xs text-slate-400">
@@ -366,11 +366,11 @@ const Navbar = () => {
                   </Link>
 
                   <Link
-                    to="/nosa-leadership"
+                    to="/gosa-leadership"
                     className={dropdownItemClass}
                   >
                     <span className="block font-semibold text-[var(--primary)]">
-                      NOSA Leadership
+                      GOSA Leadership
                     </span>
 
                     <span className="mt-1 block text-xs text-slate-400">
@@ -379,7 +379,7 @@ const Navbar = () => {
                   </Link>
 
                   <Link
-                    to="/nosa-chapters"
+                    to="/gosa-chapters"
                     className={dropdownItemClass}
                   >
                     <span className="block font-semibold text-[var(--primary)]">
@@ -454,7 +454,7 @@ const Navbar = () => {
             to="/portal/signup"
             className="hidden md:flex group items-center  gap-2 border border-[var(--primary)]  px-5 py-2.5 text-sm font-semibold text-[var(--primary-dark)] transition-all duration-300 hover:shadow-md "
           >
-            Join NOSA
+            Join GOSA
             <ArrowRight
               size={15}
               className="transition-transform duration-300 group-hover:translate-x-1"
@@ -567,7 +567,7 @@ const Navbar = () => {
                   onClick={() => setMobileNosa(!mobileNosa)}
                   className="flex w-full items-center justify-between rounded-xl px-4 py-3 text-sm text-slate-600 transition-all duration-300 hover:bg-slate-50 hover:text-[var(--primary)]"
                 >
-                  <span>NOSA</span>
+                  <span>GOSA</span>
 
                   <ChevronDown
                     size={16}
@@ -580,11 +580,11 @@ const Navbar = () => {
                   <div className="ml-3 mt-1 border-l border-slate-200 pl-3">
 
                     <Link
-                      to="/about-nosa"
+                      to="/about-gosa"
                       onClick={() => setMobileMenu(false)}
                       className="block rounded-lg px-4 py-3 text-sm text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
                     >
-                      About NOSA
+                      About GOSA
                     </Link>
                     <Link
                       to="/in-loving-memory"
@@ -600,15 +600,15 @@ const Navbar = () => {
                     </Link>
 
                     <Link
-                      to="/nosa-leadership"
+                      to="/gosa-leadership"
                       onClick={() => setMobileMenu(false)}
                       className="block rounded-lg px-4 py-3 text-sm text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
                     >
-                      NOSA Leadership
+                      GOSA Leadership
                     </Link>
 
                     <Link
-                      to="/nosa-chapters"
+                      to="/gosa-chapters"
                       onClick={() => setMobileMenu(false)}
                       className="block rounded-lg px-4 py-3 text-sm text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
                     >
@@ -715,7 +715,7 @@ const Navbar = () => {
                 onClick={() => setMobileMenu(false)}
                 className="mt-2  bg-[var(--secondary)] px-4 py-3 text-center text-sm font-semibold text-[var(--primary-dark)] transition hover:shadow-lg"
               >
-                Join NOSA
+                Join GOSA
               </Link>
 
             </div>

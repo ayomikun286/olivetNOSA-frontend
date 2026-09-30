@@ -25,13 +25,13 @@ export default function Home() {
             title: "Welcome to Olivet Baptist High School",
             highlight: "Global Old Students Association.",
             description:
-                "OlivetNOSA connects former students of Olivet Baptist High School across generations, preserving friendships, memories and a shared sense of belonging.",
-            linkText: "Discover OlivetNOSA",
-            linkTo: "/about-nosa",
+                "OlivetGOSA connects former students of Olivet Baptist High School across generations, preserving friendships, memories and a shared sense of belonging.",
+            linkText: "Discover OlivetGOSA",
+            linkTo: "/about-gosa",
         },
         {
             image: "/images/olivetNOSA-2.jpg",
-            eyebrow: "National Old Students' Association",
+            eyebrow: "Global Old Students' Association",
             title: "A connection that began at Olivet",
             highlight: "continues across generations.",
             description:
@@ -43,7 +43,7 @@ export default function Home() {
             image: "/images/olivetNOSA-10.jpg",
             eyebrow: "Our Global Community",
             title: "One school brought us together,",
-            highlight: "NOSA keeps us connected.",
+            highlight: "GOSA keeps us connected.",
             description:
                 "Uniting Olivetians across chapters, year sets, and branches worldwide, fostering fellowship, networking and shared growth.",
             linkText: "Meet the Olivetians",
@@ -98,7 +98,7 @@ export default function Home() {
 
     return (
         <main className="min-h-screen bg-white text-[var(--primary-dark)] overflow-x-hidden mt-10 md:mt-15">
-            <PageTitle title="OlivetNOSA | Olivet Nigerian School Alumni Association" />
+            <PageTitle title="OlivetGOSA | Olivet Nigerian School Alumni Association" />
 
             <header>
                 <Navbar />
@@ -361,7 +361,7 @@ export default function Home() {
                             <h2 className="max-w-4xl text-4xl font-medium leading-[1.05] tracking-[-0.035em] text-[var(--primary-dark)] sm:text-5xl lg:text-6xl">
                                 One school brought us together.
                                 <span className="block text-[var(--primary)]">
-                                    NOSA keeps us connected.
+                                    GOSA keeps us connected.
                                 </span>
                             </h2>
 
@@ -383,10 +383,10 @@ export default function Home() {
 
                             <div className="mt-10 flex flex-wrap gap-x-8 gap-y-4">
                                 <Link
-                                    to="/about-nosa"
+                                    to="/about-gosa"
                                     className="group inline-flex items-center gap-3 text-sm font-semibold text-[var(--primary)]"
                                 >
-                                    About OlivetNOSA
+                                    About OlivetGOSA
 
                                     <ArrowRight
                                         size={16}
@@ -535,7 +535,7 @@ export default function Home() {
 
                         <div data-aos="fade-left">
                             <p className="max-w-3xl text-xl leading-9 text-[var(--primary-dark)] sm:text-2xl">
-                                NOSA exists to keep the Olivetian community
+                                GOSA exists to keep the Olivetian community
                                 connected, to honour where we came from and to
                                 help shape where we are going.
                             </p>
@@ -601,7 +601,7 @@ export default function Home() {
                             </div>
 
                             <p className="mt-7 text-xs uppercase tracking-[0.2em] text-[var(--text-muted)]">
-                                Draft statements — subject to official NOSA
+                                Draft statements — subject to official GOSA
                                 approval
                             </p>
                         </div>
@@ -618,7 +618,7 @@ export default function Home() {
                         {/* Intro */}
                         <div data-aos="fade-right">
                             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-                                OlivetNOSA Today
+                                OlivetGOSA Today
                             </p>
 
                             <h2 className="mt-6 max-w-md text-4xl font-medium leading-[1.05] tracking-[-0.035em] sm:text-5xl">
@@ -632,10 +632,10 @@ export default function Home() {
                             </p>
 
                             <Link
-                                to="/about-nosa"
+                                to="/about-gosa"
                                 className="group mt-9 inline-flex items-center gap-3 border-b border-[var(--secondary)] pb-2 text-sm font-semibold text-white"
                             >
-                                Learn more about NOSA
+                                Learn more about GOSA
                                 <ArrowRight
                                     size={16}
                                     className="transition-transform group-hover:translate-x-1"
@@ -671,7 +671,7 @@ export default function Home() {
                                     <p className="mt-3 max-w-xl leading-7 text-white/50">
                                         Local communities through which
                                         Olivetians can stay connected and take
-                                        part in the life of NOSA.
+                                        part in the life of GOSA.
                                     </p>
 
                                     <span className="mt-5 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--secondary)]">
@@ -807,7 +807,7 @@ export default function Home() {
 
                             <p className="mt-8 max-w-2xl text-lg leading-8 text-[var(--text-muted)]">
                                 The alumni community brings together people
-                                whose paths began in the same place. NOSA
+                                whose paths began in the same place. GOSA
                                 provides a way to reconnect, participate and
                                 remain part of something that continues beyond
                                 the school years.
@@ -856,7 +856,7 @@ export default function Home() {
 
                                         <div>
                                             <h3 className="font-semibold text-[var(--primary-dark)]">
-                                                Become part of NOSA
+                                                Become part of GOSA
                                             </h3>
 
                                             <p className="mt-1 text-sm leading-6 text-[var(--text-muted)]">
@@ -896,7 +896,7 @@ export default function Home() {
                             <p className="mt-7 max-w-md text-base leading-8 text-[var(--text-muted)]">
                                 Keep up with announcements, community stories,
                                 reunions and moments taking place across
-                                Olivet and NOSA.
+                                Olivet and GOSA.
                             </p>
 
                             <Link
@@ -988,6 +988,167 @@ export default function Home() {
                     </div>
                 </div>
             </section>
+
+{/* =========================================================
+    OLIVET HEIGHTS TV & SOCIAL
+========================================================== */}
+<section className="bg-white py-24 sm:py-32">
+    <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
+
+        {/* Section heading */}
+        <div
+            data-aos="fade-up"
+            className="mb-10 flex flex-col justify-between gap-6 sm:flex-row sm:items-end"
+        >
+            <div>
+                <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
+                    Stay Connected
+                </p>
+
+                <h2 className="mt-5 max-w-2xl text-4xl font-medium leading-[1.05] tracking-[-0.035em] text-[var(--primary-dark)] sm:text-5xl">
+                    See Olivet beyond the website.
+                </h2>
+            </div>
+
+            <p className="max-w-sm text-sm leading-7 text-[var(--text-muted)]">
+                Follow the stories, memories and moments happening around
+                Olivet Heights.
+            </p>
+        </div>
+
+        {/* Social content */}
+        <div className="grid gap-5 lg:grid-cols-[1.6fr_0.8fr]">
+
+            {/* YouTube Video Banner */}
+            <a
+                href="https://www.youtube.com/@olivetheightstv"
+                target="_blank"
+                rel="noopener noreferrer"
+                data-aos="fade-right"
+                className="group relative min-h-[320px] overflow-hidden bg-[var(--primary-dark)] sm:min-h-[400px]"
+            >
+                <img
+                    src="/images/olivetNOSA-3.jpg"
+                    alt="Olivet Heights TV"
+                    className="
+                        absolute
+                        inset-0
+                        h-full
+                        w-full
+                        object-cover
+                        transition
+                        duration-700
+                        group-hover:scale-[1.04]
+                    "
+                />
+
+                {/* Dark overlay */}
+                <div className="absolute inset-0 bg-[var(--primary-dark)]/55 transition duration-500 group-hover:bg-[var(--primary-dark)]/65" />
+
+                {/* Gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[var(--primary-dark)] via-transparent to-transparent" />
+
+                {/* Play button */}
+                <div className="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[var(--primary-dark)] shadow-xl transition duration-500 group-hover:scale-110">
+                    <span className="ml-1 text-xl">
+                        ▶
+                    </span>
+                </div>
+
+                {/* Content */}
+                <div className="absolute bottom-0 left-0 right-0 p-7 sm:p-9">
+                    <div className="flex items-end justify-between gap-6">
+                        <div>
+                            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
+                                Olivet Heights TV
+                            </p>
+
+                            <h3 className="mt-3 text-2xl font-medium text-white sm:text-3xl">
+                                Stories from Olivet Heights.
+                            </h3>
+
+                            <p className="mt-2 max-w-lg text-sm leading-6 text-white/60">
+                                Watch videos, events and moments from the
+                                Olivet community.
+                            </p>
+                        </div>
+
+                        <ArrowUpRight
+                            size={22}
+                            className="hidden shrink-0 text-white transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 sm:block"
+                        />
+                    </div>
+                </div>
+            </a>
+
+            {/* Instagram Card */}
+            <a
+                href="https://www.instagram.com/olivetheights/"
+                target="_blank"
+                rel="noopener noreferrer"
+                data-aos="fade-left"
+                className="group relative min-h-[320px] overflow-hidden bg-[var(--background-soft)] p-7 transition duration-500 hover:bg-[var(--primary-dark)] sm:min-h-[400px] sm:p-9"
+            >
+                {/* Decorative image */}
+                <img
+                    src="/images/olivetNOSA-10.jpg"
+                    alt=""
+                    className="
+                        absolute
+                        inset-0
+                        h-full
+                        w-full
+                        object-cover
+                        opacity-10
+                        transition
+                        duration-700
+                        group-hover:scale-[1.04]
+                        group-hover:opacity-20
+                    "
+                />
+
+                <div className="relative z-10 flex h-full flex-col justify-between">
+
+                    {/* Instagram icon */}
+                    <div className="flex items-center justify-between">
+                        <div className="flex h-12 w-12 items-center justify-center border border-[var(--primary)]/15 text-[var(--primary)] transition group-hover:border-white/20 group-hover:text-white">
+                            <span className="text-xl">
+                                ◎
+                            </span>
+                        </div>
+
+                        <ArrowUpRight
+                            size={20}
+                            className="text-[var(--primary)] transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-white"
+                        />
+                    </div>
+
+                    {/* Content */}
+                    <div>
+                        <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
+                            Instagram
+                        </p>
+
+                        <h3 className="mt-3 text-2xl font-medium text-[var(--primary-dark)] transition group-hover:text-white">
+                            @olivetheights
+                        </h3>
+
+                        <p className="mt-4 text-sm leading-7 text-[var(--text-muted)] transition group-hover:text-white/60">
+                            Follow the latest photographs, announcements
+                            and moments from the Olivet community.
+                        </p>
+
+                        <span className="mt-6 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--primary)] transition group-hover:text-[var(--secondary)]">
+                            Follow us
+                            <ArrowRight size={14} />
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+        </div>
+    </div>
+</section>
 
             {/* =========================================================
                 FROM THE ARCHIVES
@@ -1176,7 +1337,7 @@ export default function Home() {
 
                         <div className="mt-16 flex flex-col justify-between gap-5 border-t border-[var(--primary)]/10 pt-6 sm:flex-row sm:items-center">
                             <p className="text-sm text-[var(--text-muted)]">
-                                National Old Students' Association
+                                Global Old Students' Association
                             </p>
 
                             <p className="text-sm font-medium italic text-[var(--secondary)]">

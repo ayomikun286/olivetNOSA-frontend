@@ -291,7 +291,7 @@ const Main = () => {
           </h1>
 
           <p className="text-sm text-(--secondary) mt-1">
-            Overview of membership, payments and OlivetNOSA activities.
+            Overview of membership, payments and OlivetGOSA activities.
           </p>
         </div>
 

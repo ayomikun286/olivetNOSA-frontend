@@ -38,7 +38,7 @@ const Footer = () => {
 
               <div className="leading-none">
                <p className="text-xs font-bold tracking-wide  transition-colors duration-500 max-w-35">
-               Olivet National Old Students Association
+               Global Old Students Association Webaite
               </p>
 
                 <p className="mt-1 text-[7px] font-medium uppercase tracking-[0.22em] text-white/50">
@@ -106,7 +106,7 @@ const Footer = () => {
                   to="/about-nosa"
                   className="text-sm text-white/55 transition hover:text-[var(--secondary)]"
                 >
-                  About NOSA
+                  About GOSA
                 </Link>
               </li>
 
@@ -186,7 +186,7 @@ const Footer = () => {
                   to="/Signup"
                   className="text-sm text-white/55 transition hover:text-[var(--secondary)]"
                 >
-                  Join NOSA
+                  Join GOSA
                 </Link>
               </li>
 
@@ -207,7 +207,7 @@ const Footer = () => {
 
             <p className="mt-6 text-sm leading-7 text-white/55">
               Keep up with Olivet Baptist High School,
-              NOSA activities and stories from our community.
+              GOSA activities and stories from our community.
             </p>
 
             {/* CTA */}
@@ -264,7 +264,7 @@ const Footer = () => {
         <div className="flex flex-col gap-5 text-xs text-white/35 sm:flex-row sm:items-center sm:justify-between">
 
           <p>
-            @ {new Date().getFullYear()} National Old Students Association | Powered by: DXsExpressionsUK
+            @ {new Date().getFullYear()} Global Old Students Association | Powered by: DXsExpressionsUK
           </p>
 
           <div className="flex flex-wrap items-center gap-5">

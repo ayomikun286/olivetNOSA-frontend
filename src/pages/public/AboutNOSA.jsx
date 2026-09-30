@@ -32,7 +32,7 @@ const AboutNOSA = () => {
       <Navbar />
 
       <main className="overflow-x-hidden bg-white text-[var(--primary-dark)] mt-0 md:mt-15">
-         <PageTitle title="About NOSA | OlivetNOSA" />
+         <PageTitle title="About GOSA | OlivetGOSA" />
         
         {/* =========================================================
             HERO
@@ -64,7 +64,7 @@ const AboutNOSA = () => {
                   <span className="h-px w-10 bg-[var(--secondary)]" />
 
                   <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-[var(--secondary)] sm:text-xs">
-                    About NOSA
+                    About GOSA
                   </span>
                 </div>
 
@@ -100,7 +100,7 @@ const AboutNOSA = () => {
                     to="/olivetians"
                     className="group inline-flex items-center gap-3 rounded-xl bg-[var(--secondary)] px-6 py-3.5 text-sm font-semibold text-[var(--primary-dark)] transition duration-300 hover:opacity-90"
                   >
-                    Explore NOSA
+                    Explore GOSA
 
                     <ArrowUpRight
                       className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
@@ -198,7 +198,7 @@ const AboutNOSA = () => {
                   <span className="h-px w-8 bg-[var(--secondary)]" />
 
                   <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--primary)]">
-                    Why NOSA exists
+                    Why GOSA exists
                   </p>
                 </div>
               </div>
@@ -227,7 +227,7 @@ const AboutNOSA = () => {
                   data-aos-delay="150"
                   className="mt-5 max-w-3xl text-base leading-7 text-[var(--text-muted)] sm:text-lg sm:leading-8"
                 >
-                  NOSA exists to preserve that connection — giving Olivetians
+                  GOSA exists to preserve that connection — giving Olivetians
                   a way to find one another, stay involved, support the school
                   and help shape what comes next.
                 </p>
@@ -391,7 +391,7 @@ const AboutNOSA = () => {
                   <span className="h-px w-8 bg-[var(--secondary)]" />
 
                   <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--primary)]">
-                    What NOSA does
+                    What GOSA does
                   </p>
                 </div>
 
@@ -421,7 +421,7 @@ const AboutNOSA = () => {
                   data-aos-delay="100"
                   className="mt-8 max-w-2xl text-base leading-7 text-[var(--text-muted)] sm:text-lg sm:leading-8"
                 >
-                  NOSA is more than a name or an organisation. It is the
+                  GOSA is more than a name or an organisation. It is the
                   structure through which Olivetians continue to connect,
                   contribute and celebrate the community they share.
                 </p>
@@ -530,7 +530,7 @@ const AboutNOSA = () => {
                   <span className="h-px w-8 bg-[var(--secondary)]" />
 
                   <p className="text-xs font-semibold uppercase tracking-[0.25em] text-white/50">
-                    How NOSA is connected
+                    How GOSA is connected
                   </p>
                 </div>
               </div>
@@ -548,7 +548,7 @@ const AboutNOSA = () => {
                   data-aos-delay="100"
                   className="mt-8 max-w-3xl text-base leading-7 text-white/65 sm:text-lg sm:leading-8"
                 >
-                  From national leadership to individual members, NOSA works
+                  From national leadership to individual members, GOSA works
                   through a community structure that gives everyone a place
                   within the wider association.
                 </p>
@@ -630,7 +630,7 @@ const AboutNOSA = () => {
                       </h3>
 
                       <p className="mt-2 max-w-xl text-sm leading-6 text-white/50">
-                        The people at the heart of NOSA — each carrying a
+                        The people at the heart of GOSA — each carrying a
                         different Olivet story.
                       </p>
                     </div>
@@ -667,7 +667,7 @@ const AboutNOSA = () => {
                 </h2>
 
                 <p className="mt-7 max-w-xl text-base leading-7 text-[var(--text-muted)] sm:text-lg sm:leading-8">
-                  Chapters give members a local expression of the wider NOSA
+                  Chapters give members a local expression of the wider GOSA
                   community — a place to meet, share experiences and remain
                   involved.
                 </p>
@@ -773,7 +773,7 @@ const AboutNOSA = () => {
                   data-aos-delay="100"
                   className="mt-9 max-w-3xl text-base leading-7 text-white/70 sm:text-lg sm:leading-8"
                 >
-                  The future of NOSA is not simply about becoming bigger. It is
+                  The future of GOSA is not simply about becoming bigger. It is
                   about becoming more connected, more useful to its members and
                   more meaningful to the generations that follow.
                 </p>
@@ -823,7 +823,7 @@ const AboutNOSA = () => {
                   className="mt-20 border-t border-white/15 pt-10"
                 >
                   <p className="max-w-4xl text-3xl font-medium leading-[1.25] tracking-[-0.025em] text-white/90 sm:text-4xl">
-                    NOSA is not simply about where we came from. It is about
+                    GOSA is not simply about where we came from. It is about
                     what we choose to build together from here.
                   </p>
                 </div>
@@ -867,7 +867,7 @@ const AboutNOSA = () => {
                     to="/portal/Signup"
                     className="group inline-flex items-center gap-3 rounded-xl bg-[var(--primary)] px-6 py-3.5 text-sm font-semibold text-white transition duration-300 hover:opacity-90"
                   >
-                    Join NOSA
+                    Join GOSA
 
                     <ArrowUpRight
                       className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"

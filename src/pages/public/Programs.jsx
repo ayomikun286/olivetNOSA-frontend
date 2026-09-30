@@ -17,7 +17,7 @@ import {
 const Programs = () => {
   return (
     <>
-      <PageTitle title="Programs | OlivetNOSA" />
+      <PageTitle title="Programs | OlivetGOSA" />
 
       <Navbar />
 

@@ -67,7 +67,7 @@ const AboutSchool = () => {
     <main className="min-h-screen bg-white text-[var(--primary-dark)] mt-0 md:mt-15">
      
 
-       <PageTitle title="About Olivet School | OlivetNOSA" />
+       <PageTitle title="About Olivet School | OlivetGOSA" />
           
       <header className="absolute left-0 right-0 top-0 z-50">
          <Navbar />
@@ -659,7 +659,7 @@ const AboutSchool = () => {
             </h3>
 
             <p className="mt-4 text-base leading-7 text-white/60">
-              The establishment of the National Old Students Association
+              The establishment of the Global Old Students Association
               created another way for generations of Olivetians to remain
               connected to one another and to their school.
             </p>
@@ -1040,17 +1040,17 @@ const AboutSchool = () => {
               </h2>
 
               <p className="mt-7 max-w-2xl text-base leading-8 text-[var(--text-muted)] sm:text-lg">
-                OlivetNOSA provides a way for former students to remain
+                OlivetGOSA provides a way for former students to remain
                 connected with one another, preserve the history of the school
                 and contribute to the continuing Olivet community.
               </p>
             </div>
 
             <Link
-              to="/about-nosa"
+              to="/about-gosa"
               className="group inline-flex items-center gap-3 text-sm font-semibold text-[var(--primary)]"
             >
-              Discover OlivetNOSA
+              Discover OlivetGOSA
 
               <ArrowRight
                 size={17}

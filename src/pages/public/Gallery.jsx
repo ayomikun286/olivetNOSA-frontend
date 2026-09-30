@@ -140,7 +140,7 @@ export default function Gallery() {
      
      
      
-      <PageTitle title="Gallery | OlivetNOSA" />
+      <PageTitle title="Gallery | OlivetGOSA" />
       .
        
       <Navbar />
