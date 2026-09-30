@@ -135,24 +135,40 @@ const Login = () => {
       // BACKEND ERROR
       // Same pattern as Signup
       // ========================================
+if (!response?.ok) {
+  const responseData = response?.data;
 
-      if (!response?.ok) {
-        const message =
-          response?.data?.message ||
-          "Invalid email/Alumni ID or password.";
+  const message =
+    responseData?.message ||
+    "Invalid email/Alumni ID or password.";
 
-        setError({
-          server: message,
-        });
+  if (responseData?.verifyRequired === true) {
+    navigate("/portal/verifyEmail", {
+      state: {
+        email: responseData.email,
+      },
+      replace: true,
+    });
 
-        showAlert(
-          "error",
-          "Login failed",
-          message
-        );
+    return;
+  }
 
-        return;
-      }
+  
+
+  setError({
+    server: message,
+  });
+
+  showAlert(
+    "error",
+    "Login failed",
+    message
+  );
+
+  return;
+}
+
+       
 
       // ========================================
       // SUCCESS

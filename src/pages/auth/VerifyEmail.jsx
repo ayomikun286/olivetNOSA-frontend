@@ -9,7 +9,7 @@ import {
 
 import { checkVerificationStatus } from "../../services/authService.js";
 import PageTitle from "../../components/common/PageTitle.jsx";
-import ResendVerificationButton from "../../components/common/ResendVerificationButton.jsx.jsx";
+import ResendVerificationButton from "../../components/common/ResendVerificationButton.jsx";
 
 const VerifyEmail = () => {
   const location = useLocation();
@@ -74,7 +74,7 @@ const VerifyEmail = () => {
   if (!email) {
     return (
       <div className="verify-email-page">
-        <PageTitle title="Verify Email | OlivetNOSA" />
+        <PageTitle title="Verify Email | OlivetGOSA" />
 
         <div className="verify-email-card">
           <div className="py-4 text-center">
