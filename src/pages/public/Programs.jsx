@@ -94,7 +94,7 @@ const Programs = () => {
         {/* =====================================================
             02 — ACADEMIC LIFE
         ====================================================== */}
-        <section className="overflow-hidden bg-white py-24 sm:py-28 lg:py-32">
+        <section className="overflow-hidden bg-white py-24 sm:py-25 lg:py-22">
 
           <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
 
@@ -209,7 +209,7 @@ const Programs = () => {
         {/* =====================================================
             03 — JETS / SCIENCE
         ====================================================== */}
-        <section className="overflow-hidden bg-[var(--background-soft)] py-24 sm:py-28 lg:py-32">
+        <section className="overflow-hidden bg-[var(--background-soft)] py-24 sm:py-28 lg:py-22">
 
           <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
 
@@ -293,7 +293,7 @@ const Programs = () => {
         {/* =====================================================
             04 — SPORT
         ====================================================== */}
-        <section className="overflow-hidden bg-white py-24 sm:py-28 lg:py-32">
+        <section className="overflow-hidden bg-white py-24 sm:py-28 lg:py-22">
 
           <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
 
@@ -371,7 +371,7 @@ const Programs = () => {
         {/* =====================================================
             05 — EXPRESSION
         ====================================================== */}
-        <section className="overflow-hidden bg-[var(--primary-dark)] py-24 text-white sm:py-28 lg:py-32">
+        <section className="overflow-hidden bg-[var(--primary-dark)] py-24 text-white sm:py-20 lg:py-22">
 
           <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
 
@@ -459,7 +459,7 @@ const Programs = () => {
         {/* =====================================================
             06 — HOUSE LIFE
         ====================================================== */}
-        <section className="overflow-hidden bg-white py-24 sm:py-28 lg:py-32">
+        <section className="overflow-hidden bg-white py-24 sm:py-20 lg:py-22">
 
           <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
 
@@ -546,7 +546,7 @@ const Programs = () => {
         {/* =====================================================
             07 — CHARACTER & LEADERSHIP
         ====================================================== */}
-        <section className="overflow-hidden bg-[var(--background-soft)] py-24 sm:py-28 lg:py-32">
+        <section className="overflow-hidden bg-[var(--background-soft)] py-24 sm:py-25 lg:py-22">
 
           <div className="mx-auto max-w-5xl px-6 text-center sm:px-8">
 
@@ -610,7 +610,7 @@ const Programs = () => {
         {/* =====================================================
             08 — LIFE ON THE HEIGHTS
         ====================================================== */}
-        <section className="overflow-hidden bg-white py-24 sm:py-28 lg:py-32">
+        <section className="overflow-hidden bg-white py-24 sm:py-20 lg:py-22">
 
           <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
 
@@ -679,7 +679,7 @@ const Programs = () => {
         {/* =====================================================
             CLOSING
         ====================================================== */}
-        <section className="overflow-hidden bg-[var(--primary-dark)] py-24 text-white sm:py-28 lg:py-32">
+        <section className="overflow-hidden bg-[var(--primary-dark)] py-24 text-white sm:py-20 lg:py-22">
 
           <div className="mx-auto max-w-5xl px-6 text-center sm:px-8">
 

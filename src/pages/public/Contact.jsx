@@ -128,7 +128,7 @@ const Contact = () => {
       {/* =====================================================
           INTRODUCTION
       ====================================================== */}
-      <section className="bg-white py-24 sm:py-32 lg:py-40">
+      <section className="bg-white py-24 sm:py-32 lg:py-20">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
           <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:items-end lg:gap-20">
             <div data-aos="fade-up">
@@ -260,7 +260,7 @@ const Contact = () => {
       {/* =====================================================
           CONTACT FORM
       ====================================================== */}
-      <section className="bg-[var(--primary-dark)] py-24 text-white sm:py-32 lg:py-40">
+      <section className="bg-[var(--primary-dark)] py-24 text-white sm:py-32 lg:py-25">
         <div className="mx-auto grid max-w-7xl gap-14 px-5 sm:px-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20 lg:px-12">
           {/* LEFT CONTENT */}
           <div
@@ -475,7 +475,7 @@ const Contact = () => {
       {/* =====================================================
           CONTACT HOURS
       ====================================================== */}
-      <section className="bg-white py-24 sm:py-28 lg:py-32">
+      <section className="bg-white py-24 sm:py-20 lg:py-22">
         <div
           className="mx-auto max-w-5xl px-5 text-center sm:px-8"
           data-aos="fade-up"
@@ -505,7 +505,7 @@ const Contact = () => {
       {/* =====================================================
           FINAL CTA
       ====================================================== */}
-      <section className="bg-[var(--primary-dark)] py-24 text-white sm:py-32 lg:py-36">
+      <section className="bg-[var(--primary-dark)] py-20 text-white sm:py-20 lg:py-26">
         <div
           className="mx-auto max-w-4xl px-5 text-center sm:px-8"
           data-aos="fade-up"

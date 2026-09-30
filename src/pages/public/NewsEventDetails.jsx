@@ -185,7 +185,7 @@ export default function NewsEventDetails() {
           DETAILS
       ====================================================== */}
 
-            <section className="bg-white py-20 sm:py-28 lg:py-32">
+            <section className="bg-white py-20 sm:py-20 lg:py-22">
                 <div className="mx-auto max-w-5xl px-5 sm:px-8">
                     <div
                         data-aos="fade-up"
@@ -305,7 +305,7 @@ export default function NewsEventDetails() {
           CLOSING
       ====================================================== */}
 
-            <section className="bg-[var(--primary-dark)] py-24 text-white sm:py-32">
+            <section className="bg-[var(--primary-dark)] py-20 text-white sm:py-22">
                 <div
                     data-aos="fade-up"
                     className="mx-auto max-w-4xl px-5 text-center sm:px-8"

@@ -210,7 +210,7 @@ export default function NewsEvents() {
           FEATURED STORY
       ====================================================== */}
 
-      <section className="bg-white py-24 sm:py-32 lg:py-40">
+      <section className="bg-white py-24 sm:py-32 lg:py-30">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
           <div
             data-aos="fade-up"
@@ -330,7 +330,7 @@ export default function NewsEvents() {
           EVENTS
       ====================================================== */}
 
-      <section className="bg-[var(--primary-dark)] py-24 text-white sm:py-32 lg:py-40">
+      <section className="bg-[var(--primary-dark)] py-24 text-white sm:py-32 lg:py-30">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
           <div
             data-aos="fade-up"
@@ -414,7 +414,7 @@ export default function NewsEvents() {
           ARCHIVE
       ====================================================== */}
 
-      <section className="bg-white py-24 sm:py-32 lg:py-40">
+      <section className="bg-white py-24 sm:py-32 lg:py-25">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
           <div
             data-aos="fade-up"
@@ -476,7 +476,7 @@ export default function NewsEvents() {
           CLOSING
       ====================================================== */}
 
-      <section className="bg-[var(--primary-dark)] py-24 text-white sm:py-32 lg:py-40">
+      <section className="bg-[var(--primary-dark)] py-24 text-white sm:py-22 lg:py-25">
         <div
           data-aos="fade-up"
           className="mx-auto max-w-4xl px-5 text-center sm:px-8"

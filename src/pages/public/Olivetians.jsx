@@ -155,7 +155,7 @@ const Olivetians = () => {
       ========================================================= */}
       <section
         id="community"
-        className="bg-white py-24 sm:py-28 lg:py-32"
+        className="bg-white py-24 sm:py-28 lg:py-22"
       >
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
           <div className="grid gap-14 lg:grid-cols-[0.8fr_1.2fr] lg:items-start lg:gap-20">
@@ -264,7 +264,7 @@ const Olivetians = () => {
       {/* =========================================================
           GENERATIONS
       ========================================================= */}
-      <section className="bg-white py-24 sm:py-28 lg:py-32">
+      <section className="bg-white py-24 sm:py-28 lg:py-22">
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
           <div className="grid gap-14 lg:grid-cols-[0.75fr_1.25fr] lg:gap-20">
             <div data-aos="fade-right">
@@ -338,7 +338,7 @@ const Olivetians = () => {
       {/* =========================================================
           GLOBAL OLIVETIANS
       ========================================================= */}
-      <section className="bg-[var(--primary-dark)] py-24 sm:py-28 lg:py-32">
+      <section className="bg-[var(--primary-dark)] py-24 sm:py-28 lg:py-22">g
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
           <div className="grid gap-14 lg:grid-cols-[1fr_0.9fr] lg:items-center lg:gap-20">
             <div data-aos="fade-right">
@@ -417,7 +417,7 @@ const Olivetians = () => {
       {/* =========================================================
           STORIES
       ========================================================= */}
-      <section className="bg-white py-24 sm:py-28 lg:py-32">
+      <section className="bg-white py-24 sm:py-28 lg:py-22">
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
           <div className="flex flex-col gap-6 border-b border-slate-200 pb-10 sm:flex-row sm:items-end sm:justify-between">
             <div data-aos="fade-up">
@@ -540,7 +540,7 @@ const Olivetians = () => {
       {/* =========================================================
           GIVING BACK
       ========================================================= */}
-      <section className="bg-[var(--background-soft)] py-24 sm:py-28 lg:py-32">
+      <section className="bg-[var(--background-soft)] py-24 sm:py-22 lg:py-22">
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
           <div className="grid overflow-hidden bg-[var(--primary)] lg:grid-cols-2">
             <div
@@ -608,7 +608,7 @@ const Olivetians = () => {
       {/* =========================================================
           FINAL CTA
       ========================================================= */}
-      <section className="relative overflow-hidden bg-[var(--primary-dark)] py-24 sm:py-28 lg:py-32">
+      <section className="relative overflow-hidden bg-[var(--primary-dark)] py-24 sm:py-28 lg:py-22">
         <div className="absolute inset-0">
           <img
             src="/images/olivetNOSA-6.jpg"

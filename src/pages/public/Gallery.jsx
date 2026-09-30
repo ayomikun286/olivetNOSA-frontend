@@ -227,7 +227,7 @@ export default function Gallery() {
       {/* =====================================================
           INTRODUCTION
       ====================================================== */}
-      <section className="bg-white py-24 sm:py-32 lg:py-40">
+      <section className="bg-white py-24 sm:py-32 lg:py-30">
         <div className="mx-auto grid max-w-7xl gap-12 px-5 sm:px-8 lg:grid-cols-[1fr_1.1fr] lg:items-end lg:gap-20 lg:px-12">
           <div data-aos="fade-up">
             <p className="mb-4 text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
@@ -293,7 +293,7 @@ export default function Gallery() {
       {/* =====================================================
           GALLERY ARCHIVE
       ====================================================== */}
-      <section className="bg-white py-20 sm:py-28 lg:py-36">
+      <section className="bg-white py-20 sm:py-28 lg:py-26">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
           {/* Section heading */}
           <div
@@ -371,7 +371,7 @@ export default function Gallery() {
       {/* =====================================================
           HERITAGE STORY
       ====================================================== */}
-      <section className="bg-[var(--primary-dark)] py-24 text-white sm:py-32 lg:py-40">
+      <section className="bg-[var(--primary-dark)] py-24 text-white sm:py-32 lg:py-20">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
           <div className="grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-20">
             {/* Image */}
@@ -434,7 +434,7 @@ export default function Gallery() {
       {/* =====================================================
           COMMUNITY CTA
       ====================================================== */}
-      <section className="bg-white py-24 sm:py-32 lg:py-40">
+      <section className="bg-white py-24 sm:py-32 lg:py-20">
         <div className="mx-auto max-w-4xl px-5 text-center sm:px-8">
           <div data-aos="fade-up">
             <div className="mb-6 flex items-center justify-center gap-4">

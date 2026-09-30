@@ -190,7 +190,7 @@ const AboutNOSA = () => {
         {/* =========================================================
             WHY NOSA
         ========================================================== */}
-        <section className="bg-white py-24 sm:py-32 lg:py-40">
+        <section className="bg-white py-24 sm:py-22 lg:py-25">
           <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
             <div className="grid gap-14 lg:grid-cols-[0.7fr_1.3fr] lg:gap-20">
               <div data-aos="fade-right">
@@ -278,7 +278,7 @@ const AboutNOSA = () => {
         {/* =========================================================
             THE COMMUNITY
         ========================================================== */}
-        <section className="bg-[var(--primary)] py-24 text-white sm:py-32 lg:py-40">
+        <section className="bg-[var(--primary)] py-24 text-white sm:py-32 lg:py-25">
           <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
             <div className="grid gap-14 lg:grid-cols-[0.75fr_1.25fr] lg:gap-20">
               <div data-aos="fade-right">
@@ -383,7 +383,7 @@ const AboutNOSA = () => {
         {/* =========================================================
             WHAT NOSA DOES
         ========================================================== */}
-        <section className="bg-white py-24 sm:py-32 lg:py-40">
+        <section className="bg-white py-24 sm:py-32 lg:py-30">
           <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
             <div className="grid gap-16 lg:grid-cols-[0.7fr_1.3fr] lg:gap-24">
               <div data-aos="fade-right">
@@ -522,7 +522,7 @@ const AboutNOSA = () => {
         {/* =========================================================
             STRUCTURE
         ========================================================== */}
-        <section className="bg-[var(--primary-dark)] py-24 text-white sm:py-32 lg:py-40">
+        <section className="bg-[var(--primary-dark)] py-24 text-white sm:py-32 lg:py-30">
           <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
             <div className="grid gap-14 lg:grid-cols-[0.7fr_1.3fr] lg:gap-20">
               <div data-aos="fade-right">
@@ -649,7 +649,7 @@ const AboutNOSA = () => {
         {/* =========================================================
             ACROSS PLACES / GENERATIONS
         ========================================================== */}
-        <section className="bg-white py-24 sm:py-32 lg:py-40">
+        <section className="bg-white py-24 sm:py-32 lg:py-30">
           <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
             <div className="grid gap-16 lg:grid-cols-[1.05fr_0.95fr] lg:gap-20">
               {/* Across places */}
@@ -743,7 +743,7 @@ const AboutNOSA = () => {
         {/* =========================================================
             LOOKING AHEAD
         ========================================================== */}
-        <section className="bg-[var(--primary)] py-24 text-white sm:py-32 lg:py-40">
+        <section className="bg-[var(--primary)] py-24 text-white sm:py-32 lg:py-30">
           <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
             <div className="grid gap-14 lg:grid-cols-[0.7fr_1.3fr] lg:gap-20">
               <div data-aos="fade-right">
@@ -835,7 +835,7 @@ const AboutNOSA = () => {
         {/* =========================================================
             FINAL INVITATION
         ========================================================== */}
-        <section className="bg-white py-24 sm:py-32 lg:py-40">
+        <section className="bg-white py-24 sm:py-32 lg:py-30">
           <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
             <div className="grid gap-14 lg:grid-cols-[0.7fr_1.3fr] lg:items-end lg:gap-20">
               <div data-aos="fade-right">

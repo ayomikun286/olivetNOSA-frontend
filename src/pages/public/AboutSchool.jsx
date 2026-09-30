@@ -176,7 +176,7 @@ const AboutSchool = () => {
       ========================================================= */}
       <section
         id="history"
-        className="scroll-mt-24 overflow-hidden bg-white py-24 sm:py-28 lg:py-32"
+        className="scroll-mt-24 overflow-hidden bg-white py-24 sm:py-28 lg:py-22"
       >
         <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
           <div className="grid gap-10 lg:grid-cols-[0.7fr_1.3fr] lg:items-end">
@@ -338,7 +338,7 @@ const AboutSchool = () => {
       {/* =========================================================
           03 · PURPOSE
       ========================================================= */}
-      <section className="overflow-hidden bg-[var(--background-soft)] py-24 sm:py-28 lg:py-32">
+      <section className="overflow-hidden bg-[var(--background-soft)] py-24 sm:py-28 lg:py-15">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
           <div className="grid gap-14 lg:grid-cols-[0.65fr_1.35fr] lg:gap-24">
             <div data-aos="fade-right">
@@ -473,7 +473,7 @@ const AboutSchool = () => {
       {/* =========================================================
           04 · THE OLIVET EXPERIENCE
       ========================================================= */}
-      <section className="overflow-hidden bg-white py-24 sm:py-28 lg:py-32">
+      <section className="overflow-hidden bg-white py-24 sm:py-28 lg:py-20">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
           <div className="grid gap-14 lg:grid-cols-[0.75fr_1.25fr] lg:items-center lg:gap-24">
             <div data-aos="fade-right">
@@ -534,10 +534,7 @@ const AboutSchool = () => {
         </div>
       </section>
 
-      {/* =========================================================
-          05 · THROUGH THE YEARS
-      ========================================================= */}
-      {/* =====================================================
+    {/* =====================================================
     SECTION 05 — THROUGH THE YEARS
 ===================================================== */}
 <section
@@ -775,7 +772,7 @@ const AboutSchool = () => {
       {/* =========================================================
           06 · PEOPLE OF OLIVET
       ========================================================= */}
-      <section className="overflow-hidden bg-white py-24 sm:py-28 lg:py-32">
+      <section className="overflow-hidden bg-white py-24 sm:py-20 lg:py-20">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
           <div className="grid gap-10 lg:grid-cols-[0.7fr_1.3fr] lg:items-end">
             <div data-aos="fade-right">
@@ -887,7 +884,7 @@ const AboutSchool = () => {
       {/* =========================================================
           07 · HOUSE SYSTEM
       ========================================================= */}
-      <section className="overflow-hidden bg-[var(--background-soft)] py-24 sm:py-28 lg:py-32">
+      <section className="overflow-hidden bg-[var(--background-soft)] py-10 sm:py-10 lg:py-15">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
           <div className="grid gap-12 lg:grid-cols-[0.65fr_1.35fr] lg:gap-24">
             <div data-aos="fade-right">
@@ -958,7 +955,7 @@ const AboutSchool = () => {
       {/* =========================================================
           08 · OLIVET TODAY
       ========================================================= */}
-      <section className="overflow-hidden bg-white py-24 sm:py-28 lg:py-32">
+      <section className="overflow-hidden bg-white py-24 sm:py-28 lg:py-22">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
           <div className="grid overflow-hidden bg-[var(--primary-dark)] lg:grid-cols-[1.05fr_0.95fr]">
             <div className="min-h-[420px] overflow-hidden">
@@ -1017,7 +1014,7 @@ const AboutSchool = () => {
       {/* =========================================================
           09 · OLIVET & NOSA
       ========================================================= */}
-      <section className="overflow-hidden bg-[var(--background-soft)] py-24 sm:py-28 lg:py-32">
+      <section className="overflow-hidden bg-[var(--background-soft)] py-24 sm:py-28 lg:py-15">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
           <div
             data-aos="fade-up"

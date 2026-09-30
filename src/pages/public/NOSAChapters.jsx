@@ -140,7 +140,7 @@ export default function NOSAChapters() {
       ========================================================= */}
       <section
         id="chapter-network"
-        className="bg-white py-24 sm:py-32 lg:py-40"
+        className="bg-white py-24 sm:py-32 lg:py-20"
       >
         <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
           <div className="grid gap-14 lg:grid-cols-[0.75fr_1.25fr] lg:gap-24">
@@ -179,7 +179,7 @@ export default function NOSAChapters() {
       {/* =========================================================
           CHAPTERS IN PRACTICE
       ========================================================= */}
-      <section className="bg-[var(--background-soft)] py-24 sm:py-32 lg:py-40">
+      <section className="bg-[var(--background-soft)] py-24 sm:py-32 lg:py-20">
         <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
           <div className="grid gap-14 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-24">
             {/* Image */}
@@ -295,7 +295,7 @@ export default function NOSAChapters() {
       {/* =========================================================
           THE WIDER NETWORK
       ========================================================= */}
-      <section className="bg-white py-24 sm:py-32 lg:py-40">
+      <section className="bg-white py-24 sm:py-32 lg:py-20">
         <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
           <div className="grid gap-16 lg:grid-cols-[0.8fr_1.2fr] lg:items-start lg:gap-24">
             <div data-aos="fade-right">
@@ -366,7 +366,7 @@ export default function NOSAChapters() {
       {/* =========================================================
           CONTRIBUTION
       ========================================================= */}
-      <section className="bg-[var(--primary-dark)] py-24 text-white sm:py-32 lg:py-40">
+      <section className="bg-[var(--primary-dark)] py-24 text-white sm:py-32 lg:py-20">
         <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
           <div className="grid gap-16 lg:grid-cols-[0.75fr_1.25fr] lg:gap-24">
             <div data-aos="fade-right">
@@ -456,7 +456,7 @@ export default function NOSAChapters() {
       {/* =========================================================
           CHAPTER DIRECTORY
       ========================================================= */}
-      <section className="bg-white py-24 sm:py-32 lg:py-40">
+      <section className="bg-white py-24 sm:py-32 lg:py-20">
         <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
           <div className="grid gap-12 lg:grid-cols-[0.65fr_1.35fr] lg:gap-24">
             <div data-aos="fade-right">
@@ -517,7 +517,7 @@ export default function NOSAChapters() {
       {/* =========================================================
           FINAL CTA
       ========================================================= */}
-      <section className="relative overflow-hidden bg-[var(--secondary-light)] py-24 sm:py-32 lg:py-40">
+      <section className="relative overflow-hidden bg-[var(--secondary-light)] py-24 sm:py-32 lg:py-20">
         <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-[var(--secondary)]/15 blur-3xl" />
 
         <div className="relative mx-auto max-w-5xl px-6 text-center sm:px-10">

@@ -286,7 +286,7 @@ export default function InLovingMemory() {
           INTRODUCTION
       ========================================================= */}
 
-      <section className="bg-white py-24 sm:py-32 lg:py-36">
+      <section className="bg-white py-24 sm:py-32 lg:py-20">
         <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
           <div className="grid gap-14 lg:grid-cols-[0.75fr_1.25fr] lg:gap-24">
             <div data-aos="fade-up">
@@ -326,7 +326,7 @@ export default function InLovingMemory() {
 
       <section
         id="memorial-directory"
-        className="bg-[var(--background-soft)] py-24 sm:py-32 lg:py-40"
+        className="bg-[var(--background-soft)] py-24 sm:py-32 lg:py-25"
       >
         <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
           {/* SECTION HEADER */}
@@ -669,7 +669,7 @@ export default function InLovingMemory() {
           SHARE A REMEMBRANCE
       ========================================================= */}
 
-      <section className="bg-white py-24 sm:py-32 lg:py-40">
+      <section className="bg-white py-24 sm:py-32 lg:py-30">
         <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
           <div className="grid gap-14 lg:grid-cols-[0.75fr_1.25fr] lg:gap-24">
             <div data-aos="fade-right">
@@ -733,7 +733,7 @@ export default function InLovingMemory() {
           FINAL CTA
       ========================================================= */}
 
-      <section className="relative overflow-hidden bg-[var(--secondary-light)] py-24 sm:py-32 lg:py-40">
+      <section className="relative overflow-hidden bg-[var(--secondary-light)] py-24 sm:py-32 lg:py-30">
         <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-[var(--secondary)]/15 blur-3xl" />
 
         <div className="relative mx-auto max-w-5xl px-6 text-center sm:px-10">
