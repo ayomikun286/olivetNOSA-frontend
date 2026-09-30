@@ -177,7 +177,7 @@ const SetPassword = () => {
           </div>
 
           <p className="mt-6 text-center text-xs text-gray-400">
-            OlivetNOSA • Secure Member Portal
+            OlivetGOSA • Secure Member Portal
           </p>
         </div>
       </div>
@@ -203,7 +203,7 @@ const SetPassword = () => {
           </h1>
 
           <p className="mt-2 text-sm leading-6 text-gray-500">
-            Welcome to OlivetNOSA. Create your password to
+            Welcome to OlivetGOSA. Create your password to
             activate your account and continue to your
             member dashboard.
           </p>
@@ -325,7 +325,7 @@ const SetPassword = () => {
         </div>
 
         <p className="mt-6 text-center text-xs text-gray-400">
-          OlivetNOSA • Secure Member Portal
+          OlivetGOSA • Secure Member Portal
         </p>
       </div>
     </div>

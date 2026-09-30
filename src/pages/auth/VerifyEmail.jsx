@@ -135,7 +135,7 @@ const VerifyEmail = () => {
             <p className="verify-email-description">
               Your email verification is complete.
               You can now continue to login to your
-              Olivet NOSA account.
+              Olivet GOSA account.
             </p>
 
             <Link
@@ -218,7 +218,7 @@ const VerifyEmail = () => {
                   <strong>Spam</strong> or{" "}
                   <strong>Junk</strong> folder.
                   You can also search your inbox for{" "}
-                  <strong>"Olivet NOSA"</strong>.
+                  <strong>"Olivet GOSA"</strong>.
                 </p>
 
                 <p>

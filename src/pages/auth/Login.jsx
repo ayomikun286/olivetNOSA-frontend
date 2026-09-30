@@ -215,7 +215,7 @@ if (authenticated) {
 
   return (
     <main className="min-h-screen bg-white">
-      <PageTitle title="Login | OlivetNOSA" />
+      <PageTitle title="Login | OlivetGOSA" />
 
       {/* REDIRECT LOADER */}
       {redirect && <NosaLoader />}
@@ -327,7 +327,7 @@ if (authenticated) {
               </h2>
 
               <p className="mt-2 text-sm leading-6 text-slate-500">
-                Sign in to continue to your OlivetNOSA account.
+                Sign in to continue to your OlivetGOSA account.
               </p>
 
             </div>

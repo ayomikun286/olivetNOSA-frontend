@@ -350,7 +350,7 @@ const Signup = () => {
 
   return (
     <main className="min-h-screen bg-[var(--background-soft)]">
-      <PageTitle title="Create Account | OlivetNOSA" />
+      <PageTitle title="Create Account | OlivetGOSA" />
 
       {redirect && <NosaLoader />}
 
@@ -419,7 +419,7 @@ const Signup = () => {
 
               <p className="mt-6 max-w-lg text-base leading-7 text-white/70">
 
-                Create your OlivetNOSA member account and stay connected
+                Create your OlivetGOSA member account and stay connected
                 with the people, memories and community that began at Olivet.
 
               </p>
@@ -480,7 +480,7 @@ const Signup = () => {
 
               <p className="mt-3 max-w-xl text-sm leading-6 text-[var(--text-muted)] sm:text-base">
 
-                Join the OlivetNOSA community and keep your connection to
+                Join the OlivetGOSA community and keep your connection to
                 Olivet alive across generations.
 
               </p>
@@ -1132,7 +1132,7 @@ const Signup = () => {
                 to="/"
                 className="text-sm text-slate-400 transition hover:text-[var(--primary)]"
               >
-                ← Back to OlivetNOSA
+                ← Back to OlivetGOSA
               </Link>
 
             </div>

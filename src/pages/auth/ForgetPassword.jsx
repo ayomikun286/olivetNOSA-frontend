@@ -53,7 +53,7 @@ const ForgotPassword = () => {
 
   return (
     <div className="min-h-screen bg-[var(--light)] px-4 py-10 sm:py-16">
-      <PageTitle title="Forgot Password | OlivetNOSA" />
+      <PageTitle title="Forgot Password | OlivetGOSA" />
 
       <div className="mx-auto flex min-h-[80vh] max-w-md items-center justify-center">
 
@@ -76,7 +76,7 @@ const ForgotPassword = () => {
 
             <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-slate-600">
               Don't worry, it happens. Enter the email address
-              associated with your OlivetNOSA account and we'll
+              associated with your OlivetGOSA account and we'll
               send you a secure password reset link.
             </p>
 

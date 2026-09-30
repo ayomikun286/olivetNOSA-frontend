@@ -105,7 +105,7 @@ const Resetpassword = () => {
 
     return (
         <div className="min-h-screen bg-[var(--light)] px-4 py-10 sm:py-16">
-            <PageTitle title="Reset Password | OlivetNOSA" />
+            <PageTitle title="Reset Password | OlivetGOSA" />
 
             <div className="mx-auto flex min-h-[80vh] max-w-md items-center justify-center">
                 <div className="w-full">
