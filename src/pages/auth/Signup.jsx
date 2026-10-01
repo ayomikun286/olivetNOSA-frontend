@@ -385,12 +385,12 @@ const Signup = () => {
 
             {/* Logo */}
 
-            <Link to="/" className="w-fit">
+            <Link to="/" className="w-fit ">
 
               <img
-                src="/images/olivetNOSA_logo.png"
+                src="/images/Logo-NOSA.png"
                 alt="OlivetNOSA"
-                className="h-16 w-auto invert"
+                className="h-30 w-auto "
               />
 
             </Link>
@@ -451,7 +451,7 @@ const Signup = () => {
               <Link to="/">
 
                 <img
-                  src="/images/olivetNOSA_logo.png"
+                  src="/images/Logo-NOSA.png"
                   alt="OlivetNOSA"
                   className="h-14 w-auto"
                 />

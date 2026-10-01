@@ -76,6 +76,7 @@ const Obligations = () => {
     amount: "",
     year: new Date().getFullYear(),
     dueDate: "",
+    isOptional: false,
     paymentPlans: [
       {
         frequency: "annual",
@@ -141,21 +142,17 @@ const Obligations = () => {
     ).length;
 
     const individual = obligations.filter(
-  (item) =>
-    item.isActive === true &&
-    item.category === "individual"
-  ).length;
-
-   
-
-  
+      (item) =>
+        item.isActive === true &&
+        item.category === "individual"
+    ).length;
 
     const group = obligations.filter(
-  (item) =>
-    item.isActive === true &&
-    (item.category === "yearSet" ||
-      item.category === "chapter")
-).length;
+      (item) =>
+        item.isActive === true &&
+        (item.category === "yearSet" ||
+          item.category === "chapter")
+    ).length;
 
     return {
       total,
@@ -275,6 +272,7 @@ const Obligations = () => {
     setForm({
       ...emptyForm,
       year: new Date().getFullYear(),
+      isOptional: false,
       paymentPlans: [
         {
           frequency: "annual",
@@ -326,6 +324,10 @@ const Obligations = () => {
             .toISOString()
             .split("T")[0]
         : "",
+
+      // IMPORTANT:
+      // Preserve whether this obligation is optional.
+      isOptional: obligation.isOptional === true,
 
       paymentPlans:
         obligation.paymentPlans?.length
@@ -496,6 +498,10 @@ const Obligations = () => {
       year: Number(form.year),
 
       dueDate: form.dueDate || null,
+
+      // IMPORTANT:
+      // Send optional status to backend.
+      isOptional: form.isOptional === true,
 
       paymentPlans:
         form.paymentPlans.map((plan) => ({
@@ -703,6 +709,43 @@ const Obligations = () => {
           <span className="text-(--secondary)">
             {labels[obligation.category] ||
               obligation.category}
+          </span>
+        );
+      },
+    },
+
+    // ========================================
+    // MANDATORY / OPTIONAL
+    // ========================================
+
+    {
+      key: "type",
+      label: "Type",
+
+      render: (obligation) => {
+        const isOptional =
+          obligation.isOptional === true;
+
+        return (
+          <span
+            className={`
+              inline-flex
+              items-center
+              px-2.5
+              py-1
+              rounded
+              text-xs
+              font-medium
+              ${
+                isOptional
+                  ? "bg-(--warning-light) text-(--warning)"
+                  : "bg-(--primary-light) text-(--primary)"
+              }
+            `}
+          >
+            {isOptional
+              ? "Optional"
+              : "Mandatory"}
           </span>
         );
       },
@@ -1202,7 +1245,7 @@ const Obligations = () => {
       {createModalOpen && (
         <ObligationFormModal
           title="Create Obligation"
-          description="Create a new NOSA financial obligation and payment plan."
+          description="Create a new GOSA financial obligation and payment plan."
           form={form}
           saving={saving}
           onChange={handleFormChange}
@@ -1340,8 +1383,6 @@ const ObligationBreakdown = ({
                 viewBox="0 0 180 180"
                 className="w-full h-full -rotate-90"
               >
-                {/* BACKGROUND RING */}
-
                 <circle
                   cx="90"
                   cy="90"
@@ -1350,8 +1391,6 @@ const ObligationBreakdown = ({
                   stroke="var(--border)"
                   strokeWidth="22"
                 />
-
-                {/* CATEGORY SEGMENTS */}
 
                 {total > 0 &&
                   categories.map(
@@ -1397,8 +1436,6 @@ const ObligationBreakdown = ({
                     }
                   )}
               </svg>
-
-              {/* CENTER */}
 
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <span className="text-3xl font-semibold text-(--primary)">
@@ -1734,6 +1771,8 @@ const ObligationFormModal = ({
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* CATEGORY */}
+
               <div>
                 <label className="block text-xs font-medium text-(--primary) mb-1.5">
                   Category
@@ -1775,6 +1814,8 @@ const ObligationFormModal = ({
                 </select>
               </div>
 
+              {/* YEAR */}
+
               <div>
                 <label className="block text-xs font-medium text-(--primary) mb-1.5">
                   Year
@@ -1806,6 +1847,100 @@ const ObligationFormModal = ({
                 />
               </div>
             </div>
+
+            {/* MANDATORY / OPTIONAL */}
+
+            <div>
+              <label className="block text-xs font-medium text-(--primary) mb-1.5">
+                Obligation Type
+              </label>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {/* MANDATORY */}
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    onChange(
+                      "isOptional",
+                      false
+                    )
+                  }
+                  className={`
+                    px-3
+                    py-3
+                    rounded
+                    border
+                    text-left
+                    transition-colors
+                    ${
+                      form.isOptional === false
+                        ? "border-(--primary) bg-(--primary-light)"
+                        : "border-(--border) bg-(--bg-white) hover:bg-(--bg-soft)"
+                    }
+                  `}
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-xs font-semibold text-(--primary)">
+                      Mandatory
+                    </p>
+
+                    {form.isOptional ===
+                      false && (
+                      <span className="w-2 h-2 rounded-full bg-(--primary)" />
+                    )}
+                  </div>
+
+                  <p className="text-[11px] text-(--secondary) mt-1">
+                    Included in the member's
+                    mandatory balance.
+                  </p>
+                </button>
+
+                {/* OPTIONAL */}
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    onChange(
+                      "isOptional",
+                      true
+                    )
+                  }
+                  className={`
+                    px-3
+                    py-3
+                    rounded
+                    border
+                    text-left
+                    transition-colors
+                    ${
+                      form.isOptional === true
+                        ? "border-(--warning) bg-(--warning-light)"
+                        : "border-(--border) bg-(--bg-white) hover:bg-(--bg-soft)"
+                    }
+                  `}
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-xs font-semibold text-(--primary)">
+                      Optional
+                    </p>
+
+                    {form.isOptional ===
+                      true && (
+                      <span className="w-2 h-2 rounded-full bg-(--warning)" />
+                    )}
+                  </div>
+
+                  <p className="text-[11px] text-(--secondary) mt-1">
+                    Not included in the member's
+                    mandatory balance.
+                  </p>
+                </button>
+              </div>
+            </div>
+
+            {/* AMOUNT + DUE DATE */}
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
@@ -2192,6 +2327,9 @@ const ObligationViewModal = ({
         )
       : "No due date";
 
+  const isOptional =
+    obligation.isOptional === true;
+
   return (
     <div
       className="
@@ -2233,10 +2371,35 @@ const ObligationViewModal = ({
           "
         >
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <h2 className="text-sm font-semibold text-(--primary)">
                 {obligation.name}
               </h2>
+
+              {/* TYPE BADGE */}
+
+              <span
+                className={`
+                  inline-flex
+                  items-center
+                  px-2
+                  py-0.5
+                  rounded
+                  text-[10px]
+                  font-medium
+                  ${
+                    isOptional
+                      ? "bg-(--warning-light) text-(--warning)"
+                      : "bg-(--primary-light) text-(--primary)"
+                  }
+                `}
+              >
+                {isOptional
+                  ? "Optional"
+                  : "Mandatory"}
+              </span>
+
+              {/* STATUS BADGE */}
 
               <span
                 className={`
@@ -2296,6 +2459,15 @@ const ObligationViewModal = ({
                 categoryLabels[
                   obligation.category
                 ] || obligation.category
+              }
+            />
+
+            <DetailItem
+              label="Type"
+              value={
+                isOptional
+                  ? "Optional"
+                  : "Mandatory"
               }
             />
 

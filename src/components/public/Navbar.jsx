@@ -180,7 +180,7 @@ const Navbar = () => {
           </Link>
 
           <Link
-            to="/about-nosa"
+            to="/about-gosa"
             className="flex h-full items-center justify-center gap-2 px-3 py-2 text-[14px] font-medium text-[var(--primary)]/50 transition hover:text-[var(--secondary)]"
           >
             Alumni
@@ -226,9 +226,9 @@ const Navbar = () => {
           ================================================= */}
           <Link to="/" className="flex items-center gap-3">
 
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl text-[var(--primary-dark)] shadow-lg">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl text-[var(--primary-dark)] shadow-lg">
               <img
-                src="/images/olivetNOSA_logo.png"
+                src="/images/Logo-NOSA.png"
                 alt="Olivet NOSA"
                 className="h-full w-full object-contain"
               />

@@ -81,9 +81,9 @@ const Sidebar = ({ setIsOpen }) => {
           <XCircle className="w-5 h-5" />
         </button>
 
-        <div className="flex h-11 w-11 items-center justify-center rounded-xl shrink-0">
+       <div className="flex h-12 w-12 items-center justify-center rounded-xl shrink-0">
           <img
-            src="/images/olivetNOSA_logo.png"
+            src="/images/Logo-NOSA.png"
             alt="Olivet NOSA"
             className="h-full w-full object-contain"
           />

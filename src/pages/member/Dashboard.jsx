@@ -7,7 +7,10 @@ import Sidebar from "../../components/member/Sidebar.jsx";
 import Navbar from "../../components/member/Navbar.jsx";
 import NotificationAlert from "../../components/common/NotificationAlert.jsx";
 import { getMemberProfile } from "../../services/authService.js";
-
+import {
+  UserRoundCheck,
+  ArrowUpRight,
+} from "lucide-react";
 
 import { getMyNotifications } from "../../services/notificationService.js";
 const Dashboard = () => {
@@ -30,7 +33,7 @@ const Dashboard = () => {
   const email = user?.email || "";
   const alumniId = user?.alumniId
   const isEmailVerified = user?.isEmailVerified ?? false;
-  
+
 
 
   useEffect(() => {
@@ -112,25 +115,25 @@ const Dashboard = () => {
 
 
   useEffect(() => {
-     const loadProfile = async () => {
-       try {
-         const response = await getMemberProfile();
-       
- 
-         if (response?.success) {
-           setMemberProfile(response.data);
-          
-         }
-        
-       } catch (error) {
-         console.error("Failed to load member profile:", error);
-       } finally {
+    const loadProfile = async () => {
+      try {
+        const response = await getMemberProfile();
+
+
+        if (response?.success) {
+          setMemberProfile(response.data);
+
+        }
+
+      } catch (error) {
+        console.error("Failed to load member profile:", error);
+      } finally {
         setProfileLoading(false)
-       }
-     };
- 
-     loadProfile();
-   }, []);
+      }
+    };
+
+    loadProfile();
+  }, []);
 
 
   const isProfileIncomplete = !memberProfile?.phone ||
@@ -139,11 +142,11 @@ const Dashboard = () => {
     !memberProfile?.profile?.profession;
 
 
-    const profilePhoto = memberProfile?.profile?.profilePhoto;
+  const profilePhoto = memberProfile?.profile?.profilePhoto;
 
-  
-    
-   
+
+
+
 
   return (
     <>
@@ -188,31 +191,61 @@ const Dashboard = () => {
           />
 
           <div className="flex-1 overflow-y-auto">
-            {!setProfileLoading && isProfileIncomplete && (
+
+            {!profileLoading && isProfileIncomplete && (
               <div className="px-4 pt-4 md:px-6">
-                <div className="flex flex-col gap-3 rounded border border-(--border) bg-(--bg-white) px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-                  <div>
-                    <h3 className="text-sm font-semibold text-(--text-primary)">
-                      Complete your profile
-                    </h3>
+                <div className="relative overflow-hidden rounded border border-(--primary)/15 bg-linear-to-r from-(--primary)/5 via-(--bg-white) to-(--bg-white) shadow-sm">
 
-                    <p className="mt-0.5 text-xs text-(--text-secondary)">
-                      Add your details to keep your OlivetNOSA profile up to date.
-                    </p>
+                  {/* Decorative accent */}
+                  <div className="absolute left-0 top-0 h-full w-1 bg-(--primary)" />
+
+                  <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+
+                    {/* Content */}
+                    <div className="flex items-start gap-4">
+
+                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-(--primary)/10 text-(--primary)">
+                        <UserRoundCheck size={21} />
+                      </div>
+
+                      <div>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <h3 className="text-sm font-semibold text-(--text-primary) sm:text-base">
+                            Complete your profile
+                          </h3>
+
+                          <span className="rounded-full bg-(--primary)/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-(--primary)">
+                            Action required
+                          </span>
+                        </div>
+
+                        <p className="mt-1 max-w-xl text-xs leading-5 text-(--text-secondary) sm:text-sm">
+                          Your profile is not complete yet. Add your personal and
+                          professional details to keep your OlivetGOSA profile up to date.
+                        </p>
+                      </div>
+
+                    </div>
+
+                    {/* Button */}
+                    <button
+                      type="button"
+                      onClick={() =>
+                        navigate("/portal/member/dashboard/profile")
+                      }
+                      className="inline-flex shrink-0 items-center justify-center gap-2 rounded bg-(--primary) px-4 py-2.5 text-sm font-semibold text-white transition hover:opacity-90 active:scale-[0.98]"
+                    >
+                      Complete Profile
+                      <ArrowUpRight size={16} />
+                    </button>
+
                   </div>
-
-                  <button
-                    type="button"
-                    onClick={() => navigate("/portal/member/dashboard/profile")}
-                    className="shrink-0 text-sm font-medium text-(--primary) hover:underline"
-                  >
-                    Complete Profile
-                  </button>
                 </div>
               </div>
             )}
 
             <Outlet />
+
           </div>
         </section>
 

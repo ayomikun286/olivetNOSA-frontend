@@ -264,9 +264,9 @@ if (authenticated) {
             {/* LOGO */}
             <div>
               <img
-                src="/images/olivetNOSA_logo.png"
+                src="/images/Logo-NOSA.png"
                 alt="OlivetNOSA"
-                className="w-32"
+                className="w-30"
               />
             </div>
 

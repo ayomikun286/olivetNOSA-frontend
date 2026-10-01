@@ -26,8 +26,8 @@ const Footer = () => {
               to="/"
               className="inline-flex items-center gap-3"
             >
-               <div className="flex h-11 w-11 items-center justify-center rounded-xl text-[var(--primary-dark)] shadow-lg">
-            <img src="/images/olivetNOSA_logo.png" alt="" />
+               <div className="flex h-13 w-13 items-center justify-center rounded-xl text-[var(--primary-dark)] shadow-lg">
+            <img src="/images/Logo-NOSA.png" alt="" />
           </div>
 
 
