@@ -353,6 +353,32 @@ const Navbar = () => {
                   </Link>
 
                   <Link
+                    to="/gosa-leadership"
+                    className={dropdownItemClass}
+                  >
+                    <span className="block font-semibold text-[var(--primary)]">
+                      GOSA Leadership
+                    </span>
+
+                    <span className="mt-1 block text-xs text-slate-400">
+                      Our past Leaders 
+                    </span>
+                  </Link>
+
+                  <Link
+                    to="/"
+                    className={dropdownItemClass}
+                  >
+                    <span className="block font-semibold text-[var(--primary)]">
+                     Legacy Leaders
+                    </span>
+
+                    <span className="mt-1 block text-xs text-slate-400">
+                      Leadership & service
+                    </span>
+                  </Link>
+
+                  <Link
                     to="/in-loving-memory"
                     className={dropdownItemClass}
                   >
@@ -365,18 +391,7 @@ const Navbar = () => {
                     </span>
                   </Link>
 
-                  <Link
-                    to="/gosa-leadership"
-                    className={dropdownItemClass}
-                  >
-                    <span className="block font-semibold text-[var(--primary)]">
-                      GOSA Leadership
-                    </span>
-
-                    <span className="mt-1 block text-xs text-slate-400">
-                      Leadership & service
-                    </span>
-                  </Link>
+                  
 
                   <Link
                     to="/gosa-chapters"
@@ -586,11 +601,27 @@ const Navbar = () => {
                     >
                       About GOSA
                     </Link>
+                     <Link
+                      to="/gosa-leadership"
+                      onClick={() => setMobileMenu(false)}
+                      className="block rounded-lg px-4 py-3 text-sm text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
+                    >
+                      GOSA Leadership
+                    </Link>
+
+                     <Link
+                      to="/"
+                      onClick={() => setMobileMenu(false)}
+                      className="block rounded-lg px-4 py-3 text-sm text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
+                    >
+                      Legacy Leaders
+                    </Link>
+
                     <Link
                       to="/in-loving-memory"
                       className={dropdownItemClass}
                     >
-                      <span className="block font-semibold text-[var(--primary)]">
+                      <span className="block  text-[var(--primary)]">
                         In Loving Memory
                       </span>
 
@@ -599,13 +630,7 @@ const Navbar = () => {
                       </span>
                     </Link>
 
-                    <Link
-                      to="/gosa-leadership"
-                      onClick={() => setMobileMenu(false)}
-                      className="block rounded-lg px-4 py-3 text-sm text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
-                    >
-                      GOSA Leadership
-                    </Link>
+                   
 
                     <Link
                       to="/gosa-chapters"
