@@ -614,165 +614,7 @@ const Main = () => {
               </div>
             </div>
 
-            {/* ========================================
-                OPTIONAL INSURANCE
-            ======================================== */}
-
-            {optionalIndividualObligations.length > 0 && (
-              <div className="rounded border border-(--secondary)/40 bg-(--secondary)/5 overflow-hidden">
-
-                <div className="p-5 border-b border-(--secondary)/20">
-
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-
-                    <div className="flex items-start gap-3">
-
-                      <div className="w-10 h-10 rounded-lg bg-(--secondary)/15 text-(--secondary) flex items-center justify-center shrink-0">
-                        <ShieldCheck size={20} />
-                      </div>
-
-                      <div>
-                        <div className="flex items-center gap-2 flex-wrap">
-
-                          <h2 className="font-semibold text-(--primary)">
-                            Optional Insurance Premium
-                          </h2>
-
-                          <span className="text-[10px] uppercase tracking-wide font-bold px-2 py-1 rounded-full bg-(--secondary)/15 text-(--secondary)">
-                            Optional
-                          </span>
-
-                        </div>
-
-                        <p className="text-sm text-(--secondary) mt-1">
-                          Insurance is optional and is not included in your
-                          mandatory dues balance.
-                        </p>
-                      </div>
-
-                    </div>
-
-                    <div className="text-sm font-semibold text-(--primary)">
-                      {formatCurrency(optionalTotal)}
-                    </div>
-
-                  </div>
-                </div>
-
-                <div className="divide-y divide-(--secondary)/15">
-
-                  {optionalIndividualObligations.map((item) => {
-
-                    const paid = Number(item.amountPaid || 0);
-                    const due = Number(item.amountDue || 0);
-
-                    const remaining = Math.max(
-                      due - paid,
-                      0
-                    );
-
-                    const progress = due
-                      ? Math.min((paid / due) * 100, 100)
-                      : 0;
-
-                    const isPaid = remaining === 0;
-
-                    return (
-                      <div
-                        key={item._id}
-                        className="p-5 bg-white/40"
-                      >
-
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-
-                          <div>
-                            <h3 className="text-sm font-semibold text-(--primary)">
-                              {item.obligation?.name ||
-                                "Insurance Premium"}
-                            </h3>
-
-                            <p className="text-xs text-(--secondary) mt-1">
-                              {item.obligation?.description ||
-                                "Optional insurance premium."}
-                            </p>
-
-                            <p className="text-xs text-(--text-muted) mt-2">
-                              Due{" "}
-                              {formatDate(
-                                item.obligation?.dueDate
-                              )}
-                            </p>
-                          </div>
-
-                          <div className="flex items-center gap-4">
-
-                            <div className="text-right">
-                              <p className="text-[11px] text-(--text-muted)">
-                                Outstanding
-                              </p>
-
-                              <p className="text-sm font-bold text-(--primary)">
-                                {formatCurrency(remaining)}
-                              </p>
-                            </div>
-
-                            {isPaid ? (
-                              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-(--success) bg-(--success-light) px-2.5 py-1.5 rounded-full">
-                                <CheckCircle2 size={13} />
-                                Covered
-                              </span>
-                            ) : (
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  handlePayNow(item)
-                                }
-                                className="inline-flex items-center justify-center gap-1.5 bg-(--secondary) text-(--primary) px-4 py-2 rounded-(--radius-sm) text-xs font-semibold hover:opacity-90 transition"
-                              >
-                                Pay insurance
-                                <ArrowUpRight size={14} />
-                              </button>
-                            )}
-
-                          </div>
-
-                        </div>
-
-                        <div className="mt-4">
-
-                          <div className="flex justify-between mb-2">
-
-                            <span className="text-xs text-(--secondary)">
-                              {formatCurrency(paid)} paid
-                            </span>
-
-                            <span className="text-xs font-semibold text-(--primary)">
-                              {Math.round(progress)}%
-                            </span>
-
-                          </div>
-
-                          <div className="h-1.5 bg-white rounded-full overflow-hidden">
-
-                            <div
-                              className="h-full bg-(--secondary) rounded-full transition-all"
-                              style={{
-                                width: `${progress}%`,
-                              }}
-                            />
-
-                          </div>
-
-                        </div>
-
-                      </div>
-                    );
-                  })}
-
-                </div>
-
-              </div>
-            )}
+           
 
             {/* ========================================
                 MY OBLIGATIONS
@@ -1011,6 +853,167 @@ const Main = () => {
 
               </div>
             </div>
+
+
+             {/* ========================================
+                OPTIONAL INSURANCE
+            ======================================== */}
+
+            {optionalIndividualObligations.length > 0 && (
+              <div className="rounded border border-(--secondary)/40 bg-(--secondary)/5 overflow-hidden">
+
+                <div className="p-5 border-b border-(--secondary)/20">
+
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+
+                    <div className="flex items-start gap-3">
+
+                      <div className="w-10 h-10 rounded-lg bg-(--secondary)/15 text-(--secondary) flex items-center justify-center shrink-0">
+                        <ShieldCheck size={20} />
+                      </div>
+
+                      <div>
+                        <div className="flex items-center gap-2 flex-wrap">
+
+                          <h2 className="font-semibold text-(--primary)">
+                            Optional Insurance Premium
+                          </h2>
+
+                          <span className="text-[10px] uppercase tracking-wide font-bold px-2 py-1 rounded-full bg-(--secondary)/15 text-(--secondary)">
+                            Optional
+                          </span>
+
+                        </div>
+
+                        <p className="text-sm text-(--secondary) mt-1">
+                          Insurance is optional and is not included in your
+                          mandatory dues balance.
+                        </p>
+                      </div>
+
+                    </div>
+
+                    <div className="text-sm font-semibold text-(--primary)">
+                      {formatCurrency(optionalTotal)}
+                    </div>
+
+                  </div>
+                </div>
+
+                <div className="divide-y divide-(--secondary)/15">
+
+                  {optionalIndividualObligations.map((item) => {
+
+                    const paid = Number(item.amountPaid || 0);
+                    const due = Number(item.amountDue || 0);
+
+                    const remaining = Math.max(
+                      due - paid,
+                      0
+                    );
+
+                    const progress = due
+                      ? Math.min((paid / due) * 100, 100)
+                      : 0;
+
+                    const isPaid = remaining === 0;
+
+                    return (
+                      <div
+                        key={item._id}
+                        className="p-5 bg-white/40"
+                      >
+
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+
+                          <div>
+                            <h3 className="text-sm font-semibold text-(--primary)">
+                              {item.obligation?.name ||
+                                "Insurance Premium"}
+                            </h3>
+
+                            <p className="text-xs text-(--secondary) mt-1">
+                              {item.obligation?.description ||
+                                "Optional insurance premium."}
+                            </p>
+
+                            <p className="text-xs text-(--text-muted) mt-2">
+                              Due{" "}
+                              {formatDate(
+                                item.obligation?.dueDate
+                              )}
+                            </p>
+                          </div>
+
+                          <div className="flex items-center gap-4">
+
+                            <div className="text-right">
+                              <p className="text-[11px] text-(--text-muted)">
+                                Outstanding
+                              </p>
+
+                              <p className="text-sm font-bold text-(--primary)">
+                                {formatCurrency(remaining)}
+                              </p>
+                            </div>
+
+                            {isPaid ? (
+                              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-(--success) bg-(--success-light) px-2.5 py-1.5 rounded-full">
+                                <CheckCircle2 size={13} />
+                                Covered
+                              </span>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  handlePayNow(item)
+                                }
+                                className="inline-flex items-center justify-center gap-1.5 bg-(--secondary) text-(--primary) px-4 py-2 rounded-(--radius-sm) text-xs font-semibold hover:opacity-90 transition"
+                              >
+                                Pay insurance
+                                <ArrowUpRight size={14} />
+                              </button>
+                            )}
+
+                          </div>
+
+                        </div>
+
+                        <div className="mt-4">
+
+                          <div className="flex justify-between mb-2">
+
+                            <span className="text-xs text-(--secondary)">
+                              {formatCurrency(paid)} paid
+                            </span>
+
+                            <span className="text-xs font-semibold text-(--primary)">
+                              {Math.round(progress)}%
+                            </span>
+
+                          </div>
+
+                          <div className="h-1.5 bg-white rounded-full overflow-hidden">
+
+                            <div
+                              className="h-full bg-(--secondary) rounded-full transition-all"
+                              style={{
+                                width: `${progress}%`,
+                              }}
+                            />
+
+                          </div>
+
+                        </div>
+
+                      </div>
+                    );
+                  })}
+
+                </div>
+
+              </div>
+            )}
 
             {/* ========================================
                 INACTIVE / HISTORY NOTICE

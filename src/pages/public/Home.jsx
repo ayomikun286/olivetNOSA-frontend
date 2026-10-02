@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import PageTitle  from "../../components/common/PageTitle.jsx";
+import PageTitle from "../../components/common/PageTitle.jsx";
 import {
     ArrowDown,
     ArrowUpRight,
@@ -117,12 +117,10 @@ export default function Home() {
                         return (
                             <div
                                 key={slide.image}
-                                className={`absolute inset-0 bg-cover bg-center ${
-                                    
-                                    isActive
+                                className={`absolute inset-0 bg-cover bg-center ${isActive
                                         ? "opacity-100 z-10"
                                         : "opacity-0 z-0"
-                                }`}
+                                    }`}
 
                                 style={{
                                     backgroundImage: `url("${slide.image}")`,
@@ -133,6 +131,7 @@ export default function Home() {
                             />
                         );
                     })}
+
                 </div>
 
                 {/* Dark image treatment overlays */}
@@ -150,19 +149,17 @@ export default function Home() {
                                 return (
                                     <div
                                         key={slide.image + index}
-                                        className={`col-start-1 row-start-1 flex flex-col justify-end transition-all duration-700 ease-out ${
-                                            isActive
+                                        className={`col-start-1 row-start-1 flex flex-col justify-end transition-all duration-700 ease-out ${isActive
                                                 ? "opacity-100 translate-y-0 pointer-events-auto z-10"
                                                 : "opacity-0 translate-y-6 pointer-events-none z-0"
-                                        }`}
+                                            }`}
                                     >
                                         {/* Eyebrow */}
                                         <div
-                                            className={`flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.28em] text-[var(--secondary-light)] transition-all duration-700 ease-out ${
-                                                isActive
+                                            className={`flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.28em] text-[var(--secondary-light)] transition-all duration-700 ease-out ${isActive
                                                     ? "opacity-100 translate-y-0 delay-100"
                                                     : "opacity-0 -translate-y-2 delay-0"
-                                            }`}
+                                                }`}
                                         >
                                             <span className="h-px w-10 bg-[var(--secondary)]" />
                                             {slide.eyebrow}
@@ -170,11 +167,10 @@ export default function Home() {
 
                                         {/* Main heading */}
                                         <h1
-                                            className={`mt-4  md:max-w-2xl font-semibold leading-[1.02] tracking-[-0.04em] text-white text-4xl md:text-[5rem]  transition-all duration-700 ease-out ${
-                                                isActive
+                                            className={`mt-4  md:max-w-2xl font-semibold leading-[1.02] tracking-[-0.04em] text-white text-4xl md:text-[5rem]  transition-all duration-700 ease-out ${isActive
                                                     ? "opacity-100 translate-y-0 delay-200"
                                                     : "opacity-0 translate-y-4 delay-0"
-                                            }`}
+                                                }`}
                                         >
                                             {slide.title}
                                             <span className="block text-[var(--secondary)]">
@@ -184,11 +180,10 @@ export default function Home() {
 
                                         {/* Supporting content */}
                                         <div
-                                            className={`mt-8 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between transition-all duration-700 ease-out ${
-                                                isActive
+                                            className={`mt-8 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between transition-all duration-700 ease-out ${isActive
                                                     ? "opacity-100 translate-y-0 delay-300"
                                                     : "opacity-0 translate-y-4 delay-0"
-                                            }`}
+                                                }`}
                                         >
                                             <p className="max-w-xl text-base leading-8 text-white/80 sm:text-lg">
                                                 {slide.description}
@@ -231,11 +226,10 @@ export default function Home() {
                                         key={idx}
                                         onClick={() => goToSlide(idx)}
                                         aria-label={`Go to slide ${idx + 1}`}
-                                        className={`relative h-2 rounded-full overflow-hidden transition-all duration-500 cursor-pointer ${
-                                            idx === currentSlide
+                                        className={`relative h-2 rounded-full overflow-hidden transition-all duration-500 cursor-pointer ${idx === currentSlide
                                                 ? "w-10 bg-white/25"
                                                 : "w-2.5 bg-white/40 hover:bg-white/70"
-                                        }`}
+                                            }`}
                                     >
                                         {idx === currentSlide && (
                                             <span
@@ -299,6 +293,13 @@ export default function Home() {
                                 Cum Christo Progredere
                             </p>
                         </div>
+                    </div>
+                    <div className="flex h-35 w-35 items-center justify-center absolute right-20 top-30 rounded-xl text-[var(--primary-dark)] ">
+                        <img
+                            src="/images/Logo-NOSA.png"
+                            alt="Olivet NOSA"
+                            className="h-full w-full object-contain"
+                        />
                     </div>
                 </div>
 
@@ -989,48 +990,48 @@ export default function Home() {
                 </div>
             </section>
 
-{/* =========================================================
+            {/* =========================================================
     OLIVET HEIGHTS TV & SOCIAL
 ========================================================== */}
-<section className="bg-white py-20 sm:py-20 lg:py-20">
-    <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
+            <section className="bg-white py-20 sm:py-20 lg:py-20">
+                <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
 
-        {/* Section heading */}
-        <div
-            data-aos="fade-up"
-            className="mb-10 flex flex-col justify-between gap-6 sm:flex-row sm:items-end"
-        >
-            <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-                    Stay Connected
-                </p>
+                    {/* Section heading */}
+                    <div
+                        data-aos="fade-up"
+                        className="mb-10 flex flex-col justify-between gap-6 sm:flex-row sm:items-end"
+                    >
+                        <div>
+                            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
+                                Stay Connected
+                            </p>
 
-                <h2 className="mt-5 max-w-2xl text-4xl font-medium leading-[1.05] tracking-[-0.035em] text-[var(--primary-dark)] sm:text-5xl">
-                    See Olivet beyond the website.
-                </h2>
-            </div>
+                            <h2 className="mt-5 max-w-2xl text-4xl font-medium leading-[1.05] tracking-[-0.035em] text-[var(--primary-dark)] sm:text-5xl">
+                                See Olivet beyond the website.
+                            </h2>
+                        </div>
 
-            <p className="max-w-sm text-sm leading-7 text-[var(--text-muted)]">
-                Follow the stories, memories and moments happening around
-                Olivet Heights.
-            </p>
-        </div>
+                        <p className="max-w-sm text-sm leading-7 text-[var(--text-muted)]">
+                            Follow the stories, memories and moments happening around
+                            Olivet Heights.
+                        </p>
+                    </div>
 
-        {/* Social content */}
-        <div className="grid gap-5 lg:grid-cols-[1.6fr_0.8fr]">
+                    {/* Social content */}
+                    <div className="grid gap-5 lg:grid-cols-[1.6fr_0.8fr]">
 
-            {/* YouTube Video Banner */}
-            <a
-                href="https://www.youtube.com/@olivetheightstv"
-                target="_blank"
-                rel="noopener noreferrer"
-                data-aos="fade-right"
-                className="group relative min-h-[320px] overflow-hidden bg-[var(--primary-dark)] sm:min-h-[400px]"
-            >
-                <img
-                    src="/images/olivetNOSA-3.jpg"
-                    alt="Olivet Heights TV"
-                    className="
+                        {/* YouTube Video Banner */}
+                        <a
+                            href="https://www.youtube.com/@olivetheightstv"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            data-aos="fade-right"
+                            className="group relative min-h-[320px] overflow-hidden bg-[var(--primary-dark)] sm:min-h-[400px]"
+                        >
+                            <img
+                                src="/images/olivetNOSA-3.jpg"
+                                alt="Olivet Heights TV"
+                                className="
                         absolute
                         inset-0
                         h-full
@@ -1040,60 +1041,60 @@ export default function Home() {
                         duration-700
                         group-hover:scale-[1.04]
                     "
-                />
+                            />
 
-                {/* Dark overlay */}
-                <div className="absolute inset-0 bg-[var(--primary-dark)]/55 transition duration-500 group-hover:bg-[var(--primary-dark)]/65" />
+                            {/* Dark overlay */}
+                            <div className="absolute inset-0 bg-[var(--primary-dark)]/55 transition duration-500 group-hover:bg-[var(--primary-dark)]/65" />
 
-                {/* Gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[var(--primary-dark)] via-transparent to-transparent" />
+                            {/* Gradient */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-[var(--primary-dark)] via-transparent to-transparent" />
 
-                {/* Play button */}
-                <div className="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[var(--primary-dark)] shadow-xl transition duration-500 group-hover:scale-110">
-                    <span className="ml-1 text-xl">
-                        ▶
-                    </span>
-                </div>
+                            {/* Play button */}
+                            <div className="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[var(--primary-dark)] shadow-xl transition duration-500 group-hover:scale-110">
+                                <span className="ml-1 text-xl">
+                                    ▶
+                                </span>
+                            </div>
 
-                {/* Content */}
-                <div className="absolute bottom-0 left-0 right-0 p-7 sm:p-9">
-                    <div className="flex items-end justify-between gap-6">
-                        <div>
-                            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-                                Olivet Heights TV
-                            </p>
+                            {/* Content */}
+                            <div className="absolute bottom-0 left-0 right-0 p-7 sm:p-9">
+                                <div className="flex items-end justify-between gap-6">
+                                    <div>
+                                        <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
+                                            Olivet Heights TV
+                                        </p>
 
-                            <h3 className="mt-3 text-2xl font-medium text-white sm:text-3xl">
-                                Stories from Olivet Heights.
-                            </h3>
+                                        <h3 className="mt-3 text-2xl font-medium text-white sm:text-3xl">
+                                            Stories from Olivet Heights.
+                                        </h3>
 
-                            <p className="mt-2 max-w-lg text-sm leading-6 text-white/60">
-                                Watch videos, events and moments from the
-                                Olivet community.
-                            </p>
-                        </div>
+                                        <p className="mt-2 max-w-lg text-sm leading-6 text-white/60">
+                                            Watch videos, events and moments from the
+                                            Olivet community.
+                                        </p>
+                                    </div>
 
-                        <ArrowUpRight
-                            size={22}
-                            className="hidden shrink-0 text-white transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 sm:block"
-                        />
-                    </div>
-                </div>
-            </a>
+                                    <ArrowUpRight
+                                        size={22}
+                                        className="hidden shrink-0 text-white transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 sm:block"
+                                    />
+                                </div>
+                            </div>
+                        </a>
 
-            {/* Instagram Card */}
-            <a
-                href="https://www.instagram.com/olivetheights/"
-                target="_blank"
-                rel="noopener noreferrer"
-                data-aos="fade-left"
-                className="group relative min-h-[320px] overflow-hidden bg-[var(--background-soft)] p-7 transition duration-500 hover:bg-[var(--primary-dark)] sm:min-h-[400px] sm:p-9"
-            >
-                {/* Decorative image */}
-                <img
-                    src="/images/olivetNOSA-10.jpg"
-                    alt=""
-                    className="
+                        {/* Instagram Card */}
+                        <a
+                            href="https://www.instagram.com/olivetheights/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            data-aos="fade-left"
+                            className="group relative min-h-[320px] overflow-hidden bg-[var(--background-soft)] p-7 transition duration-500 hover:bg-[var(--primary-dark)] sm:min-h-[400px] sm:p-9"
+                        >
+                            {/* Decorative image */}
+                            <img
+                                src="/images/olivetNOSA-10.jpg"
+                                alt=""
+                                className="
                         absolute
                         inset-0
                         h-full
@@ -1105,50 +1106,50 @@ export default function Home() {
                         group-hover:scale-[1.04]
                         group-hover:opacity-20
                     "
-                />
+                            />
 
-                <div className="relative z-10 flex h-full flex-col justify-between">
+                            <div className="relative z-10 flex h-full flex-col justify-between">
 
-                    {/* Instagram icon */}
-                    <div className="flex items-center justify-between">
-                        <div className="flex h-12 w-12 items-center justify-center border border-[var(--primary)]/15 text-[var(--primary)] transition group-hover:border-white/20 group-hover:text-white">
-                            <span className="text-xl">
-                                ◎
-                            </span>
-                        </div>
+                                {/* Instagram icon */}
+                                <div className="flex items-center justify-between">
+                                    <div className="flex h-12 w-12 items-center justify-center border border-[var(--primary)]/15 text-[var(--primary)] transition group-hover:border-white/20 group-hover:text-white">
+                                        <span className="text-xl">
+                                            ◎
+                                        </span>
+                                    </div>
 
-                        <ArrowUpRight
-                            size={20}
-                            className="text-[var(--primary)] transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-white"
-                        />
-                    </div>
+                                    <ArrowUpRight
+                                        size={20}
+                                        className="text-[var(--primary)] transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-white"
+                                    />
+                                </div>
 
-                    {/* Content */}
-                    <div>
-                        <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-                            Instagram
-                        </p>
+                                {/* Content */}
+                                <div>
+                                    <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
+                                        Instagram
+                                    </p>
 
-                        <h3 className="mt-3 text-2xl font-medium text-[var(--primary-dark)] transition group-hover:text-white">
-                            @olivetheights
-                        </h3>
+                                    <h3 className="mt-3 text-2xl font-medium text-[var(--primary-dark)] transition group-hover:text-white">
+                                        @olivetheights
+                                    </h3>
 
-                        <p className="mt-4 text-sm leading-7 text-[var(--text-muted)] transition group-hover:text-white/60">
-                            Follow the latest photographs, announcements
-                            and moments from the Olivet community.
-                        </p>
+                                    <p className="mt-4 text-sm leading-7 text-[var(--text-muted)] transition group-hover:text-white/60">
+                                        Follow the latest photographs, announcements
+                                        and moments from the Olivet community.
+                                    </p>
 
-                        <span className="mt-6 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--primary)] transition group-hover:text-[var(--secondary)]">
-                            Follow us
-                            <ArrowRight size={14} />
-                        </span>
+                                    <span className="mt-6 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--primary)] transition group-hover:text-[var(--secondary)]">
+                                        Follow us
+                                        <ArrowRight size={14} />
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+
                     </div>
                 </div>
-            </a>
-
-        </div>
-    </div>
-</section>
+            </section>
 
             {/* =========================================================
                 FROM THE ARCHIVES

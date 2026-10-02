@@ -615,6 +615,8 @@ const Obligations = () => {
                                 )}
                             </div>
 
+
+
                             {/* DESCRIPTION */}
 
                             <p className="text-xs text-(--secondary) mt-1 leading-relaxed max-w-2xl">

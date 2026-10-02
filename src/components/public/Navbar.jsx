@@ -183,7 +183,7 @@ const Navbar = () => {
             to="/about-gosa"
             className="flex h-full items-center justify-center gap-2 px-3 py-2 text-[14px] font-medium text-[var(--primary)]/50 transition hover:text-[var(--secondary)]"
           >
-            Alumni
+          GOSA
           </Link>
 
           <Link
