@@ -294,7 +294,7 @@ export default function Home() {
                             </p>
                         </div>
                     </div>
-                    <div className="flex h-35 w-35 items-center justify-center absolute right-20 top-30 rounded-xl text-[var(--primary-dark)] ">
+                    <div className="hidden md:black flex  h-35 w-35 items-center justify-center absolute right-20 top-30 rounded-xl text-[var(--primary-dark)] ">
                         <img
                             src="/images/Logo-NOSA.png"
                             alt="Olivet NOSA"
