@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
+import { FaFacebookF, FaInstagram, FaYoutube } from "react-icons/fa";
 
 const Footer = () => {
   return (
@@ -26,20 +27,20 @@ const Footer = () => {
               to="/"
               className="inline-flex items-center gap-3"
             >
-               <div className="flex h-13 w-13 items-center justify-center rounded-xl text-[var(--primary-dark)] shadow-lg">
-            <img src="/images/Logo-NOSA.png" alt="" />
-          </div>
+              <div className="flex h-13 w-13 items-center justify-center rounded-xl text-[var(--primary-dark)] shadow-lg">
+                <img src="/images/Logo-NOSA.png" alt="" />
+              </div>
 
 
- 
 
-             
+
+
 
 
               <div className="leading-none">
-               <p className="text-xs font-bold tracking-wide  transition-colors duration-500 max-w-35">
-               Global Old Students Association Webaite
-              </p>
+                <p className="text-xs font-bold tracking-wide  transition-colors duration-500 max-w-35">
+                  Global Old Students Association Webaite
+                </p>
 
                 <p className="mt-1 text-[7px] font-medium uppercase tracking-[0.22em] text-white/50">
                   Baptist High School
@@ -226,29 +227,33 @@ const Footer = () => {
             {/* Social Icons */}
             <div className="mt-7 flex items-center gap-3">
 
+
+
               <a
                 href="#"
                 aria-label="Facebook"
-                className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-xs text-white/60 transition hover:border-[var(--secondary)]/30 hover:bg-[var(--secondary)] hover:text-[var(--primary-dark)]"
+                className="flex h-9 w-9 items-center justify-center rounded-lg text-md text-white/90 transition hover:text-[var(--secondary)]"
               >
-                f
+                <FaFacebookF size={20} />
               </a>
 
               <a
-                href="#"
+                href="https://www.instagram.com/olivetheights/"
                 aria-label="Instagram"
-                className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-xs text-white/60 transition hover:border-[var(--secondary)]/30 hover:bg-[var(--secondary)] hover:text-[var(--primary-dark)]"
+                className="flex h-9 w-9 items-center justify-center rounded-lg text-md text-white/90 transition hover:text-[var(--secondary)]"
               >
-                ◎
+                <FaInstagram size={20} />
               </a>
 
               <a
-                href="#"
+                href="https://www.youtube.com/@olivetheightstv"
                 aria-label="X"
-                className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-xs text-white/60 transition hover:border-[var(--secondary)]/30 hover:bg-[var(--secondary)] hover:text-[var(--primary-dark)]"
+                className="flex h-9 w-9 items-center justify-center rounded-lg text-md text-white/90 transition hover:text-[var(--secondary)]"
               >
-                𝕏
+                <FaYoutube size={20} />
               </a>
+
+
 
             </div>
           </div>

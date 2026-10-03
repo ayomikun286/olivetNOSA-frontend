@@ -10,6 +10,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 
+import { FaFacebookF, FaInstagram, FaYoutube } from "react-icons/fa";
 const Navbar = () => {
 
   const location = useLocation();
@@ -133,23 +134,23 @@ const Navbar = () => {
             aria-label="Facebook"
             className="flex h-9 w-9 items-center justify-center rounded-lg text-md text-white/90 transition hover:text-[var(--secondary)]"
           >
-            f
+           <FaFacebookF size={20} />
           </a>
 
           <a
-            href="#"
+            href="https://www.instagram.com/olivetheights/"
             aria-label="Instagram"
             className="flex h-9 w-9 items-center justify-center rounded-lg text-md text-white/90 transition hover:text-[var(--secondary)]"
           >
-            ◎
+            <FaInstagram size={20} />
           </a>
 
           <a
-            href="#"
+            href="https://www.youtube.com/@olivetheightstv"
             aria-label="X"
             className="flex h-9 w-9 items-center justify-center rounded-lg text-md text-white/90 transition hover:text-[var(--secondary)]"
           >
-            𝕏
+            <FaYoutube size={20} />
           </a>
 
         </div>
