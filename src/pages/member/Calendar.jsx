@@ -12,6 +12,7 @@ import {
   Building2,
   ArrowUpRight,
   AlertCircle,
+  Link
 } from "lucide-react";
 
 import PageTitle from "../../components/common/PageTitle.jsx";
@@ -45,18 +46,62 @@ const getDateKey = (year, month, day) =>
   `${year}-${padNumber(month + 1)}-${padNumber(day)}`;
 
 // ============================================================
+// GET TODAY
+// ============================================================
+
+const getToday = () => new Date();
+
+const getTodayDateKey = () => {
+  const today = getToday();
+
+  return getDateKey(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate()
+  );
+};
+
+
+const parseCalendarDate = (dateString) => {
+  if (!dateString) return null;
+
+  const parts = dateString.split("-").map(Number);
+
+  if (parts.length !== 3) return null;
+
+  const [year, month, day] = parts;
+
+  if (!year || !month || !day) return null;
+
+  const date = new Date(year, month - 1, day);
+
+  if (Number.isNaN(date.getTime())) {
+    return null;
+  }
+
+  return date;
+};
+
+// ============================================================
 // DATABASE DATE → YYYY-MM-DD
 // ============================================================
 
 const normalizeEventDate = (date) => {
   if (!date) return "";
 
-  // MongoDB normally returns:
-  // 2026-09-12T00:00:00.000Z
+  // MongoDB date normally comes back like:
+  // 2026-10-03T00:00:00.000Z
   //
-  // We only need the calendar date.
+  // Because calendar dates are stored as UTC midnight,
+  // keeping the YYYY-MM-DD portion is the safest approach.
+
   if (typeof date === "string") {
-    return date.split("T")[0];
+    const dateOnly = date.split("T")[0];
+
+    // Make sure it actually looks like YYYY-MM-DD
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateOnly)) {
+      return dateOnly;
+    }
   }
 
   const parsedDate = new Date(date);
@@ -65,9 +110,9 @@ const normalizeEventDate = (date) => {
     return "";
   }
 
-  return `${parsedDate.getFullYear()}-${padNumber(
-    parsedDate.getMonth() + 1
-  )}-${padNumber(parsedDate.getDate())}`;
+  return `${parsedDate.getUTCFullYear()}-${padNumber(
+    parsedDate.getUTCMonth() + 1
+  )}-${padNumber(parsedDate.getUTCDate())}`;
 };
 
 // ============================================================
@@ -75,9 +120,9 @@ const normalizeEventDate = (date) => {
 // ============================================================
 
 const formatLongDate = (dateString) => {
-  if (!dateString) return "";
+  const date = parseCalendarDate(dateString);
 
-  const date = new Date(`${dateString}T00:00:00`);
+  if (!date) return "";
 
   return date.toLocaleDateString("en-NG", {
     weekday: "long",
@@ -116,13 +161,25 @@ const getCategoryClasses = (category) => {
 // ============================================================
 
 const Calendar = () => {
-  // Current project date is 2026, September.
-  const [currentDate, setCurrentDate] = useState(
-    new Date(2026, 8, 1)
-  );
+  // ============================================================
+  // CURRENT DATE
+  // ============================================================
+  // Always start from the real current date.
+  // No hardcoded 2026/September values.
+  // ============================================================
+
+  const [currentDate, setCurrentDate] = useState(() => {
+    const today = getToday();
+
+    return new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      1
+    );
+  });
 
   const [selectedDate, setSelectedDate] = useState(
-    getDateKey(2026, 8, 26)
+    getTodayDateKey()
   );
 
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -131,18 +188,37 @@ const Calendar = () => {
   // API STATE
   // ============================================================
 
+  // Events for the currently displayed calendar year.
   const [calendarEvents, setCalendarEvents] = useState([]);
+
+  // Events used specifically by "Upcoming Events".
+  //
+  // We load the current year + next year so that:
+  //
+  // October 2026
+  // can still show
+  // January 2027
+  //
+  // without requiring the member to manually open 2027 first.
+  const [upcomingCalendarEvents, setUpcomingCalendarEvents] =
+    useState([]);
 
   const [loading, setLoading] = useState(true);
 
+  const [upcomingLoading, setUpcomingLoading] = useState(true);
+
   const [error, setError] = useState("");
+
+  const [upcomingError, setUpcomingError] = useState("");
 
   const currentYear = currentDate.getFullYear();
 
   const currentMonth = currentDate.getMonth();
 
+  const todayKey = getTodayDateKey();
+
   // ============================================================
-  // LOAD CALENDAR EVENTS
+  // LOAD CURRENT YEAR EVENTS
   // ============================================================
 
   useEffect(() => {
@@ -157,29 +233,36 @@ const Calendar = () => {
           year: currentYear,
         });
 
+
+        console.log("Calendar events response:", response);
+
         if (!isMounted) return;
 
         const events = Array.isArray(response?.data)
           ? response.data
           : [];
 
-        const normalizedEvents = events.map((event) => ({
-          ...event,
-
-          // Keep the rest of the UI working with YYYY-MM-DD.
-          date: normalizeEventDate(event.date),
-        }));
+        const normalizedEvents = events
+          .map((event) => ({
+            ...event,
+            date: normalizeEventDate(event.date),
+          }))
+          .filter((event) => event.date);
 
         setCalendarEvents(normalizedEvents);
       } catch (err) {
         if (!isMounted) return;
 
-        console.error("Load calendar events error:", err);
+        console.error(
+          "Load calendar events error:",
+          err
+        );
 
         setCalendarEvents([]);
 
         setError(
-          err.message || "Unable to load calendar events."
+          err.message ||
+            "Unable to load calendar events."
         );
       } finally {
         if (isMounted) {
@@ -189,6 +272,113 @@ const Calendar = () => {
     };
 
     loadCalendarEvents();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [currentYear]);
+
+  // ============================================================
+  // LOAD UPCOMING EVENTS
+  // ============================================================
+  //
+  // We load:
+  //
+  // CURRENT YEAR
+  // +
+  // NEXT YEAR
+  //
+  // This means the Upcoming Events section can cross
+  // the December → January boundary.
+  //
+  // Example:
+  //
+  // Today: October 3, 2026
+  //
+  // Upcoming:
+  // October 2026
+  // November 2026
+  // December 2026
+  // January 2027
+  //
+  // ============================================================
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadUpcomingEvents = async () => {
+      try {
+        setUpcomingLoading(true);
+        setUpcomingError("");
+
+        const [currentYearResponse, nextYearResponse] =
+          await Promise.all([
+            getCalendarEvents({
+              year: currentYear,
+            }),
+
+            getCalendarEvents({
+              year: currentYear + 1,
+            }),
+          ]);
+
+        if (!isMounted) return;
+
+        const currentYearEvents = Array.isArray(
+          currentYearResponse?.data
+        )
+          ? currentYearResponse.data
+          : [];
+
+        const nextYearEvents = Array.isArray(
+          nextYearResponse?.data
+        )
+          ? nextYearResponse.data
+          : [];
+
+        const normalizedEvents = [
+          ...currentYearEvents,
+          ...nextYearEvents,
+        ]
+          .map((event) => ({
+            ...event,
+            date: normalizeEventDate(event.date),
+          }))
+          .filter((event) => event.date);
+
+        // Remove accidental duplicates.
+        const uniqueEvents = Array.from(
+          new Map(
+            normalizedEvents.map((event) => [
+              event._id || event.id,
+              event,
+            ])
+          ).values()
+        );
+
+        setUpcomingCalendarEvents(uniqueEvents);
+      } catch (err) {
+        if (!isMounted) return;
+
+        console.error(
+          "Load upcoming calendar events error:",
+          err
+        );
+
+        setUpcomingCalendarEvents([]);
+
+        setUpcomingError(
+          err.message ||
+            "Unable to load upcoming events."
+        );
+      } finally {
+        if (isMounted) {
+          setUpcomingLoading(false);
+        }
+      }
+    };
+
+    loadUpcomingEvents();
 
     return () => {
       isMounted = false;
@@ -220,7 +410,10 @@ const Calendar = () => {
 
     const days = [];
 
-    // Previous month filler days
+    // ----------------------------------------------------------
+    // PREVIOUS MONTH FILLER DAYS
+    // ----------------------------------------------------------
+
     for (let i = firstDay - 1; i >= 0; i--) {
       days.push({
         day: previousMonthDays - i,
@@ -229,7 +422,10 @@ const Calendar = () => {
       });
     }
 
-    // Current month
+    // ----------------------------------------------------------
+    // CURRENT MONTH
+    // ----------------------------------------------------------
+
     for (let day = 1; day <= daysInMonth; day++) {
       days.push({
         day,
@@ -242,7 +438,10 @@ const Calendar = () => {
       });
     }
 
-    // Next month filler days
+    // ----------------------------------------------------------
+    // NEXT MONTH FILLER DAYS
+    // ----------------------------------------------------------
+
     const remaining = 42 - days.length;
 
     for (let day = 1; day <= remaining; day++) {
@@ -264,13 +463,8 @@ const Calendar = () => {
     return calendarEvents.filter((event) => {
       if (!event.date) return false;
 
-      const date = new Date(
-        `${event.date}T00:00:00`
-      );
-
-      return (
-        date.getFullYear() === currentYear &&
-        date.getMonth() === currentMonth
+      return event.date.startsWith(
+        `${currentYear}-${padNumber(currentMonth + 1)}`
       );
     });
   }, [
@@ -294,55 +488,67 @@ const Calendar = () => {
   // ============================================================
 
   const upcomingEvents = useMemo(() => {
-    const today = new Date();
-
-    today.setHours(0, 0, 0, 0);
-
-    return [...calendarEvents]
+    return [...upcomingCalendarEvents]
       .filter((event) => {
         if (!event.date) return false;
 
-        const eventDate = new Date(
-          `${event.date}T00:00:00`
-        );
-
-        return eventDate >= today;
+        return event.date >= todayKey;
       })
-      .sort((a, b) => {
-        return (
-          new Date(`${a.date}T00:00:00`) -
-          new Date(`${b.date}T00:00:00`)
-        );
-      })
+      .sort((a, b) =>
+        a.date.localeCompare(b.date)
+      )
       .slice(0, 5);
-  }, [calendarEvents]);
+  }, [
+    upcomingCalendarEvents,
+    todayKey,
+  ]);
 
   // ============================================================
   // NAVIGATION
   // ============================================================
 
   const goToPreviousMonth = () => {
-    setCurrentDate(
-      new Date(
-        currentYear,
-        currentMonth - 1,
+    const newDate = new Date(
+      currentYear,
+      currentMonth - 1,
+      1
+    );
+
+    setCurrentDate(newDate);
+
+    setSelectedDate(
+      getDateKey(
+        newDate.getFullYear(),
+        newDate.getMonth(),
         1
       )
     );
+
+    setSelectedEvent(null);
   };
 
   const goToNextMonth = () => {
-    setCurrentDate(
-      new Date(
-        currentYear,
-        currentMonth + 1,
+    const newDate = new Date(
+      currentYear,
+      currentMonth + 1,
+      1
+    );
+
+    setCurrentDate(newDate);
+
+    setSelectedDate(
+      getDateKey(
+        newDate.getFullYear(),
+        newDate.getMonth(),
         1
       )
     );
+
+    setSelectedEvent(null);
   };
 
   const goToToday = () => {
-    const today = new Date();
+    const today = getToday();
 
     setCurrentDate(
       new Date(
@@ -359,6 +565,8 @@ const Calendar = () => {
         today.getDate()
       )
     );
+
+    setSelectedEvent(null);
   };
 
   // ============================================================
@@ -369,7 +577,7 @@ const Calendar = () => {
     <div className="p-4">
       <PageTitle
         title="Calendar"
-        subtitle="Stay updated with important NOSA meetings, seminars and events."
+        subtitle="Stay updated with important GOSA meetings, seminars and events."
       />
 
       {/* ======================================================
@@ -383,7 +591,7 @@ const Calendar = () => {
           </h1>
 
           <p className="text-sm text-(--secondary) mt-1">
-            Official schedule of GOSA activities for
+            Official schedule of GOSA activities for{" "}
             {currentYear}.
           </p>
         </div>
@@ -421,7 +629,8 @@ const Calendar = () => {
             </p>
 
             <p className="text-sm text-(--secondary) mt-1">
-              Any change in dates shall be duly communicated.
+              Any change in dates shall be duly
+              communicated.
             </p>
           </div>
         </div>
@@ -545,142 +754,154 @@ const Calendar = () => {
               ================================================== */}
 
               <div className="grid grid-cols-7">
-                {calendarDays.map((dayInfo, index) => {
-                  const dayEvents = dayInfo.dateKey
-                    ? monthEvents.filter(
-                        (event) =>
-                          event.date ===
-                          dayInfo.dateKey
-                      )
-                    : [];
-
-                  const isSelected =
-                    dayInfo.dateKey === selectedDate;
-
-                  const today = new Date();
-
-                  const todayKey = getDateKey(
-                    today.getFullYear(),
-                    today.getMonth(),
-                    today.getDate()
-                  );
-
-                  const isToday =
-                    dayInfo.dateKey === todayKey;
-
-                  return (
-                    <button
-                      type="button"
-                      key={`${
-                        dayInfo.dateKey || "empty"
-                      }-${index}`}
-                      disabled={!dayInfo.currentMonth}
-                      onClick={() => {
-                        if (dayInfo.currentMonth) {
-                          setSelectedDate(
+                {calendarDays.map(
+                  (dayInfo, index) => {
+                    const dayEvents = dayInfo.dateKey
+                      ? monthEvents.filter(
+                          (event) =>
+                            event.date ===
                             dayInfo.dateKey
-                          );
-                        }
-                      }}
-                      className={`
-                        relative min-h-[85px] sm:min-h-[105px]
-                        p-2 sm:p-3
-                        text-left
-                        border-r border-b border-(--border)
-                        transition
-                        ${
-                          dayInfo.currentMonth
-                            ? "bg-(--bg-white) hover:bg-(--bg-light) cursor-pointer"
-                            : "bg-(--bg-light)/40 cursor-default"
-                        }
-                        ${
-                          isSelected
-                            ? "ring-2 ring-inset ring-(--primary)"
-                            : ""
-                        }
-                      `}
-                    >
-                      {/* Date number */}
+                        )
+                      : [];
 
-                      <div className="flex items-center justify-between">
-                        <span
-                          className={`
-                            text-sm font-medium
-                            ${
-                              dayInfo.currentMonth
-                                ? "text-(--primary)"
-                                : "text-(--text-muted)/50"
-                            }
-                            ${
-                              isToday
-                                ? "w-7 h-7 rounded-full bg-(--primary) text-white flex items-center justify-center"
-                                : ""
-                            }
-                          `}
-                        >
-                          {dayInfo.day}
-                        </span>
+                    const isSelected =
+                      dayInfo.dateKey ===
+                      selectedDate;
+
+                    const isToday =
+                      dayInfo.dateKey === todayKey;
+
+                    return (
+                      <button
+                        type="button"
+                        key={`${
+                          dayInfo.dateKey || "empty"
+                        }-${index}`}
+                        disabled={
+                          !dayInfo.currentMonth
+                        }
+                        onClick={() => {
+                          if (
+                            dayInfo.currentMonth
+                          ) {
+                            setSelectedDate(
+                              dayInfo.dateKey
+                            );
+
+                            setSelectedEvent(
+                              null
+                            );
+                          }
+                        }}
+                        className={`
+                          relative min-h-[85px] sm:min-h-[105px]
+                          p-2 sm:p-3
+                          text-left
+                          border-r border-b border-(--border)
+                          transition
+                          ${
+                            dayInfo.currentMonth
+                              ? "bg-(--bg-white) hover:bg-(--bg-light) cursor-pointer"
+                              : "bg-(--bg-light)/40 cursor-default"
+                          }
+                          ${
+                            isSelected
+                              ? "ring-2 ring-inset ring-(--primary)"
+                              : ""
+                          }
+                        `}
+                      >
+                        {/* Date number */}
+
+                        <div className="flex items-center justify-between">
+                          <span
+                            className={`
+                              text-sm font-medium
+                              ${
+                                dayInfo.currentMonth
+                                  ? "text-(--primary)"
+                                  : "text-(--text-muted)/50"
+                              }
+                              ${
+                                isToday
+                                  ? "w-7 h-7 rounded-full bg-(--primary) text-white flex items-center justify-center"
+                                  : ""
+                              }
+                            `}
+                          >
+                            {dayInfo.day}
+                          </span>
+
+                          {dayEvents.length > 0 && (
+                            <span className="text-[10px] text-(--text-muted)">
+                              {dayEvents.length}
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Event indicators */}
 
                         {dayEvents.length > 0 && (
-                          <span className="text-[10px] text-(--text-muted)">
-                            {dayEvents.length}
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Event indicators */}
-
-                      {dayEvents.length > 0 && (
-                        <div className="mt-2 space-y-1">
-                          {dayEvents
-                            .slice(0, 2)
-                            .map((event) => (
-                              <div
-                                key={event._id || event.id}
-                                className={`
-                                  hidden sm:block
-                                  truncate
-                                  rounded px-1.5 py-1
-                                  text-[10px]
-                                  font-medium
-                                  ${getCategoryClasses(
-                                    event.category
-                                  )}
-                                `}
-                                title={event.title}
-                              >
-                                {event.title}
-                              </div>
-                            ))}
-
-                          {/* Mobile event dot */}
-
-                          <div className="flex sm:hidden gap-1 mt-2">
+                          <div className="mt-2 space-y-1">
                             {dayEvents
-                              .slice(0, 3)
+                              .slice(0, 2)
                               .map((event) => (
-                                <span
+                                <div
                                   key={
                                     event._id ||
                                     event.id
                                   }
-                                  className="w-1.5 h-1.5 rounded-full bg-(--primary)"
-                                />
+                                  className={`
+                                    hidden sm:block
+                                    truncate
+                                    rounded px-1.5 py-1
+                                    text-[10px]
+                                    font-medium
+                                    ${getCategoryClasses(
+                                      event.category
+                                    )}
+                                  `}
+                                  title={
+                                    event.title
+                                  }
+                                >
+                                  {event.title}
+                                </div>
                               ))}
-                          </div>
 
-                          {dayEvents.length > 2 && (
-                            <p className="hidden sm:block text-[10px] text-(--text-muted)">
-                              +
-                              {dayEvents.length - 2}{" "}
-                              more
-                            </p>
-                          )}
-                        </div>
-                      )}
-                    </button>
-                  );
-                })}
+                            {/* Mobile event dots */}
+
+                            <div className="flex sm:hidden gap-1 mt-2">
+                              {dayEvents
+                                .slice(0, 3)
+                                .map(
+                                  (event) => (
+                                    <span
+                                      key={
+                                        event._id ||
+                                        event.id
+                                      }
+                                      className="w-1.5 h-1.5 rounded-full bg-(--primary)"
+                                    />
+                                  )
+                                )}
+                            </div>
+
+                            {dayEvents.length >
+                              2 && (
+                              <p className="hidden sm:block text-[10px] text-(--text-muted)">
+                                +
+                                {dayEvents.length -
+                                  2}{" "}
+                                more
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </button>
+                    );
+                  }
+                )}
               </div>
             </>
           )}
@@ -749,60 +970,67 @@ const Calendar = () => {
                   </p>
 
                   <p className="text-xs text-(--text-muted) mt-1">
-                    There are no GOSA events scheduled
-                    for this date.
+                    There are no GOSA events
+                    scheduled for this date.
                   </p>
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {selectedDateEvents.map((event) => (
-                    <button
-                      key={event._id || event.id}
-                      type="button"
-                      onClick={() =>
-                        setSelectedEvent(event)
-                      }
-                      className="w-full text-left border border-(--border) rounded p-4 hover:bg-(--bg-light) transition"
-                    >
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="min-w-0">
-                          <span
-                            className={`inline-flex px-2 py-1 rounded text-[10px] font-medium ${getCategoryClasses(
-                              event.category
-                            )}`}
-                          >
-                            {event.category}
-                          </span>
+                  {selectedDateEvents.map(
+                    (event) => (
+                      <button
+                        key={
+                          event._id || event.id
+                        }
+                        type="button"
+                        onClick={() =>
+                          setSelectedEvent(
+                            event
+                          )
+                        }
+                        className="w-full text-left border border-(--border) rounded p-4 hover:bg-(--bg-light) transition"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <span
+                              className={`inline-flex px-2 py-1 rounded text-[10px] font-medium ${getCategoryClasses(
+                                event.category
+                              )}`}
+                            >
+                              {event.category}
+                            </span>
 
-                          <h4 className="text-sm font-semibold text-(--primary) mt-2">
-                            {event.title}
-                          </h4>
+                            <h4 className="text-sm font-semibold text-(--primary) mt-2">
+                              {event.title}
+                            </h4>
+                          </div>
+
+                          <ArrowUpRight
+                            size={16}
+                            className="text-(--text-muted) shrink-0"
+                          />
                         </div>
 
-                        <ArrowUpRight
-                          size={16}
-                          className="text-(--text-muted) shrink-0"
-                        />
-                      </div>
-
-                      {event.time && (
-                        <div className="flex items-center gap-2 mt-3 text-xs text-(--text-muted)">
-                          <Clock3 size={14} />
-                          {event.time}
-                        </div>
-                      )}
-
-                      <div className="flex items-center gap-2 mt-2 text-xs text-(--text-muted)">
-                        {event.location === "Virtual" ? (
-                          <Video size={14} />
-                        ) : (
-                          <Building2 size={14} />
+                        {event.time && (
+                          <div className="flex items-center gap-2 mt-3 text-xs text-(--text-muted)">
+                            <Clock3 size={14} />
+                            {event.time}
+                          </div>
                         )}
 
-                        {event.location}
-                      </div>
-                    </button>
-                  ))}
+                        <div className="flex items-center gap-2 mt-2 text-xs text-(--text-muted)">
+                          {event.location ===
+                          "Virtual" ? (
+                            <Video size={14} />
+                          ) : (
+                            <Building2 size={14} />
+                          )}
+
+                          {event.location}
+                        </div>
+                      </button>
+                    )
+                  )}
                 </div>
               )}
             </div>
@@ -824,69 +1052,106 @@ const Calendar = () => {
             </div>
 
             <div className="p-4">
-              {upcomingEvents.length === 0 ? (
+              {upcomingLoading ? (
+                <div className="py-6 flex flex-col items-center justify-center">
+                  <div className="w-6 h-6 border-2 border-(--border) border-t-(--primary) rounded-full animate-spin" />
+
+                  <p className="text-xs text-(--text-muted) mt-2">
+                    Loading upcoming events...
+                  </p>
+                </div>
+              ) : upcomingError ? (
+                <p className="text-sm text-red-500 text-center py-5">
+                  {upcomingError}
+                </p>
+              ) : upcomingEvents.length ===
+                0 ? (
                 <p className="text-sm text-(--text-muted) text-center py-5">
                   No upcoming events.
                 </p>
               ) : (
                 <div className="space-y-2">
-                  {upcomingEvents.map((event) => {
-                    const eventDate = new Date(
-                      `${event.date}T00:00:00`
-                    );
+                  {upcomingEvents.map(
+                    (event) => {
+                      const eventDate =
+                        parseCalendarDate(
+                          event.date
+                        );
 
-                    return (
-                      <button
-                        key={event._id || event.id}
-                        type="button"
-                        onClick={() => {
-                          setSelectedDate(event.date);
+                      if (!eventDate) {
+                        return null;
+                      }
 
-                          setCurrentDate(
-                            new Date(
-                              eventDate.getFullYear(),
-                              eventDate.getMonth(),
-                              1
-                            )
-                          );
+                      return (
+                        <button
+                          key={
+                            event._id ||
+                            event.id
+                          }
+                          type="button"
+                          onClick={() => {
+                            setSelectedDate(
+                              event.date
+                            );
 
-                          setSelectedEvent(event);
-                        }}
-                        className="w-full flex items-start gap-3 text-left p-3 rounded hover:bg-(--bg-light) transition"
-                      >
-                        <div className="w-10 h-10 rounded-md bg-(--primary-light) text-(--primary) flex flex-col items-center justify-center shrink-0">
-                          <span className="text-[10px] font-medium">
-                            {eventDate.toLocaleDateString(
-                              "en-NG",
-                              {
-                                month: "short",
-                              }
+                            setCurrentDate(
+                              new Date(
+                                eventDate.getFullYear(),
+                                eventDate.getMonth(),
+                                1
+                              )
+                            );
+
+                            setSelectedEvent(
+                              event
+                            );
+                          }}
+                          className="w-full flex items-start gap-3 text-left p-3 rounded hover:bg-(--bg-light) transition"
+                        >
+                          <div className="w-10 h-10 rounded-md bg-(--primary-light) text-(--primary) flex flex-col items-center justify-center shrink-0">
+                            <span className="text-[10px] font-medium">
+                              {eventDate.toLocaleDateString(
+                                "en-NG",
+                                {
+                                  month: "short",
+                                }
+                              )}
+                            </span>
+
+                            <span className="text-sm font-semibold">
+                              {eventDate.getDate()}
+                            </span>
+                          </div>
+
+                          <div className="min-w-0 flex-1">
+                            <p className="text-sm font-medium text-(--primary) truncate">
+                              {event.title}
+                            </p>
+
+                            <p className="text-xs text-(--text-muted) mt-1">
+                              {event.time ||
+                                "Time not specified"}
+                            </p>
+
+                            {/* Show year when upcoming event
+                                belongs to another year */}
+
+                            {eventDate.getFullYear() !==
+                              currentYear && (
+                              <p className="text-[10px] text-(--text-muted) mt-1">
+                                {eventDate.getFullYear()}
+                              </p>
                             )}
-                          </span>
+                          </div>
 
-                          <span className="text-sm font-semibold">
-                            {eventDate.getDate()}
-                          </span>
-                        </div>
-
-                        <div className="min-w-0 flex-1">
-                          <p className="text-sm font-medium text-(--primary) truncate">
-                            {event.title}
-                          </p>
-
-                          <p className="text-xs text-(--text-muted) mt-1">
-                            {event.time ||
-                              "Time not specified"}
-                          </p>
-                        </div>
-
-                        <ArrowUpRight
-                          size={15}
-                          className="text-(--text-muted) shrink-0 mt-1"
-                        />
-                      </button>
-                    );
-                  })}
+                          <ArrowUpRight
+                            size={15}
+                            className="text-(--text-muted) shrink-0 mt-1"
+                          />
+                        </button>
+                      );
+                    }
+                  )}
                 </div>
               )}
             </div>
@@ -905,7 +1170,9 @@ const Calendar = () => {
         >
           <div
             className="w-full max-w-md bg-white rounded shadow-xl overflow-hidden"
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e) =>
+              e.stopPropagation()
+            }
           >
             {/* Modal Header */}
 
@@ -926,13 +1193,17 @@ const Calendar = () => {
 
               <button
                 type="button"
-                onClick={() => setSelectedEvent(null)}
+                onClick={() =>
+                  setSelectedEvent(null)
+                }
                 className="w-8 h-8 flex items-center justify-center rounded-md text-(--text-muted) hover:bg-(--bg-light) hover:text-(--primary) transition"
                 aria-label="Close"
               >
                 <X size={18} />
               </button>
             </div>
+
+
 
             {/* Modal Body */}
 
@@ -989,7 +1260,8 @@ const Calendar = () => {
                   </p>
 
                   <p className="text-sm font-medium text-(--primary) mt-1">
-                    {selectedEvent.host || "Not specified"}
+                    {selectedEvent.host ||
+                      "Not specified"}
                   </p>
                 </div>
               </div>
@@ -1035,7 +1307,81 @@ const Calendar = () => {
                       "Not specified"}
                   </p>
                 </div>
+                
               </div>
+
+              {/* event location  */}
+
+              {selectedEvent.location === "Physical" && selectedEvent.locationDetails && (
+                <div className="flex items-start gap-3">
+                <div className="w-9 h-9 rounded-md bg-(--primary-light) text-(--primary) flex items-center justify-center shrink-0">
+                  <MapPin size={17} />
+                </div>
+
+                <div>
+                  <p className="text-xs text-(--text-muted)">
+                    Event Location
+                  </p>
+
+                  <p className="text-sm font-medium text-(--primary) mt-1">
+                    {selectedEvent.locationDetails ||
+                      "Not specified"}
+                  </p>
+                </div>
+                
+              </div>
+
+              )}
+
+              {/* vestural event link */}
+
+
+              {selectedEvent.location === "Physical" && selectedEvent.locationDetails && (
+                <div className="flex items-start gap-3">
+                <div className="w-9 h-9 rounded-md bg-(--primary-light) text-(--primary) flex items-center justify-center shrink-0">
+                  <MapPin size={17} />
+                </div>
+
+                <div>
+                  <p className="text-xs text-(--text-muted)">
+                    Event Location
+                  </p>
+
+                  <p className="text-sm font-medium text-(--primary) mt-1">
+                    {selectedEvent.locationDetails ||
+                      "Not specified"}
+                  </p>
+                </div>
+                
+              </div>
+
+              )}
+
+              {/* meeting link and platform */}
+
+               {selectedEvent.location === "Virtual"&& selectedEvent.meetingLink && (
+                <a href={selectedEvent.meetingLink} target="_blank" rel="noopener noreferrer" className="flex items-start gap-3">
+                <div className="w-9 h-9 rounded-md bg-(--primary-light) text-(--primary) flex items-center justify-center shrink-0">
+                   <Link size={17} />
+                </div>
+
+                <div>
+                  <p className="text-xs text-(--text-muted)">
+                    Meeting Link - {  `${selectedEvent.platform || "Platform not specified"}` }
+                  </p>
+
+                  <p className="text-sm font-medium text-(--primary) mt-1">
+                    {selectedEvent.meetingLink ||
+                      "Not specified"}
+                  </p>
+                </div>
+                
+              </a>
+
+              )}
+
+               
+              
 
               {/* Description */}
 
@@ -1063,7 +1409,9 @@ const Calendar = () => {
             <div className="px-6 py-4 border-t border-(--border) flex justify-end">
               <button
                 type="button"
-                onClick={() => setSelectedEvent(null)}
+                onClick={() =>
+                  setSelectedEvent(null)
+                }
                 className="px-4 py-2 bg-(--primary) text-white text-sm font-medium rounded hover:bg-(--primary-dark) transition"
               >
                 Close

@@ -11,6 +11,7 @@ import {
   Bell,
   Settings,
   LogOut,
+  CalendarDays
 } from "lucide-react";
 
 import { NavLink } from "react-router-dom";
@@ -159,6 +160,16 @@ const Sidebar = ({ setIsOpen }) => {
               <MapPin className={iconClass} />
               <span>Chapters</span>
             </NavLink>
+
+            <NavLink
+              to="/portal/admin/dashboard/Calendar"
+              className={linkClass}
+              onClick={handleLinkClick}
+            >
+              <CalendarDays className={iconClass} />
+              <span>Calendar</span>
+            </NavLink>
+
           </div>
         </div>
 

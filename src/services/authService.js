@@ -735,6 +735,7 @@ export const getCalendarEvents = async ({
       );
     }
 
+    console.log("Calendar events response:", data);
     return data;
   } catch (error) {
     console.error("Get calendar events error:", error);
@@ -756,6 +757,7 @@ export const getCalendarEvent = async (id) => {
       }
     );
 
+    console.log("Calendar events response id:", data);
     const data = await response.json();
 
     if (!response.ok) {

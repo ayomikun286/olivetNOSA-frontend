@@ -357,3 +357,185 @@ export const getAdminPaymentById = async (paymentId) => {
 
     return data.payment;
 };
+
+
+
+
+
+
+// ========================================
+// CALENDAR
+// ========================================
+
+// ========================================
+// GET ADMIN CALENDAR EVENTS
+// ========================================
+
+export const getAdminCalendarEvents = async ({
+  year = "",
+  month = "",
+  category = "",
+  status = "",
+  search = "",
+} = {}) => {
+  const params = new URLSearchParams();
+
+  if (year) {
+    params.append("year", String(year));
+  }
+
+  if (month) {
+    params.append("month", String(month));
+  }
+
+  if (category) {
+    params.append("category", category);
+  }
+
+  if (status) {
+    params.append("status", status);
+  }
+
+  if (search.trim()) {
+    params.append("search", search.trim());
+  }
+
+  const query = params.toString();
+
+  const response = await fetch(
+    `${API}/api/calendar/admin/all${query ? `?${query}` : ""}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to load calendar events."
+    );
+  }
+
+  return data;
+};
+
+// ========================================
+// GET SINGLE ADMIN CALENDAR EVENT
+// ========================================
+
+export const getAdminCalendarEventById = async (id) => {
+  if (!id) {
+    throw new Error("Calendar event ID is required.");
+  }
+
+  const response = await fetch(
+    `${API}/api/calendar/admin/${id}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to load calendar event."
+    );
+  }
+
+  return data;
+};
+
+// ========================================
+// CREATE CALENDAR EVENT
+// ========================================
+
+export const createCalendarEvent = async (eventData) => {
+  const response = await fetch(
+    `${API}/api/calendar/admin`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(eventData),
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to create calendar event."
+    );
+  }
+
+  return data;
+};
+
+// ========================================
+// UPDATE CALENDAR EVENT
+// ========================================
+
+export const updateCalendarEvent = async (
+  id,
+  eventData
+) => {
+  if (!id) {
+    throw new Error("Calendar event ID is required.");
+  }
+
+  const response = await fetch(
+    `${API}/api/calendar/admin/${id}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(eventData),
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to update calendar event."
+    );
+  }
+
+  return data;
+};
+
+// ========================================
+// DELETE CALENDAR EVENT
+// ========================================
+
+export const deleteCalendarEvent = async (id) => {
+  if (!id) {
+    throw new Error("Calendar event ID is required.");
+  }
+
+  const response = await fetch(
+    `${API}/api/calendar/admin/${id}`,
+    {
+      method: "DELETE",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to delete calendar event."
+    );
+  }
+
+  return data;
+};
