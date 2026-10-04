@@ -247,3 +247,53 @@ OlivetNOSA
 │
 └── services/
     └── adminService.js
+
+
+
+
+
+
+
+
+
+
+
+
+    New scope ,, 
+
+
+
+Members 
+
+
+Dashboard
+│
+├── Overview
+├── My Obligations
+├── Payments
+├── Calendar
+├── Directory
+├── My Year Set       ← new/expanded
+├── My Chapter        ← new/expanded
+├── Financial Reports ← new
+├── Jobs              ← new
+├── Articles          ← new
+├── Elections         ← new
+└── Support           ← new
+
+
+
+Admin
+│
+├── Dashboard
+├── Members
+├── Payments
+├── Obligations
+├── Year Sets
+├── Chapters
+├── Financial Reports
+├── Elections
+├── Jobs
+├── Articles
+├── Support
+└── Settings

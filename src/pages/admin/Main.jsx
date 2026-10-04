@@ -363,7 +363,7 @@ const Main = () => {
 
                   <p className="text-lg font-semibold text-(--primary) mt-1">
                    {formatCurrency(
-                      finance.isActive ? finance.totalObligations : 0
+                      finance.totalObligations
                     )}
                   </p>
                 </div>

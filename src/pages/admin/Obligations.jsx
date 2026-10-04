@@ -138,20 +138,31 @@ const Obligations = () => {
     const total = obligations.length;
 
     const active = obligations.filter(
-      (item) => item.isActive
+      (item) => item.isActive === true
     ).length;
 
+    // Mandatory individual obligations only
     const individual = obligations.filter(
       (item) =>
         item.isActive === true &&
+        item.isOptional !== true &&
         item.category === "individual"
     ).length;
 
+    // Mandatory group obligations only
     const group = obligations.filter(
       (item) =>
         item.isActive === true &&
+        item.isOptional !== true &&
         (item.category === "yearSet" ||
           item.category === "chapter")
+    ).length;
+
+    // Optional obligations are counted separately
+    const optional = obligations.filter(
+      (item) =>
+        item.isActive === true &&
+        item.isOptional === true
     ).length;
 
     return {
@@ -159,6 +170,7 @@ const Obligations = () => {
       active,
       individual,
       group,
+      optional,
     };
   }, [obligations]);
 
@@ -171,22 +183,58 @@ const Obligations = () => {
   const obligationBreakdown = useMemo(() => {
     const currentYearActive = obligations.filter(
       (item) =>
-        item.isActive &&
+        item.isActive === true &&
         Number(item.year) === currentYear
     );
 
+    // ========================================
+    // MANDATORY
+    // ========================================
+
+    const mandatory = currentYearActive.filter(
+      (item) => item.isOptional !== true
+    );
+
+    // ========================================
+    // OPTIONAL
+    // ========================================
+
+    const optional = currentYearActive.filter(
+      (item) => item.isOptional === true
+    );
+
     return {
-      individual: currentYearActive.filter(
-        (item) => item.category === "individual"
-      ),
+      mandatory: {
+        individual: mandatory.filter(
+          (item) => item.category === "individual"
+        ),
 
-      yearSet: currentYearActive.filter(
-        (item) => item.category === "yearSet"
-      ),
+        yearSet: mandatory.filter(
+          (item) => item.category === "yearSet"
+        ),
 
-      chapter: currentYearActive.filter(
-        (item) => item.category === "chapter"
-      ),
+        chapter: mandatory.filter(
+          (item) => item.category === "chapter"
+        ),
+
+        total: mandatory.length,
+      },
+
+      optional: {
+        individual: optional.filter(
+          (item) => item.category === "individual"
+        ),
+
+        yearSet: optional.filter(
+          (item) => item.category === "yearSet"
+        ),
+
+        chapter: optional.filter(
+          (item) => item.category === "chapter"
+        ),
+
+        total: optional.length,
+      },
 
       total: currentYearActive.length,
     };
@@ -197,7 +245,9 @@ const Obligations = () => {
   // ========================================
 
   const filteredObligations = useMemo(() => {
-    const normalizedSearch = search.trim().toLowerCase();
+    const normalizedSearch = search
+      .trim()
+      .toLowerCase();
 
     return obligations.filter((obligation) => {
       const matchesCategory =
@@ -216,8 +266,8 @@ const Obligations = () => {
       const matchesStatus =
         !statusFilter ||
         (statusFilter === "active"
-          ? obligation.isActive
-          : !obligation.isActive);
+          ? obligation.isActive === true
+          : obligation.isActive !== true);
 
       return (
         matchesCategory &&
@@ -325,8 +375,7 @@ const Obligations = () => {
             .split("T")[0]
         : "",
 
-      // IMPORTANT:
-      // Preserve whether this obligation is optional.
+      // Preserve optional status
       isOptional: obligation.isOptional === true,
 
       paymentPlans:
@@ -499,8 +548,7 @@ const Obligations = () => {
 
       dueDate: form.dueDate || null,
 
-      // IMPORTANT:
-      // Send optional status to backend.
+      // Optional obligations remain separate
       isOptional: form.isOptional === true,
 
       paymentPlans:
@@ -864,6 +912,7 @@ const Obligations = () => {
   return (
     <div className="p-4">
       <div className="space-y-5">
+
         {/* ALERT */}
 
         {alert && (
@@ -914,9 +963,12 @@ const Obligations = () => {
           </button>
         </div>
 
-        {/* OVERVIEW CARDS */}
+        {/* ========================================
+            OVERVIEW CARDS
+        ======================================== */}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-3">
+
           <AdminStatCard
             icon={WalletCards}
             iconBg="bg-(--primary-light)"
@@ -939,26 +991,39 @@ const Obligations = () => {
 
           <AdminStatCard
             icon={Users}
-            iconBg="bg-(--warning-light)"
-            iconClass="text-(--warning)"
-            badge="Individual"
+            iconBg="bg-(--primary-light)"
+            iconClass="text-(--primary)"
+            badge="Mandatory"
             label="Individual"
             value={stats.individual}
-            description="Member obligations"
+            description="Mandatory member obligations"
           />
 
           <AdminStatCard
             icon={Layers3}
             iconBg="bg-(--primary-light)"
             iconClass="text-(--primary)"
-            badge="Groups"
+            badge="Mandatory"
             label="Group Obligations"
             value={stats.group}
             description="Year Set & Chapter"
           />
+
+          <AdminStatCard
+            icon={CircleDollarSign}
+            iconBg="bg-(--warning-light)"
+            iconClass="text-(--warning)"
+            badge="Optional"
+            label="Optional Obligations"
+            value={stats.optional}
+            description="Separate optional obligations"
+          />
+
         </div>
 
-        {/* CURRENT YEAR OBLIGATION BREAKDOWN */}
+        {/* ========================================
+            CURRENT YEAR BREAKDOWN
+        ======================================== */}
 
         <ObligationBreakdown
           breakdown={obligationBreakdown}
@@ -1001,13 +1066,17 @@ const Obligations = () => {
           </div>
         )}
 
-        {/* OBLIGATION TABLE */}
+        {/* ========================================
+            OBLIGATION TABLE
+        ======================================== */}
 
         <div className="bg-(--bg-white) border border-(--border) rounded overflow-hidden">
+
           {/* TABLE HEADER */}
 
           <div className="px-5 py-4 border-b border-(--border)">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+
               <div>
                 <h2 className="text-sm font-semibold text-(--primary)">
                   All Obligations
@@ -1020,6 +1089,7 @@ const Obligations = () => {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-2">
+
                 {/* SEARCH */}
 
                 <div className="relative">
@@ -1189,6 +1259,7 @@ const Obligations = () => {
               </p>
 
               <div className="flex items-center gap-2">
+
                 <button
                   type="button"
                   onClick={handlePrevious}
@@ -1234,13 +1305,16 @@ const Obligations = () => {
                 >
                   <ChevronRight size={16} />
                 </button>
+
               </div>
             </div>
           )}
         </div>
       </div>
 
-      {/* CREATE OBLIGATION MODAL */}
+      {/* ========================================
+          CREATE OBLIGATION MODAL
+      ======================================== */}
 
       {createModalOpen && (
         <ObligationFormModal
@@ -1264,7 +1338,9 @@ const Obligations = () => {
         />
       )}
 
-      {/* EDIT OBLIGATION MODAL */}
+      {/* ========================================
+          EDIT OBLIGATION MODAL
+      ======================================== */}
 
       {editModalOpen && (
         <ObligationFormModal
@@ -1288,7 +1364,9 @@ const Obligations = () => {
         />
       )}
 
-      {/* VIEW OBLIGATION MODAL */}
+      {/* ========================================
+          VIEW OBLIGATION MODAL
+      ======================================== */}
 
       {viewModalOpen &&
         selectedObligation && (
@@ -1320,284 +1398,349 @@ const ObligationBreakdown = ({
   breakdown,
   currentYear,
 }) => {
-  const total = breakdown.total;
+  // ========================================
+  // MANDATORY CATEGORIES
+  // ========================================
 
-  const categories = [
+  const mandatoryCategories = [
     {
       key: "individual",
       label: "Individual",
-      items: breakdown.individual,
+      items: breakdown.mandatory.individual,
       className: "text-(--primary)",
-      stroke: "var(--primary)",
     },
 
     {
       key: "yearSet",
       label: "Year Set",
-      items: breakdown.yearSet,
+      items: breakdown.mandatory.yearSet,
       className: "text-(--warning)",
-      stroke: "var(--warning)",
     },
 
     {
       key: "chapter",
       label: "Chapter",
-      items: breakdown.chapter,
+      items: breakdown.mandatory.chapter,
       className: "text-(--success)",
-      stroke: "var(--success)",
     },
   ];
 
-  const radius = 70;
-  const circumference =
-    2 * Math.PI * radius;
+  // ========================================
+  // OPTIONAL CATEGORIES
+  // ========================================
 
-  let accumulated = 0;
+  const optionalCategories = [
+    {
+      key: "optional-individual",
+      label: "Individual",
+      items: breakdown.optional.individual,
+      className: "text-(--warning)",
+    },
+
+    {
+      key: "optional-yearSet",
+      label: "Year Set",
+      items: breakdown.optional.yearSet,
+      className: "text-(--warning)",
+    },
+
+    {
+      key: "optional-chapter",
+      label: "Chapter",
+      items: breakdown.optional.chapter,
+      className: "text-(--warning)",
+    },
+  ];
+
+  // ========================================
+  // RENDER CATEGORY CARDS
+  // ========================================
+
+  const renderCategoryCards = (
+    categories
+  ) => {
+    return (
+      <div className="space-y-3">
+        {categories.map((category) => {
+          const totalAmount =
+            category.items.reduce(
+              (sum, item) =>
+                sum +
+                Number(item.amount || 0),
+              0
+            );
+
+          return (
+            <div
+              key={category.key}
+              className="
+                rounded
+                border
+                border-(--border)
+                bg-(--bg-light)
+                p-4
+              "
+            >
+              <div className="flex items-start justify-between gap-4">
+
+                <div>
+                  <p className="text-xs text-(--secondary)">
+                    {category.label}
+                  </p>
+
+                  <p className="text-lg font-semibold text-(--primary) mt-1">
+                    ₦
+                    {totalAmount.toLocaleString()}
+                  </p>
+                </div>
+
+                <span
+                  className={`text-[11px] font-medium ${category.className}`}
+                >
+                  {category.items.length}{" "}
+                  {category.items.length ===
+                  1
+                    ? "obligation"
+                    : "obligations"}
+                </span>
+
+              </div>
+
+              <div className="mt-3 pt-3 border-t border-(--border) space-y-2">
+
+                {category.items.length >
+                0 ? (
+                  category.items.map(
+                    (item) => (
+                      <div
+                        key={item._id}
+                        className="
+                          flex
+                          items-center
+                          justify-between
+                          gap-3
+                        "
+                      >
+                        <div className="min-w-0">
+
+                          <div className="flex items-center gap-2">
+
+                            <p className="text-xs font-medium text-(--primary) truncate">
+                              {item.name}
+                            </p>
+
+                            {item.isOptional ===
+                              true && (
+                              <span
+                                className="
+                                  shrink-0
+                                  px-1.5
+                                  py-0.5
+                                  rounded
+                                  text-[9px]
+                                  font-medium
+                                  bg-(--warning-light)
+                                  text-(--warning)
+                                "
+                              >
+                                Optional
+                              </span>
+                            )}
+
+                          </div>
+
+                          {item
+                            .paymentPlans
+                            ?.length >
+                            0 && (
+                            <p className="text-[10px] text-(--text-muted) mt-0.5 capitalize">
+                              {item.paymentPlans
+                                .filter(
+                                  (
+                                    plan
+                                  ) =>
+                                    plan.isActive !==
+                                    false
+                                )
+                                .map(
+                                  (
+                                    plan
+                                  ) =>
+                                    plan.frequency
+                                )
+                                .join(
+                                  ", "
+                                )}
+                            </p>
+                          )}
+
+                        </div>
+
+                        <span className="text-xs font-semibold text-(--primary) whitespace-nowrap">
+                          ₦
+                          {Number(
+                            item.amount ||
+                              0
+                          ).toLocaleString()}
+                        </span>
+                      </div>
+                    )
+                  )
+                ) : (
+                  <p className="text-xs text-(--text-muted)">
+                    No{" "}
+                    {category.label.toLowerCase()}{" "}
+                    obligations configured.
+                  </p>
+                )}
+
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
 
   return (
-    <div className="bg-(--bg-white) border border-(--border) rounded overflow-hidden">
-      {/* HEADER */}
+    <div className="space-y-5">
 
-      <div className="px-5 py-4 border-b border-(--border)">
-        <div>
-          <h2 className="text-sm font-semibold text-(--primary)">
-            Current Year Obligation Breakdown
-          </h2>
+      {/* ========================================
+          MANDATORY OBLIGATIONS
+      ======================================== */}
 
-          <p className="text-xs text-(--secondary) mt-1">
-            Active financial obligations
-            configured for {currentYear}.
-          </p>
+      <div className="bg-(--bg-white) border border-(--border) rounded overflow-hidden">
+
+        <div className="px-5 py-4 border-b border-(--border)">
+
+          <div className="flex items-center justify-between gap-3">
+
+            <div>
+              <h2 className="text-sm font-semibold text-(--primary)">
+                Mandatory Obligations
+              </h2>
+
+              <p className="text-xs text-(--secondary) mt-1">
+                Active mandatory financial obligations
+                configured for {currentYear}.
+              </p>
+            </div>
+
+            <span
+              className="
+                px-2.5
+                py-1
+                rounded
+                text-[11px]
+                font-semibold
+                bg-(--primary-light)
+                text-(--primary)
+              "
+            >
+              {breakdown.mandatory.total}{" "}
+              Total
+            </span>
+
+          </div>
+        </div>
+
+        <div className="p-5">
+          {renderCategoryCards(
+            mandatoryCategories
+          )}
         </div>
       </div>
 
-      {/* CONTENT */}
+      {/* ========================================
+          OPTIONAL OBLIGATIONS
+      ======================================== */}
 
-      <div className="p-5">
-        <div className="grid grid-cols-1 lg:grid-cols-[0.8fr_1.2fr] gap-6">
-          {/* DONUT */}
+      <div className="bg-(--bg-white) border border-(--warning) rounded overflow-hidden">
 
-          <div className="min-h-[360px] flex flex-col items-center justify-center rounded border border-(--border) bg-(--bg-light) p-5">
-            <div className="relative w-52 h-52">
-              <svg
-                viewBox="0 0 180 180"
-                className="w-full h-full -rotate-90"
-              >
-                <circle
-                  cx="90"
-                  cy="90"
-                  r={radius}
-                  fill="none"
-                  stroke="var(--border)"
-                  strokeWidth="22"
-                />
+        <div className="px-5 py-4 border-b border-(--border)">
 
-                {total > 0 &&
-                  categories.map(
-                    (category) => {
-                      const count =
-                        category.items.length;
+          <div className="flex items-start justify-between gap-3">
 
-                      const percentage =
-                        count / total;
+            <div>
 
-                      const dashLength =
-                        percentage *
-                        circumference;
+              <div className="flex items-center gap-2">
 
-                      const dashOffset =
-                        -accumulated *
-                        circumference;
+                <h2 className="text-sm font-semibold text-(--primary)">
+                  Optional Obligations
+                </h2>
 
-                      accumulated +=
-                        percentage;
-
-                      return (
-                        <circle
-                          key={category.key}
-                          cx="90"
-                          cy="90"
-                          r={radius}
-                          fill="none"
-                          stroke={
-                            category.stroke
-                          }
-                          strokeWidth="22"
-                          strokeDasharray={`${dashLength} ${
-                            circumference -
-                            dashLength
-                          }`}
-                          strokeDashoffset={
-                            dashOffset
-                          }
-                          strokeLinecap="butt"
-                        />
-                      );
-                    }
-                  )}
-              </svg>
-
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-3xl font-semibold text-(--primary)">
-                  {total}
+                <span
+                  className="
+                    px-2
+                    py-0.5
+                    rounded
+                    text-[10px]
+                    font-semibold
+                    bg-(--warning-light)
+                    text-(--warning)
+                  "
+                >
+                  Optional
                 </span>
 
-                <span className="text-xs text-(--secondary)">
-                  Active obligations
-                </span>
               </div>
+
+              <p className="text-xs text-(--secondary) mt-1">
+                Active optional obligations configured
+                for {currentYear}. These do not count
+                toward mandatory balances.
+              </p>
+
             </div>
 
-            {/* LEGEND */}
+            <span
+              className="
+                px-2.5
+                py-1
+                rounded
+                text-[11px]
+                font-semibold
+                bg-(--warning-light)
+                text-(--warning)
+              "
+            >
+              {breakdown.optional.total}{" "}
+              Total
+            </span>
 
-            <div className="mt-6 grid grid-cols-3 gap-4 w-full">
-              {categories.map(
-                (category) => (
-                  <div
-                    key={category.key}
-                    className="text-center"
-                  >
-                    <div className="flex items-center justify-center gap-1.5">
-                      <span
-                        className="w-2 h-2 rounded-full"
-                        style={{
-                          backgroundColor:
-                            category.stroke,
-                        }}
-                      />
+          </div>
+        </div>
 
-                      <span className="text-[11px] text-(--secondary)">
-                        {category.label}
-                      </span>
-                    </div>
+        <div className="p-5">
 
-                    <p className="text-sm font-semibold text-(--primary) mt-1">
-                      {category.items.length}
-                    </p>
-                  </div>
-                )
-              )}
+          {breakdown.optional.total > 0 ? (
+            renderCategoryCards(
+              optionalCategories
+            )
+          ) : (
+            <div
+              className="
+                rounded
+                border
+                border-dashed
+                border-(--border)
+                bg-(--bg-light)
+                px-4
+                py-8
+                text-center
+              "
+            >
+              <p className="text-xs font-medium text-(--primary)">
+                No optional obligations configured
+              </p>
+
+              <p className="text-[11px] text-(--text-muted) mt-1">
+                Optional obligations such as insurance
+                will appear here.
+              </p>
             </div>
-          </div>
+          )}
 
-          {/* BREAKDOWN CARDS */}
-
-          <div className="space-y-4">
-            {categories.map(
-              (category) => {
-                const totalAmount =
-                  category.items.reduce(
-                    (sum, item) =>
-                      sum +
-                      Number(
-                        item.amount || 0
-                      ),
-                    0
-                  );
-
-                return (
-                  <div
-                    key={category.key}
-                    className="
-                      rounded
-                      border
-                      border-(--border)
-                      bg-(--bg-light)
-                      p-4
-                    "
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <p className="text-xs text-(--secondary)">
-                          {category.label}
-                        </p>
-
-                        <p className="text-lg font-semibold text-(--primary) mt-1">
-                          ₦
-                          {totalAmount.toLocaleString()}
-                        </p>
-                      </div>
-
-                      <span
-                        className={`text-[11px] font-medium ${category.className}`}
-                      >
-                        {category.items.length}{" "}
-                        {category.items.length ===
-                        1
-                          ? "obligation"
-                          : "obligations"}
-                      </span>
-                    </div>
-
-                    <div className="mt-3 pt-3 border-t border-(--border) space-y-2">
-                      {category.items.length >
-                      0 ? (
-                        category.items.map(
-                          (item) => (
-                            <div
-                              key={item._id}
-                              className="
-                                flex
-                                items-center
-                                justify-between
-                                gap-3
-                              "
-                            >
-                              <div className="min-w-0">
-                                <p className="text-xs font-medium text-(--primary) truncate">
-                                  {item.name}
-                                </p>
-
-                                {item
-                                  .paymentPlans
-                                  ?.length >
-                                  0 && (
-                                  <p className="text-[10px] text-(--text-muted) mt-0.5 capitalize">
-                                    {item.paymentPlans
-                                      .filter(
-                                        (
-                                          plan
-                                        ) =>
-                                          plan.isActive !==
-                                          false
-                                      )
-                                      .map(
-                                        (
-                                          plan
-                                        ) =>
-                                          plan.frequency
-                                      )
-                                      .join(
-                                        ", "
-                                      )}
-                                  </p>
-                                )}
-                              </div>
-
-                              <span className="text-xs font-semibold text-(--primary) whitespace-nowrap">
-                                ₦
-                                {Number(
-                                  item.amount ||
-                                    0
-                                ).toLocaleString()}
-                              </span>
-                            </div>
-                          )
-                        )
-                      ) : (
-                        <p className="text-xs text-(--text-muted)">
-                          No active{" "}
-                          {category.label.toLowerCase()}{" "}
-                          obligations configured
-                          for {currentYear}.
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                );
-              }
-            )}
-          </div>
         </div>
       </div>
     </div>
@@ -1647,6 +1790,7 @@ const ObligationFormModal = ({
           shadow-xl
         "
       >
+
         {/* HEADER */}
 
         <div
@@ -1698,12 +1842,16 @@ const ObligationFormModal = ({
           onSubmit={onSubmit}
           className="p-5 space-y-5"
         >
+
           {/* BASIC INFORMATION */}
 
           <div className="space-y-3">
+
             <h3 className="text-xs font-semibold text-(--primary)">
               Basic Information
             </h3>
+
+            {/* NAME */}
 
             <div>
               <label className="block text-xs font-medium text-(--primary) mb-1.5">
@@ -1736,6 +1884,8 @@ const ObligationFormModal = ({
                 "
               />
             </div>
+
+            {/* DESCRIPTION */}
 
             <div>
               <label className="block text-xs font-medium text-(--primary) mb-1.5">
@@ -1770,7 +1920,10 @@ const ObligationFormModal = ({
               />
             </div>
 
+            {/* CATEGORY + YEAR */}
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
               {/* CATEGORY */}
 
               <div>
@@ -1846,16 +1999,21 @@ const ObligationFormModal = ({
                   "
                 />
               </div>
+
             </div>
 
-            {/* MANDATORY / OPTIONAL */}
+            {/* ========================================
+                MANDATORY / OPTIONAL
+            ======================================== */}
 
             <div>
+
               <label className="block text-xs font-medium text-(--primary) mb-1.5">
                 Obligation Type
               </label>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+
                 {/* MANDATORY */}
 
                 <button
@@ -1881,6 +2039,7 @@ const ObligationFormModal = ({
                   `}
                 >
                   <div className="flex items-center justify-between gap-3">
+
                     <p className="text-xs font-semibold text-(--primary)">
                       Mandatory
                     </p>
@@ -1889,6 +2048,7 @@ const ObligationFormModal = ({
                       false && (
                       <span className="w-2 h-2 rounded-full bg-(--primary)" />
                     )}
+
                   </div>
 
                   <p className="text-[11px] text-(--secondary) mt-1">
@@ -1922,6 +2082,7 @@ const ObligationFormModal = ({
                   `}
                 >
                   <div className="flex items-center justify-between gap-3">
+
                     <p className="text-xs font-semibold text-(--primary)">
                       Optional
                     </p>
@@ -1930,6 +2091,7 @@ const ObligationFormModal = ({
                       true && (
                       <span className="w-2 h-2 rounded-full bg-(--warning)" />
                     )}
+
                   </div>
 
                   <p className="text-[11px] text-(--secondary) mt-1">
@@ -1937,18 +2099,23 @@ const ObligationFormModal = ({
                     mandatory balance.
                   </p>
                 </button>
+
               </div>
             </div>
 
             {/* AMOUNT + DUE DATE */}
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+              {/* AMOUNT */}
+
               <div>
                 <label className="block text-xs font-medium text-(--primary) mb-1.5">
                   Total Amount
                 </label>
 
                 <div className="relative">
+
                   <span
                     className="
                       absolute
@@ -1989,8 +2156,11 @@ const ObligationFormModal = ({
                       focus:border-(--primary)
                     "
                   />
+
                 </div>
               </div>
+
+              {/* DUE DATE */}
 
               <div>
                 <label className="block text-xs font-medium text-(--primary) mb-1.5">
@@ -1998,6 +2168,7 @@ const ObligationFormModal = ({
                 </label>
 
                 <div className="relative">
+
                   <CalendarDays
                     size={14}
                     className="
@@ -2033,15 +2204,21 @@ const ObligationFormModal = ({
                       focus:border-(--primary)
                     "
                   />
+
                 </div>
               </div>
+
             </div>
           </div>
 
-          {/* PAYMENT PLANS */}
+          {/* ========================================
+              PAYMENT PLANS
+          ======================================== */}
 
           <div className="space-y-3">
+
             <div className="flex items-center justify-between gap-3">
+
               <div>
                 <h3 className="text-xs font-semibold text-(--primary)">
                   Payment Plans
@@ -2075,9 +2252,11 @@ const ObligationFormModal = ({
                 <Plus size={14} />
                 Add Plan
               </button>
+
             </div>
 
             <div className="space-y-2">
+
               {form.paymentPlans.map(
                 (plan, index) => (
                   <div
@@ -2090,7 +2269,11 @@ const ObligationFormModal = ({
                       bg-(--bg-light)
                     "
                   >
+
                     <div className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto] gap-2">
+
+                      {/* FREQUENCY */}
+
                       <div>
                         <label className="block text-[11px] font-medium text-(--primary) mb-1">
                           Frequency
@@ -2134,12 +2317,15 @@ const ObligationFormModal = ({
                         </select>
                       </div>
 
+                      {/* AMOUNT */}
+
                       <div>
                         <label className="block text-[11px] font-medium text-(--primary) mb-1">
                           Amount
                         </label>
 
                         <div className="relative">
+
                           <span
                             className="
                               absolute
@@ -2181,10 +2367,14 @@ const ObligationFormModal = ({
                               outline-none
                             "
                           />
+
                         </div>
                       </div>
 
+                      {/* REMOVE */}
+
                       <div className="flex items-end">
+
                         <button
                           type="button"
                           onClick={() =>
@@ -2215,15 +2405,20 @@ const ObligationFormModal = ({
                         >
                           <X size={15} />
                         </button>
+
                       </div>
+
                     </div>
                   </div>
                 )
               )}
+
             </div>
           </div>
 
-          {/* ACTIONS */}
+          {/* ========================================
+              ACTIONS
+          ======================================== */}
 
           <div
             className="
@@ -2236,6 +2431,7 @@ const ObligationFormModal = ({
               gap-2
             "
           >
+
             <button
               type="button"
               onClick={onClose}
@@ -2278,6 +2474,7 @@ const ObligationFormModal = ({
                 transition-opacity
               "
             >
+
               {saving && (
                 <Loader2
                   size={14}
@@ -2288,7 +2485,9 @@ const ObligationFormModal = ({
               {saving
                 ? "Saving..."
                 : submitLabel}
+
             </button>
+
           </div>
         </form>
       </div>
@@ -2356,6 +2555,7 @@ const ObligationViewModal = ({
           shadow-xl
         "
       >
+
         {/* HEADER */}
 
         <div
@@ -2370,13 +2570,16 @@ const ObligationViewModal = ({
             gap-4
           "
         >
+
           <div>
+
             <div className="flex items-center gap-2 flex-wrap">
+
               <h2 className="text-sm font-semibold text-(--primary)">
                 {obligation.name}
               </h2>
 
-              {/* TYPE BADGE */}
+              {/* TYPE */}
 
               <span
                 className={`
@@ -2399,7 +2602,7 @@ const ObligationViewModal = ({
                   : "Mandatory"}
               </span>
 
-              {/* STATUS BADGE */}
+              {/* STATUS */}
 
               <span
                 className={`
@@ -2421,12 +2624,14 @@ const ObligationViewModal = ({
                   ? "Active"
                   : "Inactive"}
               </span>
+
             </div>
 
             <p className="text-xs text-(--secondary) mt-1">
               {obligation.description ||
                 "No description provided."}
             </p>
+
           </div>
 
           <button
@@ -2447,12 +2652,15 @@ const ObligationViewModal = ({
           >
             <X size={17} />
           </button>
+
         </div>
 
         {/* DETAILS */}
 
         <div className="p-5 space-y-4">
+
           <div className="grid grid-cols-2 gap-3">
+
             <DetailItem
               label="Category"
               value={
@@ -2487,16 +2695,44 @@ const ObligationViewModal = ({
               label="Due Date"
               value={formattedDueDate}
             />
+
           </div>
+
+          {/* OPTIONAL NOTICE */}
+
+          {isOptional && (
+            <div
+              className="
+                rounded
+                border
+                border-(--warning)
+                bg-(--warning-light)
+                px-3
+                py-2.5
+              "
+            >
+              <p className="text-[11px] font-semibold text-(--warning)">
+                Optional obligation
+              </p>
+
+              <p className="text-[11px] text-(--secondary) mt-0.5">
+                This obligation is payable but does not
+                contribute to the member's mandatory
+                outstanding balance.
+              </p>
+            </div>
+          )}
 
           {/* PAYMENT PLANS */}
 
           <div>
+
             <p className="text-xs font-semibold text-(--primary) mb-2">
               Payment Plans
             </p>
 
             <div className="space-y-2">
+
               {obligation.paymentPlans
                 ?.length ? (
                 obligation.paymentPlans.map(
@@ -2516,6 +2752,7 @@ const ObligationViewModal = ({
                         bg-(--bg-light)
                       "
                     >
+
                       <span className="text-xs capitalize text-(--secondary)">
                         {plan.frequency}
                       </span>
@@ -2526,6 +2763,7 @@ const ObligationViewModal = ({
                           plan.amount || 0
                         ).toLocaleString()}
                       </span>
+
                     </div>
                   )
                 )
@@ -2534,6 +2772,7 @@ const ObligationViewModal = ({
                   No payment plans configured.
                 </p>
               )}
+
             </div>
           </div>
 
@@ -2547,6 +2786,7 @@ const ObligationViewModal = ({
                 border-(--border)
               "
             >
+
               <p className="text-[11px] text-(--text-muted)">
                 Created by
               </p>
@@ -2566,6 +2806,7 @@ const ObligationViewModal = ({
                   }
                 </p>
               )}
+
             </div>
           )}
 
@@ -2582,6 +2823,7 @@ const ObligationViewModal = ({
               gap-2
             "
           >
+
             <button
               type="button"
               onClick={onToggleStatus}
@@ -2607,6 +2849,7 @@ const ObligationViewModal = ({
                 }
               `}
             >
+
               {statusLoading ? (
                 <Loader2
                   size={14}
@@ -2619,6 +2862,7 @@ const ObligationViewModal = ({
               {obligation.isActive
                 ? "Deactivate"
                 : "Activate"}
+
             </button>
 
             <button
@@ -2645,6 +2889,7 @@ const ObligationViewModal = ({
               <Pencil size={14} />
               Edit
             </button>
+
           </div>
         </div>
       </div>

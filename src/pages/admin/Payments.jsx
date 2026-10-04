@@ -29,7 +29,6 @@ const AdminPayments = () => {
     const [summary, setSummary] = useState(null);
     const [collectionBreakdown, setCollectionBreakdown] =
         useState(null);
-
     const [pagination, setPagination] = useState(null);
 
     const [loading, setLoading] = useState(true);
@@ -49,10 +48,10 @@ const AdminPayments = () => {
 
     const [currentPage, setCurrentPage] = useState(1);
 
-    const [selectedPayment, setSelectedPayment] = useState(null);
+    const [selectedPayment, setSelectedPayment] =
+        useState(null);
     const [paymentDrawerOpen, setPaymentDrawerOpen] =
         useState(false);
-
     const [paymentDetailsLoading, setPaymentDetailsLoading] =
         useState(false);
 
@@ -79,7 +78,6 @@ const AdminPayments = () => {
             });
 
             setPaymentsData(result?.payments || []);
-
             setSummary(result?.summary || null);
 
             setCollectionBreakdown(
@@ -203,7 +201,7 @@ const AdminPayments = () => {
         if (!method) return "—";
 
         return method
-            .replace(/[\_-]/g, " ")
+            .replace(/[\_\-]/g, " ")
             .replace(/\b\w/g, (letter) =>
                 letter.toUpperCase()
             );
@@ -213,7 +211,7 @@ const AdminPayments = () => {
         if (!gateway) return "—";
 
         return gateway
-            .replace(/[\_-]/g, " ")
+            .replace(/[\_\-]/g, " ")
             .replace(/\b\w/g, (letter) =>
                 letter.toUpperCase()
             );
@@ -247,6 +245,17 @@ const AdminPayments = () => {
     // ========================================
     // COLLECTION DATA
     // ========================================
+    //
+    // Total Collected is the authoritative
+    // totalReceived from the backend.
+    //
+    // Individual / Year Set / Chapter are
+    // mandatory obligation categories.
+    //
+    // Optional is added as another category
+    // without changing the existing design.
+    //
+    // ========================================
 
     const collectionItems = [
         {
@@ -254,12 +263,18 @@ const AdminPayments = () => {
             label: "Individual",
             description:
                 "Individual member payments",
+
             amount: Number(
-                collectionBreakdown?.individual
+                collectionBreakdown
+                    ?.mandatory
+                    ?.individual
                     ?.amount || 0
             ),
+
             transactions: Number(
-                collectionBreakdown?.individual
+                collectionBreakdown
+                    ?.mandatory
+                    ?.individual
                     ?.transactions || 0
             ),
         },
@@ -269,12 +284,18 @@ const AdminPayments = () => {
             label: "Year Set",
             description:
                 "Year Set payments",
+
             amount: Number(
-                collectionBreakdown?.yearSet
+                collectionBreakdown
+                    ?.mandatory
+                    ?.yearSet
                     ?.amount || 0
             ),
+
             transactions: Number(
-                collectionBreakdown?.yearSet
+                collectionBreakdown
+                    ?.mandatory
+                    ?.yearSet
                     ?.transactions || 0
             ),
         },
@@ -284,26 +305,59 @@ const AdminPayments = () => {
             label: "Chapter",
             description:
                 "Chapter payments",
+
             amount: Number(
-                collectionBreakdown?.chapter
+                collectionBreakdown
+                    ?.mandatory
+                    ?.chapter
                     ?.amount || 0
             ),
+
             transactions: Number(
-                collectionBreakdown?.chapter
+                collectionBreakdown
+                    ?.mandatory
+                    ?.chapter
+                    ?.transactions || 0
+            ),
+        },
+
+        {
+            key: "optional",
+            label: "Optional",
+            description:
+                "Optional obligation payments",
+
+            amount: Number(
+                collectionBreakdown
+                    ?.optional
+                    ?.amount || 0
+            ),
+
+            transactions: Number(
+                collectionBreakdown
+                    ?.optional
                     ?.transactions || 0
             ),
         },
     ];
 
+    // ========================================
+    // TOTAL COLLECTION
+    // ========================================
+    //
+    // IMPORTANT:
+    // Use totalReceived as the source of truth.
+    // Do not calculate total from the categories.
+    //
+    // ========================================
+
     const totalCollection = Number(
-        collectionBreakdown?.total?.amount || 0
+        summary?.totalReceived || 0
     );
 
-    const totalCollectionTransactions =
-        Number(
-            collectionBreakdown?.total
-                ?.transactions || 0
-        );
+    const totalCollectionTransactions = Number(
+        summary?.successful || 0
+    );
 
     // ========================================
     // TABLE COLUMNS
@@ -312,6 +366,7 @@ const AdminPayments = () => {
     const paymentColumns = [
         {
             key: "member",
+
             label: "Member",
 
             render: (payment) => {
@@ -321,9 +376,11 @@ const AdminPayments = () => {
                     <div>
                         <p className="font-medium text-(--primary)">
                             {user?.firstName || ""}
+
                             {user?.middleName
                                 ? ` ${user.middleName}`
                                 : ""}
+
                             {user?.lastName
                                 ? ` ${user.lastName}`
                                 : ""}
@@ -340,6 +397,7 @@ const AdminPayments = () => {
 
         {
             key: "alumniId",
+
             label: "Alumni ID",
 
             render: (payment) => (
@@ -352,6 +410,7 @@ const AdminPayments = () => {
 
         {
             key: "obligation",
+
             label: "Obligation",
 
             render: (payment) => (
@@ -375,6 +434,7 @@ const AdminPayments = () => {
 
         {
             key: "amount",
+
             label: "Amount",
 
             render: (payment) => (
@@ -389,6 +449,7 @@ const AdminPayments = () => {
 
         {
             key: "method",
+
             label: "Method",
 
             render: (payment) => (
@@ -410,6 +471,7 @@ const AdminPayments = () => {
 
         {
             key: "status",
+
             label: "Status",
 
             render: (payment) => (
@@ -426,6 +488,7 @@ const AdminPayments = () => {
 
         {
             key: "paidAt",
+
             label: "Paid Date",
 
             render: (payment) => (
@@ -439,6 +502,7 @@ const AdminPayments = () => {
 
         {
             key: "actions",
+
             label: "Action",
 
             render: (payment) => (
@@ -538,6 +602,7 @@ const AdminPayments = () => {
                         className="inline-flex items-center gap-1.5 text-xs font-semibold text-(--primary) mt-4 hover:text-(--primary-dark)"
                     >
                         Try again
+
                         <ArrowUpRight
                             size={14}
                         />
@@ -967,9 +1032,7 @@ const AdminPayments = () => {
 
                                 <input
                                     type="date"
-                                    value={
-                                        startDate
-                                    }
+                                    value={startDate}
                                     onChange={(
                                         event
                                     ) =>
