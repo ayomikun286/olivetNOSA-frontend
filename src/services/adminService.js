@@ -646,3 +646,332 @@ export const assignYearSetLeader = async (
 
   return data;
 };
+
+
+
+// ========================================
+// GET ADMIN Chapter
+// / ========================================
+
+export const getAdminChapters = async (params = {}) => {
+  const searchParams = new URLSearchParams();
+
+  if (params.status) {
+    searchParams.append("status", params.status);
+  }
+
+  if (params.search?.trim()) {
+    searchParams.append("search", params.search.trim());
+  }
+
+  const query = searchParams.toString();
+
+  const response = await fetch(
+    `${API}/api/chapter${query ? `?${query}` : ""}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to load chapters."
+    );
+  }
+
+  return data;
+};
+
+export const getAdminChapterById = async (id) => {
+  if (!id) {
+    throw new Error("Chapter ID is required.");
+  }
+
+  const response = await fetch(
+    `${API}/api/chapter/${id}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to load chapters."
+    );
+  }
+
+  return data;
+};
+
+
+export const assignChapterLeader = async (
+  chapterId,
+  userId
+) => {
+  if (!chapterId) {
+    throw new Error("Chapter ID is required.");
+  }
+
+  if (!userId) {
+    throw new Error("User ID is required.");
+  }
+
+  const response = await fetch(
+    `${API}/api/leadership/chapter/${yearSetId}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        userId,
+      }),
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to assign chapter leader."
+    );
+  }
+
+  return data;
+};
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Get All Financial Reports
+|--------------------------------------------------------------------------
+*/
+
+export const getFinancialReports = async (params = {}) => {
+  const searchParams = new URLSearchParams();
+
+  if (params.year) {
+    searchParams.append("year", params.year);
+  }
+
+  if (params.status) {
+    searchParams.append("status", params.status);
+  }
+
+  const query = searchParams.toString();
+
+  const response = await fetch(
+    `${API}/api/admin/financial-reports${
+      query ? `?${query}` : ""
+    }`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message ||
+        "Failed to load financial reports."
+    );
+  }
+
+  return data;
+};
+
+
+/*
+|--------------------------------------------------------------------------
+| Get Financial Report By ID
+|--------------------------------------------------------------------------
+*/
+
+export const getFinancialReportById = async (id) => {
+  if (!id) {
+    throw new Error(
+      "Financial report ID is required."
+    );
+  }
+
+  const response = await fetch(
+    `${API}/api/admin/financial-reports/${id}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message ||
+        "Failed to load financial report."
+    );
+  }
+
+  return data;
+};
+
+
+/*
+|--------------------------------------------------------------------------
+| Create Financial Report
+|--------------------------------------------------------------------------
+*/
+
+export const createFinancialReport = async (
+  month,
+  year
+) => {
+  if (!month) {
+    throw new Error(
+      "Report month is required."
+    );
+  }
+
+  if (!year) {
+    throw new Error(
+      "Report year is required."
+    );
+  }
+
+  const response = await fetch(
+    `${API}/api/admin/financial-reports`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        month,
+        year,
+      }),
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message ||
+        "Failed to create financial report."
+    );
+  }
+
+  return data;
+};
+
+
+/*
+|--------------------------------------------------------------------------
+| Update / Regenerate Draft
+|--------------------------------------------------------------------------
+*/
+
+export const updateFinancialReport = async (id) => {
+  if (!id) {
+    throw new Error(
+      "Financial report ID is required."
+    );
+  }
+
+  const response = await fetch(
+    `${API}/api/admin/financial-reports/${id}`,
+    {
+      method: "PUT",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message ||
+        "Failed to update financial report."
+    );
+  }
+
+  return data;
+};
+
+
+/*
+|--------------------------------------------------------------------------
+| Publish Financial Report
+|--------------------------------------------------------------------------
+*/
+
+export const publishFinancialReport = async (id) => {
+  if (!id) {
+    throw new Error(
+      "Financial report ID is required."
+    );
+  }
+
+  const response = await fetch(
+    `${API}/api/admin/financial-reports/${id}/publish`,
+    {
+      method: "POST",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message ||
+        "Failed to publish financial report."
+    );
+  }
+
+  return data;
+};
+
+
+/*
+|--------------------------------------------------------------------------
+| Unpublish Financial Report
+|--------------------------------------------------------------------------
+*/
+
+export const unpublishFinancialReport = async (id) => {
+  if (!id) {
+    throw new Error(
+      "Financial report ID is required."
+    );
+  }
+
+  const response = await fetch(
+    `${API}/api/admin/financial-reports/${id}/unpublish`,
+    {
+      method: "POST",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message ||
+        "Failed to unpublish financial report."
+    );
+  }
+
+  return data;
+};

@@ -360,3 +360,15 @@ ACTIVATE
 DEACTIVATE
 PAYMENT
 REFUND
+
+
+
+
+GET    /api/admin/financial-reports
+GET    /api/admin/financial-reports/:id
+
+POST   /api/admin/financial-reports
+PUT    /api/admin/financial-reports/:id
+
+POST   /api/admin/financial-reports/:id/publish
+POST   /api/admin/financial-reports/:id/unpublish

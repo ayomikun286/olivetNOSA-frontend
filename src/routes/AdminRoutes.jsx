@@ -9,6 +9,8 @@ import Obligations from "../pages/admin/Obligations.jsx"
 import Payments from "../pages/admin/Payments.jsx";
 import Calendar from "../pages/admin/Calendar.jsx";
 import AdminYearSet from "../pages/admin/AdminYearSet.jsx";
+import AdminChapter from "../pages/admin/AdminChapter.jsx";  
+import FinancialReports from "../pages/admin/FinancialReports.jsx"; 
 const AdminRoutes = () => {
   return (
     <Routes>
@@ -20,6 +22,8 @@ const AdminRoutes = () => {
           <Route path="payments" element={<Payments />} />
           <Route path="calendar" element={<Calendar />} />
           <Route path="year-sets" element={<AdminYearSet />} />
+          <Route path="chapters" element={<AdminChapter />} />
+          <Route path="financial-reports" element={<FinancialReports />} />
         </Route>
       </Route>
     </Routes>
