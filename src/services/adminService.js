@@ -539,3 +539,110 @@ export const deleteCalendarEvent = async (id) => {
 
   return data;
 };
+
+
+
+// ========================================
+// GET ADMIN YEAR SETS
+// ========================================
+
+export const getAdminYearSets = async (params = {}) => {
+  const searchParams = new URLSearchParams();
+
+  if (params.status) {
+    searchParams.append("status", params.status);
+  }
+
+  if (params.search?.trim()) {
+    searchParams.append("search", params.search.trim());
+  }
+
+  const query = searchParams.toString();
+
+  const response = await fetch(
+    `${API}/api/year-sets${query ? `?${query}` : ""}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to load year sets."
+    );
+  }
+
+  return data;
+};
+
+// ========================================
+// GET SINGLE ADMIN YEAR SET
+// ========================================
+
+export const getAdminYearSetById = async (id) => {
+  if (!id) {
+    throw new Error("Year set ID is required.");
+  }
+
+  const response = await fetch(
+    `${API}/api/year-sets/${id}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to load year set."
+    );
+  }
+
+  return data;
+};
+
+// ========================================
+// ASSIGN / REASSIGN YEAR SET LEADER
+// ========================================
+
+export const assignYearSetLeader = async (
+  yearSetId,
+  userId
+) => {
+  if (!yearSetId) {
+    throw new Error("Year set ID is required.");
+  }
+
+  if (!userId) {
+    throw new Error("User ID is required.");
+  }
+
+  const response = await fetch(
+    `${API}/api/leadership/year-set/${yearSetId}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        userId,
+      }),
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to assign year set leader."
+    );
+  }
+
+  return data;
+};

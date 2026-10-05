@@ -8,6 +8,7 @@ import Members from "../pages/admin/Members.jsx";
 import Obligations from "../pages/admin/Obligations.jsx"
 import Payments from "../pages/admin/Payments.jsx";
 import Calendar from "../pages/admin/Calendar.jsx";
+import AdminYearSet from "../pages/admin/AdminYearSet.jsx";
 const AdminRoutes = () => {
   return (
     <Routes>
@@ -18,6 +19,7 @@ const AdminRoutes = () => {
           <Route path="obligations" element={<Obligations />} />
           <Route path="payments" element={<Payments />} />
           <Route path="calendar" element={<Calendar />} />
+          <Route path="year-sets" element={<AdminYearSet />} />
         </Route>
       </Route>
     </Routes>

@@ -297,3 +297,66 @@ Admin
 ├── Articles
 ├── Support
 └── Settings
+
+
+
+
+
+
+Admin → Year Sets
+
+Admin should eventually be able to:
+
+Create/manage Year Sets
+View Year Set members
+Assign Year Set leader
+Change Year Set leader
+Remove/reassign leadership
+View Year Set obligations
+Manage Year Set obligations
+See Year Set payment performance
+Admin → Chapters
+
+Same concept:
+
+Create/manage chapters
+View chapter members
+Assign chapter leader
+Change chapter leader
+Remove/reassign leadership
+View chapter obligations
+Manage chapter obligations
+See Chapter payment performance
+
+
+
+
+
+
+
+
+
+
+
+yearSet / chapter 
+-----------------
+member should view yearSet or chapter obligations  --- View only
+leader should view members FinancialReports--- leaders only .. 
+
+
+
+
+
+
+admin page -- audit 
+CREATE
+UPDATE
+DELETE
+ASSIGN
+REASSIGN
+APPROVE
+SUSPEND
+ACTIVATE
+DEACTIVATE
+PAYMENT
+REFUND
