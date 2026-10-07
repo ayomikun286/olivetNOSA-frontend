@@ -23,6 +23,11 @@ import AdminTable from "../../components/admin/AdminTable.jsx";
 import Alert from "../../components/common/Alert.jsx";
 
 import {
+    exportFinancialReportToExcel,
+    exportFinancialReportToPDF,
+} from "../../utils/financialReportExport.js";
+
+import {
     getFinancialReports,
     getFinancialReportById,
     createFinancialReport,
@@ -65,11 +70,9 @@ const FinancialReports = () => {
     const [viewModalOpen, setViewModalOpen] = useState(false);
     const [createModalOpen, setCreateModalOpen] = useState(false);
 
-    const [selectedReport, setSelectedReport] =
-        useState(null);
+    const [selectedReport, setSelectedReport] = useState(null);
 
-    const [detailLoading, setDetailLoading] =
-        useState(false);
+    const [detailLoading, setDetailLoading] = useState(false);
 
     // ========================================
     // CREATE FORM
@@ -79,28 +82,30 @@ const FinancialReports = () => {
         new Date().getMonth() + 1
     );
 
-    const [reportYear, setReportYear] = useState(
-        currentYear
-    );
+    const [reportYear, setReportYear] = useState(currentYear);
 
-    const [createSaving, setCreateSaving] =
-        useState(false);
+    const [createSaving, setCreateSaving] = useState(false);
 
     // ========================================
     // ACTION STATE
     // ========================================
 
-    const [actionLoading, setActionLoading] =
-        useState(false);
+    const [actionLoading, setActionLoading] = useState(false);
 
-    const [actionType, setActionType] =
-        useState("");
+    const [actionType, setActionType] = useState("");
 
     // ========================================
     // ALERT
     // ========================================
 
     const [alert, setAlert] = useState(null);
+
+    const showAlert = (type, message) => {
+        setAlert({
+            type,
+            message,
+        });
+    };
 
     // ========================================
     // LOAD REPORTS
@@ -111,11 +116,10 @@ const FinancialReports = () => {
             setLoading(true);
             setError("");
 
-            const response =
-                await getFinancialReports({
-                    year: yearFilter,
-                    status: statusFilter,
-                });
+            const response = await getFinancialReports({
+                year: yearFilter,
+                status: statusFilter,
+            });
 
             setReports(response?.data || []);
         } catch (error) {
@@ -126,7 +130,7 @@ const FinancialReports = () => {
 
             setError(
                 error.message ||
-                    "Failed to load financial reports."
+                "Failed to load financial reports."
             );
 
             setReports([]);
@@ -138,17 +142,6 @@ const FinancialReports = () => {
     useEffect(() => {
         loadReports();
     }, [yearFilter, statusFilter]);
-
-    // ========================================
-    // ALERT
-    // ========================================
-
-    const showAlert = (type, message) => {
-        setAlert({
-            type,
-            message,
-        });
-    };
 
     // ========================================
     // FILTER
@@ -167,24 +160,14 @@ const FinancialReports = () => {
             const title =
                 report.title?.toLowerCase() || "";
 
-            const month = String(
-                report.month || ""
-            );
+            const month = String(report.month || "");
 
-            const year = String(
-                report.year || ""
-            );
+            const year = String(report.year || "");
 
             return (
-                title.includes(
-                    normalizedSearch
-                ) ||
-                month.includes(
-                    normalizedSearch
-                ) ||
-                year.includes(
-                    normalizedSearch
-                )
+                title.includes(normalizedSearch) ||
+                month.includes(normalizedSearch) ||
+                year.includes(normalizedSearch)
             );
         });
     }, [reports, search]);
@@ -196,38 +179,29 @@ const FinancialReports = () => {
     const totalPages = Math.max(
         1,
         Math.ceil(
-            filteredReports.length /
-                itemsPerPage
+            filteredReports.length / itemsPerPage
         )
     );
 
-    const paginatedReports =
-        filteredReports.slice(
-            (currentPage - 1) *
-                itemsPerPage,
-            currentPage * itemsPerPage
-        );
+    const paginatedReports = filteredReports.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
 
-    const canGoPrevious =
-        currentPage > 1;
+    const canGoPrevious = currentPage > 1;
 
-    const canGoNext =
-        currentPage < totalPages;
+    const canGoNext = currentPage < totalPages;
 
     const handlePrevious = () => {
         if (!canGoPrevious) return;
 
-        setCurrentPage(
-            (page) => page - 1
-        );
+        setCurrentPage((page) => page - 1);
     };
 
     const handleNext = () => {
         if (!canGoNext) return;
 
-        setCurrentPage(
-            (page) => page + 1
-        );
+        setCurrentPage((page) => page + 1);
     };
 
     // ========================================
@@ -235,55 +209,42 @@ const FinancialReports = () => {
     // ========================================
 
     const stats = useMemo(() => {
-        const latestReport =
-            reports.length > 0
-                ? reports[0]
-                : null;
+        const latestReport = [...reports].sort(
+            (a, b) => b.year - a.year || b.month - a.month
+        )[0] ?? null;
 
-        const summary =
-            latestReport?.summary || {};
+        const summary = latestReport?.summary || {};
 
-        const published =
-            reports.filter(
-                (report) =>
-                    report.status ===
-                    "published"
-            ).length;
+        const published = reports.filter(
+            (report) =>
+                report.status === "published"
+        ).length;
 
-        const drafts =
-            reports.filter(
-                (report) =>
-                    report.status ===
-                    "draft"
-            ).length;
+        const drafts = reports.filter(
+            (report) =>
+                report.status === "draft"
+        ).length;
 
         return {
-            expected:
-                Number(
-                    summary.totalExpected || 0
-                ),
+            expected: Number(
+                summary.totalExpected || 0
+            ),
 
-            collected:
-                Number(
-                    summary.totalCollected || 0
-                ),
+            collected: Number(
+                summary.totalCollected || 0
+            ),
 
-            outstanding:
-                Number(
-                    summary.totalOutstanding ||
-                        0
-                ),
+            outstanding: Number(
+                summary.totalOutstanding || 0
+            ),
 
-            overdue:
-                Number(
-                    summary.totalOverdue || 0
-                ),
+            overdue: Number(
+                summary.totalOverdue || 0
+            ),
 
-            collectionRate:
-                Number(
-                    summary.collectionRate ||
-                        0
-                ),
+            collectionRate: Number(
+                summary.collectionRate || 0
+            ),
 
             published,
             drafts,
@@ -291,12 +252,68 @@ const FinancialReports = () => {
     }, [reports]);
 
     // ========================================
+    // EXPORT EXCEL
+    // ========================================
+
+    const handleExportExcel = async () => {
+        if (!selectedReport) return;
+
+        try {
+            await exportFinancialReportToExcel(
+                selectedReport
+            );
+
+            showAlert(
+                "success",
+                "Financial report exported to Excel successfully."
+            );
+        } catch (error) {
+            console.error(
+                "Excel export failed:",
+                error
+            );
+
+            showAlert(
+                "error",
+                "Failed to export financial report to Excel."
+            );
+        }
+    };
+
+    // ========================================
+    // EXPORT PDF
+    // ========================================
+
+    const handleExportPDF = async () => {
+        if (!selectedReport) return;
+
+        try {
+            await exportFinancialReportToPDF(
+                selectedReport
+            );
+
+            showAlert(
+                "success",
+                "Financial report exported to PDF successfully."
+            );
+        } catch (error) {
+            console.error(
+                "PDF export failed:",
+                error
+            );
+
+            showAlert(
+                "error",
+                "Failed to export financial report to PDF."
+            );
+        }
+    };
+
+    // ========================================
     // VIEW REPORT
     // ========================================
 
-    const openViewModal = async (
-        report
-    ) => {
+    const openViewModal = async (report) => {
         if (!report?._id) return;
 
         setViewModalOpen(true);
@@ -323,7 +340,7 @@ const FinancialReports = () => {
             showAlert(
                 "error",
                 error.message ||
-                    "Unable to load financial report."
+                "Unable to load financial report."
             );
         } finally {
             setDetailLoading(false);
@@ -359,9 +376,7 @@ const FinancialReports = () => {
         setCreateModalOpen(false);
     };
 
-    const handleCreateReport = async (
-        event
-    ) => {
+    const handleCreateReport = async (event) => {
         event.preventDefault();
 
         if (!reportMonth) {
@@ -392,7 +407,7 @@ const FinancialReports = () => {
             showAlert(
                 "success",
                 response?.message ||
-                    "Financial report created successfully."
+                "Financial report created successfully."
             );
 
             setCreateModalOpen(false);
@@ -411,7 +426,7 @@ const FinancialReports = () => {
             showAlert(
                 "error",
                 error.message ||
-                    "Failed to create financial report."
+                "Failed to create financial report."
             );
         } finally {
             setCreateSaving(false);
@@ -422,15 +437,10 @@ const FinancialReports = () => {
     // REGENERATE DRAFT
     // ========================================
 
-    const handleRegenerate = async (
-        report
-    ) => {
+    const handleRegenerate = async (report) => {
         if (!report?._id) return;
 
-        if (
-            report.status !==
-            "draft"
-        ) {
+        if (report.status !== "draft") {
             showAlert(
                 "error",
                 "Published reports cannot be modified."
@@ -438,10 +448,9 @@ const FinancialReports = () => {
             return;
         }
 
-        const confirmed =
-            window.confirm(
-                `Regenerate the ${report.title} snapshot using the latest financial data?`
-            );
+        const confirmed = window.confirm(
+            `Regenerate the ${report.title} snapshot using the latest financial data?`
+        );
 
         if (!confirmed) return;
 
@@ -457,7 +466,7 @@ const FinancialReports = () => {
             showAlert(
                 "success",
                 response?.message ||
-                    "Financial report updated successfully."
+                "Financial report updated successfully."
             );
 
             if (
@@ -466,7 +475,7 @@ const FinancialReports = () => {
             ) {
                 setSelectedReport(
                     response?.data ||
-                        selectedReport
+                    selectedReport
                 );
             }
 
@@ -480,7 +489,7 @@ const FinancialReports = () => {
             showAlert(
                 "error",
                 error.message ||
-                    "Failed to regenerate financial report."
+                "Failed to regenerate financial report."
             );
         } finally {
             setActionLoading(false);
@@ -492,15 +501,12 @@ const FinancialReports = () => {
     // PUBLISH
     // ========================================
 
-    const handlePublish = async (
-        report
-    ) => {
+    const handlePublish = async (report) => {
         if (!report?._id) return;
 
-        const confirmed =
-            window.confirm(
-                `Publish ${report.title}? Once published, the financial snapshot cannot be modified until it is unpublished.`
-            );
+        const confirmed = window.confirm(
+            `Publish ${report.title}? Once published, the financial snapshot cannot be modified until it is unpublished.`
+        );
 
         if (!confirmed) return;
 
@@ -516,7 +522,7 @@ const FinancialReports = () => {
             showAlert(
                 "success",
                 response?.message ||
-                    "Financial report published successfully."
+                "Financial report published successfully."
             );
 
             if (
@@ -525,7 +531,7 @@ const FinancialReports = () => {
             ) {
                 setSelectedReport(
                     response?.data ||
-                        selectedReport
+                    selectedReport
                 );
             }
 
@@ -539,7 +545,7 @@ const FinancialReports = () => {
             showAlert(
                 "error",
                 error.message ||
-                    "Failed to publish financial report."
+                "Failed to publish financial report."
             );
         } finally {
             setActionLoading(false);
@@ -551,15 +557,12 @@ const FinancialReports = () => {
     // UNPUBLISH
     // ========================================
 
-    const handleUnpublish = async (
-        report
-    ) => {
+    const handleUnpublish = async (report) => {
         if (!report?._id) return;
 
-        const confirmed =
-            window.confirm(
-                `Unpublish ${report.title}? This will return the report to draft status.`
-            );
+        const confirmed = window.confirm(
+            `Unpublish ${report.title}? This will return the report to draft status.`
+        );
 
         if (!confirmed) return;
 
@@ -575,7 +578,7 @@ const FinancialReports = () => {
             showAlert(
                 "success",
                 response?.message ||
-                    "Financial report unpublished successfully."
+                "Financial report unpublished successfully."
             );
 
             if (
@@ -584,7 +587,7 @@ const FinancialReports = () => {
             ) {
                 setSelectedReport(
                     response?.data ||
-                        selectedReport
+                    selectedReport
                 );
             }
 
@@ -598,7 +601,7 @@ const FinancialReports = () => {
             showAlert(
                 "error",
                 error.message ||
-                    "Failed to unpublish financial report."
+                "Failed to unpublish financial report."
             );
         } finally {
             setActionLoading(false);
@@ -610,27 +613,20 @@ const FinancialReports = () => {
     // HELPERS
     // ========================================
 
-    const formatCurrency = (
-        amount
-    ) => {
+    const formatCurrency = (amount) => {
         return `₦${Number(
             amount || 0
         ).toLocaleString()}`;
     };
 
-    const formatMonth = (
-        month
-    ) => {
+    const formatMonth = (month) => {
         return new Date(
             2000,
             Number(month) - 1,
             1
-        ).toLocaleString(
-            "en-US",
-            {
-                month: "long",
-            }
-        );
+        ).toLocaleString("en-US", {
+            month: "long",
+        });
     };
 
     // ========================================
@@ -709,7 +705,7 @@ const FinancialReports = () => {
                     {Number(
                         report.summary
                             ?.collectionRate ||
-                            0
+                        0
                     ).toFixed(2)}
                     %
                 </span>
@@ -730,16 +726,15 @@ const FinancialReports = () => {
                         rounded
                         text-xs
                         font-medium
-                        ${
-                            report.status ===
+                        ${report.status ===
                             "published"
-                                ? "bg-(--success-light) text-(--success)"
-                                : "bg-(--warning-light) text-(--warning)"
+                            ? "bg-(--success-light) text-(--success)"
+                            : "bg-(--warning-light) text-(--warning)"
                         }
                     `}
                 >
                     {report.status ===
-                    "published"
+                        "published"
                         ? "Published"
                         : "Draft"}
                 </span>
@@ -776,10 +771,10 @@ const FinancialReports = () => {
 
                     {report.status ===
                         "draft" && (
-                        <>
-                            <button
-                                type="button"
-                                className="
+                            <>
+                                <button
+                                    type="button"
+                                    className="
                                     inline-flex
                                     items-center
                                     gap-1.5
@@ -789,24 +784,24 @@ const FinancialReports = () => {
                                     hover:text-(--primary)
                                     transition-colors
                                 "
-                                onClick={() =>
-                                    handleRegenerate(
-                                        report
-                                    )
-                                }
-                                disabled={
-                                    actionLoading
-                                }
-                            >
-                                <RefreshCw
-                                    size={14}
-                                />
-                                Regenerate
-                            </button>
+                                    onClick={() =>
+                                        handleRegenerate(
+                                            report
+                                        )
+                                    }
+                                    disabled={
+                                        actionLoading
+                                    }
+                                >
+                                    <RefreshCw
+                                        size={14}
+                                    />
+                                    Regenerate
+                                </button>
 
-                            <button
-                                type="button"
-                                className="
+                                <button
+                                    type="button"
+                                    className="
                                     inline-flex
                                     items-center
                                     gap-1.5
@@ -816,28 +811,28 @@ const FinancialReports = () => {
                                     hover:underline
                                     transition-colors
                                 "
-                                onClick={() =>
-                                    handlePublish(
-                                        report
-                                    )
-                                }
-                                disabled={
-                                    actionLoading
-                                }
-                            >
-                                <Send
-                                    size={14}
-                                />
-                                Publish
-                            </button>
-                        </>
-                    )}
+                                    onClick={() =>
+                                        handlePublish(
+                                            report
+                                        )
+                                    }
+                                    disabled={
+                                        actionLoading
+                                    }
+                                >
+                                    <Send
+                                        size={14}
+                                    />
+                                    Publish
+                                </button>
+                            </>
+                        )}
 
                     {report.status ===
                         "published" && (
-                        <button
-                            type="button"
-                            className="
+                            <button
+                                type="button"
+                                className="
                                 inline-flex
                                 items-center
                                 gap-1.5
@@ -847,21 +842,21 @@ const FinancialReports = () => {
                                 hover:underline
                                 transition-colors
                             "
-                            onClick={() =>
-                                handleUnpublish(
-                                    report
-                                )
-                            }
-                            disabled={
-                                actionLoading
-                            }
-                        >
-                            <RotateCcw
-                                size={14}
-                            />
-                            Unpublish
-                        </button>
-                    )}
+                                onClick={() =>
+                                    handleUnpublish(
+                                        report
+                                    )
+                                }
+                                disabled={
+                                    actionLoading
+                                }
+                            >
+                                <RotateCcw
+                                    size={14}
+                                />
+                                Unpublish
+                            </button>
+                        )}
                 </div>
             ),
         },
@@ -986,11 +981,10 @@ const FinancialReports = () => {
                         badge="Reports"
                         label="Published Reports"
                         value={stats.published}
-                        description={`${stats.drafts} draft report${
-                            stats.drafts === 1
+                        description={`${stats.drafts} draft report${stats.drafts === 1
                                 ? ""
                                 : "s"
-                        }`}
+                            }`}
                     />
 
                 </div>
@@ -1219,15 +1213,9 @@ const FinancialReports = () => {
                     {/* TABLE */}
 
                     <AdminTable
-                        columns={
-                            reportColumns
-                        }
-                        data={
-                            paginatedReports
-                        }
-                        loading={
-                            loading
-                        }
+                        columns={reportColumns}
+                        data={paginatedReports}
+                        loading={loading}
                         rowKey="_id"
                         emptyMessage={
                             error
@@ -1238,8 +1226,7 @@ const FinancialReports = () => {
 
                     {/* PAGINATION */}
 
-                    {filteredReports.length >
-                        0 && (
+                    {filteredReports.length > 0 && (
                         <div
                             className="
                                 px-5
@@ -1254,24 +1241,18 @@ const FinancialReports = () => {
                             <p className="text-xs text-(--primary)">
                                 Page{" "}
                                 <span className="font-medium">
-                                    {
-                                        currentPage
-                                    }
+                                    {currentPage}
                                 </span>{" "}
                                 of{" "}
                                 <span className="font-medium">
-                                    {
-                                        totalPages
-                                    }
+                                    {totalPages}
                                 </span>
 
                                 <span className="mx-1">
                                     •
                                 </span>
 
-                                {
-                                    filteredReports.length
-                                }{" "}
+                                {filteredReports.length}{" "}
                                 reports
                             </p>
 
@@ -1302,9 +1283,7 @@ const FinancialReports = () => {
                                     "
                                 >
                                     <ChevronLeft
-                                        size={
-                                            16
-                                        }
+                                        size={16}
                                     />
                                 </button>
 
@@ -1333,9 +1312,7 @@ const FinancialReports = () => {
                                     "
                                 >
                                     <ChevronRight
-                                        size={
-                                            16
-                                        }
+                                        size={16}
                                     />
                                 </button>
 
@@ -1350,15 +1327,9 @@ const FinancialReports = () => {
 
             {createModalOpen && (
                 <CreateFinancialReportModal
-                    month={
-                        reportMonth
-                    }
-                    year={
-                        reportYear
-                    }
-                    saving={
-                        createSaving
-                    }
+                    month={reportMonth}
+                    year={reportYear}
+                    saving={createSaving}
                     onMonthChange={
                         setReportMonth
                     }
@@ -1379,12 +1350,8 @@ const FinancialReports = () => {
             {viewModalOpen &&
                 selectedReport && (
                     <FinancialReportViewModal
-                        report={
-                            selectedReport
-                        }
-                        loading={
-                            detailLoading
-                        }
+                        report={selectedReport}
+                        loading={detailLoading}
                         actionLoading={
                             actionLoading
                         }
@@ -1408,6 +1375,12 @@ const FinancialReports = () => {
                             handleUnpublish(
                                 selectedReport
                             )
+                        }
+                        onExportExcel={
+                            handleExportExcel
+                        }
+                        onExportPDF={
+                            handleExportPDF
                         }
                     />
                 )}
@@ -1500,9 +1473,7 @@ const CreateFinancialReportModal = ({
 
                     <button
                         type="button"
-                        onClick={
-                            onClose
-                        }
+                        onClick={onClose}
                         disabled={saving}
                         className="
                             text-(--text-muted)
@@ -1517,9 +1488,7 @@ const CreateFinancialReportModal = ({
                 {/* FORM */}
 
                 <form
-                    onSubmit={
-                        onSubmit
-                    }
+                    onSubmit={onSubmit}
                     className="p-5 space-y-4"
                 >
 
@@ -1529,23 +1498,15 @@ const CreateFinancialReportModal = ({
                         </label>
 
                         <select
-                            value={
-                                month
-                            }
-                            onChange={(
-                                e
-                            ) =>
+                            value={month}
+                            onChange={(e) =>
                                 onMonthChange(
                                     Number(
-                                        e
-                                            .target
-                                            .value
+                                        e.target.value
                                     )
                                 )
                             }
-                            disabled={
-                                saving
-                            }
+                            disabled={saving}
                             className="
                                 w-full
                                 h-10
@@ -1566,17 +1527,13 @@ const CreateFinancialReportModal = ({
                                     index
                                 ) => (
                                     <option
-                                        key={
-                                            name
-                                        }
+                                        key={name}
                                         value={
                                             index +
                                             1
                                         }
                                     >
-                                        {
-                                            name
-                                        }
+                                        {name}
                                     </option>
                                 )
                             )}
@@ -1592,23 +1549,15 @@ const CreateFinancialReportModal = ({
                             type="number"
                             min="1900"
                             max="9999"
-                            value={
-                                year
-                            }
-                            onChange={(
-                                e
-                            ) =>
+                            value={year}
+                            onChange={(e) =>
                                 onYearChange(
                                     Number(
-                                        e
-                                            .target
-                                            .value
+                                        e.target.value
                                     )
                                 )
                             }
-                            disabled={
-                                saving
-                            }
+                            disabled={saving}
                             className="
                                 w-full
                                 h-10
@@ -1653,12 +1602,8 @@ const CreateFinancialReportModal = ({
 
                         <button
                             type="button"
-                            onClick={
-                                onClose
-                            }
-                            disabled={
-                                saving
-                            }
+                            onClick={onClose}
+                            disabled={saving}
                             className="
                                 h-9
                                 px-4
@@ -1677,9 +1622,7 @@ const CreateFinancialReportModal = ({
 
                         <button
                             type="submit"
-                            disabled={
-                                saving
-                            }
+                            disabled={saving}
                             className="
                                 h-9
                                 px-4
@@ -1698,20 +1641,14 @@ const CreateFinancialReportModal = ({
                             {saving ? (
                                 <>
                                     <Loader2
-                                        size={
-                                            14
-                                        }
+                                        size={14}
                                         className="animate-spin"
                                     />
                                     Creating...
                                 </>
                             ) : (
                                 <>
-                                    <Plus
-                                        size={
-                                            14
-                                        }
-                                    />
+                                    <Plus size={14} />
                                     Create Report
                                 </>
                             )}
@@ -1741,44 +1678,31 @@ const FinancialReportViewModal = ({
     onRegenerate,
     onPublish,
     onUnpublish,
+    onExportExcel,
+    onExportPDF,
 }) => {
-    const formatCurrency = (
-        amount
-    ) => {
+    const formatCurrency = (amount) => {
         return `₦${Number(
             amount || 0
         ).toLocaleString()}`;
     };
 
-    const formatMonth = (
-        month
-    ) => {
+    const formatMonth = (month) => {
         return new Date(
             2000,
             Number(month) - 1,
             1
-        ).toLocaleString(
-            "en-US",
-            {
-                month: "long",
-            }
-        );
+        ).toLocaleString("en-US", {
+            month: "long",
+        });
     };
 
-    const getCategoryName = (
-        category
-    ) => {
-        if (
-            category ===
-            "yearSet"
-        ) {
+    const getCategoryName = (category) => {
+        if (category === "yearSet") {
             return "Year Set";
         }
 
-        if (
-            category ===
-            "chapter"
-        ) {
+        if (category === "chapter") {
             return "Chapter";
         }
 
@@ -1846,16 +1770,15 @@ const FinancialReportViewModal = ({
                                     rounded
                                     text-[10px]
                                     font-medium
-                                    ${
-                                        report.status ===
+                                    ${report.status ===
                                         "published"
-                                            ? "bg-(--success-light) text-(--success)"
-                                            : "bg-(--warning-light) text-(--warning)"
+                                        ? "bg-(--success-light) text-(--success)"
+                                        : "bg-(--warning-light) text-(--warning)"
                                     }
                                 `}
                             >
                                 {report.status ===
-                                "published"
+                                    "published"
                                     ? "Published"
                                     : "Draft"}
                             </span>
@@ -1872,12 +1795,8 @@ const FinancialReportViewModal = ({
 
                     <button
                         type="button"
-                        onClick={
-                            onClose
-                        }
-                        disabled={
-                            actionLoading
-                        }
+                        onClick={onClose}
+                        disabled={actionLoading}
                         className="
                             text-(--text-muted)
                             hover:text-(--primary)
@@ -1917,8 +1836,7 @@ const FinancialReportViewModal = ({
                                     <ReportMetric
                                         label="Expected"
                                         value={formatCurrency(
-                                            report
-                                                .summary
+                                            report.summary
                                                 ?.totalExpected
                                         )}
                                     />
@@ -1926,8 +1844,7 @@ const FinancialReportViewModal = ({
                                     <ReportMetric
                                         label="Collected"
                                         value={formatCurrency(
-                                            report
-                                                .summary
+                                            report.summary
                                                 ?.totalCollected
                                         )}
                                         valueClass="text-(--success)"
@@ -1936,8 +1853,7 @@ const FinancialReportViewModal = ({
                                     <ReportMetric
                                         label="Outstanding"
                                         value={formatCurrency(
-                                            report
-                                                .summary
+                                            report.summary
                                                 ?.totalOutstanding
                                         )}
                                         valueClass="text-(--warning)"
@@ -1946,8 +1862,7 @@ const FinancialReportViewModal = ({
                                     <ReportMetric
                                         label="Overdue"
                                         value={formatCurrency(
-                                            report
-                                                .summary
+                                            report.summary
                                                 ?.totalOverdue
                                         )}
                                         valueClass="text-(--danger)"
@@ -1956,13 +1871,10 @@ const FinancialReportViewModal = ({
                                     <ReportMetric
                                         label="Collection Rate"
                                         value={`${Number(
-                                            report
-                                                .summary
+                                            report.summary
                                                 ?.collectionRate ||
-                                                0
-                                        ).toFixed(
-                                            2
-                                        )}%`}
+                                            0
+                                        ).toFixed(2)}%`}
                                     />
 
                                 </div>
@@ -2045,205 +1957,237 @@ const FinancialReportViewModal = ({
 
                             {/* CATEGORY BREAKDOWN */}
 
-<div>
-    <h3 className="text-sm font-semibold text-(--primary)">
-        Category Breakdown
-    </h3>
+                            <div>
+                                <h3 className="text-sm font-semibold text-(--primary)">
+                                    Category Breakdown
+                                </h3>
 
-    <div className="mt-3 border border-(--border) rounded overflow-hidden">
+                                <div className="mt-3 border border-(--border) rounded overflow-hidden">
 
-        <div className="overflow-x-auto">
-            <table className="w-full text-left">
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full text-left">
 
-                <thead>
-                    <tr className="border-b border-(--border) bg-(--bg-light)">
-                        <th className="px-4 py-3 text-[11px] font-semibold text-(--secondary)">
-                            Category
-                        </th>
+                                            <thead>
+                                                <tr className="border-b border-(--border) bg-(--bg-light)">
+                                                    <th className="px-4 py-3 text-[11px] font-semibold text-(--secondary)">
+                                                        Category
+                                                    </th>
 
-                        <th className="px-4 py-3 text-[11px] font-semibold text-(--secondary)">
-                            Type
-                        </th>
+                                                    <th className="px-4 py-3 text-[11px] font-semibold text-(--secondary)">
+                                                        Type
+                                                    </th>
 
-                        <th className="px-4 py-3 text-[11px] font-semibold text-(--secondary)">
-                            Expected
-                        </th>
+                                                    <th className="px-4 py-3 text-[11px] font-semibold text-(--secondary)">
+                                                        Expected
+                                                    </th>
 
-                        <th className="px-4 py-3 text-[11px] font-semibold text-(--secondary)">
-                            Collected
-                        </th>
+                                                    <th className="px-4 py-3 text-[11px] font-semibold text-(--secondary)">
+                                                        Collected
+                                                    </th>
 
-                        <th className="px-4 py-3 text-[11px] font-semibold text-(--secondary)">
-                            Outstanding
-                        </th>
+                                                    <th className="px-4 py-3 text-[11px] font-semibold text-(--secondary)">
+                                                        Outstanding
+                                                    </th>
 
-                        <th className="px-4 py-3 text-[11px] font-semibold text-(--secondary)">
-                            Overdue
-                        </th>
+                                                    <th className="px-4 py-3 text-[11px] font-semibold text-(--secondary)">
+                                                        Overdue
+                                                    </th>
 
-                        <th className="px-4 py-3 text-[11px] font-semibold text-(--secondary)">
-                            Rate
-                        </th>
-                    </tr>
-                </thead>
+                                                    <th className="px-4 py-3 text-[11px] font-semibold text-(--secondary)">
+                                                        Rate
+                                                    </th>
+                                                </tr>
+                                            </thead>
 
-                <tbody>
-                    {(
-                        report.categoryBreakdown ||
-                        []
-                    ).map((item) => {
-                        const categoryName =
-                            getCategoryName(
-                                item.category
-                            );
+                                            <tbody>
+                                                {(
+                                                    report.categoryBreakdown ||
+                                                    []
+                                                ).map(
+                                                    (
+                                                        item
+                                                    ) => {
+                                                        const categoryName =
+                                                            getCategoryName(
+                                                                item.category
+                                                            );
 
-                        const mandatory =
-                            item.mandatory || {};
+                                                        const mandatory =
+                                                            item.mandatory ||
+                                                            {};
 
-                        const optional =
-                            item.optional || {};
+                                                        const optional =
+                                                            item.optional ||
+                                                            {};
 
-                        return (
-                            <React.Fragment
-                                key={
-                                    item.category
-                                }
-                            >
+                                                        const inactive = item.inactive || {};
 
-                                {/* MANDATORY */}
+                                                        return (
+                                                            <React.Fragment
+                                                                key={
+                                                                    item.category
+                                                                }
+                                                            >
 
-                                <tr className="border-b border-(--border)">
-                                    <td
-                                        rowSpan="2"
-                                        className="
-                                            px-4
-                                            py-3
-                                            text-xs
-                                            font-semibold
-                                            text-(--primary)
-                                            align-top
-                                        "
-                                    >
-                                        {categoryName}
-                                    </td>
+                                                                {/* MANDATORY */}
 
-                                    <td className="px-4 py-3">
-                                        <span
-                                            className="
-                                                inline-flex
-                                                items-center
-                                                px-2
-                                                py-1
-                                                rounded
-                                                text-[10px]
-                                                font-semibold
-                                                bg-(--primary-light)
-                                                text-(--primary)
-                                            "
-                                        >
-                                            Mandatory
-                                        </span>
-                                    </td>
+                                                                <tr className="border-b border-(--border)">
+                                                                    <td
+                                                                        rowSpan="2"
+                                                                        className="
+                                                                            px-4
+                                                                            py-3
+                                                                            text-xs
+                                                                            font-semibold
+                                                                            text-(--primary)
+                                                                            align-top
+                                                                        "
+                                                                    >
+                                                                        {
+                                                                            categoryName
+                                                                        }
+                                                                    </td>
 
-                                    <td className="px-4 py-3 text-xs text-(--secondary)">
-                                        {formatCurrency(
-                                            mandatory.expected
-                                        )}
-                                    </td>
+                                                                    <td className="px-4 py-3">
+                                                                        <span
+                                                                            className="
+                                                                                inline-flex
+                                                                                items-center
+                                                                                px-2
+                                                                                py-1
+                                                                                rounded
+                                                                                text-[10px]
+                                                                                font-semibold
+                                                                                bg-(--primary-light)
+                                                                                text-(--primary)
+                                                                            "
+                                                                        >
+                                                                            Mandatory
+                                                                        </span>
+                                                                    </td>
 
-                                    <td className="px-4 py-3 text-xs text-(--success)">
-                                        {formatCurrency(
-                                            mandatory.collected
-                                        )}
-                                    </td>
+                                                                    <td className="px-4 py-3 text-xs text-(--secondary)">
+                                                                        {formatCurrency(
+                                                                            mandatory.expected
+                                                                        )}
+                                                                    </td>
 
-                                    <td className="px-4 py-3 text-xs text-(--warning)">
-                                        {formatCurrency(
-                                            mandatory.outstanding
-                                        )}
-                                    </td>
+                                                                    <td className="px-4 py-3 text-xs text-(--success)">
+                                                                        {formatCurrency(
+                                                                            mandatory.collected
+                                                                        )}
+                                                                    </td>
 
-                                    <td className="px-4 py-3 text-xs text-(--danger)">
-                                        {formatCurrency(
-                                            mandatory.overdue
-                                        )}
-                                    </td>
+                                                                    <td className="px-4 py-3 text-xs text-(--warning)">
+                                                                        {formatCurrency(
+                                                                            mandatory.outstanding
+                                                                        )}
+                                                                    </td>
 
-                                    <td className="px-4 py-3 text-xs font-medium text-(--primary)">
-                                        {Number(
-                                            mandatory.collectionRate ||
-                                                0
-                                        ).toFixed(2)}
-                                        %
-                                    </td>
-                                </tr>
+                                                                    <td className="px-4 py-3 text-xs text-(--danger)">
+                                                                        {formatCurrency(
+                                                                            mandatory.overdue
+                                                                        )}
+                                                                    </td>
 
-                                {/* OPTIONAL */}
+                                                                    <td className="px-4 py-3 text-xs font-medium text-(--primary)">
+                                                                        {Number(
+                                                                            mandatory.collectionRate ||
+                                                                            0
+                                                                        ).toFixed(
+                                                                            2
+                                                                        )}
+                                                                        %
+                                                                    </td>
+                                                                </tr>
 
-                                <tr className="border-b border-(--border) last:border-b-0 bg-(--bg-light)/40">
+                                                                {/* OPTIONAL */}
 
-                                    <td className="px-4 py-3">
-                                        <span
-                                            className="
-                                                inline-flex
-                                                items-center
-                                                px-2
-                                                py-1
-                                                rounded
-                                                text-[10px]
-                                                font-semibold
-                                                border
-                                                border-(--border)
-                                                text-(--secondary)
-                                            "
-                                        >
-                                            Optional
-                                        </span>
-                                    </td>
+                                                                <tr className="border-b border-(--border) last:border-b-0 bg-(--bg-light)/40">
 
-                                    <td className="px-4 py-3 text-xs text-(--secondary)">
-                                        {formatCurrency(
-                                            optional.expected
-                                        )}
-                                    </td>
+                                                                    <td className="px-4 py-3">
+                                                                        <span
+                                                                            className="
+                                                                                inline-flex
+                                                                                items-center
+                                                                                px-2
+                                                                                py-1
+                                                                                rounded
+                                                                                text-[10px]
+                                                                                font-semibold
+                                                                                border
+                                                                                border-(--border)
+                                                                                text-(--secondary)
+                                                                            "
+                                                                        >
+                                                                            Optional
+                                                                        </span>
+                                                                    </td>
 
-                                    <td className="px-4 py-3 text-xs text-(--success)">
-                                        {formatCurrency(
-                                            optional.collected
-                                        )}
-                                    </td>
+                                                                    <td className="px-4 py-3 text-xs text-(--secondary)">
+                                                                        {formatCurrency(
+                                                                            optional.expected
+                                                                        )}
+                                                                    </td>
 
-                                    <td className="px-4 py-3 text-xs text-(--warning)">
-                                        {formatCurrency(
-                                            optional.outstanding
-                                        )}
-                                    </td>
+                                                                    <td className="px-4 py-3 text-xs text-(--success)">
+                                                                        {formatCurrency(
+                                                                            optional.collected
+                                                                        )}
+                                                                    </td>
 
-                                    <td className="px-4 py-3 text-xs text-(--danger)">
-                                        {formatCurrency(
-                                            optional.overdue
-                                        )}
-                                    </td>
+                                                                    <td className="px-4 py-3 text-xs text-(--warning)">
+                                                                        {formatCurrency(
+                                                                            optional.outstanding
+                                                                        )}
+                                                                    </td>
 
-                                    <td className="px-4 py-3 text-xs font-medium text-(--secondary)">
-                                        {Number(
-                                            optional.collectionRate ||
-                                                0
-                                        ).toFixed(2)}
-                                        %
-                                    </td>
+                                                                    <td className="px-4 py-3 text-xs text-(--danger)">
+                                                                        {formatCurrency(
+                                                                            optional.overdue
+                                                                        )}
+                                                                    </td>
 
-                                </tr>
+                                                                    <td className="px-4 py-3 text-xs font-medium text-(--secondary)">
+                                                                        {Number(
+                                                                            optional.collectionRate ||
+                                                                            0
+                                                                        ).toFixed(
+                                                                            2
+                                                                        )}
+                                                                        %
+                                                                    </td>
 
-                            </React.Fragment>
-                        );
-                    })}
-                </tbody>
+                                                                </tr>
 
-            </table>
-        </div>
-    </div>
-</div>
+                                                                {/* INACTIVE */}
+                                                                <tr className="border-b border-(--border)">
+                                                                    <td className="px-4 py-3">
+                                                                        <span className="inline-flex items-center px-2 py-1 rounded text-[10px] font-semibold bg-(--danger-light) text-(--danger)">
+                                                                            Inactive
+                                                                        </span>
+                                                                    </td>
+                                                                    <td className="px-4 py-3 text-xs text-(--secondary)">
+                                                                        {formatCurrency(inactive.expected)}
+                                                                    </td>
+                                                                    <td className="px-4 py-3 text-xs text-(--success)">
+                                                                        {formatCurrency(inactive.cashReceived)}
+                                                                    </td>
+                                                                    <td className="px-4 py-3 text-xs text-(--warning)">—</td>
+                                                                    <td className="px-4 py-3 text-xs text-(--danger)">—</td>
+                                                                    <td className="px-4 py-3 text-xs font-medium text-(--secondary)">—</td>
+                                                                </tr>
+
+                                                            </React.Fragment>
+                                                        );
+                                                    }
+                                                )}
+                                            </tbody>
+
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
 
                             {/* OBLIGATION BREAKDOWN */}
 
@@ -2255,11 +2199,9 @@ const FinancialReportViewModal = ({
                                 <div className="mt-3 space-y-2">
 
                                     {(
-                                        report
-                                            .obligationBreakdown ||
+                                        report.obligationBreakdown ||
                                         []
-                                    ).length >
-                                    0 ? (
+                                    ).length > 0 ? (
                                         report.obligationBreakdown.map(
                                             (
                                                 item
@@ -2302,6 +2244,22 @@ const FinancialReportViewModal = ({
                                                                         text-(--primary)
                                                                     ">
                                                                         Optional
+                                                                    </span>
+                                                                )}
+
+                                                                {!item.isActive && (
+                                                                    <span className="
+                                                                        inline-flex
+                                                                        items-center
+                                                                        px-2
+                                                                        py-0.5
+                                                                        rounded
+                                                                        text-[10px]
+                                                                        font-medium
+                                                                        bg-(--danger-light)
+                                                                        text-(--danger)
+                                                                    ">
+                                                                        Inactive
                                                                     </span>
                                                                 )}
 
@@ -2431,23 +2389,176 @@ const FinancialReportViewModal = ({
                         flex
                         flex-wrap
                         items-center
-                        justify-end
-                        gap-2
+                        justify-between
+                        gap-3
                     "
                 >
 
-                    {report.status ===
-                        "draft" && (
-                        <>
-                            <button
-                                type="button"
-                                onClick={
-                                    onRegenerate
-                                }
-                                disabled={
-                                    actionLoading
-                                }
-                                className="
+                    {/* EXPORT ACTIONS */}
+
+                    <div className="flex items-center gap-2">
+
+                        <button
+                            type="button"
+                            onClick={
+                                onExportExcel
+                            }
+                            disabled={
+                                loading ||
+                                actionLoading
+                            }
+                            className="
+                                h-9
+                                px-4
+                                rounded
+                                border
+                                border-(--border)
+                                text-xs
+                                font-semibold
+                                text-(--success)
+                                inline-flex
+                                items-center
+                                gap-2
+                                hover:bg-(--success-light)
+                                disabled:opacity-50
+                                disabled:cursor-not-allowed
+                            "
+                        >
+                            <FileText size={14} />
+                            Export Excel
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={
+                                onExportPDF
+                            }
+                            disabled={
+                                loading ||
+                                actionLoading
+                            }
+                            className="
+                                h-9
+                                px-4
+                                rounded
+                                border
+                                border-(--border)
+                                text-xs
+                                font-semibold
+                                text-(--primary)
+                                inline-flex
+                                items-center
+                                gap-2
+                                hover:bg-(--bg-soft)
+                                disabled:opacity-50
+                                disabled:cursor-not-allowed
+                            "
+                        >
+                            <FileText size={14} />
+                            Export PDF
+                        </button>
+
+                    </div>
+
+                    {/* REPORT ACTIONS */}
+
+                    <div className="flex flex-wrap items-center gap-2">
+
+                        {report.status ===
+                            "draft" && (
+                                <>
+                                    <button
+                                        type="button"
+                                        onClick={
+                                            onRegenerate
+                                        }
+                                        disabled={
+                                            actionLoading
+                                        }
+                                        className="
+                                        h-9
+                                        px-4
+                                        rounded
+                                        border
+                                        border-(--border)
+                                        text-xs
+                                        font-semibold
+                                        text-(--secondary)
+                                        inline-flex
+                                        items-center
+                                        gap-2
+                                        hover:bg-(--bg-soft)
+                                        disabled:opacity-50
+                                    "
+                                    >
+                                        {actionLoading &&
+                                            actionType ===
+                                            "regenerate" ? (
+                                            <Loader2
+                                                size={14}
+                                                className="animate-spin"
+                                            />
+                                        ) : (
+                                            <RefreshCw
+                                                size={14}
+                                            />
+                                        )}
+
+                                        Regenerate
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        onClick={
+                                            onPublish
+                                        }
+                                        disabled={
+                                            actionLoading
+                                        }
+                                        className="
+                                        h-9
+                                        px-4
+                                        rounded
+                                        bg-(--primary)
+                                        text-white
+                                        text-xs
+                                        font-semibold
+                                        inline-flex
+                                        items-center
+                                        gap-2
+                                        hover:bg-(--primary-dark)
+                                        disabled:opacity-50
+                                    "
+                                    >
+                                        {actionLoading &&
+                                            actionType ===
+                                            "publish" ? (
+                                            <Loader2
+                                                size={14}
+                                                className="animate-spin"
+                                            />
+                                        ) : (
+                                            <Send
+                                                size={14}
+                                            />
+                                        )}
+
+                                        Publish Report
+                                    </button>
+                                </>
+                            )}
+
+                        {report.status ===
+                            "published" && (
+                                <button
+                                    type="button"
+                                    onClick={
+                                        onUnpublish
+                                    }
+                                    disabled={
+                                        actionLoading
+                                    }
+                                    className="
                                     h-9
                                     px-4
                                     rounded
@@ -2455,85 +2566,35 @@ const FinancialReportViewModal = ({
                                     border-(--border)
                                     text-xs
                                     font-semibold
-                                    text-(--secondary)
+                                    text-(--warning)
                                     inline-flex
                                     items-center
                                     gap-2
-                                    hover:bg-(--bg-soft)
+                                    hover:bg-(--warning-light)
                                     disabled:opacity-50
                                 "
-                            >
-                                {actionLoading &&
-                                actionType ===
-                                    "regenerate" ? (
-                                    <Loader2
-                                        size={
-                                            14
-                                        }
-                                        className="animate-spin"
-                                    />
-                                ) : (
-                                    <RefreshCw
-                                        size={
-                                            14
-                                        }
-                                    />
-                                )}
+                                >
+                                    {actionLoading &&
+                                        actionType ===
+                                        "unpublish" ? (
+                                        <Loader2
+                                            size={14}
+                                            className="animate-spin"
+                                        />
+                                    ) : (
+                                        <RotateCcw
+                                            size={14}
+                                        />
+                                    )}
 
-                                Regenerate
-                            </button>
+                                    Unpublish
+                                </button>
+                            )}
 
-                            <button
-                                type="button"
-                                onClick={
-                                    onPublish
-                                }
-                                disabled={
-                                    actionLoading
-                                }
-                                className="
-                                    h-9
-                                    px-4
-                                    rounded
-                                    bg-(--primary)
-                                    text-white
-                                    text-xs
-                                    font-semibold
-                                    inline-flex
-                                    items-center
-                                    gap-2
-                                    hover:bg-(--primary-dark)
-                                    disabled:opacity-50
-                                "
-                            >
-                                {actionLoading &&
-                                actionType ===
-                                    "publish" ? (
-                                    <Loader2
-                                        size={
-                                            14
-                                        }
-                                        className="animate-spin"
-                                    />
-                                ) : (
-                                    <Send
-                                        size={
-                                            14
-                                        }
-                                    />
-                                )}
-
-                                Publish Report
-                            </button>
-                        </>
-                    )}
-
-                    {report.status ===
-                        "published" && (
                         <button
                             type="button"
                             onClick={
-                                onUnpublish
+                                onClose
                             }
                             disabled={
                                 actionLoading
@@ -2546,58 +2607,15 @@ const FinancialReportViewModal = ({
                                 border-(--border)
                                 text-xs
                                 font-semibold
-                                text-(--warning)
-                                inline-flex
-                                items-center
-                                gap-2
-                                hover:bg-(--warning-light)
+                                text-(--secondary)
+                                hover:bg-(--bg-soft)
                                 disabled:opacity-50
                             "
                         >
-                            {actionLoading &&
-                            actionType ===
-                                "unpublish" ? (
-                                <Loader2
-                                    size={
-                                        14
-                                    }
-                                    className="animate-spin"
-                                />
-                            ) : (
-                                <RotateCcw
-                                    size={
-                                        14
-                                    }
-                                />
-                            )}
-
-                            Unpublish
+                            Close
                         </button>
-                    )}
 
-                    <button
-                        type="button"
-                        onClick={
-                            onClose
-                        }
-                        disabled={
-                            actionLoading
-                        }
-                        className="
-                            h-9
-                            px-4
-                            rounded
-                            border
-                            border-(--border)
-                            text-xs
-                            font-semibold
-                            text-(--secondary)
-                            hover:bg-(--bg-soft)
-                            disabled:opacity-50
-                        "
-                    >
-                        Close
-                    </button>
+                    </div>
 
                 </div>
 
