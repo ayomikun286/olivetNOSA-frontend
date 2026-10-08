@@ -22,6 +22,7 @@ import { getyearSetObligation } from "../../services/yearSetService.js";
 const MyYearSet = () => {
     const { user } = useAuth();
 
+    const [selectedMember, setSelectedMember] = useState(null);
     const [yearSetData, setYearSetData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -147,6 +148,22 @@ const MyYearSet = () => {
             currency: "NGN",
             maximumFractionDigits: 0,
         }).format(Number(amount || 0));
+    };
+
+    const getFinancialStatus = (member) => {
+        const status = member.financialStatus;
+
+        if (status === "financial") {
+            return {
+                label: "Financial",
+                className: "bg-green-50 text-green-700",
+            };
+        }
+
+        return {
+            label: "Non-financial",
+            className: "bg-amber-50 text-amber-700",
+        };
     };
 
     const formatDate = (date) => {
@@ -881,74 +898,130 @@ const MyYearSet = () => {
                             ) : (
                                 <div className="divide-y divide-(--border) max-h-125 overflow-y-auto scrollbar-hide">
 
-                                    {members
-                                        .slice(0, 5)
-                                        .map((member) => (
-                                            <div
-                                                key={member._id}
-                                                onClick={() =>
-                                                    console.log(
-                                                        "member leader view ",
-                                                        member._id
-                                                    )
-                                                }
-                                                className="p-5 hover:bg-(--bg-light)/50 transition"
-                                            >
+                                    {members.slice(0, 5).map((member) => {
+    const finances = member.financialSummary || {};
+    const status = getFinancialStatus(member);
 
-                                                <div className="flex items-center justify-between gap-4">
+    return (
+        <div
+            key={member._id}
+            className="p-4 sm:p-5 hover:bg-(--bg-light)/50 transition"
+        >
+            {/* MEMBER PROFILE */}
+            <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-10 h-10 shrink-0 rounded-lg bg-(--primary-light) text-(--primary) flex items-center justify-center">
+                        <UserRound size={18} />
+                    </div>
 
-                                                    <div className="flex items-center gap-3.5 min-w-0">
+                    <div className="min-w-0">
+                        <h3 className="text-sm font-semibold text-(--primary) break-words">
+                            {member.firstName}{" "}
+                            {member.middleName
+                                ? `${member.middleName} `
+                                : ""}
+                            {member.lastName}
+                        </h3>
 
-                                                        <div className="w-10 h-10 shrink-0 rounded-lg bg-(--primary-light) text-(--primary) flex items-center justify-center">
-                                                            <UserRound
-                                                                size={18}
-                                                            />
-                                                        </div>
+                        <p className="text-xs text-(--secondary) mt-1 break-all">
+                            {member.alumniId || "No Alumni ID"}
+                        </p>
 
-                                                        <div className="min-w-0">
+                        <span
+                            className={`inline-flex mt-2 text-[10px] font-semibold px-2 py-1 rounded-full ${status.className}`}
+                        >
+                            {status.label}
+                        </span>
+                    </div>
+                </div>
 
-                                                            <h3 className="text-sm font-semibold text-(--primary) truncate">
-                                                                {
-                                                                    member.firstName
-                                                                }{" "}
-                                                                {member.middleName
-                                                                    ? `${member.middleName} `
-                                                                    : ""}
-                                                                {
-                                                                    member.lastName
-                                                                }
-                                                            </h3>
+                <div className="text-right shrink-0 max-w-[35%]">
+                    <p className="text-xs font-semibold text-(--primary) break-words">
+                        {member.chapter?.code || "—"}
+                    </p>
 
-                                                            <p className="text-xs text-(--secondary) mt-1">
-                                                                {member.alumniId ||
-                                                                    "No Alumni ID"}
-                                                            </p>
+                    <p className="text-xs text-(--text-muted) mt-1">
+                        Class of {member.graduationYear || "—"}
+                    </p>
+                </div>
+            </div>
 
-                                                        </div>
+            {/* MANDATORY FINANCIAL SUMMARY */}
+            <div className="grid grid-cols-3 gap-2 sm:gap-3 mt-5 pt-4 border-t border-(--border)">
+                <div className="min-w-0">
+                    <p className="text-[10px] sm:text-xs text-(--text-muted)">
+                        Total Due
+                    </p>
 
-                                                    </div>
+                    <p className="text-xs sm:text-sm font-semibold text-(--primary) mt-1 break-words">
+                        {formatCurrency(finances.totalDue || 0)}
+                    </p>
+                </div>
 
-                                                    <div className="text-right shrink-0">
+                <div className="min-w-0">
+                    <p className="text-[10px] sm:text-xs text-(--text-muted)">
+                        Paid
+                    </p>
 
-                                                        <p className="text-xs font-semibold text-(--primary)">
-                                                            {member
-                                                                .chapter
-                                                                ?.code ||
-                                                                "—"}
-                                                        </p>
+                    <p className="text-xs sm:text-sm font-semibold text-(--success) mt-1 break-words">
+                        {formatCurrency(finances.amountPaid || 0)}
+                    </p>
+                </div>
 
-                                                        <p className="text-xs text-(--text-muted) mt-1">
-                                                            Class of{" "}
-                                                            {member.graduationYear ||
-                                                                "—"}
-                                                        </p>
+                <div className="min-w-0">
+                    <p className="text-[10px] sm:text-xs text-(--text-muted)">
+                        Outstanding
+                    </p>
 
-                                                    </div>
+                    <p className="text-xs sm:text-sm font-semibold text-(--primary) mt-1 break-words">
+                        {formatCurrency(finances.outstanding || 0)}
+                    </p>
+                </div>
+            </div>
 
-                                                </div>
+            {/* OPTIONAL CONTRIBUTIONS */}
+            {(Number(finances.optionalDue) > 0 ||
+                Number(finances.optionalPaid) > 0) && (
+                <div className="mt-3 rounded-lg bg-(--bg-light) px-3 py-2">
+                    <p className="text-[11px] text-(--secondary)">
+                        Optional Contributions
+                    </p>
 
-                                            </div>
-                                        ))}
+                    <div className="flex flex-wrap justify-between gap-x-4 gap-y-1 mt-1 text-xs">
+                        <span className="text-(--text-muted)">
+                            Paid:{" "}
+                            <strong className="text-(--success)">
+                                {formatCurrency(finances.optionalPaid || 0)}
+                            </strong>
+                        </span>
+
+                        <span className="text-(--text-muted)">
+                            Remaining:{" "}
+                            <strong className="text-(--primary)">
+                                {formatCurrency(
+                                    finances.optionalOutstanding || 0
+                                )}
+                            </strong>
+                        </span>
+                    </div>
+                </div>
+            )}
+
+            {/* VIEW DETAILS ACTION */}
+            <div className="mt-4 pt-3 border-t border-(--border) flex justify-end">
+                <button
+                    type="button"
+                    onClick={() => setSelectedMember(member)}
+                    className="inline-flex items-center justify-center gap-2 rounded-lg border border-(--border) px-3 py-2 text-xs sm:text-sm font-semibold text-(--primary) hover:bg-(--bg-light) transition"
+                >
+                    <UserRound size={15} />
+                    View Details
+                    <ArrowUpRight size={15} />
+                </button>
+            </div>
+        </div>
+    );
+})}
 
                                 </div>
                             )}
@@ -1376,6 +1449,208 @@ const MyYearSet = () => {
                                 )}
                             </button>
 
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {selectedMember && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+                    onClick={() => setSelectedMember(null)}
+                >
+                    <div
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="member-details-title"
+                        className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-2xl"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* Header */}
+                        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-100 bg-white px-5 py-4 sm:px-6">
+                            <div>
+                                <h2
+                                    id="member-details-title"
+                                    className="text-lg font-bold text-gray-900"
+                                >
+                                    Member Details
+                                </h2>
+                                <p className="mt-1 text-sm text-gray-500">
+                                    Member profile and financial summary
+                                </p>
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={() => setSelectedMember(null)}
+                                aria-label="Close member details"
+                                className="rounded-full p-2 text-gray-500 transition hover:bg-gray-100"
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
+
+                        <div className="space-y-6 p-5 sm:p-6">
+                            {/* Member profile */}
+                            <section>
+                                <div className="flex items-start gap-4">
+                                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-(--primary)">
+                                        <UserRound size={26} />
+                                    </div>
+
+                                    <div className="min-w-0 flex-1">
+                                        <h3 className="break-words text-lg font-bold text-gray-900">
+                                            {[
+                                                selectedMember.firstName,
+                                                selectedMember.middleName,
+                                                selectedMember.lastName,
+                                            ]
+                                                .filter(Boolean)
+                                                .join(" ")}
+                                        </h3>
+
+                                        <p className="mt-1 text-sm text-gray-500">
+                                            Alumni ID: {selectedMember.alumniId || "Not assigned"}
+                                        </p>
+
+                                        <span
+                                            className={`mt-2 inline-flex rounded-full px-3 py-1 text-xs font-semibold ${selectedMember.financialStatus === "financial"
+                                                    ? "bg-green-50 text-green-700"
+                                                    : "bg-amber-50 text-amber-700"
+                                                }`}
+                                        >
+                                            {selectedMember.financialStatus === "financial"
+                                                ? "Financial"
+                                                : "Non-financial"}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div className="mt-5 grid grid-cols-1 gap-4 rounded-xl bg-gray-50 p-4 sm:grid-cols-2">
+                                    <div>
+                                        <p className="text-xs text-gray-500">Email Address</p>
+                                        <p className="mt-1 break-all text-sm font-medium text-gray-800">
+                                            {selectedMember.email || "Not provided"}
+                                        </p>
+                                    </div>
+
+                                    <div>
+                                        <p className="text-xs text-gray-500">Phone Number</p>
+                                        <p className="mt-1 text-sm font-medium text-gray-800">
+                                            {selectedMember.phone || "Not provided"}
+                                        </p>
+                                    </div>
+
+                                    <div>
+                                        <p className="text-xs text-gray-500">Year Set</p>
+                                        <p className="mt-1 text-sm font-medium text-gray-800">
+                                            {yearSet?.name || "—"}
+                                        </p>
+                                    </div>
+
+                                    <div>
+                                        <p className="text-xs text-gray-500">Graduation Year</p>
+                                        <p className="mt-1 text-sm font-medium text-gray-800">
+                                            {selectedMember.graduationYear || "—"}
+                                        </p>
+                                    </div>
+
+                                    <div className="sm:col-span-2">
+                                        <p className="text-xs text-gray-500">Chapter</p>
+                                        <p className="mt-1 text-sm font-medium text-gray-800">
+                                            {selectedMember.chapter?.name || "No chapter assigned"}
+                                            {selectedMember.chapter?.code
+                                                ? ` (${selectedMember.chapter.code})`
+                                                : ""}
+                                        </p>
+                                    </div>
+                                </div>
+                            </section>
+
+                            {/* Mandatory financial summary */}
+                            <section>
+                                <h3 className="mb-3 font-bold text-gray-900">
+                                    Mandatory Financial Summary
+                                </h3>
+
+                                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                                    <div className="rounded-xl border border-gray-100 p-4">
+                                        <p className="text-xs text-gray-500">Total Due</p>
+                                        <p className="mt-2 text-lg font-bold text-gray-900">
+                                            {formatCurrency(
+                                                selectedMember.financialSummary?.totalDue || 0
+                                            )}
+                                        </p>
+                                    </div>
+
+                                    <div className="rounded-xl border border-gray-100 p-4">
+                                        <p className="text-xs text-gray-500">Amount Paid</p>
+                                        <p className="mt-2 text-lg font-bold text-green-700">
+                                            {formatCurrency(
+                                                selectedMember.financialSummary?.amountPaid || 0
+                                            )}
+                                        </p>
+                                    </div>
+
+                                    <div className="rounded-xl border border-gray-100 p-4">
+                                        <p className="text-xs text-gray-500">Outstanding</p>
+                                        <p className="mt-2 text-lg font-bold text-red-600">
+                                            {formatCurrency(
+                                                selectedMember.financialSummary?.outstanding || 0
+                                            )}
+                                        </p>
+                                    </div>
+                                </div>
+                            </section>
+
+                            {/* Optional contributions */}
+                            <section>
+                                <h3 className="mb-3 font-bold text-gray-900">
+                                    Optional Contributions
+                                </h3>
+
+                                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                                    <div className="rounded-xl bg-gray-50 p-4">
+                                        <p className="text-xs text-gray-500">Total Due</p>
+                                        <p className="mt-2 font-bold text-gray-900">
+                                            {formatCurrency(
+                                                selectedMember.financialSummary?.optionalDue || 0
+                                            )}
+                                        </p>
+                                    </div>
+
+                                    <div className="rounded-xl bg-gray-50 p-4">
+                                        <p className="text-xs text-gray-500">Amount Paid</p>
+                                        <p className="mt-2 font-bold text-green-700">
+                                            {formatCurrency(
+                                                selectedMember.financialSummary?.optionalPaid || 0
+                                            )}
+                                        </p>
+                                    </div>
+
+                                    <div className="rounded-xl bg-gray-50 p-4">
+                                        <p className="text-xs text-gray-500">Outstanding</p>
+                                        <p className="mt-2 font-bold text-amber-700">
+                                            {formatCurrency(
+                                                selectedMember.financialSummary?.optionalOutstanding || 0
+                                            )}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <p className="mt-3 text-xs leading-5 text-gray-500">
+                                    Optional contributions are shown separately and are not included
+                                    in mandatory outstanding balances.
+                                </p>
+                            </section>
+
+                            <button
+                                type="button"
+                                onClick={() => setSelectedMember(null)}
+                                className="w-full rounded-xl bg-(--primary) px-4 py-3 text-sm font-semibold text-white transition hover:opacity-90"
+                            >
+                                Close Details
+                            </button>
                         </div>
                     </div>
                 </div>

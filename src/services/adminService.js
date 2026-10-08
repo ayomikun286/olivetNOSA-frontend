@@ -723,7 +723,7 @@ export const assignChapterLeader = async (
   }
 
   const response = await fetch(
-    `${API}/api/leadership/chapter/${yearSetId}`,
+    `${API}/api/leadership/chapter/${chapterId}`,
     {
       method: "POST",
       headers: {
