@@ -23,8 +23,8 @@ import AdminTable from "../../components/admin/AdminTable.jsx";
 import Alert from "../../components/common/Alert.jsx";
 
 import {
-    exportFinancialReportToExcel,
-    exportFinancialReportToPDF,
+  exportAdminFinancialReportToExcel,
+  exportAdminFinancialReportToPDF,
 } from "../../utils/financialReportExport.js";
 
 import {
