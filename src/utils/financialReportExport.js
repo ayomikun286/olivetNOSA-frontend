@@ -120,7 +120,7 @@ export const normalizeFinancialReport = (report) => {
    EXCEL EXPORT
 ========================================================= */
 
-export const exportFinancialReportToExcel = async (
+export const exportAdminFinancialReportToExcel = async (
   report
 ) => {
   const data = normalizeFinancialReport(report);
@@ -133,7 +133,7 @@ export const exportFinancialReportToExcel = async (
   ------------------------------------------------------- */
 
   const summaryRows = [
-    ["ONW GOSA"],
+    [" GOSA"],
     ["Financial Report"],
     ["Report Period", data.reportPeriod],
     [],
@@ -414,7 +414,7 @@ export const exportFinancialReportToExcel = async (
    PDF EXPORT
 ========================================================= */
 
-export const exportFinancialReportToPDF = async (
+export const exportAdminFinancialReportToPDF = async (
   report
 ) => {
   const data = normalizeFinancialReport(report);

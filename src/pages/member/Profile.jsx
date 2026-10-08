@@ -1966,6 +1966,9 @@ const Profile = () => {
           )}
         </div>
 
+
+
+
         {/* ACCOUNT STATUS */}
         <div className="bg-(--bg-white) border border-(--border) rounded overflow-hidden">
           <div className="p-5 border-b border-(--border)">
@@ -1985,6 +1988,13 @@ const Profile = () => {
               </div>
             </div>
           </div>
+
+
+
+
+
+
+          
 
           <div className="p-5">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">

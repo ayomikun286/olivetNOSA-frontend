@@ -757,7 +757,7 @@ export const getCalendarEvent = async (id) => {
       }
     );
 
-    console.log("Calendar events response id:", data);
+   
     const data = await response.json();
 
     if (!response.ok) {
@@ -773,5 +773,39 @@ export const getCalendarEvent = async (id) => {
     throw new Error(
       error.message || "Unable to load calendar event."
     );
+  }
+};
+
+
+
+export const getPublishedFinancialReports = async () => {
+  try {
+    const response = await fetch(
+      `${API}/api/monthly/financial-reports`,
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
+
+    const data = await response.json();
+
+    console.log("Published financial reports response:", data);
+
+    if (!response.ok) {
+      const error = new Error(
+        data.message || "Unable to load financial reports."
+      );
+
+      error.status = response.status;
+
+      throw error;
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Get published financial reports error:", error);
+
+    throw error;
   }
 };

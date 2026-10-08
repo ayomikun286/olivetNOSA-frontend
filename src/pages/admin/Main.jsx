@@ -309,36 +309,46 @@ const Main = () => {
 
   {/* Stats Cards */}
   <div className="w-full space-y-2">
-    <AdminStatCard
-      icon={Users}
-      iconBg="bg-(--primary-light)"
-      iconClass="text-(--primary)"
-      badge="Membership"
-      label="Total Members"
-      value={members.total || 0}
-      description="Registered members"
-    />
+  <AdminStatCard
+    icon={Users}
+    iconBg="bg-(--primary-light)"
+    iconClass="text-(--primary)"
+    badge="Membership"
+    label="Total Members"
+    value={members.total || 0}
+    description="Registered members"
+  />
 
-    <AdminStatCard
-      icon={UserCheck}
-      iconBg="bg-(--success-light)"
-      iconClass="text-(--success)"
-      badge="Active"
-      label="Active Members"
-      value={members.active || 0}
-      description="Approved members"
-    />
+  <AdminStatCard
+    icon={UserCheck}
+    iconBg="bg-(--success-light)"
+    iconClass="text-(--success)"
+    badge="Active"
+    label="Active Members"
+    value={members.active || 0}
+    description="Approved members"
+  />
 
-    <AdminStatCard
-      icon={Clock3}
-      iconBg="bg-(--warning-light)"
-      iconClass="text-(--warning)"
-      badge="Attention"
-      label="Pending Approval"
-      value={members.pending || 0}
-      description="Members awaiting approval"
-    />
-  </div>
+  <AdminStatCard
+    icon={Clock3}
+    iconBg="bg-(--warning-light)"
+    iconClass="text-(--warning)"
+    badge="Attention"
+    label="Pending Approval"
+    value={members.pending || 0}
+    description="Members awaiting approval"
+  />
+
+  <AdminStatCard
+    icon={UserPlus}
+    iconBg="bg-(--primary-light)"
+    iconClass="text-(--primary)"
+    badge="This Month"
+    label="New Registrations"
+    value={members.monthlyRegistrations || 0}
+    description="Registered this month"
+  />
+</div>
 
 </div>
 

@@ -13,8 +13,8 @@ import {
   LogOut,
   ContactRound,
   HeartHandshake,
-  NotebookTabs
-
+  NotebookTabs,
+  FileText,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
@@ -81,7 +81,7 @@ const Sidebar = ({ setIsOpen }) => {
           <XCircle className="w-5 h-5" />
         </button>
 
-       <div className="flex h-12 w-12 items-center justify-center rounded-xl shrink-0">
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl shrink-0">
           <img
             src="/images/Logo-NOSA.png"
             alt="Olivet NOSA"
@@ -95,7 +95,7 @@ const Sidebar = ({ setIsOpen }) => {
             ASSOCIATION PORTAL
           </p>
 
-         
+
         </div>
       </div>
 
@@ -227,6 +227,15 @@ const Sidebar = ({ setIsOpen }) => {
             >
               <NotebookTabs className={iconClass} />
               <span>Calendar</span>
+            </NavLink>
+
+            <NavLink
+              to="/portal/member/dashboard/financial-reports"
+              className={linkClass}
+              onClick={handleLinkClick}
+            >
+              <FileText className={iconClass} />
+              <span>Financial Reports</span>
             </NavLink>
 
             <NavLink
