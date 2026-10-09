@@ -27,10 +27,10 @@ export const AuthProvider = ({ children }) => {
   const lastHeartbeatRef = useRef(0);
 const heartbeatInFlightRef = useRef(false);
 
-  // --------------------------------
-  // LOGOUT
-  // --------------------------------
-  const logout = async () => {
+
+
+
+const logout = async () => {
     if (logoutInProgressRef.current) return;
 
     logoutInProgressRef.current = true;
