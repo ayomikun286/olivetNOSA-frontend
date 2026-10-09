@@ -13,6 +13,7 @@ import {
   LogOut,
   CalendarDays,
   ShieldCheck,
+    Newspaper,
 } from "lucide-react";
 
 import { NavLink } from "react-router-dom";
@@ -163,6 +164,15 @@ const Sidebar = ({ setIsOpen }) => {
             </NavLink>
 
             <NavLink
+  to="/portal/admin/dashboard/news-events"
+  className={linkClass}
+  onClick={handleLinkClick}
+>
+  <Newspaper className={iconClass} />
+  <span>News & Events</span>
+</NavLink>
+
+            <NavLink
               to="/portal/admin/dashboard/Calendar"
               className={linkClass}
               onClick={handleLinkClick}
@@ -191,7 +201,7 @@ const Sidebar = ({ setIsOpen }) => {
         </div>
 
         {/* ================= COMMUNICATION ================= */}
-        <div>
+        {/* <div>
           <p className={sectionTitle}>Communication</p>
 
           <div className="space-y-1">
@@ -204,7 +214,7 @@ const Sidebar = ({ setIsOpen }) => {
               <span>Notifications</span>
             </NavLink>
           </div>
-        </div>
+        </div> */}
 
         {/* ================= SYSTEM ================= */}
         <div>

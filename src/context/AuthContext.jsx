@@ -7,46 +7,57 @@ import React, {
 } from "react";
 
 import API from "../config/app.js";
-import { NavLink, useNavigate, } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 const AuthContext = createContext(null);
 
-const INACTIVITY_LIMIT = 5 * 60 * 1000; // 20 minutes
+const INACTIVITY_LIMIT = 5 * 60 * 1000; // 5 minutes
 const ACTIVITY_KEY = "nosa_last_activity";
+const INACTIVITY_CHECK_INTERVAL = 5 * 1000; // Check every 5 seconds
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [authError, setAuthError] = useState(null);
-    const navigate = useNavigate();
+
+  const navigate = useNavigate();
   const activityTimeoutRef = useRef(null);
+  const lastActivityRef = useRef(0);
+  const logoutInProgressRef = useRef(false);
+  const lastHeartbeatRef = useRef(0);
+const heartbeatInFlightRef = useRef(false);
 
   // --------------------------------
   // LOGOUT
   // --------------------------------
   const logout = async () => {
+    if (logoutInProgressRef.current) return;
+
+    logoutInProgressRef.current = true;
+
     try {
-    const out =  await fetch(`${API}/user/logout`, {
+      await fetch(`${API}/user/logout`, {
         method: "GET",
         credentials: "include",
       });
-
-      if(out.ok){
-         navigate("/portal/login", { replace: true });
-      }
-      
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
       setUser(null);
       setAuthError(null);
+
       localStorage.removeItem(ACTIVITY_KEY);
+      lastActivityRef.current = 0;
 
       if (activityTimeoutRef.current) {
         clearInterval(activityTimeoutRef.current);
         activityTimeoutRef.current = null;
       }
 
+      navigate("/portal/login", { replace: true });
       window.history.replaceState(null, "", "/portal/login");
+
+      logoutInProgressRef.current = false;
     }
   };
 
@@ -54,16 +65,16 @@ export const AuthProvider = ({ children }) => {
   // CHECK AUTH
   // --------------------------------
   const checkAuth = async (silent = false) => {
-  if (!silent) {
-    setLoading(true);
-  }
+    if (!silent) {
+      setLoading(true);
+    }
 
     try {
       const lastActivity = Number(
         localStorage.getItem(ACTIVITY_KEY)
       );
 
-      // Expire if inactive for 2 hours
+      // Expire after 5 minutes of inactivity.
       if (
         lastActivity &&
         Date.now() - lastActivity >= INACTIVITY_LIMIT
@@ -88,6 +99,7 @@ export const AuthProvider = ({ children }) => {
       if (response.status === 401) {
         setUser(null);
         localStorage.removeItem(ACTIVITY_KEY);
+        lastActivityRef.current = 0;
         return false;
       }
 
@@ -107,12 +119,12 @@ export const AuthProvider = ({ children }) => {
       if (data?.success && data?.data) {
         setUser(data.data);
 
-        // Only create an activity timestamp if one doesn't exist.
         if (!lastActivity) {
-          localStorage.setItem(
-            ACTIVITY_KEY,
-            Date.now().toString()
-          );
+          const now = Date.now();
+          localStorage.setItem(ACTIVITY_KEY, String(now));
+          lastActivityRef.current = now;
+        } else {
+          lastActivityRef.current = lastActivity;
         }
 
         return true;
@@ -146,47 +158,66 @@ export const AuthProvider = ({ children }) => {
   // --------------------------------
   // TRACK USER ACTIVITY
   // --------------------------------
-  useEffect(() => {
-    if (!user) return;
+ 
+useEffect(() => {
+  if (!user) return;
 
-    let lastRecordedActivity = Number(
-      localStorage.getItem(ACTIVITY_KEY)
-    ) || 0;
+  const recordActivity = async () => {
+    if (logoutInProgressRef.current) return;
 
-    const updateActivity = () => {
-      const now = Date.now();
+    const now = Date.now();
 
-      // Only update once every 30 seconds
-      if (now - lastRecordedActivity < 30 * 1000) {
-        return;
-      }
+    // Update local activity timestamp.
+    localStorage.setItem(ACTIVITY_KEY, String(now));
+    lastActivityRef.current = now;
 
-      lastRecordedActivity = now;
+    // Avoid frequent or overlapping heartbeat requests.
+    if (
+      now - lastHeartbeatRef.current < 30 * 1000 ||
+      heartbeatInFlightRef.current
+    ) {
+      return;
+    }
 
-      localStorage.setItem(
-        ACTIVITY_KEY,
-        now.toString()
-      );
-    };
+    lastHeartbeatRef.current = now;
+    heartbeatInFlightRef.current = true;
 
-    const events = [
-      "mousemove",
-      "keydown",
-      "click",
-      "scroll",
-      "touchstart",
-    ];
-
-    events.forEach((event) => {
-      window.addEventListener(event, updateActivity);
-    });
-
-    return () => {
-      events.forEach((event) => {
-        window.removeEventListener(event, updateActivity);
+    try {
+      const response = await fetch(`${API}/auth/activity`, {
+        method: "POST",
+        credentials: "include",
       });
-    };
-  }, [user]);
+
+      if (response.status === 401) {
+        await logout();
+      }
+    } catch (error) {
+      console.error("Activity heartbeat failed:", error);
+    } finally {
+      heartbeatInFlightRef.current = false;
+    }
+  };
+
+  const events = [
+    "mousemove",
+    "keydown",
+    "click",
+    "scroll",
+    "touchstart",
+  ];
+
+  events.forEach((event) => {
+    window.addEventListener(event, recordActivity, {
+      passive: true,
+    });
+  });
+
+  return () => {
+    events.forEach((event) => {
+      window.removeEventListener(event, recordActivity);
+    });
+  };
+}, [user]);
 
   // --------------------------------
   // CHECK FOR INACTIVITY
@@ -207,17 +238,38 @@ export const AuthProvider = ({ children }) => {
       }
     };
 
-    // Check every minute
+    checkInactivity();
+
     activityTimeoutRef.current = setInterval(
       checkInactivity,
-      60 * 1000
+      INACTIVITY_CHECK_INTERVAL
     );
 
     return () => {
-      clearInterval(activityTimeoutRef.current);
-      activityTimeoutRef.current = null;
+      if (activityTimeoutRef.current) {
+        clearInterval(activityTimeoutRef.current);
+        activityTimeoutRef.current = null;
+      }
     };
   }, [user]);
+
+  // --------------------------------
+  // SYNC LOGOUT ACROSS TABS
+  // --------------------------------
+  useEffect(() => {
+    const handleStorage = (event) => {
+      if (event.key === ACTIVITY_KEY && event.newValue === null) {
+        setUser(null);
+        navigate("/portal/login", { replace: true });
+      }
+    };
+
+    window.addEventListener("storage", handleStorage);
+
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+    };
+  }, [navigate]);
 
   return (
     <AuthContext.Provider

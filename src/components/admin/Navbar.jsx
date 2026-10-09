@@ -63,7 +63,7 @@ const Navbar = ({
       <div className="flex items-center gap-5">
 
         {/* ================= NOTIFICATIONS ================= */}
-        <NotificationDropdown />
+        {/* <NotificationDropdown /> */}
 
         {/* ================= PROFILE ================= */}
         <div
