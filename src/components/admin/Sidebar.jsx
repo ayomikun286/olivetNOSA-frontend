@@ -11,7 +11,8 @@ import {
   Bell,
   Settings,
   LogOut,
-  CalendarDays
+  CalendarDays,
+  ShieldCheck,
 } from "lucide-react";
 
 import { NavLink } from "react-router-dom";
@@ -208,8 +209,20 @@ const Sidebar = ({ setIsOpen }) => {
         {/* ================= SYSTEM ================= */}
         <div>
           <p className={sectionTitle}>System</p>
+          
 
           <div className="space-y-1">
+            <NavLink
+  to="/portal/admin/dashboard/audit-logs"
+  className={linkClass}
+  onClick={handleLinkClick}
+>
+  <ShieldCheck className={iconClass} />
+  <span>Audit Logs</span>
+</NavLink>
+
+
+
             <NavLink
               to="/portal/admin/dashboard/settings"
               className={linkClass}

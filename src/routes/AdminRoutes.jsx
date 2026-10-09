@@ -11,6 +11,7 @@ import Calendar from "../pages/admin/Calendar.jsx";
 import AdminYearSet from "../pages/admin/AdminYearSet.jsx";
 import AdminChapter from "../pages/admin/AdminChapter.jsx";  
 import FinancialReports from "../pages/admin/FinancialReports.jsx"; 
+import AuditLogs from "../pages/admin/AuditLogs.jsx";
 const AdminRoutes = () => {
   return (
     <Routes>
@@ -24,6 +25,7 @@ const AdminRoutes = () => {
           <Route path="year-sets" element={<AdminYearSet />} />
           <Route path="chapters" element={<AdminChapter />} />
           <Route path="financial-reports" element={<FinancialReports />} />
+          <Route path="audit-logs" element={<AuditLogs />} />
         </Route>
       </Route>
     </Routes>

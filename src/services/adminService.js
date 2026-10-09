@@ -154,6 +154,7 @@ export const getObligations = async ({
 };
 
 
+
 // ========================================
 // GET SINGLE OBLIGATION
 // ========================================
@@ -709,7 +710,6 @@ export const getAdminChapterById = async (id) => {
   return data;
 };
 
-
 export const assignChapterLeader = async (
   chapterId,
   userId
@@ -971,6 +971,49 @@ export const unpublishFinancialReport = async (id) => {
       data.message ||
         "Failed to unpublish financial report."
     );
+  }
+
+  return data;
+};
+
+
+
+// ========================================
+// AUDIT LOGS
+// ========================================
+
+export const getAdminAuditLogs = async ({
+  page = 1,
+  limit = 20,
+  action = "",
+  resource = "",
+  from = "",
+  to = "",
+  search = "",
+} = {}) => {
+  const params = new URLSearchParams();
+
+  params.append("page", String(page));
+  params.append("limit", String(limit));
+
+  if (action) params.append("action", action);
+  if (resource) params.append("resource", resource);
+  if (from) params.append("from", from);
+  if (to) params.append("to", to);
+  if (search.trim()) params.append("search", search.trim());
+
+  const response = await fetch(
+    `${API}/api/admin/audit-logs?${params.toString()}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to load audit logs.");
   }
 
   return data;
