@@ -14,6 +14,9 @@ import {
     Image as ImageIcon,
     MapPin,
     Star,
+    FileText,
+    Globe,
+    Users,
 } from "lucide-react";
 
 import AdminStatCard from "../../components/admin/AdminStatCard.jsx";
@@ -39,12 +42,12 @@ const EMPTY_FORM = {
     endTime: "",
     location: "",
     registrationUrl: "",
+    visibility: "public",
     isPublished: false,
     isFeatured: false,
 };
 
-
-
+const CONTENT_TYPES = ["news", "event", "article"];
 
 const getItems = (response) => {
     if (Array.isArray(response)) return response;
@@ -53,7 +56,9 @@ const getItems = (response) => {
     if (Array.isArray(response?.data?.newsEvents)) {
         return response.data.newsEvents;
     }
-    if (Array.isArray(response?.data?.items)) return response.data.items;
+    if (Array.isArray(response?.data?.items)) {
+        return response.data.items;
+    }
     if (Array.isArray(response?.items)) return response.items;
 
     return [];
@@ -81,9 +86,15 @@ const formatDate = (value) => {
     });
 };
 
+const getTypeLabel = (type) => {
+    if (type === "event") return "Event";
+    if (type === "article") return "Article";
+    return "News";
+};
+
 const StatusBadge = ({ published }) => (
     <span
-        className={`inline-flex items-center px-2.5 py-1 rounded text-xs font-medium ${
+        className={`inline-flex items-center rounded px-2.5 py-1 text-xs font-medium ${
             published
                 ? "bg-(--success-light) text-(--success)"
                 : "bg-(--warning-light) text-(--warning)"
@@ -93,19 +104,38 @@ const StatusBadge = ({ published }) => (
     </span>
 );
 
+const VisibilityBadge = ({ visibility }) => {
+    const membersOnly = visibility === "members";
+
+    return (
+        <span
+            className={`inline-flex items-center gap-1 rounded px-2.5 py-1 text-xs font-medium ${
+                membersOnly
+                    ? "bg-(--primary-light) text-(--primary)"
+                    : "bg-(--bg-light) text-(--secondary)"
+            }`}
+        >
+            {membersOnly ? <Users size={12} /> : <Globe size={12} />}
+            {membersOnly ? "Members only" : "Public"}
+        </span>
+    );
+};
+
 const NewsEvents = () => {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [pageError, setPageError] = useState("");
     const [alert, setAlert] = useState(null);
+
     const [previewItem, setPreviewItem] = useState(null);
     const [search, setSearch] = useState("");
     const [typeFilter, setTypeFilter] = useState("");
     const [statusFilter, setStatusFilter] = useState("");
+    const [visibilityFilter, setVisibilityFilter] = useState("");
 
     const [modalOpen, setModalOpen] = useState(false);
     const [editingItem, setEditingItem] = useState(null);
-    const [form, setForm] = useState(EMPTY_FORM);
+    const [form, setForm] = useState({ ...EMPTY_FORM });
     const [image, setImage] = useState(null);
     const [imagePreview, setImagePreview] = useState("");
     const [autoSlug, setAutoSlug] = useState(true);
@@ -117,6 +147,13 @@ const NewsEvents = () => {
 
     const showAlert = (type, message) => setAlert({ type, message });
 
+    // Release temporary image preview URLs when they are replaced or removed.
+    useEffect(() => {
+        if (!imagePreview.startsWith("blob:")) return undefined;
+
+        return () => URL.revokeObjectURL(imagePreview);
+    }, [imagePreview]);
+
     const loadItems = async () => {
         try {
             setLoading(true);
@@ -127,7 +164,7 @@ const NewsEvents = () => {
         } catch (error) {
             console.error("Failed to load news and events:", error);
             setPageError(
-                error.message || "Failed to load news and events."
+                error?.message || "Failed to load news and events."
             );
             setItems([]);
         } finally {
@@ -149,23 +186,42 @@ const NewsEvents = () => {
                 item.slug?.toLowerCase().includes(query) ||
                 item.category?.toLowerCase().includes(query);
 
-            const matchesType = !typeFilter || item.type === typeFilter;
+            const matchesType =
+                !typeFilter || item.type === typeFilter;
 
             const published = Boolean(item.isPublished);
+
             const matchesStatus =
                 !statusFilter ||
                 (statusFilter === "published" && published) ||
                 (statusFilter === "draft" && !published);
 
-            return matchesSearch && matchesType && matchesStatus;
+            const visibility = item.visibility || "public";
+
+            const matchesVisibility =
+                !visibilityFilter || visibility === visibilityFilter;
+
+            return (
+                matchesSearch &&
+                matchesType &&
+                matchesStatus &&
+                matchesVisibility
+            );
         });
-    }, [items, search, typeFilter, statusFilter]);
+    }, [
+        items,
+        search,
+        typeFilter,
+        statusFilter,
+        visibilityFilter,
+    ]);
 
     const stats = useMemo(
         () => ({
             total: items.length,
             news: items.filter((item) => item.type === "news").length,
             events: items.filter((item) => item.type === "event").length,
+            articles: items.filter((item) => item.type === "article").length,
             published: items.filter((item) => item.isPublished).length,
             drafts: items.filter((item) => !item.isPublished).length,
         }),
@@ -192,7 +248,9 @@ const NewsEvents = () => {
         setForm({
             title: item.title || "",
             slug: item.slug || "",
-            type: item.type || "news",
+            type: CONTENT_TYPES.includes(item.type)
+                ? item.type
+                : "news",
             category: item.category || "",
             excerpt: item.excerpt || "",
             content: item.content || "",
@@ -203,6 +261,8 @@ const NewsEvents = () => {
             endTime: item.endTime || "",
             location: item.location || "",
             registrationUrl: item.registrationUrl || "",
+            visibility:
+                item.visibility === "members" ? "members" : "public",
             isPublished: Boolean(item.isPublished),
             isFeatured: Boolean(item.isFeatured),
         });
@@ -216,6 +276,7 @@ const NewsEvents = () => {
 
     const closeModal = () => {
         if (saving) return;
+
         setModalOpen(false);
         resetForm();
     };
@@ -225,13 +286,17 @@ const NewsEvents = () => {
         const nextValue = type === "checkbox" ? checked : value;
 
         setForm((current) => {
-            const updated = { ...current, [name]: nextValue };
+            const updated = {
+                ...current,
+                [name]: nextValue,
+            };
 
             if (name === "title" && autoSlug) {
                 updated.slug = slugify(value);
             }
 
-            if (name === "type" && value === "news") {
+            // Event-only fields should not remain attached to news/articles.
+            if (name === "type" && value !== "event") {
                 updated.eventDate = "";
                 updated.startTime = "";
                 updated.endTime = "";
@@ -245,6 +310,7 @@ const NewsEvents = () => {
 
     const handleSlugChange = (event) => {
         setAutoSlug(false);
+
         setForm((current) => ({
             ...current,
             slug: slugify(event.target.value),
@@ -253,6 +319,7 @@ const NewsEvents = () => {
 
     const handleImageChange = (event) => {
         const file = event.target.files?.[0];
+
         if (!file) return;
 
         if (!file.type.startsWith("image/")) {
@@ -266,32 +333,51 @@ const NewsEvents = () => {
         setFormError("");
     };
 
+    const validateForm = () => {
+        if (!form.title.trim()) {
+            return "Please enter a title.";
+        }
+
+        if (!form.slug.trim()) {
+            return "Please enter a URL slug.";
+        }
+
+        if (!CONTENT_TYPES.includes(form.type)) {
+            return "Please select a valid content type.";
+        }
+
+        if (!["public", "members"].includes(form.visibility)) {
+            return "Please select a valid visibility option.";
+        }
+
+        if (form.type === "event" && !form.eventDate) {
+            return "Please select an event date.";
+        }
+
+        if (form.type === "event" && form.registrationUrl.trim()) {
+            try {
+                const url = new URL(form.registrationUrl);
+
+                if (!["http:", "https:"].includes(url.protocol)) {
+                    return "Registration URL must start with http:// or https://.";
+                }
+            } catch {
+                return "Please enter a valid registration URL.";
+            }
+        }
+
+        return "";
+    };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         setFormError("");
 
-        if (!form.title.trim()) {
-            setFormError("Please enter a title.");
-            return;
-        }
+        const validationError = validateForm();
 
-        if (!form.slug.trim()) {
-            setFormError("Please enter a URL slug.");
+        if (validationError) {
+            setFormError(validationError);
             return;
-        }
-
-        if (form.type === "event" && !form.eventDate) {
-            setFormError("Please select an event date.");
-            return;
-        }
-
-        if (form.registrationUrl.trim()) {
-            try {
-                new URL(form.registrationUrl);
-            } catch {
-                setFormError("Please enter a valid registration URL.");
-                return;
-            }
         }
 
         const formData = new FormData();
@@ -307,32 +393,34 @@ const NewsEvents = () => {
         try {
             setSaving(true);
 
+            let response;
+
             if (editingItem?._id) {
-                const response = await updateNewsEvent(
+                response = await updateNewsEvent(
                     editingItem._id,
                     formData
                 );
-
-                showAlert(
-                    "success",
-                    response?.message || "News or event updated successfully."
-                );
             } else {
-                const response = await createNewsEvent(formData);
-
-                showAlert(
-                    "success",
-                    response?.message || "News or event created successfully."
-                );
+                response = await createNewsEvent(formData);
             }
+
+            showAlert(
+                "success",
+                response?.message ||
+                    `${getTypeLabel(form.type)} ${
+                        editingItem ? "updated" : "created"
+                    } successfully.`
+            );
 
             setModalOpen(false);
             resetForm();
+
             await loadItems();
         } catch (error) {
             console.error("Save news/event error:", error);
+
             setFormError(
-                error.message || "Unable to save this news or event."
+                error?.message || "Unable to save this content."
             );
         } finally {
             setSaving(false);
@@ -349,16 +437,17 @@ const NewsEvents = () => {
 
             showAlert(
                 "success",
-                response?.message || "News or event deleted successfully."
+                response?.message || "Content deleted successfully."
             );
 
             setDeleteTarget(null);
             await loadItems();
         } catch (error) {
             console.error("Delete news/event error:", error);
+
             showAlert(
                 "error",
-                error.message || "Failed to delete this news or event."
+                error?.message || "Failed to delete this content."
             );
         } finally {
             setDeleting(false);
@@ -368,15 +457,15 @@ const NewsEvents = () => {
     const columns = [
         {
             key: "item",
-            label: "News / Event",
+            label: "Content",
             render: (item) => (
-                <div className="flex items-center gap-3 min-w-[190px]">
-                    <div className="w-11 h-11 rounded border border-(--border) bg-(--bg-light) overflow-hidden shrink-0 flex items-center justify-center">
+                <div className="flex min-w-[190px] items-center gap-3">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded border border-(--border) bg-(--bg-light)">
                         {item.image ? (
                             <img
                                 src={item.image}
                                 alt=""
-                                className="w-full h-full object-cover"
+                                className="h-full w-full object-cover"
                             />
                         ) : (
                             <ImageIcon
@@ -387,11 +476,11 @@ const NewsEvents = () => {
                     </div>
 
                     <div className="min-w-0">
-                        <p className="text-xs font-semibold text-(--primary) line-clamp-2">
+                        <p className="line-clamp-2 text-xs font-semibold text-(--primary)">
                             {item.title}
                         </p>
-                        <p className="text-[10px] text-(--text-muted) mt-1">
-                            {item.category || "Uncategorised"}
+                        <p className="mt-1 text-[10px] text-(--text-muted)">
+                            {item.category || "Uncategorized"}
                         </p>
                     </div>
                 </div>
@@ -401,9 +490,16 @@ const NewsEvents = () => {
             key: "type",
             label: "Type",
             render: (item) => (
-                <span className="text-xs font-medium text-(--secondary) capitalize">
-                    {item.type === "event" ? "Event" : "News"}
+                <span className="text-xs font-medium text-(--secondary)">
+                    {getTypeLabel(item.type)}
                 </span>
+            ),
+        },
+        {
+            key: "visibility",
+            label: "Visibility",
+            render: (item) => (
+                <VisibilityBadge visibility={item.visibility} />
             ),
         },
         {
@@ -433,7 +529,9 @@ const NewsEvents = () => {
         {
             key: "status",
             label: "Status",
-            render: (item) => <StatusBadge published={item.isPublished} />,
+            render: (item) => (
+                <StatusBadge published={item.isPublished} />
+            ),
         },
         {
             key: "actions",
@@ -441,13 +539,13 @@ const NewsEvents = () => {
             render: (item) => (
                 <div className="flex items-center gap-3">
                     <button
-  type="button"
-  onClick={() => setPreviewItem(item)}
-  className="inline-flex items-center gap-1.5 text-xs font-semibold text-(--primary) hover:underline"
->
-  <Eye size={14} />
-  View
-</button>
+                        type="button"
+                        onClick={() => setPreviewItem(item)}
+                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-(--primary) hover:underline"
+                    >
+                        <Eye size={14} />
+                        View
+                    </button>
 
                     <button
                         type="button"
@@ -482,29 +580,29 @@ const NewsEvents = () => {
                     />
                 )}
 
-                {/* HEADER */}
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                {/* Header */}
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <h1 className="text-xl font-semibold text-(--primary)">
                             News & Events
                         </h1>
-                        <p className="text-sm text-(--secondary) mt-1">
-                            Create, update and publish website news and events.
+                        <p className="mt-1 text-sm text-(--secondary)">
+                            Manage news, events, articles and member-only content.
                         </p>
                     </div>
 
                     <button
                         type="button"
                         onClick={openCreateModal}
-                        className="inline-flex items-center justify-center gap-2 h-9 px-4 rounded bg-(--primary) text-white text-xs font-semibold hover:bg-(--primary-dark) transition-colors"
+                        className="inline-flex h-9 items-center justify-center gap-2 rounded bg-(--primary) px-4 text-xs font-semibold text-white transition-colors hover:bg-(--primary-dark)"
                     >
                         <Plus size={15} />
-                        Create News / Event
+                        Create Content
                     </button>
                 </div>
 
-                {/* OVERVIEW CARDS */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-3">
+                {/* Statistics */}
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
                     <AdminStatCard
                         icon={Newspaper}
                         iconBg="bg-(--primary-light)"
@@ -512,7 +610,7 @@ const NewsEvents = () => {
                         badge="All content"
                         label="Total Items"
                         value={stats.total}
-                        description="All news and events"
+                        description="All content records"
                     />
 
                     <AdminStatCard
@@ -520,7 +618,7 @@ const NewsEvents = () => {
                         iconBg="bg-(--primary-light)"
                         iconClass="text-(--primary)"
                         badge="News"
-                        label="News Articles"
+                        label="News"
                         value={stats.news}
                         description="News items created"
                     />
@@ -536,13 +634,23 @@ const NewsEvents = () => {
                     />
 
                     <AdminStatCard
+                        icon={FileText}
+                        iconBg="bg-(--primary-light)"
+                        iconClass="text-(--primary)"
+                        badge="Articles"
+                        label="Articles"
+                        value={stats.articles}
+                        description="Long-form content"
+                    />
+
+                    <AdminStatCard
                         icon={Eye}
                         iconBg="bg-(--success-light)"
                         iconClass="text-(--success)"
                         badge="Live"
                         label="Published"
                         value={stats.published}
-                        description="Visible on the public website"
+                        description="Published content records"
                     />
 
                     <AdminStatCard
@@ -552,39 +660,42 @@ const NewsEvents = () => {
                         badge="Unpublished"
                         label="Drafts"
                         value={stats.drafts}
-                        description="Not currently published"
+                        description="Unpublished content records"
                     />
                 </div>
 
-                {/* ERROR */}
+                {/* Page error */}
                 {pageError && (
-                    <div className="bg-(--danger-light) border border-(--danger) rounded px-4 py-3 flex items-center justify-between gap-3">
-                        <p className="text-xs text-(--danger)">{pageError}</p>
+                    <div className="flex items-center justify-between gap-3 rounded border border-(--danger) bg-(--danger-light) px-4 py-3">
+                        <p className="text-xs text-(--danger)">
+                            {pageError}
+                        </p>
 
                         <button
                             type="button"
                             onClick={loadItems}
-                            className="text-xs font-semibold text-(--danger) hover:underline"
+                            disabled={loading}
+                            className="shrink-0 text-xs font-semibold text-(--danger) hover:underline disabled:opacity-50"
                         >
                             Retry
                         </button>
                     </div>
                 )}
 
-                {/* TABLE */}
-                <div className="bg-(--bg-white) border border-(--border) rounded overflow-hidden">
-                    <div className="px-5 py-4 border-b border-(--border)">
-                        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                {/* Content table */}
+                <div className="overflow-hidden rounded border border-(--border) bg-(--bg-white)">
+                    <div className="border-b border-(--border) px-5 py-4">
+                        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                             <div>
                                 <h2 className="text-sm font-semibold text-(--primary)">
                                     Website Content
                                 </h2>
-                                <p className="text-xs text-(--secondary) mt-1">
-                                    Manage published content and drafts.
+                                <p className="mt-1 text-xs text-(--secondary)">
+                                    Filter and manage published content and drafts.
                                 </p>
                             </div>
 
-                            <div className="flex flex-col sm:flex-row gap-2">
+                            <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
                                 <div className="relative">
                                     <Search
                                         size={15}
@@ -597,7 +708,7 @@ const NewsEvents = () => {
                                             setSearch(event.target.value)
                                         }
                                         placeholder="Search content..."
-                                        className="h-9 w-full sm:w-[210px] pl-9 pr-3 rounded border border-(--border) bg-(--bg-white) text-xs text-(--primary) outline-none focus:border-(--primary)"
+                                        className="h-9 w-full rounded border border-(--border) bg-(--bg-white) pl-9 pr-3 text-xs text-(--primary) outline-none focus:border-(--primary) sm:w-[190px]"
                                     />
                                 </div>
 
@@ -606,11 +717,24 @@ const NewsEvents = () => {
                                     onChange={(event) =>
                                         setTypeFilter(event.target.value)
                                     }
-                                    className="h-9 px-3 rounded border border-(--border) bg-(--bg-white) text-xs text-(--primary) outline-none"
+                                    className="h-9 rounded border border-(--border) bg-(--bg-white) px-3 text-xs text-(--primary) outline-none"
                                 >
                                     <option value="">All Types</option>
                                     <option value="news">News</option>
                                     <option value="event">Events</option>
+                                    <option value="article">Articles</option>
+                                </select>
+
+                                <select
+                                    value={visibilityFilter}
+                                    onChange={(event) =>
+                                        setVisibilityFilter(event.target.value)
+                                    }
+                                    className="h-9 rounded border border-(--border) bg-(--bg-white) px-3 text-xs text-(--primary) outline-none"
+                                >
+                                    <option value="">All Visibility</option>
+                                    <option value="public">Public</option>
+                                    <option value="members">Members Only</option>
                                 </select>
 
                                 <select
@@ -618,7 +742,7 @@ const NewsEvents = () => {
                                     onChange={(event) =>
                                         setStatusFilter(event.target.value)
                                     }
-                                    className="h-9 px-3 rounded border border-(--border) bg-(--bg-white) text-xs text-(--primary) outline-none"
+                                    className="h-9 rounded border border-(--border) bg-(--bg-white) px-3 text-xs text-(--primary) outline-none"
                                 >
                                     <option value="">All Status</option>
                                     <option value="published">Published</option>
@@ -630,7 +754,7 @@ const NewsEvents = () => {
                                     onClick={loadItems}
                                     disabled={loading}
                                     title="Refresh"
-                                    className="h-9 w-9 shrink-0 rounded border border-(--border) flex items-center justify-center text-(--primary) hover:bg-(--bg-soft) disabled:opacity-50"
+                                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded border border-(--border) text-(--primary) hover:bg-(--bg-soft) disabled:opacity-50"
                                 >
                                     <RefreshCw
                                         size={15}
@@ -648,12 +772,12 @@ const NewsEvents = () => {
                         rowKey="_id"
                         emptyMessage={
                             pageError
-                                ? "Unable to load news and events."
-                                : "No news or events found."
+                                ? "Unable to load content."
+                                : "No content found."
                         }
                     />
 
-                    <div className="px-5 py-3 border-t border-(--border)">
+                    <div className="border-t border-(--border) px-5 py-3">
                         <p className="text-xs text-(--primary)">
                             Showing{" "}
                             <span className="font-medium">
@@ -667,17 +791,17 @@ const NewsEvents = () => {
                 </div>
             </div>
 
-            {/* CREATE / EDIT MODAL */}
+            {/* Create / Edit Modal */}
             {modalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
-                    <div className="w-full max-w-2xl max-h-[92vh] overflow-y-auto bg-(--bg-white) rounded border border-(--border) shadow-xl">
-                        <div className="sticky top-0 z-10 px-5 py-4 border-b border-(--border) bg-(--bg-white) flex items-start justify-between gap-4">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+                    <div className="max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded border border-(--border) bg-(--bg-white) shadow-xl">
+                        <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-(--border) bg-(--bg-white) px-5 py-4">
                             <div>
                                 <h2 className="text-sm font-semibold text-(--primary)">
-                                    {editingItem ? "Edit News / Event" : "Create News / Event"}
+                                    {editingItem ? "Edit Content" : "Create Content"}
                                 </h2>
-                                <p className="text-xs text-(--secondary) mt-1">
-                                    Add the content and choose whether to publish it.
+                                <p className="mt-1 text-xs text-(--secondary)">
+                                    Set the content type, visibility and publication status.
                                 </p>
                             </div>
 
@@ -685,24 +809,29 @@ const NewsEvents = () => {
                                 type="button"
                                 onClick={closeModal}
                                 disabled={saving}
+                                aria-label="Close form"
                                 className="text-(--text-muted) hover:text-(--primary) disabled:opacity-40"
                             >
                                 <X size={18} />
                             </button>
                         </div>
 
-                        <form onSubmit={handleSubmit} className="p-5 space-y-4">
+                        <form
+                            onSubmit={handleSubmit}
+                            className="space-y-4 p-5"
+                        >
                             {formError && (
-                                <div className="bg-(--danger-light) border border-(--danger) rounded px-3 py-2">
+                                <div className="rounded border border-(--danger) bg-(--danger-light) px-3 py-2">
                                     <p className="text-xs text-(--danger)">
                                         {formError}
                                     </p>
                                 </div>
                             )}
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                {/* Title */}
                                 <div className="sm:col-span-2">
-                                    <label className="block text-xs font-medium text-(--primary) mb-1.5">
+                                    <label className="mb-1.5 block text-xs font-medium text-(--primary)">
                                         Title *
                                     </label>
                                     <input
@@ -713,12 +842,13 @@ const NewsEvents = () => {
                                         maxLength={250}
                                         disabled={saving}
                                         placeholder="Enter a title"
-                                        className="w-full h-10 px-3 rounded border border-(--border) bg-(--bg-white) text-xs text-(--primary) outline-none focus:border-(--primary)"
+                                        className="h-10 w-full rounded border border-(--border) bg-(--bg-white) px-3 text-xs text-(--primary) outline-none focus:border-(--primary)"
                                     />
                                 </div>
 
+                                {/* Type */}
                                 <div>
-                                    <label className="block text-xs font-medium text-(--primary) mb-1.5">
+                                    <label className="mb-1.5 block text-xs font-medium text-(--primary)">
                                         Content Type *
                                     </label>
                                     <select
@@ -726,15 +856,18 @@ const NewsEvents = () => {
                                         value={form.type}
                                         onChange={handleFieldChange}
                                         disabled={saving}
-                                        className="w-full h-10 px-3 rounded border border-(--border) bg-(--bg-white) text-xs text-(--primary) outline-none focus:border-(--primary)"
+                                        required
+                                        className="h-10 w-full rounded border border-(--border) bg-(--bg-white) px-3 text-xs text-(--primary) outline-none focus:border-(--primary)"
                                     >
                                         <option value="news">News</option>
                                         <option value="event">Event</option>
+                                        <option value="article">Article</option>
                                     </select>
                                 </div>
 
+                                {/* Category */}
                                 <div>
-                                    <label className="block text-xs font-medium text-(--primary) mb-1.5">
+                                    <label className="mb-1.5 block text-xs font-medium text-(--primary)">
                                         Category
                                     </label>
                                     <input
@@ -744,12 +877,34 @@ const NewsEvents = () => {
                                         maxLength={100}
                                         disabled={saving}
                                         placeholder="e.g. Announcement"
-                                        className="w-full h-10 px-3 rounded border border-(--border) bg-(--bg-white) text-xs text-(--primary) outline-none focus:border-(--primary)"
+                                        className="h-10 w-full rounded border border-(--border) bg-(--bg-white) px-3 text-xs text-(--primary) outline-none focus:border-(--primary)"
                                     />
                                 </div>
 
-                                <div className="sm:col-span-2">
-                                    <label className="block text-xs font-medium text-(--primary) mb-1.5">
+                                {/* Visibility */}
+                                <div>
+                                    <label className="mb-1.5 block text-xs font-medium text-(--primary)">
+                                        Visibility *
+                                    </label>
+                                    <select
+                                        name="visibility"
+                                        value={form.visibility}
+                                        onChange={handleFieldChange}
+                                        disabled={saving}
+                                        required
+                                        className="h-10 w-full rounded border border-(--border) bg-(--bg-white) px-3 text-xs text-(--primary) outline-none focus:border-(--primary)"
+                                    >
+                                        <option value="public">Public Website</option>
+                                        <option value="members">Members Only</option>
+                                    </select>
+                                    <p className="mt-1 text-[10px] text-(--text-muted)">
+                                        Members-only content must also be protected by backend authorization.
+                                    </p>
+                                </div>
+
+                                {/* Slug */}
+                                <div>
+                                    <label className="mb-1.5 block text-xs font-medium text-(--primary)">
                                         URL Slug *
                                     </label>
                                     <input
@@ -757,17 +912,19 @@ const NewsEvents = () => {
                                         value={form.slug}
                                         onChange={handleSlugChange}
                                         required
+                                        maxLength={250}
                                         disabled={saving}
-                                        placeholder="news-or-event-title"
-                                        className="w-full h-10 px-3 rounded border border-(--border) bg-(--bg-white) text-xs text-(--primary) outline-none focus:border-(--primary)"
+                                        placeholder="content-title"
+                                        className="h-10 w-full rounded border border-(--border) bg-(--bg-white) px-3 text-xs text-(--primary) outline-none focus:border-(--primary)"
                                     />
-                                    <p className="text-[10px] text-(--text-muted) mt-1">
-                                        Used in the public page URL. Generated from the title until edited.
+                                    <p className="mt-1 text-[10px] text-(--text-muted)">
+                                        Generated from the title until manually edited.
                                     </p>
                                 </div>
 
+                                {/* Excerpt */}
                                 <div className="sm:col-span-2">
-                                    <label className="block text-xs font-medium text-(--primary) mb-1.5">
+                                    <label className="mb-1.5 block text-xs font-medium text-(--primary)">
                                         Excerpt
                                     </label>
                                     <textarea
@@ -778,15 +935,16 @@ const NewsEvents = () => {
                                         rows={3}
                                         disabled={saving}
                                         placeholder="Short summary shown in content previews"
-                                        className="w-full px-3 py-2.5 rounded border border-(--border) bg-(--bg-white) text-xs text-(--primary) outline-none focus:border-(--primary) resize-y"
+                                        className="w-full resize-y rounded border border-(--border) bg-(--bg-white) px-3 py-2.5 text-xs text-(--primary) outline-none focus:border-(--primary)"
                                     />
-                                    <p className="text-[10px] text-(--text-muted) mt-1">
+                                    <p className="mt-1 text-[10px] text-(--text-muted)">
                                         {form.excerpt.length}/500 characters
                                     </p>
                                 </div>
 
+                                {/* Full Content */}
                                 <div className="sm:col-span-2">
-                                    <label className="block text-xs font-medium text-(--primary) mb-1.5">
+                                    <label className="mb-1.5 block text-xs font-medium text-(--primary)">
                                         Full Content
                                     </label>
                                     <textarea
@@ -795,15 +953,16 @@ const NewsEvents = () => {
                                         onChange={handleFieldChange}
                                         rows={7}
                                         disabled={saving}
-                                        placeholder="Write the full article or event details"
-                                        className="w-full px-3 py-2.5 rounded border border-(--border) bg-(--bg-white) text-xs text-(--primary) outline-none focus:border-(--primary) resize-y"
+                                        placeholder="Write the full article, news story or event details"
+                                        className="w-full resize-y rounded border border-(--border) bg-(--bg-white) px-3 py-2.5 text-xs text-(--primary) outline-none focus:border-(--primary)"
                                     />
                                 </div>
 
+                                {/* Event-specific fields */}
                                 {form.type === "event" && (
                                     <>
                                         <div>
-                                            <label className="block text-xs font-medium text-(--primary) mb-1.5">
+                                            <label className="mb-1.5 block text-xs font-medium text-(--primary)">
                                                 Event Date *
                                             </label>
                                             <input
@@ -813,12 +972,12 @@ const NewsEvents = () => {
                                                 onChange={handleFieldChange}
                                                 required
                                                 disabled={saving}
-                                                className="w-full h-10 px-3 rounded border border-(--border) bg-(--bg-white) text-xs text-(--primary) outline-none focus:border-(--primary)"
+                                                className="h-10 w-full rounded border border-(--border) bg-(--bg-white) px-3 text-xs text-(--primary) outline-none focus:border-(--primary)"
                                             />
                                         </div>
 
                                         <div>
-                                            <label className="block text-xs font-medium text-(--primary) mb-1.5">
+                                            <label className="mb-1.5 block text-xs font-medium text-(--primary)">
                                                 Location
                                             </label>
                                             <input
@@ -828,12 +987,12 @@ const NewsEvents = () => {
                                                 maxLength={250}
                                                 disabled={saving}
                                                 placeholder="Event venue"
-                                                className="w-full h-10 px-3 rounded border border-(--border) bg-(--bg-white) text-xs text-(--primary) outline-none focus:border-(--primary)"
+                                                className="h-10 w-full rounded border border-(--border) bg-(--bg-white) px-3 text-xs text-(--primary) outline-none focus:border-(--primary)"
                                             />
                                         </div>
 
                                         <div>
-                                            <label className="block text-xs font-medium text-(--primary) mb-1.5">
+                                            <label className="mb-1.5 block text-xs font-medium text-(--primary)">
                                                 Start Time
                                             </label>
                                             <input
@@ -843,12 +1002,12 @@ const NewsEvents = () => {
                                                 maxLength={30}
                                                 disabled={saving}
                                                 placeholder="e.g. 10:00 AM"
-                                                className="w-full h-10 px-3 rounded border border-(--border) bg-(--bg-white) text-xs text-(--primary) outline-none focus:border-(--primary)"
+                                                className="h-10 w-full rounded border border-(--border) bg-(--bg-white) px-3 text-xs text-(--primary) outline-none focus:border-(--primary)"
                                             />
                                         </div>
 
                                         <div>
-                                            <label className="block text-xs font-medium text-(--primary) mb-1.5">
+                                            <label className="mb-1.5 block text-xs font-medium text-(--primary)">
                                                 End Time
                                             </label>
                                             <input
@@ -858,12 +1017,12 @@ const NewsEvents = () => {
                                                 maxLength={30}
                                                 disabled={saving}
                                                 placeholder="e.g. 2:00 PM"
-                                                className="w-full h-10 px-3 rounded border border-(--border) bg-(--bg-white) text-xs text-(--primary) outline-none focus:border-(--primary)"
+                                                className="h-10 w-full rounded border border-(--border) bg-(--bg-white) px-3 text-xs text-(--primary) outline-none focus:border-(--primary)"
                                             />
                                         </div>
 
                                         <div className="sm:col-span-2">
-                                            <label className="block text-xs font-medium text-(--primary) mb-1.5">
+                                            <label className="mb-1.5 block text-xs font-medium text-(--primary)">
                                                 Registration URL
                                             </label>
                                             <input
@@ -873,14 +1032,15 @@ const NewsEvents = () => {
                                                 onChange={handleFieldChange}
                                                 disabled={saving}
                                                 placeholder="https://..."
-                                                className="w-full h-10 px-3 rounded border border-(--border) bg-(--bg-white) text-xs text-(--primary) outline-none focus:border-(--primary)"
+                                                className="h-10 w-full rounded border border-(--border) bg-(--bg-white) px-3 text-xs text-(--primary) outline-none focus:border-(--primary)"
                                             />
                                         </div>
                                     </>
                                 )}
 
+                                {/* Image */}
                                 <div className="sm:col-span-2">
-                                    <label className="block text-xs font-medium text-(--primary) mb-1.5">
+                                    <label className="mb-1.5 block text-xs font-medium text-(--primary)">
                                         Featured Image
                                     </label>
 
@@ -889,8 +1049,8 @@ const NewsEvents = () => {
                                             <div className="mb-3">
                                                 <img
                                                     src={imagePreview}
-                                                    alt="Preview"
-                                                    className="w-full max-h-48 object-cover rounded border border-(--border)"
+                                                    alt="Content preview"
+                                                    className="max-h-48 w-full rounded border border-(--border) object-cover"
                                                 />
                                             </div>
                                         )}
@@ -902,17 +1062,19 @@ const NewsEvents = () => {
                                             disabled={saving}
                                             className="block w-full text-xs text-(--secondary) file:mr-3 file:rounded file:border file:border-(--border) file:bg-(--bg-white) file:px-3 file:py-2 file:text-xs file:font-medium file:text-(--primary)"
                                         />
-                                        <p className="text-[10px] text-(--text-muted) mt-2">
+
+                                        <p className="mt-2 text-[10px] text-(--text-muted)">
                                             {editingItem?.image && !image
                                                 ? "Choose a new image only if you want to replace the current one."
-                                                : "Choose an image for the public content page."}
+                                                : "Choose an image for this content."}
                                         </p>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="rounded border border-(--border) bg-(--bg-light) px-4 py-3 space-y-3">
-                                <label className="flex items-start gap-3 cursor-pointer">
+                            {/* Publication options */}
+                            <div className="space-y-3 rounded border border-(--border) bg-(--bg-light) px-4 py-3">
+                                <label className="flex cursor-pointer items-start gap-3">
                                     <input
                                         type="checkbox"
                                         name="isPublished"
@@ -923,15 +1085,15 @@ const NewsEvents = () => {
                                     />
                                     <span>
                                         <span className="block text-xs font-medium text-(--primary)">
-                                            Publish on website
+                                            Publish content
                                         </span>
-                                        <span className="block text-[10px] text-(--secondary) mt-1">
-                                            Published items are eligible to appear on the public website.
+                                        <span className="mt-1 block text-[10px] text-(--secondary)">
+                                            Publishing does not override the selected visibility setting.
                                         </span>
                                     </span>
                                 </label>
 
-                                <label className="flex items-start gap-3 cursor-pointer">
+                                <label className="flex cursor-pointer items-start gap-3">
                                     <input
                                         type="checkbox"
                                         name="isFeatured"
@@ -944,19 +1106,20 @@ const NewsEvents = () => {
                                         <span className="block text-xs font-medium text-(--primary)">
                                             Feature this item
                                         </span>
-                                        <span className="block text-[10px] text-(--secondary) mt-1">
-                                            Marks this content as featured for supported public layouts.
+                                        <span className="mt-1 block text-[10px] text-(--secondary)">
+                                            Marks this content as featured in supported layouts.
                                         </span>
                                     </span>
                                 </label>
                             </div>
 
+                            {/* Form actions */}
                             <div className="flex items-center justify-end gap-2 pt-2">
                                 <button
                                     type="button"
                                     onClick={closeModal}
                                     disabled={saving}
-                                    className="h-9 px-4 rounded border border-(--border) text-xs font-semibold text-(--secondary) hover:bg-(--bg-soft) disabled:opacity-40"
+                                    className="h-9 rounded border border-(--border) px-4 text-xs font-semibold text-(--secondary) hover:bg-(--bg-soft) disabled:opacity-40"
                                 >
                                     Cancel
                                 </button>
@@ -964,11 +1127,14 @@ const NewsEvents = () => {
                                 <button
                                     type="submit"
                                     disabled={saving}
-                                    className="h-9 px-4 rounded bg-(--primary) text-white text-xs font-semibold inline-flex items-center gap-2 hover:bg-(--primary-dark) disabled:opacity-60"
+                                    className="inline-flex h-9 items-center gap-2 rounded bg-(--primary) px-4 text-xs font-semibold text-white hover:bg-(--primary-dark) disabled:opacity-60"
                                 >
                                     {saving ? (
                                         <>
-                                            <Loader2 size={14} className="animate-spin" />
+                                            <Loader2
+                                                size={14}
+                                                className="animate-spin"
+                                            />
                                             Saving...
                                         </>
                                     ) : (
@@ -978,7 +1144,9 @@ const NewsEvents = () => {
                                             ) : (
                                                 <Plus size={14} />
                                             )}
-                                            {editingItem ? "Save Changes" : "Create Item"}
+                                            {editingItem
+                                                ? "Save Changes"
+                                                : "Create Content"}
                                         </>
                                     )}
                                 </button>
@@ -988,24 +1156,27 @@ const NewsEvents = () => {
                 </div>
             )}
 
-            {/* DELETE CONFIRMATION */}
+            {/* Delete Confirmation */}
             {deleteTarget && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
-                    <div className="w-full max-w-md bg-(--bg-white) rounded border border-(--border) shadow-xl">
-                        <div className="px-5 py-4 border-b border-(--border) flex items-start justify-between gap-4">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+                    <div className="w-full max-w-md rounded border border-(--border) bg-(--bg-white) shadow-xl">
+                        <div className="flex items-start justify-between gap-4 border-b border-(--border) px-5 py-4">
                             <div>
                                 <h2 className="text-sm font-semibold text-(--primary)">
-                                    Delete News / Event
+                                    Delete Content
                                 </h2>
-                                <p className="text-xs text-(--secondary) mt-1">
+                                <p className="mt-1 text-xs text-(--secondary)">
                                     This action cannot be undone.
                                 </p>
                             </div>
 
                             <button
                                 type="button"
-                                onClick={() => !deleting && setDeleteTarget(null)}
+                                onClick={() =>
+                                    !deleting && setDeleteTarget(null)
+                                }
                                 disabled={deleting}
+                                aria-label="Close delete confirmation"
                                 className="text-(--text-muted) hover:text-(--primary)"
                             >
                                 <X size={18} />
@@ -1013,7 +1184,7 @@ const NewsEvents = () => {
                         </div>
 
                         <div className="p-5">
-                            <p className="text-xs text-(--secondary) leading-5">
+                            <p className="text-xs leading-5 text-(--secondary)">
                                 Are you sure you want to delete{" "}
                                 <span className="font-semibold text-(--primary)">
                                     {deleteTarget.title}
@@ -1021,12 +1192,12 @@ const NewsEvents = () => {
                                 ? It will be removed from the website.
                             </p>
 
-                            <div className="flex items-center justify-end gap-2 mt-5">
+                            <div className="mt-5 flex items-center justify-end gap-2">
                                 <button
                                     type="button"
                                     onClick={() => setDeleteTarget(null)}
                                     disabled={deleting}
-                                    className="h-9 px-4 rounded border border-(--border) text-xs font-semibold text-(--secondary) hover:bg-(--bg-soft) disabled:opacity-40"
+                                    className="h-9 rounded border border-(--border) px-4 text-xs font-semibold text-(--secondary) hover:bg-(--bg-soft) disabled:opacity-40"
                                 >
                                     Cancel
                                 </button>
@@ -1035,17 +1206,20 @@ const NewsEvents = () => {
                                     type="button"
                                     onClick={handleDelete}
                                     disabled={deleting}
-                                    className="h-9 px-4 rounded bg-(--danger) text-white text-xs font-semibold inline-flex items-center gap-2 hover:opacity-90 disabled:opacity-60"
+                                    className="inline-flex h-9 items-center gap-2 rounded bg-(--danger) px-4 text-xs font-semibold text-white hover:opacity-90 disabled:opacity-60"
                                 >
                                     {deleting ? (
                                         <>
-                                            <Loader2 size={14} className="animate-spin" />
+                                            <Loader2
+                                                size={14}
+                                                className="animate-spin"
+                                            />
                                             Deleting...
                                         </>
                                     ) : (
                                         <>
                                             <Trash2 size={14} />
-                                            Delete Item
+                                            Delete Content
                                         </>
                                     )}
                                 </button>
@@ -1055,241 +1229,228 @@ const NewsEvents = () => {
                 </div>
             )}
 
-
+            {/* Content Preview */}
             {previewItem && (
-  <div
-    className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3 sm:p-5"
-    onMouseDown={(event) => {
-      if (event.target === event.currentTarget) {
-        setPreviewItem(null);
-      }
-    }}
-  >
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="news-event-preview-title"
-      className="flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-xl border border-(--border) bg-(--bg-white) shadow-xl"
-    >
-      {/* Header */}
-      <div className="flex items-center justify-between gap-4 border-b border-(--border) px-4 py-4 sm:px-6">
-        <div className="min-w-0">
-          <p className="text-xs font-medium text-(--text-muted)">
-            Admin Preview
-          </p>
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3 sm:p-5"
+                    onMouseDown={(event) => {
+                        if (event.target === event.currentTarget) {
+                            setPreviewItem(null);
+                        }
+                    }}
+                >
+                    <div
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="news-event-preview-title"
+                        className="flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-xl border border-(--border) bg-(--bg-white) shadow-xl"
+                    >
+                        <div className="flex items-center justify-between gap-4 border-b border-(--border) px-4 py-4 sm:px-6">
+                            <div className="min-w-0">
+                                <p className="text-xs font-medium text-(--text-muted)">
+                                    Admin Preview
+                                </p>
 
-          <h2
-            id="news-event-preview-title"
-            className="mt-1 text-lg font-semibold text-(--primary)"
-          >
-            {previewItem.type === "event" ? "Event Preview" : "News Preview"}
-          </h2>
-        </div>
+                                <h2
+                                    id="news-event-preview-title"
+                                    className="mt-1 text-lg font-semibold text-(--primary)"
+                                >
+                                    {getTypeLabel(previewItem.type)} Preview
+                                </h2>
+                            </div>
 
-        <button
-          type="button"
-          onClick={() => setPreviewItem(null)}
-          aria-label="Close preview"
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-(--border) text-(--text-muted) transition hover:bg-(--bg-light)"
-        >
-          <X size={18} />
-        </button>
-      </div>
+                            <button
+                                type="button"
+                                onClick={() => setPreviewItem(null)}
+                                aria-label="Close preview"
+                                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-(--border) text-(--text-muted) transition hover:bg-(--bg-light)"
+                            >
+                                <X size={18} />
+                            </button>
+                        </div>
 
-      {/* Preview Content */}
-      <div className="flex-1 space-y-5 overflow-y-auto p-4 sm:p-6">
-        {/* Image */}
-        {previewItem.image && (
-          <div className="overflow-hidden rounded-lg border border-(--border)">
-            <img
-              src={previewItem.image}
-              alt={previewItem.title || "News or event cover"}
-              className="max-h-[360px] w-full object-cover"
-            />
-          </div>
-        )}
+                        <div className="flex-1 space-y-5 overflow-y-auto p-4 sm:p-6">
+                            {previewItem.image && (
+                                <div className="overflow-hidden rounded-lg border border-(--border)">
+                                    <img
+                                        src={previewItem.image}
+                                        alt={previewItem.title || "Content cover"}
+                                        className="max-h-[360px] w-full object-cover"
+                                    />
+                                </div>
+                            )}
 
-        {/* Status and type */}
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="rounded-full bg-(--bg-light) px-3 py-1 text-xs font-medium capitalize text-(--primary)">
-            {previewItem.type || "news"}
-          </span>
+                            <div className="flex flex-wrap items-center gap-2">
+                                <span className="rounded-full bg-(--bg-light) px-3 py-1 text-xs font-medium text-(--primary)">
+                                    {getTypeLabel(previewItem.type)}
+                                </span>
 
-          <span
-            className={`rounded-full px-3 py-1 text-xs font-medium ${
-              previewItem.isPublished
-                ? "bg-green-50 text-green-700"
-                : "bg-amber-50 text-amber-700"
-            }`}
-          >
-            {previewItem.isPublished ? "Published" : "Draft"}
-          </span>
+                                <StatusBadge
+                                    published={previewItem.isPublished}
+                                />
 
-          {previewItem.isFeatured && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 text-xs font-medium text-amber-700">
-              <Star size={12} />
-              Featured
-            </span>
-          )}
+                                <VisibilityBadge
+                                    visibility={previewItem.visibility}
+                                />
 
-          {previewItem.category && (
-            <span className="text-xs text-(--text-muted)">
-              {previewItem.category}
-            </span>
-          )}
-        </div>
+                                {previewItem.isFeatured && (
+                                    <span className="inline-flex items-center gap-1 rounded-full bg-(--warning-light) px-3 py-1 text-xs font-medium text-(--warning)">
+                                        <Star size={12} />
+                                        Featured
+                                    </span>
+                                )}
 
-        {/* Title */}
-        <div>
-          <h3 className="text-2xl font-bold leading-tight text-(--primary) sm:text-3xl">
-            {previewItem.title || "Untitled"}
-          </h3>
+                                {previewItem.category && (
+                                    <span className="text-xs text-(--text-muted)">
+                                        {previewItem.category}
+                                    </span>
+                                )}
+                            </div>
 
-          {previewItem.slug && (
-            <p className="mt-2 break-all text-xs text-(--text-muted)">
-              Slug: {previewItem.slug}
-            </p>
-          )}
-        </div>
+                            <div>
+                                <h3 className="break-words text-2xl font-bold leading-tight text-(--primary) sm:text-3xl">
+                                    {previewItem.title || "Untitled"}
+                                </h3>
 
-        {/* Event details */}
-        {previewItem.type === "event" && (
-          <div className="grid gap-3 rounded-lg border border-(--border) bg-(--bg-light) p-4 sm:grid-cols-2">
-            {previewItem.eventDate && (
-              <div className="flex items-start gap-3">
-                <CalendarDays
-                  size={18}
-                  className="mt-0.5 shrink-0 text-(--primary)"
-                />
+                                {previewItem.slug && (
+                                    <p className="mt-2 break-all text-xs text-(--text-muted)">
+                                        Slug: {previewItem.slug}
+                                    </p>
+                                )}
+                            </div>
 
-                <div>
-                  <p className="text-xs text-(--text-muted)">Event Date</p>
-                  <p className="mt-1 text-sm font-medium text-(--primary)">
-                    {new Date(previewItem.eventDate).toLocaleDateString(
-                      "en-NG",
-                      {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                        timeZone: "UTC",
-                      }
-                    )}
-                  </p>
+                            {previewItem.type === "event" && (
+                                <div className="grid gap-3 rounded-lg border border-(--border) bg-(--bg-light) p-4 sm:grid-cols-2">
+                                    {previewItem.eventDate && (
+                                        <div className="flex items-start gap-3">
+                                            <CalendarDays
+                                                size={18}
+                                                className="mt-0.5 shrink-0 text-(--primary)"
+                                            />
+                                            <div>
+                                                <p className="text-xs text-(--text-muted)">
+                                                    Event Date
+                                                </p>
+                                                <p className="mt-1 text-sm font-medium text-(--primary)">
+                                                    {formatDate(
+                                                        previewItem.eventDate
+                                                    )}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {(previewItem.startTime ||
+                                        previewItem.endTime) && (
+                                        <div className="flex items-start gap-3">
+                                            <CalendarDays
+                                                size={18}
+                                                className="mt-0.5 shrink-0 text-(--primary)"
+                                            />
+                                            <div>
+                                                <p className="text-xs text-(--text-muted)">
+                                                    Event Time
+                                                </p>
+                                                <p className="mt-1 text-sm font-medium text-(--primary)">
+                                                    {[
+                                                        previewItem.startTime,
+                                                        previewItem.endTime,
+                                                    ]
+                                                        .filter(Boolean)
+                                                        .join(" – ")}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {previewItem.location && (
+                                        <div className="flex items-start gap-3 sm:col-span-2">
+                                            <MapPin
+                                                size={18}
+                                                className="mt-0.5 shrink-0 text-(--primary)"
+                                            />
+                                            <div>
+                                                <p className="text-xs text-(--text-muted)">
+                                                    Location
+                                                </p>
+                                                <p className="mt-1 text-sm font-medium text-(--primary)">
+                                                    {previewItem.location}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
+                            {previewItem.excerpt && (
+                                <div>
+                                    <h4 className="mb-2 text-sm font-semibold text-(--primary)">
+                                        Summary
+                                    </h4>
+                                    <p className="whitespace-pre-wrap text-sm leading-7 text-(--text-muted)">
+                                        {previewItem.excerpt}
+                                    </p>
+                                </div>
+                            )}
+
+                            <div>
+                                <h4 className="mb-3 text-sm font-semibold text-(--primary)">
+                                    Full Content
+                                </h4>
+
+                                {previewItem.content ? (
+                                    <div className="break-words whitespace-pre-wrap text-sm leading-7 text-(--text-muted)">
+                                        {previewItem.content}
+                                    </div>
+                                ) : (
+                                    <p className="text-sm italic text-(--text-muted)">
+                                        No content has been added.
+                                    </p>
+                                )}
+                            </div>
+
+                            {previewItem.registrationUrl && (
+                                <div className="rounded-lg border border-(--border) p-4">
+                                    <p className="mb-2 text-xs font-medium text-(--text-muted)">
+                                        Registration Link
+                                    </p>
+                                    <a
+                                        href={previewItem.registrationUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="break-all text-sm font-medium text-(--primary) underline"
+                                    >
+                                        {previewItem.registrationUrl}
+                                    </a>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="flex flex-col-reverse gap-2 border-t border-(--border) px-4 py-4 sm:flex-row sm:justify-end sm:px-6">
+                            <button
+                                type="button"
+                                onClick={() => setPreviewItem(null)}
+                                className="h-10 rounded-lg border border-(--border) px-4 text-sm font-medium text-(--primary) transition hover:bg-(--bg-light)"
+                            >
+                                Close
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    const item = previewItem;
+                                    setPreviewItem(null);
+                                    openEditModal(item);
+                                }}
+                                className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-(--primary) px-4 text-sm font-medium text-white transition hover:opacity-90"
+                            >
+                                <Pencil size={15} />
+                                Edit Content
+                            </button>
+                        </div>
+                    </div>
                 </div>
-              </div>
             )}
-
-            {(previewItem.startTime || previewItem.endTime) && (
-              <div className="flex items-start gap-3">
-                <CalendarDays
-                  size={18}
-                  className="mt-0.5 shrink-0 text-(--primary)"
-                />
-
-                <div>
-                  <p className="text-xs text-(--text-muted)">Event Time</p>
-                  <p className="mt-1 text-sm font-medium text-(--primary)">
-                    {[previewItem.startTime, previewItem.endTime]
-                      .filter(Boolean)
-                      .join(" – ")}
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {previewItem.location && (
-              <div className="flex items-start gap-3 sm:col-span-2">
-                <MapPin
-                  size={18}
-                  className="mt-0.5 shrink-0 text-(--primary)"
-                />
-
-                <div>
-                  <p className="text-xs text-(--text-muted)">Location</p>
-                  <p className="mt-1 text-sm font-medium text-(--primary)">
-                    {previewItem.location}
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Excerpt */}
-        {previewItem.excerpt && (
-          <div>
-            <h4 className="mb-2 text-sm font-semibold text-(--primary)">
-              Summary
-            </h4>
-
-            <p className="whitespace-pre-wrap text-sm leading-7 text-(--text-muted)">
-              {previewItem.excerpt}
-            </p>
-          </div>
-        )}
-
-        {/* Full content */}
-        <div>
-          <h4 className="mb-3 text-sm font-semibold text-(--primary)">
-            Full Content
-          </h4>
-
-          {previewItem.content ? (
-            <div className="whitespace-pre-wrap break-words text-sm leading-7 text-(--text-muted)">
-              {previewItem.content}
-            </div>
-          ) : (
-            <p className="text-sm italic text-(--text-muted)">
-              No content has been added.
-            </p>
-          )}
-        </div>
-
-        {/* Registration URL */}
-        {previewItem.registrationUrl && (
-          <div className="rounded-lg border border-(--border) p-4">
-            <p className="mb-2 text-xs font-medium text-(--text-muted)">
-              Registration Link
-            </p>
-
-            <a
-              href={previewItem.registrationUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="break-all text-sm font-medium text-(--primary) underline"
-            >
-              {previewItem.registrationUrl}
-            </a>
-          </div>
-        )}
-      </div>
-
-      {/* Footer */}
-      <div className="flex flex-col-reverse gap-2 border-t border-(--border) px-4 py-4 sm:flex-row sm:justify-end sm:px-6">
-        <button
-          type="button"
-          onClick={() => setPreviewItem(null)}
-          className="h-10 rounded-lg border border-(--border) px-4 text-sm font-medium text-(--primary) transition hover:bg-(--bg-light)"
-        >
-          Close
-        </button>
-
-        <button
-          type="button"
-          onClick={() => {
-            const item = previewItem;
-            setPreviewItem(null);
-            openEditModal(item);
-          }}
-          className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-(--primary) px-4 text-sm font-medium text-white transition hover:opacity-90"
-        >
-          <Pencil size={15} />
-          Edit Content
-        </button>
-      </div>
-    </div>
-  </div>
-)}
         </div>
     );
 };

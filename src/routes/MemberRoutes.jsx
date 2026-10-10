@@ -20,6 +20,8 @@ import MemorialSubmission from "../pages/member/MemorialSubmission.jsx";
 import FinancialReports from "../pages/member/FinancialReports.jsx";
 import Calendar from "../pages/member/Calendar.jsx";
 import Jobs from "../pages/member/Jobs.jsx";
+import Articles from "../pages/member/Articles.jsx";
+import MemberArticleDetails from "../pages/member/MemberArticleDetails.jsx";
 const MemberRoutes = () => {
   return (
     <Routes>
@@ -58,6 +60,13 @@ const MemberRoutes = () => {
           <Route
             path="memorials/submit"
             element={<MemorialSubmission />}
+          />
+
+          <Route path="articles" element={<Articles />} />
+
+          <Route
+            path="articles/:slug"
+            element={<MemberArticleDetails />}
           />
           <Route path="calendar" element={<Calendar />} />
           <Route path="jobs" element={<Jobs />} />
