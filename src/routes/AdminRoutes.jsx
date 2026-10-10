@@ -13,6 +13,16 @@ import AdminChapter from "../pages/admin/AdminChapter.jsx";
 import FinancialReports from "../pages/admin/FinancialReports.jsx"; 
 import AuditLogs from "../pages/admin/AuditLogs.jsx";
 import NewsEvents from "../pages/admin/NewsEvents.jsx";
+import Jobs from "../pages/admin/Jobs.jsx";
+
+
+
+
+
+
+
+
+
 const AdminRoutes = () => {
   return (
     <Routes>
@@ -27,6 +37,10 @@ const AdminRoutes = () => {
           <Route path="chapters" element={<AdminChapter />} />
           <Route path="financial-reports" element={<FinancialReports />} />
           <Route path="news-events" element={<NewsEvents />} />
+         
+         
+         
+         <Route path="jobs" element={<Jobs />} />
           <Route path="audit-logs" element={<AuditLogs />} />
         </Route>
       </Route>

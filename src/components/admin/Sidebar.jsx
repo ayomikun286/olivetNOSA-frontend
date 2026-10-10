@@ -8,12 +8,12 @@ import {
   CalendarRange,
   MapPin,
   ChartNoAxesCombined,
-  Bell,
+  BriefcaseBusiness,
   Settings,
   LogOut,
   CalendarDays,
   ShieldCheck,
-    Newspaper,
+  Newspaper,
 } from "lucide-react";
 
 import { NavLink } from "react-router-dom";
@@ -33,21 +33,20 @@ const Sidebar = ({ setIsOpen }) => {
       border border-transparent
       font-medium text-[0.88rem]
       transition-all duration-300 ease-out
-      ${
-        isActive
-          ? `
+      ${isActive
+      ? `
             bg-white/10
             text-[var(--secondary)]
             border-[var(--secondary)]/20
             shadow-sm
           `
-          : `
+      : `
             text-white/90
             hover:text-[var(--secondary)]
             hover:bg-white/[0.06]
             hover:border-white/10
           `
-      }
+    }
     `;
 
   const iconClass =
@@ -164,13 +163,13 @@ const Sidebar = ({ setIsOpen }) => {
             </NavLink>
 
             <NavLink
-  to="/portal/admin/dashboard/news-events"
-  className={linkClass}
-  onClick={handleLinkClick}
->
-  <Newspaper className={iconClass} />
-  <span>News & Events</span>
-</NavLink>
+              to="/portal/admin/dashboard/news-events"
+              className={linkClass}
+              onClick={handleLinkClick}
+            >
+              <Newspaper className={iconClass} />
+              <span>News & Events</span>
+            </NavLink>
 
             <NavLink
               to="/portal/admin/dashboard/Calendar"
@@ -179,6 +178,15 @@ const Sidebar = ({ setIsOpen }) => {
             >
               <CalendarDays className={iconClass} />
               <span>Calendar</span>
+            </NavLink>
+
+            <NavLink
+              to="/portal/admin/dashboard/jobs"
+              className={linkClass}
+              onClick={handleLinkClick}
+            >
+              <BriefcaseBusiness className={iconClass} />
+              <span>Jobs & Vacancies</span>
             </NavLink>
 
           </div>
@@ -219,17 +227,17 @@ const Sidebar = ({ setIsOpen }) => {
         {/* ================= SYSTEM ================= */}
         <div>
           <p className={sectionTitle}>System</p>
-          
+
 
           <div className="space-y-1">
             <NavLink
-  to="/portal/admin/dashboard/audit-logs"
-  className={linkClass}
-  onClick={handleLinkClick}
->
-  <ShieldCheck className={iconClass} />
-  <span>Audit Logs</span>
-</NavLink>
+              to="/portal/admin/dashboard/audit-logs"
+              className={linkClass}
+              onClick={handleLinkClick}
+            >
+              <ShieldCheck className={iconClass} />
+              <span>Audit Logs</span>
+            </NavLink>
 
 
 

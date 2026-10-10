@@ -372,3 +372,64 @@ PUT    /api/admin/financial-reports/:id
 
 POST   /api/admin/financial-reports/:id/publish
 POST   /api/admin/financial-reports/:id/unpublish
+
+
+
+
+
+
+1. Membership and registration
+[x] Open registration for eligible alumni, regardless of payment status
+[x] Email verification and administrative approval
+[x] Permanent Alumni ID independent of dues payment
+[x] Membership and approval notifications
+[x] Three designated registration-notification recipients and approval permissions agreed with leadership
+[ ] Year-set leaders verify applicants without automatically receiving approval rights
+[x] Monthly registration counter
+
+2. Payments and financial reporting
+[x] Payment processing and payment-status integration
+[x] Member obligations, payment history and financial reporting
+[x] Approved financial reports only for eligible financial members
+[x] Confirm financial membership and arrears eligibility rules
+[x] Quarterly reporting and report publication/approval workflow
+[ ] Bulk email for approved financial reports
+
+3. Online elections
+[ ] Online voting feature
+[ ] Electoral committee and election administration
+[ ] Voting eligibility rules linked to financial standing and Alumni ID
+[ ] Compare voting methods and agree on the final design
+
+4. Year-set and chapter leadership
+[x] Members view their individual obligations
+[x] Year-set leaders view year-set obligations and collective contributions
+[x] Leaders view members’ payment performance
+[ ] Define officer permissions and access transfer when leaders change
+
+5. Security and privacy
+[x] Audit logging for sensitive administrative actions
+[x] Strong production JWT/session secrets
+[ ] Verify OTP expiry, failed-attempt limits, lockout and account recovery
+[x] Verify five-minute inactivity timeout and the other opening time restriction
+[ ] Agree on data retention, deletion and periodic record audits
+[x] Verify profile updates and chapter changes preserve Alumni ID
+
+6. Jobs, articles and mentoring
+[x] Jobs and Opportunities page with backend access restrictions
+[x] Confirm job application flow and financial-member access
+[ ] Public versus member-only article access rules
+[ ] Article submissions, mentoring and expert contributions
+[ ] Vacancy submission and update schedule
+
+7. Member support and engagement
+[ ] Member enquiry/support service
+[ ] Forgotten Alumni ID and membership-status assistance
+[ ] Confirm response process and proposed 72-hour expectation
+[ ] Review remaining portal engagement requirements
+
+8. Final review and release
+[ ] Complete requirements and permissions review
+[ ] Production testing across desktop, tablet and mobile
+[ ] Resolve outstanding branding and naming inconsistencies
+[ ] Stakeholder review, feedback and delivery timetable

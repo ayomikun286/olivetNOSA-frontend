@@ -19,6 +19,7 @@ import MemberNewsEventDetails from "../pages/member/MemberNewsEventDetails.jsx";
 import MemorialSubmission from "../pages/member/MemorialSubmission.jsx";
 import FinancialReports from "../pages/member/FinancialReports.jsx";
 import Calendar from "../pages/member/Calendar.jsx";
+import Jobs from "../pages/member/Jobs.jsx";
 const MemberRoutes = () => {
   return (
     <Routes>
@@ -59,7 +60,7 @@ const MemberRoutes = () => {
             element={<MemorialSubmission />}
           />
           <Route path="calendar" element={<Calendar />} />
-
+          <Route path="jobs" element={<Jobs />} />
         </Route>
 
       </Route>

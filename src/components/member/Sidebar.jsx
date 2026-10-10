@@ -15,6 +15,7 @@ import {
   HeartHandshake,
   NotebookTabs,
   FileText,
+   BriefcaseBusiness
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
@@ -26,6 +27,9 @@ const handleLinkClick = () => {
 const Sidebar = ({ setIsOpen }) => {
   const { user, logout } = useAuth();
 
+const handleLinkClick = () => {
+  setIsOpen(false);
+};
   const isYearSetLeader =
     user?.yearSet?.leader?.toString() === user?.id?.toString();
 
@@ -159,6 +163,15 @@ const Sidebar = ({ setIsOpen }) => {
               <ContactRound className={iconClass} />
               <span>Directory</span>
             </NavLink>
+
+            <NavLink
+  to="/portal/member/dashboard/jobs"
+  className={linkClass}
+  onClick={handleLinkClick}
+>
+  <BriefcaseBusiness className={iconClass} />
+  <span>Jobs & Opportunities</span>
+</NavLink>
 
             <NavLink
               to="/portal/member/dashboard/memorials"
