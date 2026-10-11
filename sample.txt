@@ -395,6 +395,7 @@ POST   /api/admin/financial-reports/:id/unpublish
 [x] Quarterly reporting and report publication/approval workflow
 [ ] Bulk email for approved financial reports
 
+
 3. Online elections
 [ ] Online voting feature
 [ ] Electoral committee and election administration
@@ -405,7 +406,7 @@ POST   /api/admin/financial-reports/:id/unpublish
 [x] Members view their individual obligations
 [x] Year-set leaders view year-set obligations and collective contributions
 [x] Leaders view members’ payment performance
-[ ] Define officer permissions and access transfer when leaders change
+[x] Define officer permissions and access transfer when leaders change
 
 5. Security and privacy
 [x] Audit logging for sensitive administrative actions
@@ -418,9 +419,9 @@ POST   /api/admin/financial-reports/:id/unpublish
 6. Jobs, articles and mentoring
 [x] Jobs and Opportunities page with backend access restrictions
 [x] Confirm job application flow and financial-member access
-[ ] Public versus member-only article access rules
+[x] Public versus member-only article access rules
 [ ] Article submissions, mentoring and expert contributions
-[ ] Vacancy submission and update schedule
+[x] Vacancy submission and update schedule
 
 7. Member support and engagement
 [ ] Member enquiry/support service
