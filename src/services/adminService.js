@@ -1018,3 +1018,146 @@ export const getAdminAuditLogs = async ({
 
   return data;
 };
+
+
+
+
+
+
+// ========================================
+// SUPPORT TICKETS
+// ========================================
+
+export const getAdminSupportTickets = async ({
+  page = 1,
+  limit = 20,
+  search = "",
+  status = "",
+  category = "",
+} = {}) => {
+  const params = new URLSearchParams({
+    page: String(page),
+    limit: String(limit),
+  });
+
+  if (search.trim()) params.append("search", search.trim());
+  if (status) params.append("status", status);
+  if (category) params.append("category", category);
+
+  const response = await fetch(
+    `${API}/api/support/admin?${params.toString()}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to load support tickets."
+    );
+  }
+
+  return data;
+};
+
+export const getAdminSupportTicketById = async (ticketId) => {
+  if (!ticketId) {
+    throw new Error("Support ticket ID is required.");
+  }
+
+  const response = await fetch(
+    `${API}/api/support/${ticketId}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to load support ticket."
+    );
+  }
+
+  return data;
+};
+
+export const replyToSupportTicket = async (
+  ticketId,
+  message
+) => {
+  if (!ticketId) {
+    throw new Error("Support ticket ID is required.");
+  }
+
+  if (!message?.trim()) {
+    throw new Error("Reply message is required.");
+  }
+
+  const response = await fetch(
+    `${API}/api/support/${ticketId}/replies`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        message: message.trim(),
+      }),
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to send reply."
+    );
+  }
+
+  return data;
+};
+
+export const updateSupportTicketStatus = async (
+  ticketId,
+  status,
+  assignedTo = ""
+) => {
+  if (!ticketId) {
+    throw new Error("Support ticket ID is required.");
+  }
+
+  const payload = { status };
+
+  if (assignedTo) {
+    payload.assignedTo = assignedTo;
+  }
+
+  const response = await fetch(
+    `${API}/api/support/${ticketId}/status`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(payload),
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to update support ticket."
+    );
+  }
+
+  return data;
+};

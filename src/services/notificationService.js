@@ -93,3 +93,36 @@ export const markAllNotificationsAsRead = async () => {
 
     return data;
 };
+
+
+
+
+export const getAllMyNotifications = async ({
+  status = "all",
+  page = 1,
+  limit = 10,
+} = {}) => {
+  const params = new URLSearchParams({
+    status,
+    page: String(page),
+    limit: String(limit),
+  });
+
+  const response = await fetch(
+    `${API}/api/notifications/all?${params}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to load all notifications."
+    );
+  }
+
+  return data;
+};

@@ -11,8 +11,10 @@ import {
   BriefcaseBusiness,
   Settings,
   LogOut,
+  Bell,
   CalendarDays,
   ShieldCheck,
+  MessageSquare,
   Newspaper,
 } from "lucide-react";
 
@@ -209,7 +211,7 @@ const Sidebar = ({ setIsOpen }) => {
         </div>
 
         {/* ================= COMMUNICATION ================= */}
-        {/* <div>
+        <div>
           <p className={sectionTitle}>Communication</p>
 
           <div className="space-y-1">
@@ -222,7 +224,7 @@ const Sidebar = ({ setIsOpen }) => {
               <span>Notifications</span>
             </NavLink>
           </div>
-        </div> */}
+        </div>
 
         {/* ================= SYSTEM ================= */}
         <div>
@@ -240,6 +242,15 @@ const Sidebar = ({ setIsOpen }) => {
             </NavLink>
 
 
+
+<NavLink
+  to="/portal/admin/dashboard/support"
+  className={linkClass}
+  onClick={handleLinkClick}
+>
+  <MessageSquare className={iconClass} />
+  <span>Support</span>
+</NavLink>
 
             <NavLink
               to="/portal/admin/dashboard/settings"
