@@ -176,46 +176,73 @@ const AuditLogs = () => {
         if (!canGoNext || loading || refreshing) return;
         loadLogs(currentPage + 1);
     };
+const renderDetails = (details) => {
+    if (
+        !details ||
+        typeof details !== "object" ||
+        Object.keys(details).length === 0
+    ) {
+        return (
+            <p className="text-xs text-(--text-muted)">
+                No additional details recorded.
+            </p>
+        );
+    }
 
-    const renderDetails = (details) => {
-        if (
-            !details ||
-            typeof details !== "object" ||
-            Object.keys(details).length === 0
-        ) {
-            return (
-                <p className="text-xs text-(--text-muted)">
-                    No additional details recorded.
-                </p>
-            );
+    const safeDetails = sanitizeDetails(details);
+
+    const renderValue = (value) => {
+        if (value === null || value === undefined || value === "") {
+            return "—";
         }
 
-        const safeDetails = sanitizeDetails(details);
+        if (typeof value === "boolean") {
+            return value ? "Yes" : "No";
+        }
 
-        return (
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
-                {Object.entries(safeDetails).map(([key, value]) => (
-                    <div
-                        key={key}
-                        className="min-w-0 rounded border border-(--border) bg-(--bg-white) p-3"
-                    >
-                        <p className="text-[10px] font-semibold uppercase tracking-wide text-(--text-muted)">
-                            {formatFieldName(key)}
-                        </p>
+        if (Array.isArray(value)) {
+            if (value.length === 0) return "None";
 
-                        <p className="mt-1 text-xs text-(--primary) break-words whitespace-pre-wrap">
-                            {value === null || value === undefined
-                                ? "—"
-                                : typeof value === "object"
-                                    ? JSON.stringify(value, null, 2)
-                                    : String(value)}
-                        </p>
-                    </div>
-                ))}
-            </div>
-        );
+            return value
+                .map((item) =>
+                    typeof item === "object" && item !== null
+                        ? JSON.stringify(item, null, 2)
+                        : String(renderValue(item))
+                )
+                .join(", ");
+        }
+
+        if (typeof value === "object") {
+            return Object.entries(value)
+                .map(
+                    ([key, item]) =>
+                        `${formatFieldName(key)}: ${renderValue(item)}`
+                )
+                .join("\n");
+        }
+
+        return String(value);
     };
 
+    return (
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
+            {Object.entries(safeDetails).map(([key, value]) => (
+                <div
+                    key={key}
+                    className="min-w-0 rounded border border-(--border) bg-(--bg-white) p-3"
+                >
+                    <p className="text-[10px] font-semibold uppercase tracking-wide text-(--text-muted)">
+                        {formatFieldName(key)}
+                    </p>
+
+                    <p className="mt-1 text-xs text-(--primary) break-words whitespace-pre-wrap">
+                        {renderValue(value)}
+                    </p>
+                </div>
+            ))}
+        </div>
+    );
+};
     return (
         <div className="p-4">
             <div className="space-y-5">

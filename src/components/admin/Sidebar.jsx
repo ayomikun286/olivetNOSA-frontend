@@ -16,6 +16,8 @@ import {
   ShieldCheck,
   MessageSquare,
   Newspaper,
+  Images,
+  UserPlus,
 } from "lucide-react";
 
 import { NavLink } from "react-router-dom";
@@ -174,6 +176,15 @@ const Sidebar = ({ setIsOpen }) => {
             </NavLink>
 
             <NavLink
+              to="/portal/admin/dashboard/gallery"
+              className={linkClass}
+              onClick={handleLinkClick}
+            >
+              <Images className={iconClass} />
+              <span>Gallery</span>
+            </NavLink>
+
+            <NavLink
               to="/portal/admin/dashboard/Calendar"
               className={linkClass}
               onClick={handleLinkClick}
@@ -232,6 +243,16 @@ const Sidebar = ({ setIsOpen }) => {
 
 
           <div className="space-y-1">
+
+            <NavLink
+              to="/portal/admin/dashboard/team"
+              className={linkClass}
+              onClick={handleLinkClick}
+            >
+              <UserPlus className={iconClass} />
+              <span>Team Management</span>
+            </NavLink>
+
             <NavLink
               to="/portal/admin/dashboard/audit-logs"
               className={linkClass}
@@ -243,14 +264,14 @@ const Sidebar = ({ setIsOpen }) => {
 
 
 
-<NavLink
-  to="/portal/admin/dashboard/support"
-  className={linkClass}
-  onClick={handleLinkClick}
->
-  <MessageSquare className={iconClass} />
-  <span>Support</span>
-</NavLink>
+            <NavLink
+              to="/portal/admin/dashboard/support"
+              className={linkClass}
+              onClick={handleLinkClick}
+            >
+              <MessageSquare className={iconClass} />
+              <span>Support</span>
+            </NavLink>
 
             <NavLink
               to="/portal/admin/dashboard/settings"

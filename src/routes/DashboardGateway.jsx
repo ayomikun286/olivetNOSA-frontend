@@ -26,7 +26,7 @@ const DashboardGateway = () => {
     return <Navigate to="/portal/login" replace />;
   }
 
-  if (user.role === "admin" || user.role === "superAdmin") {
+  if (user.role === "admin" || user.role === "superAdmin" || user.role === "treasurer"|| user.role === "secretary") {
     return <Navigate to="/portal/admin/dashboard" replace />;
   }
 

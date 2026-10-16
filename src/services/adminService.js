@@ -1161,3 +1161,45 @@ export const updateSupportTicketStatus = async (
 
   return data;
 };
+
+
+
+
+
+export const assignTeamRole = async ({ email, role }) => {
+    const response = await fetch(`${API}/api/admin/team`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ email, role }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.message || "Failed to assign team role.");
+    }
+
+    return data;
+};
+
+
+
+export const getTeamMembers = async () => {
+  const response = await fetch(`${API}/api/admin/team`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to fetch team members."
+    );
+  }
+
+  return data.teamMembers;
+};

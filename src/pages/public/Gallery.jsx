@@ -16,64 +16,67 @@ import {
   ChevronRight,
 } from "lucide-react";
 
-const galleryImages = [
-  {
-    id: 1,
-    image: "/images/olivetNOSA-2.jpg",
-    title: "The Olivetian Journey",
-    category: "Olivet",
-    size: "large",
-  },
-  {
-    id: 2,
-    image: "/images/olivetNOSA-6.jpg",
-    title: "Olivetians Together",
-    category: "Community",
-    size: "normal",
-  },
-  {
-    id: 3,
-    image: "/images/olivetNOSA-am.jpg",
-    title: "Where It Began",
-    category: "Heritage",
-    size: "normal",
-  },
-  {
-    id: 4,
-    image: "/images/olivetsNOSA__ -olaojo.webp",
-    title: "Leadership & Service",
-    category: "People",
-    size: "normal",
-  },
-  {
-    id: 5,
-    image: "/images/olivetNOSA-student.jpg",
-    title: "The Next Generation",
-    category: "Students",
-    size: "tall",
-  },
-  {
-    id: 6,
-    image: "/images/olivetNOSA-building.jpg",
-    title: "Olivet Heights",
-    category: "Campus",
-    size: "normal",
-  },
-  {
-    id: 7,
-    image: "/images/olivetNOSA.jpg",
-    title: "A Living Legacy",
-    category: "Heritage",
-    size: "large",
-  },
-  {
-    id: 8,
-    image: "/images/olivet-school.jpg",
-    title: "Olivet Baptist High School",
-    category: "Campus",
-    size: "normal",
-  },
-];
+// const galleryImages = [
+  
+//   {
+//     id: 1,
+//     image: "/images/olivetNOSA-2.jpg",
+//     title: "The Olivetian Journey",
+//     category: "Olivet",
+//     size: "large",
+//   },
+
+//   {
+//     id: 2,
+//     image: "/images/olivetNOSA-6.jpg",
+//     title: "Olivetians Together",
+//     category: "Community",
+//     size: "normal",
+//   },
+
+//   {
+//     id: 3,
+//     image: "/images/olivetNOSA-am.jpg",
+//     title: "Where It Began",
+//     category: "Heritage",
+//     size: "normal",
+//   },
+//   {
+//     id: 4,
+//     image: "/images/olivetsNOSA__ -olaojo.webp",
+//     title: "Leadership & Service",
+//     category: "People",
+//     size: "normal",
+//   },
+//   {
+//     id: 5,
+//     image: "/images/olivetNOSA-student.jpg",
+//     title: "The Next Generation",
+//     category: "Students",
+//     size: "tall",
+//   },
+//   {
+//     id: 6,
+//     image: "/images/olivetNOSA-building.jpg",
+//     title: "Olivet Heights",
+//     category: "Campus",
+//     size: "normal",
+//   },
+//   {
+//     id: 7,
+//     image: "/images/olivetNOSA.jpg",
+//     title: "A Living Legacy",
+//     category: "Heritage",
+//     size: "large",
+//   },
+//   {
+//     id: 8,
+//     image: "/images/olivet-school.jpg",
+//     title: "Olivet Baptist High School",
+//     category: "Campus",
+//     size: "normal",
+//   },
+// ];
 
 const categories = [
   "All",
@@ -86,18 +89,55 @@ const categories = [
 ];
 
 export default function Gallery() {
-  const [activeCategory, setActiveCategory] = useState("All");
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [galleryImages, setGalleryImages] = useState([]);
+const [activeCategory, setActiveCategory] = useState("All");
+const [selectedImage, setSelectedImage] = useState(null);
+const [loading, setLoading] = useState(true);
+const [error, setError] = useState("");
 
-  useEffect(() => {
-    AOS.init({
-      duration: 800,
-      once: true,
-      offset: 80,
-    });
+useEffect(() => {
+  AOS.init({
+    duration: 800,
+    once: true,
+    offset: 80,
+  });
 
-    window.scrollTo(0, 0);
-  }, []);
+  window.scrollTo(0, 0);
+}, []);
+
+useEffect(() => {
+  const fetchGallery = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const API_BASE_URL =
+        import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
+      const response = await fetch(`${API_BASE_URL}/api/gallery`);
+
+      if (!response.ok) {
+        throw new Error("Failed to load gallery images.");
+      }
+
+      const result = await response.json();
+
+      console.log("Gallery fetch result:", result);
+      if (!result.success) {
+        throw new Error(result.message || "Failed to load gallery.");
+      }
+
+      setGalleryImages(result.data || []);
+    } catch (err) {
+      console.error("Gallery fetch error:", err);
+      setError("We couldn't load the gallery. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchGallery();
+}, []);
 
   const filteredImages =
     activeCategory === "All"
@@ -108,7 +148,7 @@ export default function Gallery() {
 
   const currentIndex = selectedImage
     ? filteredImages.findIndex(
-        (image) => image.id === selectedImage.id
+        (image) => image._id === selectedImage._id
       )
     : -1;
 
@@ -152,6 +192,7 @@ export default function Gallery() {
         <img
           src="/images/olivetNOSA-2.jpg"
           alt="Olivetians"
+          loading="lazy"
           className="absolute inset-0 h-full w-full object-cover"
         />
 
@@ -330,7 +371,7 @@ export default function Gallery() {
 
               return (
                 <button
-                  key={item.id}
+                  key={item._id}
                   type="button"
                   onClick={() => setSelectedImage(item)}
                   className={`group relative overflow-hidden bg-[var(--primary-dark)] text-left ${sizeClass}`}
@@ -340,6 +381,7 @@ export default function Gallery() {
                   <img
                     src={item.image}
                     alt={item.title}
+                    loading="lazy"
                     className="absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-[1.04]"
                   />
 
@@ -382,6 +424,7 @@ export default function Gallery() {
               <img
                 src="/images/olivetNOSA-am.jpg"
                 alt="Olivet heritage"
+                loading="lazy"
                 className="absolute inset-0 h-full w-full object-cover transition duration-700 hover:scale-[1.02]"
               />
 
@@ -507,6 +550,7 @@ export default function Gallery() {
             <img
               src={selectedImage.image}
               alt={selectedImage.title}
+              loading="lazy"
               className="max-h-[78vh] max-w-full object-contain shadow-2xl"
             />
 
