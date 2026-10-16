@@ -1203,3 +1203,24 @@ export const getTeamMembers = async () => {
 
   return data.teamMembers;
 };
+
+
+export const suspendTeamRole = async (memberId) => {
+    const response = await fetch(
+        `${API}/api/admin/team/${memberId}/suspend`,
+        {
+            method: "PATCH",
+            credentials: "include",
+        }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(
+            data.message || "Failed to suspend team role."
+        );
+    }
+
+    return data;
+};

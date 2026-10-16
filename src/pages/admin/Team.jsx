@@ -10,11 +10,13 @@ import {
     AlertCircle,
     LoaderCircle,
     RefreshCw,
+    UserRoundX,
 } from "lucide-react";
 
 import {
     assignTeamRole,
     getTeamMembers,
+    suspendTeamRole,
 } from "../../services/adminService.js";
 
 const TEAM_ROLES = [
@@ -44,11 +46,13 @@ const Team = () => {
     const [teamMembers, setTeamMembers] = useState([]);
     const [membersLoading, setMembersLoading] = useState(true);
     const [membersError, setMembersError] = useState("");
+    const [suspendingId, setSuspendingId] = useState(null);
 
     const selectedRole = TEAM_ROLES.find(
         (item) => item.value === role
     );
 
+    // Load assigned team members.
     const loadTeamMembers = useCallback(async () => {
         setMembersLoading(true);
         setMembersError("");
@@ -72,6 +76,7 @@ const Team = () => {
         loadTeamMembers();
     }, [loadTeamMembers]);
 
+    // Assign a team role.
     const handleSubmit = async (event) => {
         event.preventDefault();
         setFeedback(null);
@@ -113,6 +118,50 @@ const Team = () => {
             });
         } finally {
             setLoading(false);
+        }
+    };
+
+    // Suspend a member's team role without suspending their account.
+    const handleSuspend = async (member) => {
+        if (loading || suspendingId) return;
+
+        const fullName = [
+            member.firstName,
+            member.lastName,
+        ]
+            .filter(Boolean)
+            .join(" ") || member.email;
+
+        const confirmed = window.confirm(
+            `Suspend ${fullName}'s ${member.role} role?\n\n` +
+            "Their account, alumni ID, payment history and other " +
+            "membership records will remain intact."
+        );
+
+        if (!confirmed) return;
+
+        setSuspendingId(member._id);
+        setFeedback(null);
+
+        try {
+            const result = await suspendTeamRole(member._id);
+
+            setFeedback({
+                type: "success",
+                message:
+                    result.message ||
+                    "Team role suspended successfully.",
+            });
+
+            await loadTeamMembers();
+        } catch (error) {
+            setFeedback({
+                type: "error",
+                message:
+                    error.message || "Failed to suspend team role.",
+            });
+        } finally {
+            setSuspendingId(null);
         }
     };
 
@@ -163,8 +212,8 @@ const Team = () => {
                         <p className="mt-1 max-w-2xl text-xs leading-5 text-(--secondary)">
                             Enter the email address of an existing
                             member and select the responsibility to
-                            assign. The member must already have
-                            an account.
+                            assign. The member must already have an
+                            account.
                         </p>
                     </div>
                 </div>
@@ -186,7 +235,6 @@ const Team = () => {
                     onSubmit={handleSubmit}
                     className="space-y-5 p-5"
                 >
-                    {/* Email */}
                     <div>
                         <label
                             htmlFor="team-email"
@@ -211,7 +259,7 @@ const Team = () => {
                                     setEmail(event.target.value)
                                 }
                                 placeholder="member@example.com"
-                                disabled={loading}
+                                disabled={loading || suspendingId !== null}
                                 className="h-11 w-full rounded border border-(--border) bg-(--bg-white) pl-10 pr-3 text-sm text-(--primary) outline-none transition-colors focus:border-(--primary) disabled:opacity-60"
                             />
                         </div>
@@ -222,7 +270,6 @@ const Team = () => {
                         </p>
                     </div>
 
-                    {/* Role */}
                     <div>
                         <label
                             htmlFor="team-role"
@@ -238,7 +285,7 @@ const Team = () => {
                                 onChange={(event) =>
                                     setRole(event.target.value)
                                 }
-                                disabled={loading}
+                                disabled={loading || suspendingId !== null}
                                 className="h-11 w-full appearance-none rounded border border-(--border) bg-(--bg-white) px-3 pr-10 text-sm text-(--primary) outline-none focus:border-(--primary) disabled:opacity-60"
                             >
                                 {TEAM_ROLES.map((item) => (
@@ -277,7 +324,7 @@ const Team = () => {
                         )}
                     </div>
 
-                    {/* Assignment feedback */}
+                    {/* Shared feedback */}
                     {feedback && (
                         <div
                             role="status"
@@ -312,11 +359,10 @@ const Team = () => {
                         </div>
                     )}
 
-                    {/* Form actions */}
                     <div className="flex flex-col-reverse gap-3 border-t border-(--border) pt-5 sm:flex-row sm:justify-end">
                         <button
                             type="button"
-                            disabled={loading}
+                            disabled={loading || suspendingId !== null}
                             onClick={() => {
                                 setEmail("");
                                 setRole("secretary");
@@ -329,7 +375,7 @@ const Team = () => {
 
                         <button
                             type="submit"
-                            disabled={loading}
+                            disabled={loading || suspendingId !== null}
                             className="inline-flex h-10 items-center justify-center gap-2 rounded bg-(--primary) px-5 text-xs font-semibold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
                         >
                             {loading ? (
@@ -360,14 +406,14 @@ const Team = () => {
                         </h2>
 
                         <p className="mt-1 text-xs text-(--secondary)">
-                            View members with administrative responsibilities.
+                            View and manage members with administrative responsibilities.
                         </p>
                     </div>
 
                     <button
                         type="button"
                         onClick={loadTeamMembers}
-                        disabled={membersLoading}
+                        disabled={membersLoading || suspendingId !== null}
                         className="inline-flex h-9 items-center justify-center gap-2 self-start rounded border border-(--border) px-3 text-xs font-medium text-(--primary) hover:bg-(--bg-soft) disabled:opacity-50"
                     >
                         <RefreshCw
@@ -457,7 +503,7 @@ const Team = () => {
                 {/* Members table */}
                 {teamMembers.length > 0 && (
                     <div className="overflow-x-auto">
-                        <table className="w-full min-w-[650px] text-left">
+                        <table className="w-full min-w-[800px] text-left">
                             <thead className="bg-(--bg-soft)">
                                 <tr className="border-b border-(--border)">
                                     <th className="px-5 py-3 text-[11px] font-semibold uppercase tracking-wide text-(--secondary)">
@@ -470,6 +516,10 @@ const Team = () => {
 
                                     <th className="px-5 py-3 text-[11px] font-semibold uppercase tracking-wide text-(--secondary)">
                                         Account status
+                                    </th>
+
+                                    <th className="px-5 py-3 text-[11px] font-semibold uppercase tracking-wide text-(--secondary)">
+                                        Actions
                                     </th>
                                 </tr>
                             </thead>
@@ -489,7 +539,10 @@ const Team = () => {
                                         member.lastName,
                                     ]
                                         .filter(Boolean)
-                                        .join(" ");
+                                        .join(" ") || "Unnamed member";
+
+                                    const isSuspending =
+                                        suspendingId === member._id;
 
                                     return (
                                         <tr
@@ -498,8 +551,7 @@ const Team = () => {
                                         >
                                             <td className="px-5 py-4">
                                                 <p className="text-sm font-medium text-(--primary)">
-                                                    {fullName ||
-                                                        "Unnamed member"}
+                                                    {fullName}
                                                 </p>
 
                                                 <p className="mt-1 text-xs text-(--secondary)">
@@ -535,6 +587,37 @@ const Team = () => {
                                                         "Unknown"}
                                                 </span>
                                             </td>
+
+                                            <td className="px-5 py-4">
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        handleSuspend(member)
+                                                    }
+                                                    disabled={
+                                                        loading ||
+                                                        suspendingId !== null
+                                                    }
+                                                    className="inline-flex h-8 items-center justify-center gap-2 whitespace-nowrap rounded border border-(--danger) px-3 text-xs font-medium text-(--danger) transition-colors hover:bg-(--danger-light) disabled:cursor-not-allowed disabled:opacity-50"
+                                                >
+                                                    {isSuspending ? (
+                                                        <>
+                                                            <LoaderCircle
+                                                                size={13}
+                                                                className="animate-spin"
+                                                            />
+                                                            Suspending...
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <UserRoundX
+                                                                size={13}
+                                                            />
+                                                            Suspend role
+                                                        </>
+                                                    )}
+                                                </button>
+                                            </td>
                                         </tr>
                                     );
                                 })}
@@ -555,9 +638,9 @@ const Team = () => {
             </div>
 
             <p className="max-w-2xl text-xs leading-5 text-(--text-muted)">
-                Assign roles carefully. A role change affects the
-                permissions available to the member throughout the
-                admin portal.
+                Assign roles carefully. Suspending a role removes
+                team permissions without suspending the member's
+                alumni account.
             </p>
         </div>
     );
