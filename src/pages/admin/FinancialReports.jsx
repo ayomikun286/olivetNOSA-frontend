@@ -259,7 +259,7 @@ const FinancialReports = () => {
         if (!selectedReport) return;
 
         try {
-            await exportFinancialReportToExcel(
+            await exportAdminFinancialReportToExcel(
                 selectedReport
             );
 
@@ -288,7 +288,7 @@ const FinancialReports = () => {
         if (!selectedReport) return;
 
         try {
-            await exportFinancialReportToPDF(
+            await exportAdminFinancialReportToPDF(
                 selectedReport
             );
 

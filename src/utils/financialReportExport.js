@@ -402,7 +402,7 @@ export const exportAdminFinancialReportToExcel = async (
   ------------------------------------------------------- */
 
   const filename =
-    `ONW-GOSA-Financial-Report-${data.year}-${String(
+    `GOSA-Financial-Report-${data.year}-${String(
       data.month
     ).padStart(2, "0")}.xlsx`;
 

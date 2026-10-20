@@ -120,14 +120,14 @@ const Footer = () => {
                 </Link>
               </li>
 
-              <li>
+              {/* <li>
                 <Link
                   to="/gallery"
                   className="text-sm text-white/55 transition hover:text-[var(--secondary)]"
                 >
                   Gallery
                 </Link>
-              </li>
+              </li> */}
 
             </ul>
           </div>
@@ -184,7 +184,7 @@ const Footer = () => {
 
               <li>
                 <Link
-                  to="/Signup"
+                  to="/portal/Signup"
                   className="text-sm text-white/55 transition hover:text-[var(--secondary)]"
                 >
                   Join GOSA
@@ -213,7 +213,7 @@ const Footer = () => {
 
             {/* CTA */}
             <Link
-              to="/Signup"
+              to="/portal/Signup"
               className="group mt-6 inline-flex items-center gap-3  bg-[var(--secondary)] px-5 py-3 text-sm font-semibold text-[var(--primary-dark)] transition hover:-translate-y-0.5 hover:shadow-lg"
             >
               Join the Community
@@ -275,14 +275,14 @@ const Footer = () => {
           <div className="flex flex-wrap items-center gap-5">
 
             <Link
-              to="/privacy"
+              to="/privacy-policy"
               className="transition hover:text-white/70"
             >
               Privacy
             </Link>
 
             <Link
-              to="/terms"
+              to="/terms-and-conditions"
               className="transition hover:text-white/70"
             >
               Terms

@@ -160,7 +160,7 @@ const Navbar = () => {
 
           <div className="flex items-center gap-2 px-3 py-2 text-[14px] font-medium text-[var(--primary)]/50">
             <Mail size={15} strokeWidth={1.8} />
-            <p>Hello@olivetnosa.org</p>
+            <p>customerservice@olivetbhsnosa.org</p>
           </div>
 
           <div className="flex items-center gap-2 px-3 py-2 text-[14px] font-medium text-[var(--primary)]/50">

@@ -1038,17 +1038,20 @@ const Signup = () => {
 
                   <span className="text-xs leading-5 text-slate-500">
 
-                    I agree to the OlivetNOSA{" "}
+                    I agree to the OlivetGOSA{" "}
 
-                    <span className="font-medium text-[var(--primary)]">
+                    <a href="">
+                      
+                      <Link  to="/terms-and-conditions" className="font-medium text-[var(--primary)]">
                       Terms of Use
-                    </span>{" "}
+                    </Link>
+                      </a>{" "}
 
                     and{" "}
 
-                    <span className="font-medium text-[var(--primary)]">
+                    <Link to="/privacy-policy" className="font-medium text-[var(--primary)]">
                       Privacy Policy
-                    </span>
+                    </Link>
 
                     .
 

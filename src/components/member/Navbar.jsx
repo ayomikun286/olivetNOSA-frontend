@@ -172,7 +172,7 @@ const Navbar = ({
             </NavLink>
 
             {/* ================= SETTINGS ================= */}
-            <button
+            {/* <button
               type="button"
               onClick={() => setDropDown(false)}
               className="
@@ -185,7 +185,7 @@ const Navbar = ({
             >
               <Settings size={17} />
               <span>Settings</span>
-            </button>
+            </button> */}
 
             {/* ================= LOGOUT ================= */}
             <div className="border-t border-(--secondary)/20">

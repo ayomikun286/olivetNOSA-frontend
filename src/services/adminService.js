@@ -1224,3 +1224,55 @@ export const suspendTeamRole = async (memberId) => {
 
     return data;
 };
+
+
+
+/*
+|--------------------------------------------------------------------------
+| ADMIN GENERAL SETTINGS
+|--------------------------------------------------------------------------
+*/
+
+export const getGeneralSettings = async () => {
+  const response = await fetch(
+    `${API}/api/admin/settings/general`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to load general settings."
+    );
+  }
+
+  return data.settings;
+};
+
+export const updateGeneralSettings = async (settings) => {
+  const response = await fetch(
+    `${API}/api/admin/settings/general`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(settings),
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to save general settings."
+    );
+  }
+
+  return data.settings;
+};

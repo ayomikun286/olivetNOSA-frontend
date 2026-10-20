@@ -809,3 +809,27 @@ export const getPublishedFinancialReports = async () => {
     throw error;
   }
 };
+
+
+// ============================================================
+// GET PUBLISHED PUBLIC WEBSITE CONTENT
+// ============================================================
+
+export const getPublicWebsiteContent = async (pageKey) => {
+  const response = await fetch(
+    `${API}/api/content/${encodeURIComponent(pageKey)}`,
+    {
+      method: "GET",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Unable to load website content."
+    );
+  }
+
+  return data;
+};

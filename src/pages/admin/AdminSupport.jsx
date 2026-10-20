@@ -655,8 +655,8 @@ const AdminSupport = () => {
             {/* MODAL BODY */}
             <div className="grid min-h-0 flex-1 overflow-y-auto lg:grid-cols-[1fr_270px]">
               {/* CONVERSATION */}
-              <div className="flex min-h-[300px] flex-col border-b border-(--border) lg:border-b-0 lg:border-r">
-                <div className="flex-1 space-y-4 overflow-y-auto bg-(--bg-soft) p-4 sm:p-5">
+              <div className="flex min-h-[450px] flex-col border-b border-(--border) lg:border-b-0 lg:border-r">
+                <div className="flex-1 space-y-4 overflow-y-auto bg-(--bg-soft) p-4 sm:p-5  min-h-[150px]">
                   {detailLoading ? (
                     <div className="py-12 text-center">
                       <LoaderCircle

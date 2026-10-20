@@ -14,23 +14,64 @@ import {
     ChevronRight,
 } from "lucide-react";
 
+import { getPublicWebsiteContent } from "../../services/authService.js";
 import Navbar from "../../components/public/Navbar";
 import Footer from "../../components/public/footer";
 
 export default function Home() {
+    // =========================================================
+    // PUBLISHED CMS CONTENT
+    // Existing content remains the fallback.
+    // =========================================================
+    const [pageContent, setPageContent] = useState({});
+
+    useEffect(() => {
+        let isMounted = true;
+
+        const loadHomepageContent = async () => {
+            try {
+                const result = await getPublicWebsiteContent("home");
+
+                if (
+                    isMounted &&
+                    result?.success &&
+                    result?.page?.content
+                ) {
+                    setPageContent(result.page.content);
+                }
+            } catch (error) {
+                console.warn(
+                    "Unable to load published homepage content. Using defaults.",
+                    error.message
+                );
+            }
+        };
+
+        loadHomepageContent();
+
+        return () => {
+            isMounted = false;
+        };
+    }, []);
+
+    // =========================================================
+    // HERO SLIDES
+    // CMS controls the first slide's title, subtitle and image.
+    // The remaining slides stay unchanged.
+    // =========================================================
     const heroSlides = [
         {
-            image: "/images/olivetNOSA-4.jpg",
-            eyebrow: "Olivet Baptist High School",
-            title: "Welcome to Olivet Baptist High School",
-            highlight: "Global Old Students Association.",
+            image: pageContent.heroImage || "/images/olivetNOSA-4.jpg",
+            eyebrow: "Global Old Students' Association",
+            title: pageContent.heroTitle || "Welcome to Olivet Baptist High School",
+            highlight: pageContent.heroSubtitle || "Global Old Students Association.",
             description:
-                "OlivetGOSA connects former students of Olivet Baptist High School across generations, preserving friendships, memories and a shared sense of belonging.",
-            linkText: "Discover OlivetGOSA",
+                "Connecting Olivetians across generations through fellowship, shared memories and a commitment to our alma mater.",
+            linkText: "Discover GOSA",
             linkTo: "/about-gosa",
         },
         {
-            image: "/images/olivetNOSA-2.jpg",
+            image: pageContent.heroImage2 || "/images/olivetNOSA-2.jpg",
             eyebrow: "Global Old Students' Association",
             title: "A connection that began at Olivet",
             highlight: "continues across generations.",
@@ -40,7 +81,7 @@ export default function Home() {
             linkTo: "/about-school",
         },
         {
-            image: "/images/olivetNOSA-10.jpg",
+            image: pageContent.heroImage3 || "/images/olivetNOSA-10.jpg",
             eyebrow: "Our Global Community",
             title: "One school brought us together,",
             highlight: "GOSA keeps us connected.",
@@ -50,7 +91,7 @@ export default function Home() {
             linkTo: "/olivetians",
         },
         {
-            image: "/images/olivetNOSA.jpg",
+            image: pageContent.heroImage4 || "/images/olivetNOSA.jpg",
             eyebrow: "Impact & Service",
             title: "Empowering our alma mater",
             highlight: "through purposeful giving.",
@@ -60,7 +101,7 @@ export default function Home() {
             linkTo: "/portal/signup",
         },
         {
-            image: "/images/olivetNOSA-3.jpg",
+            image: pageContent.heroImage5 || "/images/olivetNOSA-3.jpg",
             eyebrow: "Preserving Our Legacy",
             title: "Cum Christo Progredere",
             highlight: "Marching forward with Christ.",
@@ -71,6 +112,8 @@ export default function Home() {
         },
     ];
 
+
+    
     const [currentSlide, setCurrentSlide] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
 
@@ -78,18 +121,23 @@ export default function Home() {
         if (isPaused) return;
 
         const interval = setInterval(() => {
-            setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+            setCurrentSlide((prev) => (prev + 1) % 5);
         }, 6000);
 
         return () => clearInterval(interval);
-    }, [isPaused, heroSlides.length]);
+    }, [isPaused]);
 
     const nextSlide = () => {
-        setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+        setCurrentSlide(
+            (prev) => (prev + 1) % heroSlides.length
+        );
     };
 
     const prevSlide = () => {
-        setCurrentSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
+        setCurrentSlide(
+            (prev) =>
+                (prev - 1 + heroSlides.length) % heroSlides.length
+        );
     };
 
     const goToSlide = (index) => {
@@ -104,37 +152,41 @@ export default function Home() {
                 <Navbar />
             </header>
 
-            {/* HERO SLIDER */}
+            {/* =========================================================
+                HERO SLIDER
+            ========================================================== */}
             <section
-                className="relative flex min-h-[94vh] items-end overflow-hidden bg-[var(--primary-dark)]  "
+                className="relative flex min-h-[94vh] items-end overflow-hidden bg-[var(--primary-dark)]"
                 onMouseEnter={() => setIsPaused(true)}
                 onMouseLeave={() => setIsPaused(false)}
             >
-                {/* Background slideshow with ultra-smooth crossfade and Ken-Burns zoom */}
+                {/* Background slideshow */}
                 <div className="absolute inset-0 pointer-events-none overflow-hidden">
                     {heroSlides.map((slide, index) => {
                         const isActive = index === currentSlide;
+
                         return (
                             <div
                                 key={slide.image}
-                                className={`absolute inset-0 bg-cover bg-center ${isActive
+                                className={`absolute inset-0 bg-cover bg-center ${
+                                    isActive
                                         ? "opacity-100 z-10"
                                         : "opacity-0 z-0"
-                                    }`}
-
+                                }`}
                                 style={{
                                     backgroundImage: `url("${slide.image}")`,
-                                    transform: isActive ? "scale(1.06)" : "scale(1)",
+                                    transform: isActive
+                                        ? "scale(1.06)"
+                                        : "scale(1)",
                                     transition:
                                         "opacity 1400ms cubic-bezier(0.4, 0, 0.2, 1), transform 8000ms cubic-bezier(0.25, 1, 0.5, 1)",
                                 }}
                             />
                         );
                     })}
-
                 </div>
 
-                {/* Dark image treatment overlays */}
+                {/* Dark overlays */}
                 <div className="pointer-events-none absolute inset-0 bg-[var(--primary-dark)]/60 z-10" />
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[var(--primary-dark)] via-[var(--primary-dark)]/40 to-transparent z-10" />
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[var(--primary-dark)]/50 via-transparent to-transparent z-10" />
@@ -142,24 +194,26 @@ export default function Home() {
                 {/* Hero content */}
                 <div className="relative z-20 w-full px-6 pb-14 pt-10 md:pt-30 sm:px-10 lg:px-16 lg:pb-20">
                     <div className="mx-auto max-w-7xl">
-                        {/* Stacking grid container so all slides occupy the exact same space and crossfade seamlessly */}
                         <div className="max-w-5xl grid grid-cols-1 grid-rows-1">
                             {heroSlides.map((slide, index) => {
                                 const isActive = index === currentSlide;
+
                                 return (
                                     <div
                                         key={slide.image + index}
-                                        className={`col-start-1 row-start-1 flex flex-col justify-end transition-all duration-700 ease-out ${isActive
+                                        className={`col-start-1 row-start-1 flex flex-col justify-end transition-all duration-700 ease-out ${
+                                            isActive
                                                 ? "opacity-100 translate-y-0 pointer-events-auto z-10"
                                                 : "opacity-0 translate-y-6 pointer-events-none z-0"
-                                            }`}
+                                        }`}
                                     >
                                         {/* Eyebrow */}
                                         <div
-                                            className={`flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.28em] text-[var(--secondary-light)] transition-all duration-700 ease-out ${isActive
+                                            className={`flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.28em] text-[var(--secondary-light)] transition-all duration-700 ease-out ${
+                                                isActive
                                                     ? "opacity-100 translate-y-0 delay-100"
                                                     : "opacity-0 -translate-y-2 delay-0"
-                                                }`}
+                                            }`}
                                         >
                                             <span className="h-px w-10 bg-[var(--secondary)]" />
                                             {slide.eyebrow}
@@ -167,10 +221,11 @@ export default function Home() {
 
                                         {/* Main heading */}
                                         <h1
-                                            className={`mt-4  md:max-w-2xl font-semibold leading-[1.02] tracking-[-0.04em] text-white text-4xl md:text-[5rem]  transition-all duration-700 ease-out ${isActive
+                                            className={`mt-4 md:max-w-2xl font-semibold leading-[1.02] tracking-[-0.04em] text-white text-4xl md:text-[5rem] transition-all duration-700 ease-out ${
+                                                isActive
                                                     ? "opacity-100 translate-y-0 delay-200"
                                                     : "opacity-0 translate-y-4 delay-0"
-                                                }`}
+                                            }`}
                                         >
                                             {slide.title}
                                             <span className="block text-[var(--secondary)]">
@@ -180,10 +235,11 @@ export default function Home() {
 
                                         {/* Supporting content */}
                                         <div
-                                            className={`mt-8 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between transition-all duration-700 ease-out ${isActive
+                                            className={`mt-8 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between transition-all duration-700 ease-out ${
+                                                isActive
                                                     ? "opacity-100 translate-y-0 delay-300"
                                                     : "opacity-0 translate-y-4 delay-0"
-                                                }`}
+                                            }`}
                                         >
                                             <p className="max-w-xl text-base leading-8 text-white/80 sm:text-lg">
                                                 {slide.description}
@@ -192,21 +248,7 @@ export default function Home() {
                                             <Link
                                                 to={slide.linkTo}
                                                 tabIndex={isActive ? 0 : -1}
-                                                className="
-                                                    group
-                                                    inline-flex
-                                                    w-fit
-                                                    items-center
-                                                    gap-3
-                                                    border-b
-                                                    border-[var(--secondary)]
-                                                    pb-2
-                                                    text-sm
-                                                    font-semibold
-                                                    text-white
-                                                    transition-all
-                                                    hover:gap-5
-                                                "
+                                                className="group inline-flex w-fit items-center gap-3 border-b border-[var(--secondary)] pb-2 text-sm font-semibold text-white transition-all hover:gap-5"
                                             >
                                                 {slide.linkText}
                                                 <ArrowUpRight size={17} />
@@ -217,19 +259,19 @@ export default function Home() {
                             })}
                         </div>
 
-                        {/* Slider Controls & Progress Indicators */}
+                        {/* Slider controls */}
                         <div className="mt-12 flex items-center justify-between gap-6 border-t border-white/20 pt-6 sm:mt-16">
-                            {/* Slide indicators / dots */}
                             <div className="flex items-center gap-2.5">
                                 {heroSlides.map((_, idx) => (
                                     <button
                                         key={idx}
                                         onClick={() => goToSlide(idx)}
                                         aria-label={`Go to slide ${idx + 1}`}
-                                        className={`relative h-2 rounded-full overflow-hidden transition-all duration-500 cursor-pointer ${idx === currentSlide
+                                        className={`relative h-2 rounded-full overflow-hidden transition-all duration-500 cursor-pointer ${
+                                            idx === currentSlide
                                                 ? "w-10 bg-white/25"
                                                 : "w-2.5 bg-white/40 hover:bg-white/70"
-                                            }`}
+                                        }`}
                                     >
                                         {idx === currentSlide && (
                                             <span
@@ -239,19 +281,16 @@ export default function Home() {
                                                     animationDuration: "6000ms",
                                                     animationTimingFunction: "linear",
                                                     animationFillMode: "forwards",
-                                                    animationPlayState: isPaused ? "paused" : "running",
+                                                    animationPlayState: isPaused
+                                                        ? "paused"
+                                                        : "running",
                                                 }}
                                             />
                                         )}
                                     </button>
                                 ))}
-
-                                {/* <span className="ml-3 text-xs font-mono tracking-widest text-white/60">
-                                    0{currentSlide + 1} / 0{heroSlides.length}
-                                </span> */}
                             </div>
 
-                            {/* Arrow buttons */}
                             <div className="flex items-center gap-2">
                                 <button
                                     onClick={prevSlide}
@@ -260,6 +299,7 @@ export default function Home() {
                                 >
                                     <ChevronLeft size={18} />
                                 </button>
+
                                 <button
                                     onClick={nextSlide}
                                     aria-label="Next slide"
@@ -271,20 +311,7 @@ export default function Home() {
                         </div>
 
                         {/* Hero footer */}
-                        <div
-                            className="
-                                mt-6
-                                flex
-                                flex-col
-                                gap-3
-                                border-t
-                                border-white/10
-                                pt-4
-                                sm:flex-row
-                                sm:items-center
-                                sm:justify-between
-                            "
-                        >
+                        <div className="mt-6 flex flex-col gap-3 border-t border-white/10 pt-4 sm:flex-row sm:items-center sm:justify-between">
                             <p className="text-xs uppercase tracking-[0.25em] text-white/45">
                                 Olivet Baptist High School · Olivet Heights
                             </p>
@@ -294,7 +321,8 @@ export default function Home() {
                             </p>
                         </div>
                     </div>
-                    <div className="hidden md:black flex  h-35 w-35 items-center justify-center absolute right-20 top-30 rounded-xl text-[var(--primary-dark)] ">
+
+                    <div className="absolute right-20 top-30 hidden h-35 w-35 items-center justify-center rounded-xl text-[var(--primary-dark)] md:flex">
                         <img
                             src="/images/Logo-NOSA.png"
                             alt="Olivet NOSA"
@@ -306,33 +334,14 @@ export default function Home() {
                 {/* Scroll explore */}
                 <a
                     href="#who-we-are"
-                    className="
-                        absolute
-                        bottom-4
-                        left-1/2
-                        z-20
-                        hidden
-                        -translate-x-1/2
-                        items-center
-                        gap-3
-                        text-white/45
-                        transition
-                        hover:text-white
-                        md:flex
-                    "
+                    className="absolute bottom-4 left-1/2 z-20 hidden -translate-x-1/2 items-center gap-3 text-white/45 transition hover:text-white md:flex"
                 >
                     <span className="text-[9px] font-medium uppercase tracking-[0.3em]">
                         Explore
                     </span>
-
                     <ArrowDown size={14} />
                 </a>
             </section>
-
-
-
-
-
 
             {/* =========================================================
                 WHO WE ARE
@@ -343,7 +352,6 @@ export default function Home() {
             >
                 <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
                     <div className="grid gap-14 lg:grid-cols-[0.7fr_1.3fr] lg:gap-24">
-                        {/* Label */}
                         <div data-aos="fade-right">
                             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
                                 Who We Are
@@ -357,21 +365,22 @@ export default function Home() {
                             </p>
                         </div>
 
-                        {/* Content */}
                         <div data-aos="fade-up" data-aos-delay="100">
                             <h2 className="max-w-4xl text-4xl font-medium leading-[1.05] tracking-[-0.035em] text-[var(--primary-dark)] sm:text-5xl lg:text-6xl">
-                                One school brought us together.
-                                <span className="block text-[var(--primary)]">
-                                    GOSA keeps us connected.
-                                </span>
+                                {pageContent.aboutTitle || (
+                                    <>
+                                        One school brought us together.
+                                        <span className="block text-[var(--primary)]">
+                                            GOSA keeps us connected.
+                                        </span>
+                                    </>
+                                )}
                             </h2>
 
                             <div className="mt-10 grid gap-8 md:grid-cols-2">
                                 <p className="text-base leading-8 text-[var(--text-muted)]">
-                                    The National Old Students' Association of
-                                    Olivet Baptist High School brings together
-                                    former students across year sets, chapters
-                                    and generations.
+                                    {pageContent.aboutText ||
+                                        "The National Old Students' Association of Olivet Baptist High School brings together former students across year sets, chapters and generations."}
                                 </p>
 
                                 <p className="text-base leading-8 text-[var(--text-muted)]">
@@ -388,7 +397,6 @@ export default function Home() {
                                     className="group inline-flex items-center gap-3 text-sm font-semibold text-[var(--primary)]"
                                 >
                                     About OlivetGOSA
-
                                     <ArrowRight
                                         size={16}
                                         className="transition-transform group-hover:translate-x-1"
@@ -400,7 +408,6 @@ export default function Home() {
                                     className="group inline-flex items-center gap-3 text-sm font-semibold text-[var(--primary)]"
                                 >
                                     Meet the Olivetians
-
                                     <ArrowRight
                                         size={16}
                                         className="transition-transform group-hover:translate-x-1"
@@ -418,7 +425,6 @@ export default function Home() {
             <section className="bg-[var(--background-soft)] py-20 sm:py-22 lg:py-15">
                 <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
                     <div className="grid gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-24">
-                        {/* Image */}
                         <div
                             data-aos="fade-right"
                             className="relative overflow-hidden"
@@ -443,14 +449,12 @@ export default function Home() {
                             </div>
                         </div>
 
-                        {/* Content */}
                         <div>
                             <div
                                 data-aos="fade-left"
                                 className="flex items-center gap-3"
                             >
                                 <span className="h-px w-10 bg-[var(--secondary)]" />
-
                                 <span className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
                                     Where It Began
                                 </span>
@@ -492,7 +496,6 @@ export default function Home() {
                                 <p className="text-sm font-semibold text-[var(--primary-dark)]">
                                     January 29, 1945
                                 </p>
-
                                 <p className="mt-1 text-sm leading-6 text-[var(--text-muted)]">
                                     The First Assembly
                                 </p>
@@ -505,7 +508,6 @@ export default function Home() {
                                 className="group mt-9 inline-flex items-center gap-3 text-sm font-semibold text-[var(--primary)]"
                             >
                                 Explore the school history
-
                                 <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--primary)]/20 transition group-hover:bg-[var(--primary)] group-hover:text-white">
                                     <ArrowRight
                                         size={16}
@@ -551,19 +553,37 @@ export default function Home() {
                                     />
 
                                     <h3 className="text-xl font-semibold text-[var(--primary-dark)]">
-                                        A connected community
+                                        {pageContent.visionTitle ||
+                                            "A connected community"}
                                     </h3>
 
                                     <p className="max-w-xl text-sm leading-7 text-[var(--text-muted)]">
-                                        Building a united community of
-                                        Olivetians who remain connected across
-                                        year sets, chapters, generations and
-                                        wherever life takes them.
+                                        {pageContent.visionText ||
+                                            "Building a united community of Olivetians who remain connected across year sets, chapters, generations and wherever life takes them."}
+                                    </p>
+                                </div>
+
+                                {/* Mission */}
+                                <div className="grid gap-6 border-b border-black/10 py-9 md:grid-cols-[auto_0.3fr_1fr] md:items-start">
+                                    <HeartHandshake
+                                        size={23}
+                                        strokeWidth={1.5}
+                                        className="text-[var(--secondary)]"
+                                    />
+
+                                    <h3 className="text-xl font-semibold text-[var(--primary-dark)]">
+                                        {pageContent.missionTitle ||
+                                            "A community that gives back"}
+                                    </h3>
+
+                                    <p className="max-w-xl text-sm leading-7 text-[var(--text-muted)]">
+                                        {pageContent.missionText ||
+                                            "Creating opportunities for Olivetians to contribute their time, experience and resources to the wider community."}
                                     </p>
                                 </div>
 
                                 {/* Heritage */}
-                                <div className="grid gap-6 border-b border-black/10 py-9 md:grid-cols-[auto_0.3fr_1fr] md:items-start">
+                                <div className="grid gap-6 py-9 md:grid-cols-[auto_0.3fr_1fr] md:items-start">
                                     <Landmark
                                         size={23}
                                         strokeWidth={1.5}
@@ -580,25 +600,6 @@ export default function Home() {
                                         the Olivetian story.
                                     </p>
                                 </div>
-
-                                {/* Giving back */}
-                                <div className="grid gap-6 py-9 md:grid-cols-[auto_0.3fr_1fr] md:items-start">
-                                    <HeartHandshake
-                                        size={23}
-                                        strokeWidth={1.5}
-                                        className="text-[var(--secondary)]"
-                                    />
-
-                                    <h3 className="text-xl font-semibold text-[var(--primary-dark)]">
-                                        A community that gives back
-                                    </h3>
-
-                                    <p className="max-w-xl text-sm leading-7 text-[var(--text-muted)]">
-                                        Creating opportunities for Olivetians
-                                        to contribute their time, experience
-                                        and resources to the wider community.
-                                    </p>
-                                </div>
                             </div>
 
                             <p className="mt-7 text-xs uppercase tracking-[0.2em] text-[var(--text-muted)]">
@@ -611,12 +612,11 @@ export default function Home() {
             </section>
 
             {/* =========================================================
-                OLIVETNOSA TODAY
+                OLIVETGOSA TODAY
             ========================================================== */}
             <section className="bg-[var(--primary-dark)] py-20 text-white sm:py-22 lg:py-20">
                 <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
                     <div className="grid gap-14 lg:grid-cols-[0.7fr_1.3fr] lg:gap-24">
-                        {/* Intro */}
                         <div data-aos="fade-right">
                             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
                                 OlivetGOSA Today
@@ -644,7 +644,6 @@ export default function Home() {
                             </Link>
                         </div>
 
-                        {/* Structure */}
                         <div
                             data-aos="fade-left"
                             className="divide-y divide-white/15 border-y border-white/15"
@@ -668,13 +667,11 @@ export default function Home() {
                                     <h3 className="text-2xl font-medium">
                                         Chapters
                                     </h3>
-
                                     <p className="mt-3 max-w-xl leading-7 text-white/50">
                                         Local communities through which
                                         Olivetians can stay connected and take
                                         part in the life of GOSA.
                                     </p>
-
                                     <span className="mt-5 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--secondary)]">
                                         Explore chapters
                                         <ArrowRight
@@ -704,13 +701,11 @@ export default function Home() {
                                     <h3 className="text-2xl font-medium">
                                         Year Sets
                                     </h3>
-
                                     <p className="mt-3 max-w-xl leading-7 text-white/50">
                                         Reconnect with classmates and preserve
                                         the relationships formed during your
                                         time at Olivet.
                                     </p>
-
                                     <span className="mt-5 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--secondary)]">
                                         Find your year set
                                         <ArrowRight
@@ -740,13 +735,11 @@ export default function Home() {
                                     <h3 className="text-2xl font-medium">
                                         Leadership
                                     </h3>
-
                                     <p className="mt-3 max-w-xl leading-7 text-white/50">
                                         Meet the people entrusted with guiding
                                         the association and serving its
                                         members.
                                     </p>
-
                                     <span className="mt-5 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--secondary)]">
                                         Meet the leadership
                                         <ArrowRight
@@ -767,7 +760,6 @@ export default function Home() {
             <section className="bg-white py-24 sm:py-32 lg:py-20">
                 <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
                     <div className="grid gap-14 lg:grid-cols-[0.95fr_1.05fr] lg:items-center lg:gap-24">
-                        {/* Image */}
                         <div
                             data-aos="fade-right"
                             className="relative overflow-hidden"
@@ -784,14 +776,12 @@ export default function Home() {
                                 <p className="text-xs uppercase tracking-[0.22em] text-[var(--text-muted)]">
                                     The Olivetian Community
                                 </p>
-
                                 <p className="max-w-xs text-right text-sm leading-6 text-[var(--text-muted)]">
                                     Connected by where we began.
                                 </p>
                             </div>
                         </div>
 
-                        {/* Content */}
                         <div data-aos="fade-left">
                             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
                                 Olivetians
@@ -825,12 +815,10 @@ export default function Home() {
                                             strokeWidth={1.5}
                                             className="text-[var(--primary)]"
                                         />
-
                                         <div>
                                             <h3 className="font-semibold text-[var(--primary-dark)]">
                                                 Meet the Olivetian community
                                             </h3>
-
                                             <p className="mt-1 text-sm leading-6 text-[var(--text-muted)]">
                                                 Discover the wider network of
                                                 Olivetians.
@@ -854,12 +842,10 @@ export default function Home() {
                                             strokeWidth={1.5}
                                             className="text-[var(--primary)]"
                                         />
-
                                         <div>
                                             <h3 className="font-semibold text-[var(--primary-dark)]">
                                                 Become part of GOSA
                                             </h3>
-
                                             <p className="mt-1 text-sm leading-6 text-[var(--text-muted)]">
                                                 Join the community and stay
                                                 connected.
@@ -884,7 +870,6 @@ export default function Home() {
             <section className="bg-[var(--background-soft)] py-24 sm:py-32 lg:py-20">
                 <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
                     <div className="grid gap-12 lg:grid-cols-[0.7fr_1.3fr] lg:gap-24">
-                        {/* Intro */}
                         <div data-aos="fade-right">
                             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
                                 News & Events
@@ -912,7 +897,6 @@ export default function Home() {
                             </Link>
                         </div>
 
-                        {/* Featured story */}
                         <div data-aos="fade-left">
                             <article className="group overflow-hidden border-t border-black/10">
                                 <div className="grid gap-8 py-8 md:grid-cols-[0.9fr_1.1fr] md:items-center">
@@ -951,7 +935,6 @@ export default function Home() {
                                 </div>
                             </article>
 
-                            {/* Event row */}
                             <div className="border-y border-black/10">
                                 <Link
                                     to="/news"
@@ -969,7 +952,6 @@ export default function Home() {
                                             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
                                                 Upcoming
                                             </p>
-
                                             <h3 className="mt-1 text-lg font-semibold text-[var(--primary-dark)]">
                                                 Events & gatherings
                                             </h3>
@@ -991,12 +973,10 @@ export default function Home() {
             </section>
 
             {/* =========================================================
-    OLIVET HEIGHTS TV & SOCIAL
-========================================================== */}
+                OLIVET HEIGHTS TV & SOCIAL
+            ========================================================== */}
             <section className="bg-white py-20 sm:py-20 lg:py-20">
                 <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
-
-                    {/* Section heading */}
                     <div
                         data-aos="fade-up"
                         className="mb-10 flex flex-col justify-between gap-6 sm:flex-row sm:items-end"
@@ -1012,15 +992,13 @@ export default function Home() {
                         </div>
 
                         <p className="max-w-sm text-sm leading-7 text-[var(--text-muted)]">
-                            Follow the stories, memories and moments happening around
-                            Olivet Heights.
+                            Follow the stories, memories and moments happening
+                            around Olivet Heights.
                         </p>
                     </div>
 
-                    {/* Social content */}
                     <div className="grid gap-5 lg:grid-cols-[1.6fr_0.8fr]">
-
-                        {/* YouTube Video Banner */}
+                        {/* YouTube */}
                         <a
                             href="https://www.youtube.com/@olivetheightstv"
                             target="_blank"
@@ -1031,32 +1009,16 @@ export default function Home() {
                             <img
                                 src="/images/olivetNOSA-3.jpg"
                                 alt="Olivet Heights TV"
-                                className="
-                        absolute
-                        inset-0
-                        h-full
-                        w-full
-                        object-cover
-                        transition
-                        duration-700
-                        group-hover:scale-[1.04]
-                    "
+                                className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]"
                             />
 
-                            {/* Dark overlay */}
                             <div className="absolute inset-0 bg-[var(--primary-dark)]/55 transition duration-500 group-hover:bg-[var(--primary-dark)]/65" />
-
-                            {/* Gradient */}
                             <div className="absolute inset-0 bg-gradient-to-t from-[var(--primary-dark)] via-transparent to-transparent" />
 
-                            {/* Play button */}
                             <div className="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[var(--primary-dark)] shadow-xl transition duration-500 group-hover:scale-110">
-                                <span className="ml-1 text-xl">
-                                    ▶
-                                </span>
+                                <span className="ml-1 text-xl">▶</span>
                             </div>
 
-                            {/* Content */}
                             <div className="absolute bottom-0 left-0 right-0 p-7 sm:p-9">
                                 <div className="flex items-end justify-between gap-6">
                                     <div>
@@ -1069,8 +1031,8 @@ export default function Home() {
                                         </h3>
 
                                         <p className="mt-2 max-w-lg text-sm leading-6 text-white/60">
-                                            Watch videos, events and moments from the
-                                            Olivet community.
+                                            Watch videos, events and moments
+                                            from the Olivet community.
                                         </p>
                                     </div>
 
@@ -1082,7 +1044,7 @@ export default function Home() {
                             </div>
                         </a>
 
-                        {/* Instagram Card */}
+                        {/* Instagram */}
                         <a
                             href="https://www.instagram.com/olivetheights/"
                             target="_blank"
@@ -1090,32 +1052,16 @@ export default function Home() {
                             data-aos="fade-left"
                             className="group relative min-h-[320px] overflow-hidden bg-[var(--background-soft)] p-7 transition duration-500 hover:bg-[var(--primary-dark)] sm:min-h-[400px] sm:p-9"
                         >
-                            {/* Decorative image */}
                             <img
                                 src="/images/olivetNOSA-10.jpg"
                                 alt=""
-                                className="
-                        absolute
-                        inset-0
-                        h-full
-                        w-full
-                        object-cover
-                        opacity-10
-                        transition
-                        duration-700
-                        group-hover:scale-[1.04]
-                        group-hover:opacity-20
-                    "
+                                className="absolute inset-0 h-full w-full object-cover opacity-10 transition duration-700 group-hover:scale-[1.04] group-hover:opacity-20"
                             />
 
                             <div className="relative z-10 flex h-full flex-col justify-between">
-
-                                {/* Instagram icon */}
                                 <div className="flex items-center justify-between">
                                     <div className="flex h-12 w-12 items-center justify-center border border-[var(--primary)]/15 text-[var(--primary)] transition group-hover:border-white/20 group-hover:text-white">
-                                        <span className="text-xl">
-                                            ◎
-                                        </span>
+                                        <span className="text-xl">◎</span>
                                     </div>
 
                                     <ArrowUpRight
@@ -1124,7 +1070,6 @@ export default function Home() {
                                     />
                                 </div>
 
-                                {/* Content */}
                                 <div>
                                     <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
                                         Instagram
@@ -1135,8 +1080,9 @@ export default function Home() {
                                     </h3>
 
                                     <p className="mt-4 text-sm leading-7 text-[var(--text-muted)] transition group-hover:text-white/60">
-                                        Follow the latest photographs, announcements
-                                        and moments from the Olivet community.
+                                        Follow the latest photographs,
+                                        announcements and moments from the
+                                        Olivet community.
                                     </p>
 
                                     <span className="mt-6 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--primary)] transition group-hover:text-[var(--secondary)]">
@@ -1146,7 +1092,6 @@ export default function Home() {
                                 </div>
                             </div>
                         </a>
-
                     </div>
                 </div>
             </section>
@@ -1192,7 +1137,6 @@ export default function Home() {
                             className="group inline-flex items-center gap-3 text-sm font-semibold text-[var(--primary)]"
                         >
                             Explore the gallery
-
                             <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--primary)]/20 transition group-hover:bg-[var(--primary)] group-hover:text-white">
                                 <ArrowRight
                                     size={16}
@@ -1202,7 +1146,6 @@ export default function Home() {
                         </Link>
                     </div>
 
-                    {/* Archive gallery */}
                     <div className="mt-16 grid gap-5 lg:grid-cols-12 lg:grid-rows-2">
                         {/* Main image */}
                         <div
@@ -1310,25 +1253,9 @@ export default function Home() {
 
                             <Link
                                 to="/portal/Signup"
-                                className="
-                                    group
-                                    inline-flex
-                                    w-fit
-                                    shrink-0
-                                    items-center
-                                    gap-3
-                                    bg-[var(--primary-dark)]
-                                    px-7
-                                    py-4
-                                    text-sm
-                                    font-semibold
-                                    text-white
-                                    transition
-                                    hover:bg-[var(--primary)]
-                                "
+                                className="group inline-flex w-fit shrink-0 items-center gap-3 bg-[var(--primary-dark)] px-7 py-4 text-sm font-semibold text-white transition hover:bg-[var(--primary)]"
                             >
                                 Become a Member
-
                                 <ArrowUpRight
                                     size={18}
                                     className="transition-transform group-hover:translate-x-1"

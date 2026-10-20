@@ -13,6 +13,10 @@ import NotFound from "../pages/public/NotFound";
 import Programs from "../pages/public/Programs.jsx";
 import NewsEventDetails from "../pages/public/NewsEventDetails.jsx";
 import InLovingMemory from "../pages/public/InLovingMemory.jsx";
+import PrivacyPolicy from "../pages/public/PrivacyPolicy.jsx";
+
+import TermsAndConditions from "../pages/public/TermsAndConditions";
+
 
 export default function PublicRoutes() {
   return (
@@ -22,20 +26,25 @@ export default function PublicRoutes() {
       <Route path="/about-school" element={<AboutSchool />} />
 
       <Route path="/about-gosa" element={<AboutNOSA />} />
-        <Route path="/gosa-leadership" element={<NOSALeadership />} />
-        <Route path="/gosa-chapters" element={<NOSAChapters />} />
+      <Route path="/gosa-leadership" element={<NOSALeadership />} />
+      <Route path="/gosa-chapters" element={<NOSAChapters />} />
 
       <Route path="/olivetians" element={<Olivetians />} />
 
       <Route path="/news" element={<NewsEvents />} />
-        <Route
-      path="/news-events/:slug"
-      element={<NewsEventDetails />}
-    />
+      <Route
+        path="/news-events/:slug"
+        element={<NewsEventDetails />}
+      />
 
-    <Route path="/in-loving-memory" element={<InLovingMemory />} />
+      <Route path="/in-loving-memory" element={<InLovingMemory />} />
       <Route path="/gallery" element={<Gallery />} />
 
+      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+      <Route
+        path="/terms-and-conditions"
+        element={<TermsAndConditions />}
+      />
       <Route path="/contact" element={<Contact />} />
       <Route path="/programs" element={<Programs />} />
       <Route path="*" element={<NotFound />} />
