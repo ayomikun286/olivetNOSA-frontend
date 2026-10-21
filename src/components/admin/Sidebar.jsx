@@ -19,6 +19,7 @@ import {
   Newspaper,
   Images,
   UserPlus,
+   HeartHandshake,
 } from "lucide-react";
 
 import { NavLink } from "react-router-dom";
@@ -183,6 +184,15 @@ const Sidebar = ({ setIsOpen }) => {
             >
               <Images className={iconClass} />
               <span>Gallery</span>
+            </NavLink>
+
+            <NavLink
+              to="/portal/admin/dashboard/memorials"
+              className={linkClass}
+              onClick={handleLinkClick}
+            >
+              <HeartHandshake className={iconClass} />
+              <span>Memorials</span>
             </NavLink>
 
             <NavLink

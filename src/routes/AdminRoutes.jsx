@@ -22,7 +22,7 @@ import AdminSettings from "../pages/admin/AdminSettings.jsx";
 import Team from "../pages/admin/Team.jsx";
 import Gallery from "../pages/admin/Gallery.jsx";
 
-
+import MemorialManagement from "../pages/admin/MemorialManagement.jsx";
 
 
 
@@ -57,6 +57,7 @@ const AdminRoutes = () => {
           <Route path="team" element={<Team />} />
 
           <Route path="gallery" element={<Gallery />} />
+          <Route path="memorials" element={<MemorialManagement />} />
           <Route path="jobs" element={<Jobs />} />
           <Route path="audit-logs" element={<AuditLogs />} />
         </Route>

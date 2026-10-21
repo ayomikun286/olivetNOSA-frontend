@@ -1391,3 +1391,125 @@ export const uploadWebsiteContentImage = async (image) => {
 
   return data;
 };
+
+
+
+
+
+
+
+
+
+// ============================================================
+// ADMIN MEMORIAL API
+// ============================================================
+
+const adminMemorialRequest = async (path, options = {}) => {
+  const response = await fetch(`${API}/api/admin${path}`, {
+    credentials: "include",
+    ...options,
+  });
+
+  const contentType = response.headers.get("content-type") || "";
+  const data = contentType.includes("application/json")
+    ? await response.json()
+    : { message: await response.text() };
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Unable to complete memorial request."
+    );
+  }
+
+  return data;
+};
+
+// Get memorial records
+export const getAdminMemorials = async ({
+  search = "",
+  status = "",
+} = {}) => {
+  const params = new URLSearchParams();
+
+  if (search.trim()) params.set("search", search.trim());
+  if (status) params.set("status", status);
+
+  const query = params.toString();
+
+  return adminMemorialRequest(
+    `/memorials${query ? `?${query}` : ""}`
+  );
+};
+
+// Get one memorial
+export const getAdminMemorialById = async (id) => {
+  return adminMemorialRequest(`/memorials/${id}`);
+};
+
+// Create memorial
+export const createAdminMemorial = async (formData) => {
+  return adminMemorialRequest("/memorials", {
+    method: "POST",
+    body: formData,
+  });
+};
+
+// Update memorial
+export const updateAdminMemorial = async (id, formData) => {
+  return adminMemorialRequest(`/memorials/${id}`, {
+    method: "PATCH",
+    body: formData,
+  });
+};
+
+// Delete memorial
+export const deleteAdminMemorial = async (id) => {
+  return adminMemorialRequest(`/memorials/${id}`, {
+    method: "DELETE",
+  });
+};
+
+// ============================================================
+// ADMIN MEMORIAL SUBMISSIONS
+// ============================================================
+
+// Get submissions
+export const getAdminMemorialSubmissions = async ({
+  search = "",
+  status = "",
+  submissionType = "",
+} = {}) => {
+  const params = new URLSearchParams();
+
+  if (search.trim()) params.set("search", search.trim());
+  if (status) params.set("status", status);
+  if (submissionType) params.set("submissionType", submissionType);
+
+  const query = params.toString();
+
+  return adminMemorialRequest(
+    `/memorial-submissions${query ? `?${query}` : ""}`
+  );
+};
+
+// Get one submission
+export const getAdminMemorialSubmissionById = async (id) => {
+  return adminMemorialRequest(`/memorial-submissions/${id}`);
+};
+
+// Approve or reject submission
+export const reviewAdminMemorialSubmission = async (
+  id,
+  { status, adminNotes = "" }
+) => {
+  return adminMemorialRequest(
+    `/memorial-submissions/${id}/review`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status, adminNotes }),
+    }
+  );
+};
