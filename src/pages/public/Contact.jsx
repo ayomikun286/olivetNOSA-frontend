@@ -8,7 +8,7 @@ import "aos/dist/aos.css";
 import Navbar from "../../components/public/Navbar";
 import Footer from "../../components/public/footer";
 import PageTitle from "../../components/common/PageTitle.jsx";
-import { getPublicWebsiteContent } from "../../services/authService.js";
+import { getPublicWebsiteContent, submitContactForm } from "../../services/authService.js";
 
 import {
   ArrowRight,
@@ -23,6 +23,12 @@ import {
 const Contact = () => {
   const [submitted, setSubmitted] = useState(false);
   const [pageContent, setPageContent] = useState({});
+  const [fullName, setFullName] = useState("");
+  const [Email, setEmail] = useState("");
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState("");
 
   useEffect(() => {
     AOS.init({
@@ -60,14 +66,54 @@ const Contact = () => {
     };
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    setSubmitted(true);
+    if (submitting) return;
 
-    setTimeout(() => {
-      setSubmitted(false);
-    }, 5000);
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    const payload = {
+      name: formData.get("name")?.trim(),
+      email: formData.get("email")?.trim(),
+      subject: formData.get("subject")?.trim(),
+      message: formData.get("message")?.trim(),
+    };
+
+    if (
+      !payload.name ||
+      !payload.email ||
+      !payload.subject ||
+      !payload.message
+    ) {
+      setFormError("Please fill in all required fields.");
+      return;
+    }
+
+    setSubmitting(true);
+    setFormError("");
+
+    try {
+      const result = await submitContactForm(payload);
+
+      if (!result?.success) {
+        throw new Error(result?.message || "Unable to send your message.");
+      }
+
+      form.reset();
+      setFullName("");
+      setEmail("");
+      setSubject("");
+      setMessage("");
+      setSubmitted(true);
+    } catch (error) {
+      setFormError(
+        error.message || "Something went wrong. Please try again."
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const pageTitle = pageContent.pageTitle || "Contact | OlivetGOSA";
@@ -396,6 +442,8 @@ const Contact = () => {
                     id="name"
                     name="name"
                     type="text"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
                     required
                     placeholder="Your full name"
                     className="w-full border border-black/10 bg-white px-4 py-3.5 text-sm outline-none transition placeholder:text-slate-400 focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/10"
@@ -414,6 +462,8 @@ const Contact = () => {
                     id="email"
                     name="email"
                     type="email"
+                    value={Email}
+                    onChange={(e) => setEmail(e.target.value)}
                     required
                     placeholder="you@example.com"
                     className="w-full border border-black/10 bg-white px-4 py-3.5 text-sm outline-none transition placeholder:text-slate-400 focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/10"
@@ -431,13 +481,13 @@ const Contact = () => {
                   <select
                     id="subject"
                     name="subject"
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
                     required
                     defaultValue=""
                     className="w-full border border-black/10 bg-white px-4 py-3.5 text-sm outline-none transition focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/10"
                   >
-                    <option value="" disabled>
-                      Select a subject
-                    </option>
+
 
                     <option value="membership">Membership</option>
                     <option value="event">Events</option>
@@ -459,18 +509,34 @@ const Contact = () => {
                     id="message"
                     name="message"
                     rows="6"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
                     required
                     placeholder="How can we help?"
                     className="w-full resize-none border border-black/10 bg-white px-4 py-3.5 text-sm outline-none transition placeholder:text-slate-400 focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/10"
                   />
                 </div>
 
+                {formError && (
+                  <div
+                    role="alert"
+                    className="border border-red-200 bg-red-50 px-4 py-3 text-sm leading-6 text-red-700"
+                  >
+                    {formError}
+                  </div>
+                )}
                 <button
                   type="submit"
-                  className="inline-flex w-full items-center justify-center gap-3 bg-[var(--primary-dark)] px-6 py-4 text-sm font-semibold text-white transition hover:bg-[var(--primary)]"
+                  disabled={submitting}
+                  className="inline-flex w-full items-center justify-center gap-3 bg-[var(--primary-dark)] px-6 py-4 text-sm font-semibold text-white transition hover:bg-[var(--primary)] disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  Send Message
-                  <Send size={17} />
+                  {submitting ? "Sending Message..." : "Send Message"}
+
+                  {submitting ? (
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                  ) : (
+                    <Send size={17} />
+                  )}
                 </button>
               </form>
             )}
