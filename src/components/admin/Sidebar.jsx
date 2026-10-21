@@ -12,6 +12,7 @@ import {
   Settings,
   LogOut,
   Bell,
+  Globe,
   CalendarDays,
   ShieldCheck,
   MessageSquare,
@@ -182,6 +183,15 @@ const Sidebar = ({ setIsOpen }) => {
             >
               <Images className={iconClass} />
               <span>Gallery</span>
+            </NavLink>
+
+            <NavLink
+              to="/portal/admin/dashboard/website-content"
+              className={linkClass}
+              onClick={handleLinkClick}
+            >
+              <Globe className={iconClass} />
+              <span>Website Content</span>
             </NavLink>
 
             <NavLink

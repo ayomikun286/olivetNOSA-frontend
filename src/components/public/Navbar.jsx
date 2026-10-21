@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import {
@@ -9,20 +10,49 @@ import {
   User,
   ArrowRight,
 } from "lucide-react";
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaYoutube,
+} from "react-icons/fa";
 
-import { FaFacebookF, FaInstagram, FaYoutube } from "react-icons/fa";
+import usePublicGeneralSettings from "../../hooks/usePublicGeneralSettings";
+
 const Navbar = () => {
-
   const location = useLocation();
+  const settings = usePublicGeneralSettings();
+
   const [mobileMenu, setMobileMenu] = useState(false);
   const [mobileAbout, setMobileAbout] = useState(false);
   const [mobileNosa, setMobileNosa] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hideTopBar, setHideTopBar] = useState(false);
 
-  // =========================================
-  // SCROLL DETECTION
-  // =========================================
+  // Public settings with fallbacks
+  const logoUrl =
+    settings?.logoUrl || "/images/Logo-NOSA.png";
+
+  const associationName =
+    settings?.associationName ||
+    "Global Old Students Association Website";
+
+  const contactEmail =
+    settings?.contactEmail ||
+    "customerservice@olivetbhsnosa.org";
+
+  const phone =
+    settings?.phone || "+1 (123) 456-7890";
+
+  const socialLinks = {
+    facebook: settings?.socialLinks?.facebook || "#",
+    instagram:
+      settings?.socialLinks?.instagram ||
+      "https://www.instagram.com/olivetheights/",
+    youtube:
+      settings?.socialLinks?.youtube ||
+      "https://www.youtube.com/@olivetheightstv",
+  };
+
   // =========================================
   // HASH SCROLLING
   // =========================================
@@ -46,25 +76,30 @@ const Navbar = () => {
       });
     };
 
-    // Give React Router time to render the destination page
     const timer = setTimeout(scrollToSection, 50);
 
     return () => clearTimeout(timer);
   }, [location.pathname, location.hash]);
+
+  // =========================================
+  // SCROLL DETECTION
+  // =========================================
   useEffect(() => {
     let lastScrollY = window.scrollY;
 
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
 
-
       setScrolled(currentScrollY > 50);
+
       if (currentScrollY > lastScrollY && currentScrollY > 80) {
         setHideTopBar(true);
       }
+
       if (currentScrollY < lastScrollY) {
         setHideTopBar(false);
       }
+
       if (currentScrollY <= 10) {
         setHideTopBar(false);
       }
@@ -87,18 +122,20 @@ const Navbar = () => {
   // DESKTOP NAV LINK STYLING
   // =========================================
   const navLinkClass = ({ isActive }) =>
-    `text-sm font-medium transition-colors duration-500 ${isActive
-      ? "text-[var(--secondary)]"
-      : "text-[var(--primary)]"
+    `text-sm font-medium transition-colors duration-500 ${
+      isActive
+        ? "text-[var(--secondary)]"
+        : "text-[var(--primary)]"
     }`;
 
   // =========================================
   // DROPDOWN PARENT STYLING
   // =========================================
   const dropdownNavLinkClass = ({ isActive }) =>
-    `flex items-center gap-1 text-sm font-medium transition-colors duration-500 ${isActive
-      ? "text-[var(--secondary)]"
-      : "text-[var(--primary)]"
+    `flex items-center gap-1 text-sm font-medium transition-colors duration-500 ${
+      isActive
+        ? "text-[var(--secondary)]"
+        : "text-[var(--primary)]"
     }`;
 
   // =========================================
@@ -108,37 +145,37 @@ const Navbar = () => {
     "block rounded-lg px-4 py-3 text-sm text-slate-600 transition-all duration-200 hover:bg-[var(--primary-light)] hover:text-[var(--primary)]";
 
   return (
-    <nav className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${scrolled
-      ? "border-slate-200"
-      : "border-slate-200  "
-      }`}>
-
+    <nav
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
+        scrolled ? "border-slate-200" : "border-slate-200"
+      }`}
+    >
       {/* =====================================================
           TOP INFORMATION BAR
-          Hides when scrolling down
       ====================================================== */}
-
-
       <div
-        className={`hidden md:flex bg-white transition-all duration-500 ease-in-out ${hideTopBar
-          ? "-translate-y-full opacity-0 pointer-events-none"
-          : "translate-y-0 opacity-100"
-          }`}
+        className={`hidden md:flex bg-white transition-all duration-500 ease-in-out ${
+          hideTopBar
+            ? "-translate-y-full opacity-0 pointer-events-none"
+            : "translate-y-0 opacity-100"
+        }`}
       >
-
         {/* Social Links */}
         <div className="flex h-full w-80 items-center justify-center gap-3 bg-[var(--primary)]/92 p-1">
-
           <a
-            href="#"
+            href={socialLinks.facebook}
+            target={socialLinks.facebook !== "#" ? "_blank" : undefined}
+            rel={socialLinks.facebook !== "#" ? "noreferrer" : undefined}
             aria-label="Facebook"
             className="flex h-9 w-9 items-center justify-center rounded-lg text-md text-white/90 transition hover:text-[var(--secondary)]"
           >
-           <FaFacebookF size={20} />
+            <FaFacebookF size={20} />
           </a>
 
           <a
-            href="https://www.instagram.com/olivetheights/"
+            href={socialLinks.instagram}
+            target="_blank"
+            rel="noreferrer"
             aria-label="Instagram"
             className="flex h-9 w-9 items-center justify-center rounded-lg text-md text-white/90 transition hover:text-[var(--secondary)]"
           >
@@ -146,33 +183,37 @@ const Navbar = () => {
           </a>
 
           <a
-            href="https://www.youtube.com/@olivetheightstv"
-            aria-label="X"
+            href={socialLinks.youtube}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="YouTube"
             className="flex h-9 w-9 items-center justify-center rounded-lg text-md text-white/90 transition hover:text-[var(--secondary)]"
           >
             <FaYoutube size={20} />
           </a>
-
         </div>
 
         {/* Contact Information */}
         <div className="flex h-full items-center gap-3 p-1 pl-10">
-
-          <div className="flex items-center gap-2 px-3 py-2 text-[14px] font-medium text-[var(--primary)]/50">
+          <a
+            href={`mailto:${contactEmail}`}
+            className="flex items-center gap-2 px-3 py-2 text-[14px] font-medium text-[var(--primary)]/50 transition hover:text-[var(--secondary)]"
+          >
             <Mail size={15} strokeWidth={1.8} />
-            <p>customerservice@olivetbhsnosa.org</p>
-          </div>
+            <p>{contactEmail}</p>
+          </a>
 
-          <div className="flex items-center gap-2 px-3 py-2 text-[14px] font-medium text-[var(--primary)]/50">
+          <a
+            href={`tel:${phone.replace(/[^\d+]/g, "")}`}
+            className="flex items-center gap-2 px-3 py-2 text-[14px] font-medium text-[var(--primary)]/50 transition hover:text-[var(--secondary)]"
+          >
             <Phone size={15} strokeWidth={1.8} />
-            <p>+1 (123) 456-7890</p>
-          </div>
-
+            <p>{phone}</p>
+          </a>
         </div>
 
         {/* Quick Links */}
         <div className="ml-20 flex h-full items-center justify-center gap-3 p-1 pl-15">
-
           <Link
             to="/portal/login"
             className="flex h-full items-center justify-center gap-2 px-3 py-2 text-[14px] font-medium text-[var(--primary)]/50 transition hover:text-[var(--secondary)]"
@@ -184,7 +225,7 @@ const Navbar = () => {
             to="/about-gosa"
             className="flex h-full items-center justify-center gap-2 px-3 py-2 text-[14px] font-medium text-[var(--primary)]/50 transition hover:text-[var(--secondary)]"
           >
-          GOSA
+            GOSA
           </Link>
 
           <Link
@@ -203,79 +244,54 @@ const Navbar = () => {
             <User size={15} strokeWidth={1.8} />
             Login
           </Link>
-
         </div>
       </div>
-
 
       {/* =====================================================
           MAIN NAVBAR
       ====================================================== */}
       <div
-        className={`transition-all duration-500  ease-in-out ${hideTopBar ? "md:-translate-y-[53px]" : "translate-y-0"
-          }`}
+        className={`transition-all duration-500 ease-in-out ${
+          hideTopBar ? "md:-translate-y-[53px]" : "translate-y-0"
+        }`}
       >
         <div
-          className={`flex items-center justify-between md:gap-20 border px-3 py-4 md:px-6 md:py-5   transition-all duration-500 md:justify-center ${scrolled
-            ? "border-slate-200 bg-white"
-            : "border-slate-200 bg-white shadow"
-            }`}
+          className={`flex items-center justify-between md:gap-20 border px-3 py-4 md:px-6 md:py-5 transition-all duration-500 md:justify-center ${
+            scrolled
+              ? "border-slate-200 bg-white"
+              : "border-slate-200 bg-white shadow"
+          }`}
         >
-
-          {/* =================================================
-              LOGO
-          ================================================= */}
+          {/* LOGO AND ASSOCIATION NAME */}
           <Link to="/" className="flex items-center gap-3">
-
             <div className="flex h-12 w-12 items-center justify-center rounded-xl text-[var(--primary-dark)] shadow-lg">
               <img
-                src="/images/Logo-NOSA.png"
-                alt="Olivet NOSA"
+                src={logoUrl}
+                alt={associationName}
                 className="h-full w-full object-contain"
               />
             </div>
 
             <div className="leading-none">
-
-              <p className="text-sm font-bold tracking-wide text-[var(--primary-dark)] transition-colors duration-500 max-w-35">
-                Global Old Students Association (GOSA)
+              <p className="max-w-35 text-sm font-bold tracking-wide text-[var(--primary-dark)] transition-colors duration-500">
+                {associationName}
               </p>
-
-              {/* <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-primary transition-colors duration-500 max-w-50">
-                Global Old Students Association Website
-              </p> */}
-
             </div>
-
           </Link>
 
-
-          {/* =================================================
-              DESKTOP NAVIGATION
-          ================================================= */}
+          {/* DESKTOP NAVIGATION */}
           <div className="hidden items-center gap-8 lg:flex">
-
-            {/* Home */}
-            <NavLink
-              to="/"
-              end
-              className={navLinkClass}
-            >
+            <NavLink to="/" end className={navLinkClass}>
               Home
             </NavLink>
 
-
-            {/* ===============================================
-                ABOUT DROPDOWN
-            ================================================ */}
+            {/* ABOUT DROPDOWN */}
             <div className="group relative">
-
               <NavLink
                 to="/about-school"
                 className={dropdownNavLinkClass}
               >
                 About
-
                 <ChevronDown
                   size={14}
                   className="transition-transform duration-300 group-hover:rotate-180"
@@ -283,17 +299,11 @@ const Navbar = () => {
               </NavLink>
 
               <div className="invisible absolute left-1/2 top-full z-50 w-60 -translate-x-1/2 translate-y-2 pt-4 opacity-0 transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
-
                 <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl">
-
-                  <Link
-                    to="/about-school"
-                    className={dropdownItemClass}
-                  >
+                  <Link to="/about-school" className={dropdownItemClass}>
                     <span className="block font-semibold text-[var(--primary)]">
                       About Olivet
                     </span>
-
                     <span className="mt-1 block text-xs text-slate-400">
                       Discover the school
                     </span>
@@ -304,32 +314,23 @@ const Navbar = () => {
                     className={dropdownItemClass}
                   >
                     <span className="block font-semibold text-[var(--primary)]">
-                      History & Heritage
+                      History &amp; Heritage
                     </span>
-
                     <span className="mt-1 block text-xs text-slate-400">
                       Our story since 1945
                     </span>
                   </Link>
-
                 </div>
-
               </div>
-
             </div>
 
-
-            {/* ===============================================
-                NOSA DROPDOWN
-            ================================================ */}
+            {/* GOSA DROPDOWN */}
             <div className="group relative">
-
               <NavLink
                 to="/about-gosa"
                 className={dropdownNavLinkClass}
               >
                 GOSA
-
                 <ChevronDown
                   size={14}
                   className="transition-transform duration-300 group-hover:rotate-180"
@@ -337,45 +338,31 @@ const Navbar = () => {
               </NavLink>
 
               <div className="invisible absolute left-1/2 top-full z-50 w-64 -translate-x-1/2 translate-y-2 pt-4 opacity-0 transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
-
                 <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl">
-
-                  <Link
-                    to="/about-gosa"
-                    className={dropdownItemClass}
-                  >
+                  <Link to="/about-gosa" className={dropdownItemClass}>
                     <span className="block font-semibold text-[var(--primary)]">
                       About GOSA
                     </span>
-
                     <span className="mt-1 block text-xs text-slate-400">
-                      Who we are & what we do
+                      Who we are &amp; what we do
                     </span>
                   </Link>
 
-                  <Link
-                    to="/gosa-leadership"
-                    className={dropdownItemClass}
-                  >
+                  <Link to="/gosa-leadership" className={dropdownItemClass}>
                     <span className="block font-semibold text-[var(--primary)]">
                       GOSA Leadership
                     </span>
-
                     <span className="mt-1 block text-xs text-slate-400">
-                      Our past Leaders 
+                      Our past Leaders
                     </span>
                   </Link>
 
-                  <Link
-                    to="/"
-                    className={dropdownItemClass}
-                  >
+                  <Link to="/" className={dropdownItemClass}>
                     <span className="block font-semibold text-[var(--primary)]">
-                     Legacy Leaders
+                      Legacy Leaders
                     </span>
-
                     <span className="mt-1 block text-xs text-slate-400">
-                      Leadership & service
+                      Leadership &amp; service
                     </span>
                   </Link>
 
@@ -386,89 +373,48 @@ const Navbar = () => {
                     <span className="block font-semibold text-[var(--primary)]">
                       In Loving Memory
                     </span>
-
                     <span className="mt-1 block text-xs text-slate-400">
                       Honouring our Olivetian legacy
                     </span>
                   </Link>
 
-                  
-
-                  <Link
-                    to="/gosa-chapters"
-                    className={dropdownItemClass}
-                  >
+                  <Link to="/gosa-chapters" className={dropdownItemClass}>
                     <span className="block font-semibold text-[var(--primary)]">
                       Chapters
                     </span>
-
                     <span className="mt-1 block text-xs text-slate-400">
                       Connect with Olivetians
                     </span>
                   </Link>
-
                 </div>
-
               </div>
-
             </div>
 
-
-            {/* Olivetians */}
-            <NavLink
-              to="/olivetians"
-              className={navLinkClass}
-            >
+            <NavLink to="/olivetians" className={navLinkClass}>
               Olivetians
             </NavLink>
 
-            {/* Programs */}
-            <NavLink
-              to="/programs"
-              className={navLinkClass}
-            >
+            <NavLink to="/programs" className={navLinkClass}>
               Programs
             </NavLink>
 
-
-            {/* News & Events */}
-            <NavLink
-              to="/news"
-              className={navLinkClass}
-            >
-              News & Events
+            <NavLink to="/news" className={navLinkClass}>
+              News &amp; Events
             </NavLink>
 
-
-            {/* Gallery */}
-            <NavLink
-              to="/gallery"
-              className={navLinkClass}
-            >
+            <NavLink to="/gallery" className={navLinkClass}>
               Gallery
             </NavLink>
 
-
-
-
-
-            {/* Contact */}
-            <NavLink
-              to="/contact"
-              className={navLinkClass}
-            >
+            <NavLink to="/contact" className={navLinkClass}>
               Contact
             </NavLink>
-
           </div>
 
-
-          {/* =================================================
-              RIGHT ACTION
-          ================================================= */}
+          {/* JOIN GOSA */}
           <Link
             to="/portal/signup"
-            className="hidden md:flex group items-center  gap-2 border border-[var(--primary)]  px-5 py-2.5 text-sm font-semibold text-[var(--primary-dark)] transition-all duration-300 hover:shadow-md "
+            className="group hidden items-center gap-2 border border-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-dark)] transition-all duration-300 hover:shadow-md md:flex"
           >
             Join GOSA
             <ArrowRight
@@ -477,80 +423,66 @@ const Navbar = () => {
             />
           </Link>
 
-
-          {/* =================================================
-              MOBILE MENU BUTTON
-          ================================================= */}
+          {/* MOBILE MENU BUTTON */}
           <button
             type="button"
             onClick={() => setMobileMenu(!mobileMenu)}
             aria-label={mobileMenu ? "Close menu" : "Open menu"}
-            className={`flex h-10 w-10 items-center justify-center rounded-xl border transition-all duration-500 lg:hidden ${scrolled
-              ? "border-slate-200 text-[var(--primary)] hover:bg-slate-50"
-              : "border-slate-200 text-[var(--primary)] hover:bg-slate-50"
-              }`}
+            aria-expanded={mobileMenu}
+            className={`flex h-10 w-10 items-center justify-center rounded-xl border transition-all duration-500 lg:hidden ${
+              scrolled
+                ? "border-slate-200 text-[var(--primary)] hover:bg-slate-50"
+                : "border-slate-200 text-[var(--primary)] hover:bg-slate-50"
+            }`}
           >
-            {mobileMenu ? (
-              <X size={20} />
-            ) : (
-              <Menu size={20} />
-            )}
+            {mobileMenu ? <X size={20} /> : <Menu size={20} />}
           </button>
-
         </div>
 
-
-        {/* =====================================================
-            MOBILE NAVIGATION
-        ====================================================== */}
+        {/* MOBILE NAVIGATION */}
         {mobileMenu && (
           <div
-            className={`mt-0  border p-5 backdrop-blur-xl  transition-all duration-500 lg:hidden ${scrolled
-              ? "border-slate-200 bg-white/95"
-              : "border-slate-200 bg-white/95"
-              }`}
+            className={`mt-0 border p-5 backdrop-blur-xl transition-all duration-500 lg:hidden ${
+              scrolled
+                ? "border-slate-200 bg-white/95"
+                : "border-slate-200 bg-white/95"
+            }`}
           >
-
             <div className="flex flex-col gap-1">
-
-              {/* Home */}
               <NavLink
                 to="/"
                 end
                 onClick={() => setMobileMenu(false)}
                 className={({ isActive }) =>
-                  `rounded-xl px-4 py-3 text-sm transition-all duration-300 ${isActive
-                    ? "bg-[var(--primary-light)] font-semibold text-[var(--secondary)]"
-                    : "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
+                  `rounded-xl px-4 py-3 text-sm transition-all duration-300 ${
+                    isActive
+                      ? "bg-[var(--primary-light)] font-semibold text-[var(--secondary)]"
+                      : "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
                   }`
                 }
               >
                 Home
               </NavLink>
 
-
-              {/* =================================================
-                  MOBILE ABOUT
-              ================================================= */}
+              {/* MOBILE ABOUT */}
               <div>
-
                 <button
                   type="button"
                   onClick={() => setMobileAbout(!mobileAbout)}
+                  aria-expanded={mobileAbout}
                   className="flex w-full items-center justify-between rounded-xl px-4 py-3 text-sm text-slate-600 transition-all duration-300 hover:bg-slate-50 hover:text-[var(--primary)]"
                 >
                   <span>About</span>
-
                   <ChevronDown
                     size={16}
-                    className={`transition-transform duration-300 ${mobileAbout ? "rotate-180" : ""
-                      }`}
+                    className={`transition-transform duration-300 ${
+                      mobileAbout ? "rotate-180" : ""
+                    }`}
                   />
                 </button>
 
                 {mobileAbout && (
                   <div className="ml-3 mt-1 border-l border-slate-200 pl-3">
-
                     <Link
                       to="/about-school"
                       onClick={() => setMobileMenu(false)}
@@ -564,37 +496,31 @@ const Navbar = () => {
                       onClick={() => setMobileMenu(false)}
                       className="block rounded-lg px-4 py-3 text-sm text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
                     >
-                      History & Heritage
+                      History &amp; Heritage
                     </Link>
-
                   </div>
                 )}
-
               </div>
 
-
-              {/* =================================================
-                  MOBILE NOSA
-              ================================================= */}
+              {/* MOBILE GOSA */}
               <div>
-
                 <button
                   type="button"
                   onClick={() => setMobileNosa(!mobileNosa)}
+                  aria-expanded={mobileNosa}
                   className="flex w-full items-center justify-between rounded-xl px-4 py-3 text-sm text-slate-600 transition-all duration-300 hover:bg-slate-50 hover:text-[var(--primary)]"
                 >
                   <span>GOSA</span>
-
                   <ChevronDown
                     size={16}
-                    className={`transition-transform duration-300 ${mobileNosa ? "rotate-180" : ""
-                      }`}
+                    className={`transition-transform duration-300 ${
+                      mobileNosa ? "rotate-180" : ""
+                    }`}
                   />
                 </button>
 
                 {mobileNosa && (
                   <div className="ml-3 mt-1 border-l border-slate-200 pl-3">
-
                     <Link
                       to="/about-gosa"
                       onClick={() => setMobileMenu(false)}
@@ -602,7 +528,8 @@ const Navbar = () => {
                     >
                       About GOSA
                     </Link>
-                     <Link
+
+                    <Link
                       to="/gosa-leadership"
                       onClick={() => setMobileMenu(false)}
                       className="block rounded-lg px-4 py-3 text-sm text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
@@ -610,7 +537,7 @@ const Navbar = () => {
                       GOSA Leadership
                     </Link>
 
-                     <Link
+                    <Link
                       to="/"
                       onClick={() => setMobileMenu(false)}
                       className="block rounded-lg px-4 py-3 text-sm text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
@@ -620,18 +547,16 @@ const Navbar = () => {
 
                     <Link
                       to="/in-loving-memory"
+                      onClick={() => setMobileMenu(false)}
                       className={dropdownItemClass}
                     >
-                      <span className="block  text-[var(--primary)]">
+                      <span className="block text-[var(--primary)]">
                         In Loving Memory
                       </span>
-
                       <span className="mt-1 block text-xs text-slate-400">
                         Honouring our Olivetian legacy
                       </span>
                     </Link>
-
-                   
 
                     <Link
                       to="/gosa-chapters"
@@ -640,117 +565,101 @@ const Navbar = () => {
                     >
                       Chapters
                     </Link>
-
                   </div>
                 )}
-
               </div>
 
-
-              {/* Olivetians */}
               <NavLink
                 to="/olivetians"
                 onClick={() => setMobileMenu(false)}
                 className={({ isActive }) =>
-                  `rounded-xl px-4 py-3 text-sm transition-all duration-300 ${isActive
-                    ? "bg-[var(--primary-light)] font-semibold text-[var(--secondary)]"
-                    : "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
+                  `rounded-xl px-4 py-3 text-sm transition-all duration-300 ${
+                    isActive
+                      ? "bg-[var(--primary-light)] font-semibold text-[var(--secondary)]"
+                      : "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
                   }`
                 }
               >
                 Olivetians
               </NavLink>
 
-              {/* News & Events */}
               <NavLink
                 to="/programs"
                 onClick={() => setMobileMenu(false)}
                 className={({ isActive }) =>
-                  `rounded-xl px-4 py-3 text-sm transition-all duration-300 ${isActive
-                    ? "bg-[var(--primary-light)] font-semibold text-[var(--secondary)]"
-                    : "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
+                  `rounded-xl px-4 py-3 text-sm transition-all duration-300 ${
+                    isActive
+                      ? "bg-[var(--primary-light)] font-semibold text-[var(--secondary)]"
+                      : "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
                   }`
                 }
               >
                 Programs
               </NavLink>
 
-
-              {/* News & Events */}
               <NavLink
                 to="/news"
                 onClick={() => setMobileMenu(false)}
                 className={({ isActive }) =>
-                  `rounded-xl px-4 py-3 text-sm transition-all duration-300 ${isActive
-                    ? "bg-[var(--primary-light)] font-semibold text-[var(--secondary)]"
-                    : "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
+                  `rounded-xl px-4 py-3 text-sm transition-all duration-300 ${
+                    isActive
+                      ? "bg-[var(--primary-light)] font-semibold text-[var(--secondary)]"
+                      : "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
                   }`
                 }
               >
-                News & Events
+                News &amp; Events
               </NavLink>
 
-
-              {/* Gallery */}
               <NavLink
                 to="/gallery"
                 onClick={() => setMobileMenu(false)}
                 className={({ isActive }) =>
-                  `rounded-xl px-4 py-3 text-sm transition-all duration-300 ${isActive
-                    ? "bg-[var(--primary-light)] font-semibold text-[var(--secondary)]"
-                    : "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
+                  `rounded-xl px-4 py-3 text-sm transition-all duration-300 ${
+                    isActive
+                      ? "bg-[var(--primary-light)] font-semibold text-[var(--secondary)]"
+                      : "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
                   }`
                 }
               >
                 Gallery
               </NavLink>
 
-
-              {/* Contact */}
               <NavLink
                 to="/contact"
                 onClick={() => setMobileMenu(false)}
                 className={({ isActive }) =>
-                  `rounded-xl px-4 py-3 text-sm transition-all duration-300 ${isActive
-                    ? "bg-[var(--primary-light)] font-semibold text-[var(--secondary)]"
-                    : "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
+                  `rounded-xl px-4 py-3 text-sm transition-all duration-300 ${
+                    isActive
+                      ? "bg-[var(--primary-light)] font-semibold text-[var(--secondary)]"
+                      : "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
                   }`
                 }
               >
                 Contact
               </NavLink>
 
-
-              {/* Divider */}
               <div className="my-3 h-px bg-slate-200" />
 
-
-              {/* Member Login */}
               <Link
                 to="/portal/login"
                 onClick={() => setMobileMenu(false)}
-                className=" border border-slate-200 px-4 py-3 text-center text-sm text-[var(--primary)] transition-all duration-300 hover:bg-slate-50"
+                className="border border-slate-200 px-4 py-3 text-center text-sm text-[var(--primary)] transition-all duration-300 hover:bg-slate-50"
               >
                 Member Login
               </Link>
 
-
-              {/* Join NOSA */}
               <Link
                 to="/portal/signup"
                 onClick={() => setMobileMenu(false)}
-                className="mt-2  bg-[var(--secondary)] px-4 py-3 text-center text-sm font-semibold text-[var(--primary-dark)] transition hover:shadow-lg"
+                className="mt-2 bg-[var(--secondary)] px-4 py-3 text-center text-sm font-semibold text-[var(--primary-dark)] transition hover:shadow-lg"
               >
                 Join GOSA
               </Link>
-
             </div>
-
           </div>
         )}
-
       </div>
-
     </nav>
   );
 };

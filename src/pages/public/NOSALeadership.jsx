@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { getPublicWebsiteContent } from "../../services/authService.js";
 
 import Navbar from "../../components/public/Navbar";
 import Footer from "../../components/public/footer";
@@ -11,12 +12,42 @@ import {
   Network,
   HeartHandshake,
 } from "lucide-react";
-import PageTitle  from "../../components/common/PageTitle.jsx";
+import PageTitle from "../../components/common/PageTitle.jsx";
 
 const NOSALeadership = () => {
+  const [pageContent, setPageContent] = useState({});
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadPageContent = async () => {
+      try {
+        const result = await getPublicWebsiteContent("leaders-chapters");
+
+        if (isMounted && result?.success && result?.page?.content) {
+          setPageContent(result.page.content);
+        }
+      } catch (error) {
+        console.warn(
+          "Unable to load published Leaders & Chapters content. Using defaults.",
+          error.message
+        );
+      }
+    };
+
+    loadPageContent();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+
   return (
     <main className="min-h-screen bg-white text-(--primary-dark) mt-0 md:mt-15 overflow-x-hidden">
-       <PageTitle title="Leadership | OlivetGOSA" />
+      <PageTitle
+        title={`${pageContent.pageTitle || "Leadership"} | OlivetGOSA`}
+      />
       {/* =========================================================
           NAVBAR
       ========================================================= */}
@@ -76,8 +107,8 @@ const NOSALeadership = () => {
                 className="mt-10 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between"
               >
                 <p className="max-w-xl text-base leading-8 text-white/75 sm:text-lg">
-                  GOSA is guided by Olivetians who give their time, experience
-                  and commitment to the service of the wider alumni community.
+                  {pageContent.intro ||
+                    "GOSA is guided by Olivetians who give their time, experience and commitment to the service of the wider alumni community."}
                 </p>
 
                 <a

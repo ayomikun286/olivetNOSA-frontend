@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../../components/public/Navbar";
 import Footer from "../../components/public/footer";
-import PageTitle  from "../../components/common/PageTitle.jsx";
+import PageTitle from "../../components/common/PageTitle.jsx";
+import { getPublicWebsiteContent } from "../../services/authService.js";
+
 
 import {
   ArrowDown,
@@ -24,11 +26,39 @@ const AboutSchool = () => {
    * =========================================================
    */
 
+
+  const [pageContent, setPageContent] = useState({});
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadPageContent = async () => {
+      try {
+        const result = await getPublicWebsiteContent("about-school");
+
+        if (isMounted && result?.success && result?.page?.content) {
+          setPageContent(result.page.content);
+        }
+      } catch (error) {
+        console.warn(
+          "Unable to load published About School content. Using defaults.",
+          error.message
+        );
+      }
+    };
+
+    loadPageContent();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const schoolMission =
     "To provide an environment where young people are equipped with knowledge, character, discipline and faith to make meaningful contributions to society.";
 
   const schoolVision =
-    "To remain a leading institution where sound education, Christian values and responsible leadership continue to shape generations.";
+    "To provide an environment where young people are equipped with knowledge, character, discipline and faith to make meaningful contributions to society.";
 
   const houses = [
     {
@@ -65,21 +95,23 @@ const AboutSchool = () => {
 
   return (
     <main className="min-h-screen bg-white text-[var(--primary-dark)] mt-0 md:mt-15">
-     
 
-       <PageTitle title="About Olivet School | OlivetGOSA" />
-          
+
+      <PageTitle
+        title={pageContent.pageTitle || "About Olivet School | OlivetGOSA"}
+      />
+
       <header className="absolute left-0 right-0 top-0 z-50">
-         <Navbar />
+        <Navbar />
       </header>
 
-   
-          {/* 01 · HERO */}
-    
+
+      {/* 01 · HERO */}
+
       <section className="relative min-h-[88vh] overflow-hidden bg-[var(--primary-dark)]">
         <div className="absolute inset-0">
           <img
-            src="/images/olivetNOSA-4.jpg"
+            src={pageContent.heroImage || "/images/olivetNOSA-4.jpg"}
             alt="Olivet Baptist High School, Oyo"
             className="h-full w-full object-cover"
           />
@@ -123,9 +155,8 @@ const AboutSchool = () => {
               data-aos-delay="200"
               className="mt-7 max-w-2xl text-base leading-8 text-white/65 sm:text-lg"
             >
-              Olivet Baptist High School has been part of the educational
-              history of Oyo since 1945, providing generations of students
-              with an education rooted in knowledge, character and service.
+              {pageContent.intro ||
+                "Olivet Baptist High School has been part of the educational history of Oyo since 1945, providing generations of students with an education rooted in knowledge, character and service."}
             </p>
 
             <div
@@ -197,10 +228,14 @@ const AboutSchool = () => {
 
             <div data-aos="fade-left" data-aos-delay="100">
               <h2 className="max-w-5xl text-4xl font-semibold leading-[1.05] tracking-[-0.04em] sm:text-5xl lg:text-6xl">
-                A beginning in
-                <span className="block text-[var(--primary)]">
-                  Oyo, 1945.
-                </span>
+                {pageContent.historyTitle || (
+                  <>
+                    A beginning in
+                    <span className="block text-[var(--primary)]">
+                      Oyo, 1945.
+                    </span>
+                  </>
+                )}
               </h2>
             </div>
           </div>
@@ -232,37 +267,44 @@ const AboutSchool = () => {
             {/* Story */}
             <div data-aos="fade-up" data-aos-delay="100">
               <div className="max-w-2xl space-y-6 text-base leading-8 text-[var(--text-muted)] sm:text-lg">
-                <p>
-                  In 1945, a new chapter in education began in Oyo. The
-                  institution that would become Olivet Baptist High School was
-                  established as{" "}
-                  <strong className="font-semibold text-[var(--primary-dark)]">
-                    Oyo Baptist Boys' High School
-                  </strong>
-                  .
-                </p>
+  {pageContent.historyText ? (
+    <p className="whitespace-pre-line">
+      {pageContent.historyText}
+    </p>
+  ) : (
+    <>
+      <p>
+        In 1945, a new chapter in education began in Oyo. The
+        institution that would become Olivet Baptist High School was
+        established as{" "}
+        <strong className="font-semibold text-[var(--primary-dark)]">
+          Oyo Baptist Boys' High School
+        </strong>.
+      </p>
 
-                <p>
-                  The school began its journey at Oke-Isokun under the
-                  American Southern Baptist Mission, with education at the
-                  heart of its work and a commitment to developing young people
-                  beyond the classroom.
-                </p>
+      <p>
+        The school began its journey at Oke-Isokun under the
+        American Southern Baptist Mission, with education at the
+        heart of its work and a commitment to developing young people
+        beyond the classroom.
+      </p>
 
-                <p>
-                  As the institution developed, Olivet Heights became its
-                  enduring home — a place that would become familiar to
-                  generations of students and an important part of the
-                  school's identity.
-                </p>
+      <p>
+        As the institution developed, Olivet Heights became its
+        enduring home — a place that would become familiar to
+        generations of students and an important part of the
+        school's identity.
+      </p>
 
-                <p>
-                  The history of Olivet is therefore not simply a history of
-                  buildings or dates. It is a history of teachers, students,
-                  families and communities whose lives have been connected to
-                  the school.
-                </p>
-              </div>
+      <p>
+        The history of Olivet is therefore not simply a history of
+        buildings or dates. It is a history of teachers, students,
+        families and communities whose lives have been connected to
+        the school.
+      </p>
+    </>
+  )}
+</div>
 
               <div className="mt-10 border-t border-slate-200 pt-8">
                 <div className="flex items-start gap-5">
@@ -388,7 +430,7 @@ const AboutSchool = () => {
                   </div>
 
                   <p className="max-w-3xl text-lg leading-8 text-[var(--primary-dark)] sm:text-xl">
-                    {schoolVision}
+                   {pageContent.vision || schoolVision}
                   </p>
                 </div>
 
@@ -411,7 +453,7 @@ const AboutSchool = () => {
                   </div>
 
                   <p className="max-w-3xl text-lg leading-8 text-[var(--primary-dark)] sm:text-xl">
-                    {schoolMission}
+                   {pageContent.mission || schoolMission}
                   </p>
                 </div>
               </div>
@@ -534,240 +576,240 @@ const AboutSchool = () => {
         </div>
       </section>
 
-    {/* =====================================================
+      {/* =====================================================
     SECTION 05 — THROUGH THE YEARS
 ===================================================== */}
-<section
-  id="timeline"
-  className="relative overflow-hidden bg-[var(--primary-dark)] text-white"
->
-  <div className="mx-auto max-w-7xl px-6 py-24 sm:px-8 lg:px-12 lg:py-32">
+      <section
+        id="timeline"
+        className="relative overflow-hidden bg-[var(--primary-dark)] text-white"
+      >
+        <div className="mx-auto max-w-7xl px-6 py-24 sm:px-8 lg:px-12 lg:py-32">
 
-    {/* INTRO */}
-    <div
-      data-aos="fade-up"
-      className="max-w-3xl"
-    >
-      <p className="text-sm font-medium uppercase tracking-[0.25em] text-white/50">
-        Through The Years
-      </p>
+          {/* INTRO */}
+          <div
+            data-aos="fade-up"
+            className="max-w-3xl"
+          >
+            <p className="text-sm font-medium uppercase tracking-[0.25em] text-white/50">
+              Through The Years
+            </p>
 
-      <h2 className="mt-5 text-4xl font-light leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl">
-        A story carried from one generation to another.
-      </h2>
+            <h2 className="mt-5 text-4xl font-light leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl">
+              A story carried from one generation to another.
+            </h2>
 
-      <p className="mt-7 max-w-2xl text-lg font-light leading-8 text-white/65">
-        From its beginnings in Oyo in 1945, Olivet has grown through changing
-        generations, educational seasons and the people who have given the
-        school its character.
-      </p>
-    </div>
-
-    {/* TIMELINE */}
-    <div className="relative mt-20">
-
-      {/* Vertical line */}
-      <div className="absolute left-[7px] top-2 hidden h-[calc(100%-1rem)] w-px bg-white/15 md:block" />
-
-      <div className="space-y-14 md:space-y-16">
-
-        {/* 1945 */}
-        <div
-          data-aos="fade-up"
-          className="relative grid gap-5 md:grid-cols-[170px_1fr] md:gap-12"
-        >
-          <div className="relative">
-            <span className="relative z-10 hidden h-4 w-4 rounded-full border-4 border-[var(--primary-dark)] bg-white md:block" />
-
-            <p className="mt-0 text-2xl font-light tracking-tight text-white md:mt-[-3px]">
-              1945
+            <p className="mt-7 max-w-2xl text-lg font-light leading-8 text-white/65">
+              From its beginnings in Oyo in 1945, Olivet has grown through changing
+              generations, educational seasons and the people who have given the
+              school its character.
             </p>
           </div>
 
-          <div className="max-w-2xl">
-            <p className="text-xs font-medium uppercase tracking-[0.22em] text-white/40">
-              The Beginning
-            </p>
+          {/* TIMELINE */}
+          <div className="relative mt-20">
 
-            <h3 className="mt-3 text-2xl font-light sm:text-3xl">
-              Oyo Baptist Boys’ High School begins.
-            </h3>
+            {/* Vertical line */}
+            <div className="absolute left-[7px] top-2 hidden h-[calc(100%-1rem)] w-px bg-white/15 md:block" />
 
-            <p className="mt-4 text-base leading-7 text-white/60">
-              The school was established in Oyo and began at Oke-Isokun,
-              marking the beginning of an educational story that would span
-              generations.
-            </p>
+            <div className="space-y-14 md:space-y-16">
+
+              {/* 1945 */}
+              <div
+                data-aos="fade-up"
+                className="relative grid gap-5 md:grid-cols-[170px_1fr] md:gap-12"
+              >
+                <div className="relative">
+                  <span className="relative z-10 hidden h-4 w-4 rounded-full border-4 border-[var(--primary-dark)] bg-white md:block" />
+
+                  <p className="mt-0 text-2xl font-light tracking-tight text-white md:mt-[-3px]">
+                    1945
+                  </p>
+                </div>
+
+                <div className="max-w-2xl">
+                  <p className="text-xs font-medium uppercase tracking-[0.22em] text-white/40">
+                    The Beginning
+                  </p>
+
+                  <h3 className="mt-3 text-2xl font-light sm:text-3xl">
+                    Oyo Baptist Boys’ High School begins.
+                  </h3>
+
+                  <p className="mt-4 text-base leading-7 text-white/60">
+                    The school was established in Oyo and began at Oke-Isokun,
+                    marking the beginning of an educational story that would span
+                    generations.
+                  </p>
+                </div>
+              </div>
+
+              {/* 1960s */}
+              <div
+                data-aos="fade-up"
+                data-aos-delay="100"
+                className="relative grid gap-5 md:grid-cols-[170px_1fr] md:gap-12"
+              >
+                <div className="relative">
+                  <span className="relative z-10 hidden h-4 w-4 rounded-full border-4 border-[var(--primary-dark)] bg-white/70 md:block" />
+
+                  <p className="text-2xl font-light tracking-tight text-white">
+                    1960s
+                  </p>
+                </div>
+
+                <div className="max-w-2xl">
+                  <p className="text-xs font-medium uppercase tracking-[0.22em] text-white/40">
+                    A Period Of Growth
+                  </p>
+
+                  <h3 className="mt-3 text-2xl font-light sm:text-3xl">
+                    A growing reputation for excellence.
+                  </h3>
+
+                  <p className="mt-4 text-base leading-7 text-white/60">
+                    As Olivet developed, the school became known for the quality of
+                    its education, the achievements of its students and its growing
+                    place in the life of Oyo.
+                  </p>
+                </div>
+              </div>
+
+              {/* 1976 */}
+              <div
+                data-aos="fade-up"
+                data-aos-delay="150"
+                className="relative grid gap-5 md:grid-cols-[170px_1fr] md:gap-12"
+              >
+                <div className="relative">
+                  <span className="relative z-10 hidden h-4 w-4 rounded-full border-4 border-[var(--primary-dark)] bg-white/70 md:block" />
+
+                  <p className="text-2xl font-light tracking-tight text-white">
+                    1976
+                  </p>
+                </div>
+
+                <div className="max-w-2xl">
+                  <p className="text-xs font-medium uppercase tracking-[0.22em] text-white/40">
+                    A Connection That Continues
+                  </p>
+
+                  <h3 className="mt-3 text-2xl font-light sm:text-3xl">
+                    The old students’ community takes shape.
+                  </h3>
+
+                  <p className="mt-4 text-base leading-7 text-white/60">
+                    The establishment of the Global Old Students Association
+                    created another way for generations of Olivetians to remain
+                    connected to one another and to their school.
+                  </p>
+                </div>
+              </div>
+
+              {/* 1989 */}
+              <div
+                data-aos="fade-up"
+                data-aos-delay="200"
+                className="relative grid gap-5 md:grid-cols-[170px_1fr] md:gap-12"
+              >
+                <div className="relative">
+                  <span className="relative z-10 hidden h-4 w-4 rounded-full border-4 border-[var(--primary-dark)] bg-white/70 md:block" />
+
+                  <p className="text-2xl font-light tracking-tight text-white">
+                    1989
+                  </p>
+                </div>
+
+                <div className="max-w-2xl">
+                  <p className="text-xs font-medium uppercase tracking-[0.22em] text-white/40">
+                    A Changing Educational Landscape
+                  </p>
+
+                  <h3 className="mt-3 text-2xl font-light sm:text-3xl">
+                    The school moves with a changing system.
+                  </h3>
+
+                  <p className="mt-4 text-base leading-7 text-white/60">
+                    Nigeria’s education system continued to change, bringing an end
+                    to the school’s A’Level programme and opening another chapter in
+                    Olivet’s long educational history.
+                  </p>
+                </div>
+              </div>
+
+              {/* TODAY */}
+              <div
+                data-aos="fade-up"
+                data-aos-delay="250"
+                className="relative grid gap-5 md:grid-cols-[170px_1fr] md:gap-12"
+              >
+                <div className="relative">
+                  <span className="relative z-10 hidden h-4 w-4 rounded-full border-4 border-[var(--primary-dark)] bg-white md:block" />
+
+                  <p className="text-2xl font-light tracking-tight text-white">
+                    Today
+                  </p>
+                </div>
+
+                <div className="max-w-2xl">
+                  <p className="text-xs font-medium uppercase tracking-[0.22em] text-white/40">
+                    The Story Continues
+                  </p>
+
+                  <h3 className="mt-3 text-2xl font-light sm:text-3xl">
+                    New generations, same foundation.
+                  </h3>
+
+                  <p className="mt-4 text-base leading-7 text-white/60">
+                    Decades after its beginning, Olivet remains a living community
+                    shaped by students, teachers, families and old students whose
+                    connection to the school continues beyond the classroom.
+                  </p>
+                </div>
+              </div>
+
+            </div>
           </div>
+
+          {/* ARCHIVE */}
+          <div
+            data-aos="fade-up"
+            className="mt-24 grid gap-10 border-t border-white/10 pt-16 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-20"
+          >
+            <div className="overflow-hidden ">
+              <img
+                src="/images/olivetNOSA-3.jpg"
+                alt="Historical photograph from Olivet Baptist High School"
+                className="h-[320px] w-full object-cover transition duration-700 hover:scale-[1.02] sm:h-[400px]"
+              />
+            </div>
+
+            <div className="max-w-xl">
+              <p className="text-sm font-medium uppercase tracking-[0.2em] text-white/40">
+                The Archive
+              </p>
+
+              <h3 className="mt-4 text-3xl font-light leading-tight sm:text-4xl">
+                The memories are part of the story too.
+              </h3>
+
+              <p className="mt-5 text-base leading-7 text-white/60">
+                Photographs, faces and moments from different generations help keep
+                the history of Olivet visible. They remind us that the school’s
+                story is not only about dates, but about the people who lived them.
+              </p>
+
+              <Link
+                to="/gallery"
+                className="mt-8 inline-flex items-center gap-3 text-sm font-medium text-white transition hover:gap-4"
+              >
+                Explore the gallery
+                <ArrowRight size={17} strokeWidth={1.5} />
+              </Link>
+            </div>
+          </div>
+
         </div>
-
-        {/* 1960s */}
-        <div
-          data-aos="fade-up"
-          data-aos-delay="100"
-          className="relative grid gap-5 md:grid-cols-[170px_1fr] md:gap-12"
-        >
-          <div className="relative">
-            <span className="relative z-10 hidden h-4 w-4 rounded-full border-4 border-[var(--primary-dark)] bg-white/70 md:block" />
-
-            <p className="text-2xl font-light tracking-tight text-white">
-              1960s
-            </p>
-          </div>
-
-          <div className="max-w-2xl">
-            <p className="text-xs font-medium uppercase tracking-[0.22em] text-white/40">
-              A Period Of Growth
-            </p>
-
-            <h3 className="mt-3 text-2xl font-light sm:text-3xl">
-              A growing reputation for excellence.
-            </h3>
-
-            <p className="mt-4 text-base leading-7 text-white/60">
-              As Olivet developed, the school became known for the quality of
-              its education, the achievements of its students and its growing
-              place in the life of Oyo.
-            </p>
-          </div>
-        </div>
-
-        {/* 1976 */}
-        <div
-          data-aos="fade-up"
-          data-aos-delay="150"
-          className="relative grid gap-5 md:grid-cols-[170px_1fr] md:gap-12"
-        >
-          <div className="relative">
-            <span className="relative z-10 hidden h-4 w-4 rounded-full border-4 border-[var(--primary-dark)] bg-white/70 md:block" />
-
-            <p className="text-2xl font-light tracking-tight text-white">
-              1976
-            </p>
-          </div>
-
-          <div className="max-w-2xl">
-            <p className="text-xs font-medium uppercase tracking-[0.22em] text-white/40">
-              A Connection That Continues
-            </p>
-
-            <h3 className="mt-3 text-2xl font-light sm:text-3xl">
-              The old students’ community takes shape.
-            </h3>
-
-            <p className="mt-4 text-base leading-7 text-white/60">
-              The establishment of the Global Old Students Association
-              created another way for generations of Olivetians to remain
-              connected to one another and to their school.
-            </p>
-          </div>
-        </div>
-
-        {/* 1989 */}
-        <div
-          data-aos="fade-up"
-          data-aos-delay="200"
-          className="relative grid gap-5 md:grid-cols-[170px_1fr] md:gap-12"
-        >
-          <div className="relative">
-            <span className="relative z-10 hidden h-4 w-4 rounded-full border-4 border-[var(--primary-dark)] bg-white/70 md:block" />
-
-            <p className="text-2xl font-light tracking-tight text-white">
-              1989
-            </p>
-          </div>
-
-          <div className="max-w-2xl">
-            <p className="text-xs font-medium uppercase tracking-[0.22em] text-white/40">
-              A Changing Educational Landscape
-            </p>
-
-            <h3 className="mt-3 text-2xl font-light sm:text-3xl">
-              The school moves with a changing system.
-            </h3>
-
-            <p className="mt-4 text-base leading-7 text-white/60">
-              Nigeria’s education system continued to change, bringing an end
-              to the school’s A’Level programme and opening another chapter in
-              Olivet’s long educational history.
-            </p>
-          </div>
-        </div>
-
-        {/* TODAY */}
-        <div
-          data-aos="fade-up"
-          data-aos-delay="250"
-          className="relative grid gap-5 md:grid-cols-[170px_1fr] md:gap-12"
-        >
-          <div className="relative">
-            <span className="relative z-10 hidden h-4 w-4 rounded-full border-4 border-[var(--primary-dark)] bg-white md:block" />
-
-            <p className="text-2xl font-light tracking-tight text-white">
-              Today
-            </p>
-          </div>
-
-          <div className="max-w-2xl">
-            <p className="text-xs font-medium uppercase tracking-[0.22em] text-white/40">
-              The Story Continues
-            </p>
-
-            <h3 className="mt-3 text-2xl font-light sm:text-3xl">
-              New generations, same foundation.
-            </h3>
-
-            <p className="mt-4 text-base leading-7 text-white/60">
-              Decades after its beginning, Olivet remains a living community
-              shaped by students, teachers, families and old students whose
-              connection to the school continues beyond the classroom.
-            </p>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    {/* ARCHIVE */}
-    <div
-      data-aos="fade-up"
-      className="mt-24 grid gap-10 border-t border-white/10 pt-16 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-20"
-    >
-      <div className="overflow-hidden ">
-        <img
-          src="/images/olivetNOSA-3.jpg"
-          alt="Historical photograph from Olivet Baptist High School"
-          className="h-[320px] w-full object-cover transition duration-700 hover:scale-[1.02] sm:h-[400px]"
-        />
-      </div>
-
-      <div className="max-w-xl">
-        <p className="text-sm font-medium uppercase tracking-[0.2em] text-white/40">
-          The Archive
-        </p>
-
-        <h3 className="mt-4 text-3xl font-light leading-tight sm:text-4xl">
-          The memories are part of the story too.
-        </h3>
-
-        <p className="mt-5 text-base leading-7 text-white/60">
-          Photographs, faces and moments from different generations help keep
-          the history of Olivet visible. They remind us that the school’s
-          story is not only about dates, but about the people who lived them.
-        </p>
-
-        <Link
-          to="/gallery"
-          className="mt-8 inline-flex items-center gap-3 text-sm font-medium text-white transition hover:gap-4"
-        >
-          Explore the gallery
-          <ArrowRight size={17} strokeWidth={1.5} />
-        </Link>
-      </div>
-    </div>
-
-  </div>
-</section>
+      </section>
 
       {/* =========================================================
           06 · PEOPLE OF OLIVET
@@ -926,7 +968,7 @@ const AboutSchool = () => {
                     className="group grid gap-4 border-b border-slate-300 py-7 sm:grid-cols-[70px_1fr_auto] sm:items-start sm:gap-8"
                   >
                     <span className="text-sm font-semibold text-[var(--secondary)]">
-                     
+
                     </span>
 
                     <div>

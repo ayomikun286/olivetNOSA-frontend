@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import AOS from "aos";
@@ -7,8 +7,8 @@ import "aos/dist/aos.css";
 
 import Navbar from "../../components/public/Navbar";
 import Footer from "../../components/public/footer";
-import PageTitle  from "../../components/common/PageTitle.jsx";
-
+import PageTitle from "../../components/common/PageTitle.jsx";
+import { getPublicWebsiteContent } from "../../services/authService.js";
 
 import {
   ArrowRight,
@@ -22,6 +22,7 @@ import {
 
 const Contact = () => {
   const [submitted, setSubmitted] = useState(false);
+  const [pageContent, setPageContent] = useState({});
 
   useEffect(() => {
     AOS.init({
@@ -31,6 +32,32 @@ const Contact = () => {
     });
 
     window.scrollTo(0, 0);
+  }, []);
+
+  // Load published Contact page content from the CMS.
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadPageContent = async () => {
+      try {
+        const result = await getPublicWebsiteContent("contact");
+
+        if (isMounted && result?.success && result?.page?.content) {
+          setPageContent(result.page.content);
+        }
+      } catch (error) {
+        console.warn(
+          "Unable to load published Contact content. Using defaults.",
+          error.message
+        );
+      }
+    };
+
+    loadPageContent();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleSubmit = (e) => {
@@ -43,50 +70,54 @@ const Contact = () => {
     }, 5000);
   };
 
+  const pageTitle = pageContent.pageTitle || "Contact | OlivetGOSA";
+
+  const intro =
+    pageContent.intro ||
+    "Whether you are an Olivetian, a prospective member, a partner, or simply want to learn more, we would be glad to hear from you.";
+
+  const address =
+    pageContent.address || "Olivet Baptist High School\nOyo, Nigeria";
+
+  const email = pageContent.email || "info@olivetnosa.org";
+  const phone = pageContent.phone || "";
+  const mapUrl = pageContent.mapUrl || "";
+
+  const phoneHref = phone.replace(/[^\d+]/g, "");
+
   return (
     <main className="mt-0 overflow-x-hidden bg-white text-[var(--primary-dark)] md:mt-15">
-      
-      <PageTitle title="Contact | OlivetGOSA" />
+      <PageTitle title={pageTitle} />
       <Navbar />
 
       {/* =====================================================
           HERO
       ====================================================== */}
       <section className="relative min-h-[90vh] overflow-hidden bg-[var(--primary-dark)] md:min-h-screen">
-        {/* Background */}
         <img
           src="/images/olivetNOSA-building.jpg"
           alt="Olivet Baptist High School"
           className="absolute inset-0 h-full w-full object-cover"
         />
 
-        {/* Image treatment */}
         <div className="absolute inset-0 bg-[var(--primary-dark)]/65" />
 
-        {/* Left editorial gradient */}
         <div className="absolute inset-0 bg-gradient-to-r from-[var(--primary-dark)] via-[var(--primary-dark)]/75 to-[var(--primary-dark)]/15" />
 
-        {/* Bottom fade */}
         <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[var(--primary-dark)] to-transparent" />
 
-        {/* Bottom border */}
         <div className="absolute inset-x-0 bottom-0 border-t border-white/10" />
 
         <div className="relative z-10 mx-auto flex min-h-[90vh] max-w-7xl flex-col justify-end px-5 pb-8 sm:px-8 md:min-h-screen lg:px-12 lg:pb-10">
-          <div
-            className="max-w-5xl"
-            data-aos="fade-up"
-          >
-            {/* Eyebrow */}
+          <div className="max-w-5xl" data-aos="fade-up">
             <div className="mb-7 flex items-center gap-4">
               <span className="h-px w-12 bg-[var(--secondary)]" />
 
               <span className="text-xs font-semibold uppercase tracking-[0.28em] text-white/70">
-                Contact OlivetNOSA
+                Contact OlivetGOSA
               </span>
             </div>
 
-            {/* Heading */}
             <h1 className="max-w-5xl text-5xl font-semibold leading-[0.95] tracking-[-0.04em] text-white sm:text-6xl md:text-7xl lg:text-[5.5rem]">
               Let’s stay
               <span className="block text-[var(--secondary)]">
@@ -94,15 +125,11 @@ const Contact = () => {
               </span>
             </h1>
 
-            {/* Description */}
             <p className="mt-8 max-w-2xl text-base leading-8 text-white/65 sm:text-lg">
-              Whether you are an Olivetian, a prospective member,
-              a partner, or simply want to learn more, we would
-              be glad to hear from you.
+              {intro}
             </p>
           </div>
 
-          {/* Bottom information */}
           <div
             className="mt-16 flex flex-col gap-5 border-t border-white/15 pt-6 sm:flex-row sm:items-center sm:justify-between"
             data-aos="fade-up"
@@ -144,14 +171,10 @@ const Contact = () => {
               </h2>
             </div>
 
-            <div
-              data-aos="fade-up"
-              data-aos-delay="100"
-            >
+            <div data-aos="fade-up" data-aos-delay="100">
               <p className="max-w-2xl text-base leading-8 text-[var(--text-muted)] sm:text-lg">
-                Have a question about GOSA, membership, an event,
-                an initiative, or reconnecting with fellow
-                Olivetians? Get in touch with us.
+                Have a question about GOSA, membership, an event, an initiative,
+                or reconnecting with fellow Olivetians? Get in touch with us.
               </p>
 
               <div className="mt-8 h-px w-20 bg-[var(--secondary)]" />
@@ -182,11 +205,21 @@ const Contact = () => {
               Olivet Heights
             </h3>
 
-            <p className="mt-3 text-sm leading-7 text-[var(--text-muted)]">
-              Olivet Baptist High School
-              <br />
-              Oyo, Nigeria
+            <p className="mt-3 whitespace-pre-line text-sm leading-7 text-[var(--text-muted)]">
+              {address}
             </p>
+
+            {mapUrl && (
+              <a
+                href={mapUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-5 inline-flex items-center gap-2 border-b border-black/15 pb-1.5 text-xs font-semibold uppercase tracking-[0.12em] transition hover:border-[var(--secondary)] hover:text-[var(--primary)]"
+              >
+                Get Directions
+                <ArrowRight size={14} />
+              </a>
+            )}
 
             <Link
               to="/about-school"
@@ -216,10 +249,10 @@ const Contact = () => {
             </h3>
 
             <a
-              href="mailto:info@olivetnosa.org"
+              href={`mailto:${email}`}
               className="mt-3 block break-all text-sm text-[var(--primary)] transition hover:text-[var(--secondary)]"
             >
-              info@olivetnosa.org
+              {email}
             </a>
 
             <p className="mt-2 text-sm leading-7 text-[var(--text-muted)]">
@@ -245,10 +278,18 @@ const Contact = () => {
               Speak with us
             </h3>
 
-            {/* Replace with the official number when available */}
-            <p className="mt-3 text-sm text-[var(--text-muted)]">
-              Phone number to be updated.
-            </p>
+            {phone ? (
+              <a
+                href={`tel:${phoneHref}`}
+                className="mt-3 block break-all text-sm text-[var(--primary)] transition hover:text-[var(--secondary)]"
+              >
+                {phone}
+              </a>
+            ) : (
+              <p className="mt-3 text-sm text-[var(--text-muted)]">
+                Phone number to be updated.
+              </p>
+            )}
 
             <p className="mt-2 text-sm leading-7 text-[var(--text-muted)]">
               Available during official contact hours.
@@ -263,10 +304,7 @@ const Contact = () => {
       <section className="bg-[var(--primary-dark)] py-24 text-white sm:py-32 lg:py-25">
         <div className="mx-auto grid max-w-7xl gap-14 px-5 sm:px-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20 lg:px-12">
           {/* LEFT CONTENT */}
-          <div
-            className="lg:pt-4"
-            data-aos="fade-right"
-          >
+          <div className="lg:pt-4" data-aos="fade-right">
             <div className="mb-6 flex items-center gap-4">
               <span className="h-px w-10 bg-[var(--secondary)]" />
 
@@ -277,17 +315,14 @@ const Contact = () => {
 
             <h2 className="max-w-lg text-4xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-5xl">
               How can
-              <span className="block text-[var(--secondary)]">
-                we help?
-              </span>
+              <span className="block text-[var(--secondary)]">we help?</span>
             </h2>
 
             <p className="mt-7 max-w-md text-base leading-8 text-white/60 sm:text-lg">
-              Send us a message and the appropriate member of
-              the OlivetNOSA community will get back to you.
+              Send us a message and the appropriate member of the OlivetGOSA
+              community will get back to you.
             </p>
 
-            {/* Enquiry types */}
             <div className="mt-12 border-t border-white/10">
               <div className="border-b border-white/10 py-5">
                 <h3 className="text-sm font-semibold">
@@ -295,30 +330,24 @@ const Contact = () => {
                 </h3>
 
                 <p className="mt-1 text-sm leading-6 text-white/45">
-                  Questions about joining or updating your
-                  membership.
+                  Questions about joining or updating your membership.
                 </p>
               </div>
 
               <div className="border-b border-white/10 py-5">
-                <h3 className="text-sm font-semibold">
-                  NOSA initiatives
-                </h3>
+                <h3 className="text-sm font-semibold">GOSA initiatives</h3>
 
                 <p className="mt-1 text-sm leading-6 text-white/45">
-                  Enquiries about projects, partnerships and
-                  community initiatives.
+                  Enquiries about projects, partnerships and community
+                  initiatives.
                 </p>
               </div>
 
               <div className="border-b border-white/10 py-5">
-                <h3 className="text-sm font-semibold">
-                  General enquiries
-                </h3>
+                <h3 className="text-sm font-semibold">General enquiries</h3>
 
                 <p className="mt-1 text-sm leading-6 text-white/45">
-                  Anything else you would like to ask or share
-                  with us.
+                  Anything else you would like to ask or share with us.
                 </p>
               </div>
             </div>
@@ -341,9 +370,8 @@ const Contact = () => {
                 </h3>
 
                 <p className="mt-3 max-w-md text-sm leading-7 text-[var(--text-muted)]">
-                  Thank you for reaching out to OlivetGOSA.
-                  Your message has been received and someone
-                  from the team will get back to you.
+                  Thank you for reaching out to OlivetGOSA. Your message has
+                  been received and someone from the team will get back to you.
                 </p>
 
                 <button
@@ -355,11 +383,7 @@ const Contact = () => {
                 </button>
               </div>
             ) : (
-              <form
-                onSubmit={handleSubmit}
-                className="space-y-7"
-              >
-                {/* Name */}
+              <form onSubmit={handleSubmit} className="space-y-7">
                 <div>
                   <label
                     htmlFor="name"
@@ -378,7 +402,6 @@ const Contact = () => {
                   />
                 </div>
 
-                {/* Email */}
                 <div>
                   <label
                     htmlFor="email"
@@ -397,7 +420,6 @@ const Contact = () => {
                   />
                 </div>
 
-                {/* Subject */}
                 <div>
                   <label
                     htmlFor="subject"
@@ -417,29 +439,14 @@ const Contact = () => {
                       Select a subject
                     </option>
 
-                    <option value="membership">
-                      Membership
-                    </option>
-
-                    <option value="event">
-                      Events
-                    </option>
-
-                    <option value="initiative">
-                      GOSA Initiative
-                    </option>
-
-                    <option value="partnership">
-                      Partnership
-                    </option>
-
-                    <option value="general">
-                      General Enquiry
-                    </option>
+                    <option value="membership">Membership</option>
+                    <option value="event">Events</option>
+                    <option value="initiative">GOSA Initiative</option>
+                    <option value="partnership">Partnership</option>
+                    <option value="general">General Enquiry</option>
                   </select>
                 </div>
 
-                {/* Message */}
                 <div>
                   <label
                     htmlFor="message"
@@ -458,7 +465,6 @@ const Contact = () => {
                   />
                 </div>
 
-                {/* Submit */}
                 <button
                   type="submit"
                   className="inline-flex w-full items-center justify-center gap-3 bg-[var(--primary-dark)] px-6 py-4 text-sm font-semibold text-white transition hover:bg-[var(--primary)]"
@@ -493,9 +499,8 @@ const Contact = () => {
           </h2>
 
           <p className="mx-auto mt-5 max-w-xl text-base leading-8 text-[var(--text-muted)]">
-            For enquiries requiring a direct response, please
-            contact the association during its official working
-            hours.
+            For enquiries requiring a direct response, please contact the
+            association during its official working hours.
           </p>
 
           <div className="mx-auto mt-8 h-px w-16 bg-black/10" />
@@ -528,9 +533,8 @@ const Contact = () => {
           </h2>
 
           <p className="mx-auto mt-7 max-w-2xl text-base leading-8 text-white/60 sm:text-lg">
-            Join the wider Olivetian community and stay
-            connected with generations of people who share the
-            same story.
+            Join the wider Olivetian community and stay connected with
+            generations of people who share the same story.
           </p>
 
           <Link

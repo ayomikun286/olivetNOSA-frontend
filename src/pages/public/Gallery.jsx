@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import AOS from "aos";
@@ -5,8 +6,8 @@ import "aos/dist/aos.css";
 
 import Navbar from "../../components/public/Navbar";
 import Footer from "../../components/public/footer";
-import PageTitle  from "../../components/common/PageTitle.jsx";
-
+import PageTitle from "../../components/common/PageTitle.jsx";
+import { getPublicWebsiteContent } from "../../services/authService.js";
 
 import {
   ArrowRight,
@@ -17,7 +18,6 @@ import {
 } from "lucide-react";
 
 // const galleryImages = [
-  
 //   {
 //     id: 1,
 //     image: "/images/olivetNOSA-2.jpg",
@@ -25,7 +25,6 @@ import {
 //     category: "Olivet",
 //     size: "large",
 //   },
-
 //   {
 //     id: 2,
 //     image: "/images/olivetNOSA-6.jpg",
@@ -33,7 +32,6 @@ import {
 //     category: "Community",
 //     size: "normal",
 //   },
-
 //   {
 //     id: 3,
 //     image: "/images/olivetNOSA-am.jpg",
@@ -90,54 +88,85 @@ const categories = [
 
 export default function Gallery() {
   const [galleryImages, setGalleryImages] = useState([]);
-const [activeCategory, setActiveCategory] = useState("All");
-const [selectedImage, setSelectedImage] = useState(null);
-const [loading, setLoading] = useState(true);
-const [error, setError] = useState("");
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-useEffect(() => {
-  AOS.init({
-    duration: 800,
-    once: true,
-    offset: 80,
-  });
+  // CMS content
+  const [pageContent, setPageContent] = useState({});
 
-  window.scrollTo(0, 0);
-}, []);
+  useEffect(() => {
+    AOS.init({
+      duration: 800,
+      once: true,
+      offset: 80,
+    });
 
-useEffect(() => {
-  const fetchGallery = async () => {
-    try {
-      setLoading(true);
-      setError("");
+    window.scrollTo(0, 0);
+  }, []);
 
-      const API_BASE_URL =
-        import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+  // Load published Gallery CMS content
+  useEffect(() => {
+    let isMounted = true;
 
-      const response = await fetch(`${API_BASE_URL}/api/gallery`);
+    const loadPageContent = async () => {
+      try {
+        const result = await getPublicWebsiteContent("gallery");
 
-      if (!response.ok) {
-        throw new Error("Failed to load gallery images.");
+        if (isMounted && result?.success && result?.page?.content) {
+          setPageContent(result.page.content);
+        }
+      } catch (error) {
+        console.warn(
+          "Unable to load published Gallery content. Using defaults.",
+          error.message
+        );
       }
+    };
 
-      const result = await response.json();
+    loadPageContent();
 
-      console.log("Gallery fetch result:", result);
-      if (!result.success) {
-        throw new Error(result.message || "Failed to load gallery.");
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Existing gallery images API
+  useEffect(() => {
+    const fetchGallery = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const API_BASE_URL =
+          import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
+        const response = await fetch(`${API_BASE_URL}/api/gallery`);
+
+        if (!response.ok) {
+          throw new Error("Failed to load gallery images.");
+        }
+
+        const result = await response.json();
+
+        console.log("Gallery fetch result:", result);
+
+        if (!result.success) {
+          throw new Error(result.message || "Failed to load gallery.");
+        }
+
+        setGalleryImages(result.data || []);
+      } catch (err) {
+        console.error("Gallery fetch error:", err);
+        setError("We couldn't load the gallery. Please try again.");
+      } finally {
+        setLoading(false);
       }
+    };
 
-      setGalleryImages(result.data || []);
-    } catch (err) {
-      console.error("Gallery fetch error:", err);
-      setError("We couldn't load the gallery. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  fetchGallery();
-}, []);
+    fetchGallery();
+  }, []);
 
   const filteredImages =
     activeCategory === "All"
@@ -176,13 +205,9 @@ useEffect(() => {
 
   return (
     <main className="mt-0 bg-white overflow-x-hidden text-[var(--primary-dark)] md:mt-15">
-     
-     
-     
-     
-      <PageTitle title="Gallery | OlivetGOSA" />
+      <PageTitle title={`${pageContent.pageTitle || "Gallery"} | OlivetGOSA`} />
       .
-       
+
       <Navbar />
 
       {/* =====================================================
@@ -190,7 +215,7 @@ useEffect(() => {
       ====================================================== */}
       <section className="relative min-h-[90vh] overflow-hidden bg-[var(--primary-dark)] md:min-h-screen">
         <img
-          src="/images/olivetNOSA-2.jpg"
+          src={pageContent.heroImage || "/images/olivetNOSA-2.jpg"}
           alt="Olivetians"
           loading="lazy"
           className="absolute inset-0 h-full w-full object-cover"
@@ -209,10 +234,7 @@ useEffect(() => {
         <div className="absolute inset-x-0 bottom-0 border-t border-white/10" />
 
         <div className="relative z-10 mx-auto flex min-h-[90vh] max-w-7xl flex-col justify-end px-5 pb-8 sm:px-8 md:min-h-screen lg:px-12 lg:pb-10">
-          <div
-            data-aos="fade-up"
-            className="max-w-5xl"
-          >
+          <div data-aos="fade-up" className="max-w-5xl">
             {/* Eyebrow */}
             <div className="mb-7 flex items-center gap-4">
               <span className="h-px w-12 bg-[var(--secondary)]" />
@@ -236,9 +258,8 @@ useEffect(() => {
 
             {/* Description */}
             <p className="mt-8 max-w-2xl text-base leading-8 text-white/65 sm:text-lg">
-              More than photographs. A collection of people,
-              places and memories that continue to tell the
-              Olivetian story.
+              {pageContent.intro ||
+                "More than photographs. A collection of people, places and memories that continue to tell the Olivetian story."}
             </p>
           </div>
 
@@ -283,10 +304,7 @@ useEffect(() => {
             </h2>
           </div>
 
-          <div
-            data-aos="fade-up"
-            data-aos-delay="100"
-          >
+          <div data-aos="fade-up" data-aos-delay="100">
             <p className="max-w-2xl text-base leading-8 text-[var(--text-muted)] sm:text-lg">
               Every photograph carries a piece of the Olivetian
               experience — the school, the friendships, the
@@ -359,54 +377,69 @@ useEffect(() => {
             </span>
           </div>
 
-          {/* Masonry gallery */}
-          <div className="grid auto-rows-[190px] grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {filteredImages.map((item, index) => {
-              const sizeClass =
-                item.size === "large"
-                  ? "sm:col-span-2 sm:row-span-2"
-                  : item.size === "tall"
-                    ? "sm:row-span-2"
-                    : "row-span-1";
+          {/* Existing gallery loading/error state retained */}
+          {loading ? (
+            <p className="py-12 text-center text-sm text-[var(--text-muted)]">
+              Loading gallery...
+            </p>
+          ) : error ? (
+            <p className="py-12 text-center text-sm text-red-600">
+              {error}
+            </p>
+          ) : filteredImages.length === 0 ? (
+            <p className="py-12 text-center text-sm text-[var(--text-muted)]">
+              No photographs found in this category.
+            </p>
+          ) : (
+            /* Masonry gallery */
+            <div className="grid auto-rows-[190px] grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {filteredImages.map((item, index) => {
+                const sizeClass =
+                  item.size === "large"
+                    ? "sm:col-span-2 sm:row-span-2"
+                    : item.size === "tall"
+                      ? "sm:row-span-2"
+                      : "row-span-1";
 
-              return (
-                <button
-                  key={item._id}
-                  type="button"
-                  onClick={() => setSelectedImage(item)}
-                  className={`group relative overflow-hidden bg-[var(--primary-dark)] text-left ${sizeClass}`}
-                  data-aos="fade-up"
-                  data-aos-delay={(index % 4) * 70}
-                >
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    loading="lazy"
-                    className="absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-[1.04]"
-                  />
+                return (
+                  <button
+                    key={item._id}
+                    type="button"
+                    onClick={() => setSelectedImage(item)}
+                    className={`group relative overflow-hidden bg-[var(--primary-dark)] text-left ${sizeClass}`}
+                    data-aos="fade-up"
+                    data-aos-delay={(index % 4) * 70}
+                  >
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      loading="lazy"
+                      className="absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-[1.04]"
+                    />
 
-                  {/* Image overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[var(--primary-dark)]/90 via-[var(--primary-dark)]/10 to-transparent opacity-75 transition duration-500 group-hover:opacity-100" />
+                    {/* Image overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[var(--primary-dark)]/90 via-[var(--primary-dark)]/10 to-transparent opacity-75 transition duration-500 group-hover:opacity-100" />
 
-                  {/* Image content */}
-                  <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
-                    <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--secondary)]">
-                      {item.category}
-                    </p>
+                    {/* Image content */}
+                    <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
+                      <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--secondary)]">
+                        {item.category}
+                      </p>
 
-                    <h3 className="text-xl font-semibold tracking-tight text-white sm:text-2xl">
-                      {item.title}
-                    </h3>
+                      <h3 className="text-xl font-semibold tracking-tight text-white sm:text-2xl">
+                        {item.title}
+                      </h3>
 
-                    <div className="mt-4 flex items-center gap-2 text-xs font-medium uppercase tracking-[0.12em] text-white/65 opacity-0 transition duration-300 group-hover:opacity-100">
-                      View photograph
-                      <ArrowRight size={14} />
+                      <div className="mt-4 flex items-center gap-2 text-xs font-medium uppercase tracking-[0.12em] text-white/65 opacity-0 transition duration-300 group-hover:opacity-100">
+                        View photograph
+                        <ArrowRight size={14} />
+                      </div>
                     </div>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
       </section>
 
@@ -434,10 +467,7 @@ useEffect(() => {
             </div>
 
             {/* Content */}
-            <div
-              data-aos="fade-left"
-              data-aos-delay="100"
-            >
+            <div data-aos="fade-left" data-aos-delay="100">
               <div className="mb-6 flex items-center gap-4">
                 <span className="h-px w-10 bg-[var(--secondary)]" />
 

@@ -1,12 +1,13 @@
-import { useEffect } from "react";
+
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
 import Navbar from "../../components/public/Navbar";
 import Footer from "../../components/public/footer";
-import PageTitle  from "../../components/common/PageTitle.jsx";
-
+import PageTitle from "../../components/common/PageTitle.jsx";
+import { getPublicWebsiteContent } from "../../services/authService.js";
 
 import {
   ArrowRight,
@@ -14,11 +15,37 @@ import {
   Heart,
   Users,
   HandHeart,
-  Quote,
   Network,
 } from "lucide-react";
 
 const Olivetians = () => {
+  const [pageContent, setPageContent] = useState({});
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadPageContent = async () => {
+      try {
+        const result = await getPublicWebsiteContent("olivetians");
+
+        if (isMounted && result?.success && result?.page?.content) {
+          setPageContent(result.page.content);
+        }
+      } catch (error) {
+        console.warn(
+          "Unable to load published Olivetians content. Using defaults.",
+          error.message
+        );
+      }
+    };
+
+    loadPageContent();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   useEffect(() => {
     AOS.init({
       duration: 850,
@@ -74,8 +101,10 @@ const Olivetians = () => {
 
   return (
     <main className="overflow-x-hidden bg-white text-[var(--primary-dark)] mt-0 md:mt-15">
-     
-      <PageTitle title="Olivetians | OlivetGOSA" />
+      <PageTitle
+        title={`${pageContent.pageTitle || "Olivetians"} | OlivetGOSA`}
+      />
+
       <Navbar />
 
       {/* =========================================================
@@ -84,7 +113,7 @@ const Olivetians = () => {
       <section className="relative min-h-[82vh] overflow-hidden bg-[var(--primary-dark)]">
         <div className="absolute inset-0">
           <img
-            src="/images/olivetNOSA-6.jpg"
+            src={pageContent.heroImage || "/images/olivetNOSA-6.jpg"}
             alt="Olivetians"
             className="h-full w-full object-cover"
           />
@@ -95,10 +124,7 @@ const Olivetians = () => {
         </div>
 
         <div className="relative mx-auto flex min-h-[82vh] max-w-7xl items-end px-6 pb-20 pt-36 sm:px-8 lg:px-12 lg:pb-28">
-          <div
-            className="max-w-4xl"
-            data-aos="fade-up"
-          >
+          <div className="max-w-4xl" data-aos="fade-up">
             <div className="mb-6 flex items-center gap-3">
               <span className="h-px w-10 bg-[var(--secondary)]" />
 
@@ -121,9 +147,8 @@ const Olivetians = () => {
             </h1>
 
             <p className="mt-8 max-w-2xl text-base leading-8 text-white/75 sm:text-lg">
-              Olivetians are more than former students. We are a community
-              connected by shared memories, enduring values and a school that
-              continues to live in us.
+              {pageContent.intro ||
+                "Olivetians are more than former students. We are a community connected by shared memories, enduring values and a school that continues to live in us."}
             </p>
 
             <div className="mt-10 flex flex-wrap gap-4">
@@ -204,10 +229,7 @@ const Olivetians = () => {
       ========================================================= */}
       <section className="border-y border-slate-200 bg-[var(--background-soft)] py-20 sm:py-24">
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
-          <div
-            className="max-w-2xl"
-            data-aos="fade-up"
-          >
+          <div className="max-w-2xl" data-aos="fade-up">
             <span className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--secondary)]">
               What Connects Us
             </span>
@@ -238,8 +260,6 @@ const Olivetians = () => {
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    
-
                     <Icon
                       size={22}
                       strokeWidth={1.6}
@@ -338,7 +358,7 @@ const Olivetians = () => {
       {/* =========================================================
           GLOBAL OLIVETIANS
       ========================================================= */}
-      <section className="bg-[var(--primary-dark)] py-24 sm:py-28 lg:py-22">g
+      <section className="bg-[var(--primary-dark)] py-24 sm:py-28 lg:py-22">
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
           <div className="grid gap-14 lg:grid-cols-[1fr_0.9fr] lg:items-center lg:gap-20">
             <div data-aos="fade-right">
@@ -387,10 +407,7 @@ const Olivetians = () => {
               </div>
             </div>
 
-            <div
-              data-aos="fade-left"
-              className="relative"
-            >
+            <div data-aos="fade-left" className="relative">
               <div className="overflow-hidden">
                 <img
                   src="/images/olivetNOSA-2.jpg"
@@ -448,10 +465,7 @@ const Olivetians = () => {
           </div>
 
           <div className="mt-12 grid gap-8 lg:grid-cols-3">
-            <article
-              data-aos="fade-up"
-              className="group"
-            >
+            <article data-aos="fade-up" className="group">
               <div className="aspect-[4/3] overflow-hidden">
                 <img
                   src="/images/olivetNOSA-student.jpg"
@@ -557,10 +571,7 @@ const Olivetians = () => {
 
               <div className="absolute bottom-8 left-8 flex items-center gap-3 text-white">
                 <span className="flex h-11 w-11 items-center justify-center bg-[var(--secondary)] text-[var(--primary-dark)]">
-                  <Heart
-                    size={21}
-                    fill="currentColor"
-                  />
+                  <Heart size={21} fill="currentColor" />
                 </span>
 
                 <span className="text-xs font-semibold uppercase tracking-[0.2em]">
@@ -603,8 +614,6 @@ const Olivetians = () => {
         </div>
       </section>
 
-    
-
       {/* =========================================================
           FINAL CTA
       ========================================================= */}
@@ -624,10 +633,7 @@ const Olivetians = () => {
             data-aos="fade-up"
             className="mx-auto flex h-14 w-14 items-center justify-center bg-[var(--secondary)] text-[var(--primary-dark)]"
           >
-            <Network
-              size={24}
-              strokeWidth={1.8}
-            />
+            <Network size={24} strokeWidth={1.8} />
           </div>
 
           <span

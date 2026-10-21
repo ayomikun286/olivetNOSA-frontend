@@ -1,12 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
 import Navbar from "../../components/public/Navbar";
 import Footer from "../../components/public/footer";
-import PageTitle  from "../../components/common/PageTitle.jsx";
-
+import PageTitle from "../../components/common/PageTitle.jsx";
+import { getPublicWebsiteContent } from "../../services/authService.js";
 import {
   ArrowDown,
   ArrowUpRight,
@@ -19,6 +19,8 @@ import {
 } from "lucide-react";
 
 const AboutNOSA = () => {
+  const [pageContent, setPageContent] = useState({});
+
   useEffect(() => {
     AOS.init({
       duration: 800,
@@ -27,13 +29,38 @@ const AboutNOSA = () => {
     });
   }, []);
 
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadPageContent = async () => {
+      try {
+        const result = await getPublicWebsiteContent("about-gosa");
+
+        if (isMounted && result?.success && result?.page?.content) {
+          setPageContent(result.page.content);
+        }
+      } catch (error) {
+        console.warn(
+          "Unable to load published About GOSA content. Using defaults.",
+          error.message
+        );
+      }
+    };
+
+    loadPageContent();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   return (
     <>
       <Navbar />
 
       <main className="overflow-x-hidden bg-white text-[var(--primary-dark)] mt-0 md:mt-15">
-         <PageTitle title="About GOSA | OlivetGOSA" />
-        
+        <PageTitle title={pageContent.pageTitle || "About GOSA | OlivetGOSA"} />
+
         {/* =========================================================
             HERO
         ========================================================== */}
@@ -41,7 +68,7 @@ const AboutNOSA = () => {
           {/* Background image */}
           <div className="absolute inset-0">
             <img
-              src="/images/olivetNOSA-15.jpg"
+              src={pageContent.heroImage || "/images/olivetNOSA-15.jpg"}
               alt=""
               className="h-full w-full object-cover"
             />
@@ -55,7 +82,7 @@ const AboutNOSA = () => {
 
           <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col justify-end px-5 sm:px-8 lg:px-12">
             <div className="grid gap-14 pb-20 pt-32 lg:grid-cols-[1fr_320px] lg:items-end lg:gap-16">
-              {/* Main copy */}
+
               <div>
                 <div
                   data-aos="fade-right"
@@ -85,10 +112,8 @@ const AboutNOSA = () => {
                   data-aos-delay="200"
                   className="mt-7 max-w-2xl text-base leading-7 text-white/75 sm:text-lg sm:leading-8"
                 >
-                  The Olivet Baptist High School Old Students Association
-                  brings together the people who once shared the same
-                  classrooms, grounds and memories — and keeps that connection
-                  alive long after school.
+                  {pageContent.intro ||
+                    "The Olivet Baptist High School Old Students Association brings together the people who once shared the same classrooms, grounds and memories — and keeps that connection alive long after school."}
                 </p>
 
                 <div
@@ -208,7 +233,7 @@ const AboutNOSA = () => {
                   data-aos="fade-up"
                   className="max-w-5xl text-4xl font-semibold leading-[1.02] tracking-[-0.04em] sm:text-5xl lg:text-6xl"
                 >
-                  The Olivetian bond is bigger than distance.
+                  {pageContent.historyTitle || "The Olivetian bond is bigger than distance."}
                 </h2>
 
                 <p
@@ -216,10 +241,8 @@ const AboutNOSA = () => {
                   data-aos-delay="100"
                   className="mt-8 max-w-3xl text-base leading-7 text-[var(--text-muted)] sm:text-lg sm:leading-8"
                 >
-                  Leaving school does not mean leaving behind everything that
-                  happened there. The friendships, lessons, experiences and
-                  values we gained at Olivet continue to become part of who we
-                  are.
+                  {pageContent.historyText ||
+                    "Leaving school does not mean leaving behind everything that happened there. The friendships, lessons, experiences and values we gained at Olivet continue to become part of who we are."}
                 </p>
 
                 <p
@@ -421,10 +444,19 @@ const AboutNOSA = () => {
                   data-aos-delay="100"
                   className="mt-8 max-w-2xl text-base leading-7 text-[var(--text-muted)] sm:text-lg sm:leading-8"
                 >
-                  GOSA is more than a name or an organisation. It is the
-                  structure through which Olivetians continue to connect,
-                  contribute and celebrate the community they share.
+                  {pageContent.mission ||
+                    "GOSA is more than a name or an organisation. It is the structure through which Olivetians continue to connect, contribute and celebrate the community they share."}
                 </p>
+
+                {pageContent.objectives && (
+                  <p
+                    data-aos="fade-up"
+                    data-aos-delay="150"
+                    className="mt-5 max-w-2xl text-base leading-7 text-[var(--text-muted)] sm:text-lg sm:leading-8"
+                  >
+                    {pageContent.objectives}
+                  </p>
+                )}
 
                 <div className="mt-16 border-t border-black/10">
                   <div
@@ -773,9 +805,8 @@ const AboutNOSA = () => {
                   data-aos-delay="100"
                   className="mt-9 max-w-3xl text-base leading-7 text-white/70 sm:text-lg sm:leading-8"
                 >
-                  The future of GOSA is not simply about becoming bigger. It is
-                  about becoming more connected, more useful to its members and
-                  more meaningful to the generations that follow.
+                  {pageContent.vision ||
+                    "The future of GOSA is not simply about becoming bigger. It is about becoming more connected, more useful to its members and more meaningful to the generations that follow."}
                 </p>
 
                 <div

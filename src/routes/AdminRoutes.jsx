@@ -17,6 +17,7 @@ import Jobs from "../pages/admin/Jobs.jsx";
 import AdminNotifications from "../pages/admin/AdminNotifications.jsx";
 import AdminSupport from "../pages/admin/AdminSupport.jsx";
 
+import WebsiteContent from "../pages/admin/WebsiteContent.jsx";
 import AdminSettings from "../pages/admin/AdminSettings.jsx";
 import Team from "../pages/admin/Team.jsx";
 import Gallery from "../pages/admin/Gallery.jsx";
@@ -45,6 +46,11 @@ const AdminRoutes = () => {
           <Route
             path="notifications"
             element={<AdminNotifications />}
+          />
+
+          <Route
+            path="website-content"
+            element={<WebsiteContent />}
           />
 
           <Route path="settings" element={<AdminSettings />} />

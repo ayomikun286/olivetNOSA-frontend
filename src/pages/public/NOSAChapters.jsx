@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { getPublicWebsiteContent } from "../../services/authService.js";
 
 import Navbar from "../../components/public/Navbar";
 import Footer from "../../components/public/footer";
@@ -15,12 +16,43 @@ import {
   HeartHandshake,
   Network,
 } from "lucide-react";
-import PageTitle  from "../../components/common/PageTitle.jsx";
+import PageTitle from "../../components/common/PageTitle.jsx";
 
 export default function NOSAChapters() {
+
+  const [pageContent, setPageContent] = useState({});
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadPageContent = async () => {
+      try {
+        const result = await getPublicWebsiteContent("leaders-chapters");
+
+        if (isMounted && result?.success && result?.page?.content) {
+          setPageContent(result.page.content);
+        }
+      } catch (error) {
+        console.warn(
+          "Unable to load published Leaders & Chapters content. Using defaults.",
+          error.message
+        );
+      }
+    };
+
+    loadPageContent();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+
   return (
     <main className="min-h-screen bg-white text-(--primary-dark) mt-0 md:mt-15 overflow-x-hidden">
-      <PageTitle title="Chapters | OlivetGOSA" />
+      <PageTitle
+  title={`${pageContent.pageTitle || "Chapters"} | OlivetGOSA`}
+/>
       {/* =========================================================
           NAVBAR
       ========================================================= */}
@@ -33,7 +65,7 @@ export default function NOSAChapters() {
       ========================================================= */}
       <section className="relative flex min-h-[92vh] items-end overflow-hidden">
         <img
-          src="/images/olivetNOSA-6.jpg"
+          src={pageContent.heroImage || "/images/olivetNOSA-6.jpg"}
           alt="Olivetians gathered together"
           className="absolute inset-0 h-full w-full object-cover"
         />
@@ -79,11 +111,8 @@ export default function NOSAChapters() {
                 className="mt-10 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between"
               >
                 <p className="max-w-xl text-base leading-8 text-white/75 sm:text-lg">
-                  GOSA chapters bring Olivetians together within their local
-                  communities while keeping them connected to the wider
-                  National Old Students' Association.
-                </p>
-
+  {pageContent.intro || "GOSA chapters bring Olivetians together within their local  communities while keeping them connected to the wider  National Old Students' Association."}
+</p>
                 <a
                   href="#chapter-network"
                   className="

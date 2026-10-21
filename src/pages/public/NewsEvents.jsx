@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import AOS from "aos";
@@ -8,6 +9,7 @@ import Footer from "../../components/public/footer";
 import PageTitle from "../../components/common/PageTitle.jsx";
 
 import { getPublishedNewsEvents } from "../../services/news-eventsApi.js";
+import { getPublicWebsiteContent } from "../../services/authService.js";
 
 import {
   ArrowRight,
@@ -49,6 +51,9 @@ export default function NewsEvents() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // CMS content
+  const [pageContent, setPageContent] = useState({});
+
   useEffect(() => {
     const fetchNewsEvents = async () => {
       try {
@@ -70,6 +75,32 @@ export default function NewsEvents() {
     };
 
     fetchNewsEvents();
+  }, []);
+
+  // Load published News CMS content
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadPageContent = async () => {
+      try {
+        const result = await getPublicWebsiteContent("news");
+
+        if (isMounted && result?.success && result?.page?.content) {
+          setPageContent(result.page.content);
+        }
+      } catch (error) {
+        console.warn(
+          "Unable to load published News content. Using defaults.",
+          error.message
+        );
+      }
+    };
+
+    loadPageContent();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -105,10 +136,17 @@ export default function NewsEvents() {
 
   const archiveNews = publishedNews.slice(3);
 
+  const pageTitle = pageContent.pageTitle || "News & Events";
+  const pageIntro =
+    pageContent.intro ||
+    "Stories, gatherings and developments from a community that continues to grow, remember and move forward together.";
+  const heroImage =
+    pageContent.heroImage || "/images/olivetNOSA-6.jpg";
+
   if (loading) {
     return (
       <main className="min-h-screen bg-white">
-        <PageTitle title="News & Events | OlivetGOSA" />
+        <PageTitle title={`${pageTitle} | OlivetGOSA`} />
         <Navbar />
 
         <div className="flex min-h-[60vh] items-center justify-center">
@@ -125,7 +163,7 @@ export default function NewsEvents() {
   if (error) {
     return (
       <main className="min-h-screen bg-white">
-        <PageTitle title="News & Events | OlivetGOSA" />
+        <PageTitle title={`${pageTitle} | OlivetGOSA`} />
         <Navbar />
 
         <div className="flex min-h-[60vh] items-center justify-center px-5">
@@ -141,7 +179,7 @@ export default function NewsEvents() {
 
   return (
     <main className="mt-0 bg-white text-[var(--primary-dark)] md:mt-15">
-      <PageTitle title="News & Events | OlivetGOSA" />
+      <PageTitle title={`${pageTitle} | OlivetGOSA`} />
       <Navbar />
 
       {/* =====================================================
@@ -150,7 +188,7 @@ export default function NewsEvents() {
 
       <section className="relative min-h-screen overflow-hidden bg-[var(--primary-dark)]">
         <img
-          src="/images/olivetNOSA-6.jpg"
+          src={heroImage}
           alt="Olivetians"
           className="absolute inset-0 h-full w-full object-cover"
         />
@@ -167,7 +205,7 @@ export default function NewsEvents() {
               <span className="h-px w-12 bg-[var(--secondary)]" />
 
               <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/70">
-                News & Events
+                {pageTitle}
               </p>
             </div>
 
@@ -179,8 +217,7 @@ export default function NewsEvents() {
             </h1>
 
             <p className="mt-8 max-w-2xl text-base leading-8 text-white/65 sm:text-lg">
-              Stories, gatherings and developments from a community that
-              continues to grow, remember and move forward together.
+              {pageIntro}
             </p>
           </div>
 
@@ -446,9 +483,7 @@ export default function NewsEvents() {
               >
                 <div>
                   <div className="mb-3 flex items-center gap-3 text-xs font-medium uppercase tracking-[0.16em] text-[var(--text-muted)]">
-                    <span>
-                      {formatDate(news.publishedAt)}
-                    </span>
+                    <span>{formatDate(news.publishedAt)}</span>
 
                     <span className="h-px w-7 bg-[var(--secondary)]" />
 

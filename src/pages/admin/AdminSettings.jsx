@@ -3,13 +3,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import {
   Settings,
   Building2,
-  Users,
-  Wallet,
-  Bell,
-  ShieldCheck,
   Save,
   RefreshCw,
-  Info,
   CheckCircle2,
   AlertCircle,
   Globe,
@@ -17,7 +12,9 @@ import {
   Phone,
   MapPin,
   Image,
+  Upload,
   RotateCcw,
+  X,
 } from "lucide-react";
 
 import {
@@ -30,15 +27,8 @@ import {
 import {
   getGeneralSettings,
   updateGeneralSettings,
+  uploadWebsiteContentImage,
 } from "../../services/adminService.js";
-
-const sections = [
-  { id: "general", label: "General", icon: Building2 },
-  { id: "membership", label: "Membership", icon: Users },
-  { id: "finance", label: "Finance", icon: Wallet },
-  { id: "notifications", label: "Notifications", icon: Bell },
-  { id: "security", label: "Security", icon: ShieldCheck },
-];
 
 const emptySettings = {
   associationName: "ONW GOSA",
@@ -59,8 +49,7 @@ const emptySettings = {
 const inputClass =
   "w-full h-9 rounded border border-(--border) bg-(--bg-white) px-3 text-xs text-(--primary) outline-none transition-colors focus:border-(--primary)";
 
-const labelClass =
-  "mb-1.5 block text-xs font-medium text-(--primary)";
+const labelClass = "mb-1.5 block text-xs font-medium text-(--primary)";
 
 const normalizeSettings = (data = {}) => ({
   ...emptySettings,
@@ -71,30 +60,16 @@ const normalizeSettings = (data = {}) => ({
   },
 });
 
-const Field = ({
-  label,
-  icon: Icon,
-  hint,
-  ...props
-}) => (
+const Field = ({ label, icon: Icon, hint, ...props }) => (
   <div className="min-w-0">
-    <label
-      htmlFor={props.id || props.name}
-      className={labelClass}
-    >
+    <label htmlFor={props.id || props.name} className={labelClass}>
       <span className="inline-flex items-center gap-1.5">
-        {Icon && (
-          <Icon size={13} className="text-(--text-muted)" />
-        )}
+        {Icon && <Icon size={13} className="text-(--text-muted)" />}
         {label}
       </span>
     </label>
 
-    <input
-      id={props.id || props.name}
-      className={inputClass}
-      {...props}
-    />
+    <input id={props.id || props.name} className={inputClass} {...props} />
 
     {hint && (
       <p className="mt-1.5 text-[11px] leading-5 text-(--text-muted)">
@@ -104,25 +79,13 @@ const Field = ({
   </div>
 );
 
-const SettingsNotice = ({ children }) => (
-  <div className="flex items-start gap-2.5 rounded border border-(--border) bg-(--bg-light) px-4 py-3">
-    <Info
-      size={16}
-      className="mt-0.5 shrink-0 text-(--primary)"
-    />
-    <p className="text-xs leading-5 text-(--secondary)">
-      {children}
-    </p>
-  </div>
-);
-
 const AdminSettings = () => {
-  const [activeSection, setActiveSection] = useState("general");
   const [settings, setSettings] = useState(emptySettings);
   const [savedSettings, setSavedSettings] = useState(emptySettings);
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -176,6 +139,62 @@ const AdminSettings = () => {
     setSuccess("");
   };
 
+  const handleLogoUpload = async (event) => {
+    const input = event.target;
+    const file = input.files?.[0];
+
+    // Allow the same file to be selected again.
+    input.value = "";
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setError("Please select a valid image file.");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setError("Logo image must not exceed 5 MB.");
+      return;
+    }
+
+    setUploadingLogo(true);
+    setError("");
+    setSuccess("");
+
+    try {
+      const data = await uploadWebsiteContentImage(file);
+
+      // Handle common response formats returned by upload endpoints.
+      const logoUrl =
+        data?.imageUrl ||
+        data?.url ||
+        data?.secure_url ||
+        data?.image?.url ||
+        data?.image?.secure_url ||
+        data?.data?.imageUrl ||
+        data?.data?.url ||
+        data?.data?.secure_url;
+
+      if (typeof logoUrl !== "string" || !logoUrl.trim()) {
+        throw new Error(
+          "The upload response did not contain an image URL."
+        );
+      }
+
+      setSettings((current) => ({
+        ...current,
+        logoUrl: logoUrl.trim(),
+      }));
+
+      setSuccess("Logo uploaded. Click Save Changes to apply it.");
+    } catch (err) {
+      setError(err.message || "Failed to upload logo.");
+    } finally {
+      setUploadingLogo(false);
+    }
+  };
+
   const handleReset = () => {
     setSettings(normalizeSettings(savedSettings));
     setError("");
@@ -206,13 +225,9 @@ const AdminSettings = () => {
   const hasChanges =
     JSON.stringify(settings) !== JSON.stringify(savedSettings);
 
-  const activeLabel =
-    sections.find((section) => section.id === activeSection)?.label ||
-    "General";
-
-  const filledSocialLinks = Object.values(
-    settings.socialLinks
-  ).filter((value) => value.trim()).length;
+  const filledSocialLinks = Object.values(settings.socialLinks).filter(
+    (value) => value.trim()
+  ).length;
 
   const completedContactFields = [
     settings.contactEmail,
@@ -227,24 +242,21 @@ const AdminSettings = () => {
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <Settings
-              size={21}
-              className="text-(--primary)"
-            />
+            <Settings size={21} className="text-(--primary)" />
             <h1 className="text-xl font-semibold text-(--primary)">
               Admin Settings
             </h1>
           </div>
 
           <p className="mt-1 text-sm text-(--secondary)">
-            Manage association information and portal configuration.
+            Manage the association&apos;s official information and branding.
           </p>
         </div>
 
         <button
           type="button"
           onClick={loadSettings}
-          disabled={loading || saving}
+          disabled={loading || saving || uploadingLogo}
           className="inline-flex h-9 items-center justify-center gap-2 rounded border border-(--border) px-3.5 text-xs font-semibold text-(--primary) transition-colors hover:bg-(--bg-soft) disabled:cursor-not-allowed disabled:opacity-50"
         >
           <RefreshCw
@@ -266,9 +278,7 @@ const AdminSettings = () => {
               size={16}
               className="mt-0.5 shrink-0 text-(--danger)"
             />
-            <p className="text-xs text-(--danger)">
-              {error}
-            </p>
+            <p className="text-xs text-(--danger)">{error}</p>
           </div>
 
           <button
@@ -277,7 +287,7 @@ const AdminSettings = () => {
             className="text-(--danger)"
             aria-label="Dismiss error"
           >
-            <span className="text-sm">×</span>
+            <X size={15} />
           </button>
         </div>
       )}
@@ -291,9 +301,7 @@ const AdminSettings = () => {
             size={16}
             className="mt-0.5 shrink-0 text-(--success)"
           />
-          <p className="text-xs text-(--success)">
-            {success}
-          </p>
+          <p className="text-xs text-(--success)">{success}</p>
         </div>
       )}
 
@@ -329,309 +337,294 @@ const AdminSettings = () => {
         <OverviewCard
           icon={Settings}
           label="Configuration"
-          value={`${sections.length} sections`}
-          description="Settings categories"
+          value="General"
+          description="Association settings"
           iconBg="bg-(--warning-light)"
           iconClass="text-(--warning)"
         />
       </div>
 
-      {/* MAIN SETTINGS LAYOUT */}
-      <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[220px_minmax(0,1fr)]">
-        {/* SIDEBAR */}
-        <aside className="overflow-hidden rounded border border-(--border) bg-(--bg-white)">
-          <div className="border-b border-(--border) px-4 py-3">
-            <h2 className="text-xs font-semibold text-(--primary)">
-              Configuration
+      {/* GENERAL SETTINGS PANEL */}
+      <section className="min-w-0 overflow-hidden rounded border border-(--border) bg-(--bg-white)">
+        <div className="flex flex-col gap-3 border-b border-(--border) px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+          <div>
+            <h2 className="text-sm font-semibold text-(--primary)">
+              General Settings
             </h2>
-            <p className="mt-1 text-[11px] text-(--secondary)">
-              Manage portal settings
+            <p className="mt-1 text-xs text-(--secondary)">
+              Manage the association&apos;s official identity and contact details.
             </p>
           </div>
 
-          <nav className="space-y-1 p-2">
-            {sections.map(({ id, label, icon: Icon }) => (
-              <button
-                key={id}
-                type="button"
-                onClick={() => {
-                  setActiveSection(id);
-                  setError("");
-                  setSuccess("");
-                }}
-                className={`flex w-full items-center gap-2.5 rounded px-3 py-2.5 text-left text-xs font-medium transition-colors ${
-                  activeSection === id
-                    ? "bg-(--primary-light) text-(--primary)"
-                    : "text-(--secondary) hover:bg-(--bg-soft) hover:text-(--primary)"
-                }`}
+          <span className="inline-flex w-fit items-center gap-1.5 rounded bg-(--success-light) px-2.5 py-1 text-[10px] font-semibold text-(--success)">
+            <CheckCircle2 size={12} />
+            Database connected
+          </span>
+        </div>
+
+        {loading ? (
+          <div className="flex min-h-64 items-center justify-center gap-2 text-xs text-(--secondary)">
+            <RefreshCw size={16} className="animate-spin" />
+            Loading settings...
+          </div>
+        ) : (
+          <form onSubmit={handleSave} className="p-4 sm:p-5">
+            <div className="space-y-6">
+              {/* ASSOCIATION IDENTITY */}
+              <SettingsSection
+                title="Association Identity"
+                description="The official name and branding details for the association."
               >
-                <Icon size={16} />
-                <span>{label}</span>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <Field
+                    label="Association Name"
+                    name="associationName"
+                    value={settings.associationName}
+                    onChange={handleChange}
+                    required
+                    maxLength={150}
+                    placeholder="ONW GOSA"
+                  />
 
-                {activeSection === id && (
-                  <span className="ml-auto h-1.5 w-1.5 rounded-full bg-(--primary)" />
-                )}
-              </button>
-            ))}
-          </nav>
+                  <Field
+                    label="Short Name"
+                    name="shortName"
+                    value={settings.shortName}
+                    onChange={handleChange}
+                    required
+                    maxLength={50}
+                    placeholder="ONW GOSA"
+                  />
 
-          <div className="border-t border-(--border) p-3">
-            <p className="text-[10px] leading-5 text-(--text-muted)">
-              Changes should be tested before they are used to control
-              important portal features.
-            </p>
-          </div>
-        </aside>
+                  {/* LOGO UPLOAD */}
+                  <div className="min-w-0">
+                    <label className={labelClass}>
+                      <span className="inline-flex items-center gap-1.5">
+                        <Image
+                          size={13}
+                          className="text-(--text-muted)"
+                        />
+                        Association Logo
+                      </span>
+                    </label>
 
-        {/* CONTENT PANEL */}
-        <section className="min-w-0 overflow-hidden rounded border border-(--border) bg-(--bg-white)">
-          <div className="flex flex-col gap-3 border-b border-(--border) px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
-            <div>
-              <h2 className="text-sm font-semibold text-(--primary)">
-                {activeLabel} Settings
-              </h2>
+                    <div className="rounded border border-(--border) p-3">
+                      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                        <div className="flex h-20 w-24 shrink-0 items-center justify-center overflow-hidden rounded border border-(--border) bg-(--bg-soft) p-2">
+                          {settings.logoUrl ? (
+                            <img
+                              src={settings.logoUrl}
+                              alt="Association logo preview"
+                              className="max-h-full max-w-full object-contain"
+                              onError={(event) => {
+                                event.currentTarget.style.visibility = "hidden";
+                              }}
+                            />
+                          ) : (
+                            <Image
+                              size={25}
+                              className="text-(--text-muted)"
+                            />
+                          )}
+                        </div>
 
-              <p className="mt-1 text-xs text-(--secondary)">
-                {activeSection === "general"
-                  ? "Manage the association's official identity and contact details."
-                  : `Configuration options for ${activeLabel.toLowerCase()} will be connected in a later phase.`}
-              </p>
-            </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs font-medium text-(--primary)">
+                            Upload association logo
+                          </p>
 
-            {activeSection === "general" && (
-              <span className="inline-flex w-fit items-center gap-1.5 rounded bg-(--success-light) px-2.5 py-1 text-[10px] font-semibold text-(--success)">
-                <CheckCircle2 size={12} />
-                Database connected
-              </span>
-            )}
-          </div>
+                          <p className="mt-1 text-[11px] leading-5 text-(--text-muted)">
+                            Choose an image to upload to Cloudinary. Maximum size: 5 MB.
+                          </p>
 
-          {loading ? (
-            <div className="flex min-h-64 items-center justify-center gap-2 text-xs text-(--secondary)">
-              <RefreshCw size={16} className="animate-spin" />
-              Loading settings...
-            </div>
-          ) : activeSection === "general" ? (
-            <form onSubmit={handleSave} className="p-4 sm:p-5">
-              <div className="space-y-6">
-                {/* IDENTITY */}
-                <SettingsSection
-                  title="Association Identity"
-                  description="The official name and branding details for the association."
-                >
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <Field
-                      label="Association Name"
-                      name="associationName"
-                      value={settings.associationName}
-                      onChange={handleChange}
-                      required
-                      maxLength={150}
-                      placeholder="ONW GOSA"
-                    />
+                          <div className="mt-3">
+                            <label
+                              htmlFor="association-logo-upload"
+                              className={`inline-flex h-9 items-center justify-center gap-2 rounded border border-(--border) px-3 text-xs font-semibold text-(--primary) transition-colors hover:bg-(--bg-soft) ${uploadingLogo
+                                  ? "pointer-events-none opacity-50"
+                                  : "cursor-pointer"
+                                }`}
+                            >
+                              {uploadingLogo ? (
+                                <RefreshCw size={14} className="animate-spin" />
+                              ) : (
+                                <Upload size={14} />
+                              )}
+                              {uploadingLogo ? "Uploading..." : "Choose Image"}
+                            </label>
 
-                    <Field
-                      label="Short Name"
-                      name="shortName"
-                      value={settings.shortName}
-                      onChange={handleChange}
-                      required
-                      maxLength={50}
-                      placeholder="ONW GOSA"
-                    />
+                            <input
+                              id="association-logo-upload"
+                              type="file"
+                              accept="image/*"
+                              onChange={handleLogoUpload}
+                              disabled={uploadingLogo || saving}
+                              className="hidden"
+                            />
+                          </div>
+                        </div>
+                      </div>
 
-                    <Field
-                      label="Logo URL"
-                      icon={Image}
-                      name="logoUrl"
-                      type="url"
-                      value={settings.logoUrl}
-                      onChange={handleChange}
-                      maxLength={1000}
-                      placeholder="https://example.com/logo.png"
-                      hint="Use a public image URL. File uploads are not included yet."
-                    />
-
-                    <Field
-                      label="Website URL"
-                      icon={Globe}
-                      name="website"
-                      type="url"
-                      value={settings.website}
-                      onChange={handleChange}
-                      maxLength={300}
-                      placeholder="https://example.com"
-                    />
-                  </div>
-                </SettingsSection>
-
-                {/* CONTACT */}
-                <SettingsSection
-                  title="Contact Information"
-                  description="Official contact information displayed to members and visitors."
-                >
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <Field
-                      label="Contact Email"
-                      icon={Mail}
-                      name="contactEmail"
-                      type="email"
-                      value={settings.contactEmail}
-                      onChange={handleChange}
-                      maxLength={254}
-                      placeholder="contact@example.com"
-                    />
-
-                    <Field
-                      label="Contact Phone"
-                      icon={Phone}
-                      name="phone"
-                      type="tel"
-                      value={settings.phone}
-                      onChange={handleChange}
-                      maxLength={30}
-                      placeholder="+234..."
-                    />
-
-                    <div className="sm:col-span-2">
-                      <Field
-                        label="Association Address"
-                        icon={MapPin}
-                        name="address"
-                        value={settings.address}
-                        onChange={handleChange}
-                        maxLength={300}
-                        placeholder="Association office address"
-                      />
+                      {settings.logoUrl && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSettings((current) => ({
+                              ...current,
+                              logoUrl: "",
+                            }));
+                            setError("");
+                            setSuccess("");
+                          }}
+                          disabled={uploadingLogo || saving}
+                          className="mt-3 text-[11px] font-medium text-(--danger) hover:underline disabled:opacity-50"
+                        >
+                          Remove logo
+                        </button>
+                      )}
                     </div>
                   </div>
-                </SettingsSection>
 
-                {/* SOCIAL LINKS */}
-                <SettingsSection
-                  title="Social Media"
-                  description="Add the official association social media profiles."
-                >
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <Field
-                      label="Facebook"
-                      icon={FaFacebookF}
-                      name="facebook"
-                      type="url"
-                      value={settings.socialLinks.facebook}
-                      onChange={handleSocialChange}
-                      placeholder="https://facebook.com/..."
-                    />
+                  <Field
+                    label="Website URL"
+                    icon={Globe}
+                    name="website"
+                    type="url"
+                    value={settings.website}
+                    onChange={handleChange}
+                    maxLength={300}
+                    placeholder="https://example.com"
+                  />
+                </div>
+              </SettingsSection>
 
-                    <Field
-                      label="Instagram"
-                      icon={FaInstagram}
-                      name="instagram"
-                      type="url"
-                      value={settings.socialLinks.instagram}
-                      onChange={handleSocialChange}
-                      placeholder="https://instagram.com/..."
-                    />
+              {/* CONTACT INFORMATION */}
+              <SettingsSection
+                title="Contact Information"
+                description="Official contact information for members and visitors."
+              >
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <Field
+                    label="Contact Email"
+                    icon={Mail}
+                    name="contactEmail"
+                    type="email"
+                    value={settings.contactEmail}
+                    onChange={handleChange}
+                    maxLength={254}
+                    placeholder="contact@example.com"
+                  />
 
-                    <Field
-                      label="YouTube"
-                      icon={FaYoutube}
-                      name="youtube"
-                      type="url"
-                      value={settings.socialLinks.youtube}
-                      onChange={handleSocialChange}
-                      placeholder="https://youtube.com/..."
-                    />
+                  <Field
+                    label="Contact Phone"
+                    icon={Phone}
+                    name="phone"
+                    type="tel"
+                    value={settings.phone}
+                    onChange={handleChange}
+                    maxLength={30}
+                    placeholder="+234..."
+                  />
 
+                  <div className="sm:col-span-2">
                     <Field
-                      label="LinkedIn"
-                      icon={FaLinkedinIn}
-                      name="linkedin"
-                      type="url"
-                      value={settings.socialLinks.linkedin}
-                      onChange={handleSocialChange}
-                      placeholder="https://linkedin.com/..."
+                      label="Association Address"
+                      icon={MapPin}
+                      name="address"
+                      value={settings.address}
+                      onChange={handleChange}
+                      maxLength={300}
+                      placeholder="Association office address"
                     />
                   </div>
-                </SettingsSection>
-
-                {/* SAVE ACTIONS */}
-                <div className="flex flex-col-reverse gap-2 border-t border-(--border) pt-4 sm:flex-row sm:items-center sm:justify-between">
-                  <p className="text-[11px] text-(--text-muted)">
-                    {hasChanges
-                      ? "You have unsaved changes."
-                      : "All changes are saved."}
-                  </p>
-
-                  <div className="flex flex-col-reverse gap-2 sm:flex-row">
-                    <button
-                      type="button"
-                      onClick={handleReset}
-                      disabled={!hasChanges || saving}
-                      className="inline-flex h-9 items-center justify-center gap-2 rounded border border-(--border) px-3.5 text-xs font-semibold text-(--secondary) transition-colors hover:bg-(--bg-soft) disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                      <RotateCcw size={13} />
-                      Reset
-                    </button>
-
-                    <button
-                      type="submit"
-                      disabled={!hasChanges || saving}
-                      className="inline-flex h-9 items-center justify-center gap-2 rounded bg-(--primary) px-4 text-xs font-semibold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                      {saving ? (
-                        <RefreshCw
-                          size={14}
-                          className="animate-spin"
-                        />
-                      ) : (
-                        <Save size={14} />
-                      )}
-
-                      {saving ? "Saving..." : "Save Changes"}
-                    </button>
-                  </div>
                 </div>
-              </div>
-            </form>
-          ) : (
-            <div className="p-4 sm:p-5">
-              <div className="rounded border border-dashed border-(--border) bg-(--bg-light) px-5 py-10 text-center">
-                <div className="mx-auto flex h-11 w-11 items-center justify-center rounded bg-(--primary-light)">
-                  {React.createElement(
-                    sections.find((section) => section.id === activeSection)?.icon ||
-                      Settings,
-                    {
-                      size: 21,
-                      className: "text-(--primary)",
-                    }
-                  )}
+              </SettingsSection>
+
+              {/* SOCIAL MEDIA */}
+              <SettingsSection
+                title="Social Media"
+                description="Add the official association social media profiles."
+              >
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <Field
+                    label="Facebook"
+                    icon={FaFacebookF}
+                    name="facebook"
+                    type="url"
+                    value={settings.socialLinks.facebook}
+                    onChange={handleSocialChange}
+                    placeholder="https://facebook.com/..."
+                  />
+
+                  <Field
+                    label="Instagram"
+                    icon={FaInstagram}
+                    name="instagram"
+                    type="url"
+                    value={settings.socialLinks.instagram}
+                    onChange={handleSocialChange}
+                    placeholder="https://instagram.com/..."
+                  />
+
+                  <Field
+                    label="YouTube"
+                    icon={FaYoutube}
+                    name="youtube"
+                    type="url"
+                    value={settings.socialLinks.youtube}
+                    onChange={handleSocialChange}
+                    placeholder="https://youtube.com/..."
+                  />
+
+                  <Field
+                    label="LinkedIn"
+                    icon={FaLinkedinIn}
+                    name="linkedin"
+                    type="url"
+                    value={settings.socialLinks.linkedin}
+                    onChange={handleSocialChange}
+                    placeholder="https://linkedin.com/..."
+                  />
                 </div>
+              </SettingsSection>
 
-                <h3 className="mt-4 text-sm font-semibold text-(--primary)">
-                  {activeLabel} Settings
-                </h3>
-
-                <p className="mx-auto mt-2 max-w-md text-xs leading-5 text-(--secondary)">
-                  This section has not been connected yet. We'll implement
-                  the backend, validation, audit logging, and actual
-                  application behavior before enabling its controls.
+              {/* SAVE AND RESET */}
+              <div className="flex flex-col-reverse gap-2 border-t border-(--border) pt-4 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-[11px] text-(--text-muted)">
+                  {hasChanges
+                    ? "You have unsaved changes."
+                    : "All changes are saved."}
                 </p>
 
-                <span className="mt-4 inline-flex rounded bg-(--bg-soft) px-2.5 py-1 text-[10px] font-medium text-(--text-muted)">
-                  Not configured
-                </span>
+                <div className="flex flex-col-reverse gap-2 sm:flex-row">
+                  <button
+                    type="button"
+                    onClick={handleReset}
+                    disabled={!hasChanges || saving || uploadingLogo}
+                    className="inline-flex h-9 items-center justify-center gap-2 rounded border border-(--border) px-3.5 text-xs font-semibold text-(--secondary) transition-colors hover:bg-(--bg-soft) disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    <RotateCcw size={13} />
+                    Reset
+                  </button>
+
+                  <button
+                    type="submit"
+                    disabled={!hasChanges || saving || uploadingLogo}
+                    className="inline-flex h-9 items-center justify-center gap-2 rounded bg-(--primary) px-4 text-xs font-semibold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {saving ? (
+                      <RefreshCw size={14} className="animate-spin" />
+                    ) : (
+                      <Save size={14} />
+                    )}
+                    {saving ? "Saving..." : "Save Changes"}
+                  </button>
+                </div>
               </div>
             </div>
-          )}
-        </section>
-      </div>
-
-      <SettingsNotice>
-        General settings are stored in the database. Updating these values
-        does not automatically change the public website's branding or
-        contact details unless those pages also read these settings.
-      </SettingsNotice>
+          </form>
+        )}
+      </section>
     </div>
   );
 };
@@ -648,14 +641,10 @@ const OverviewCard = ({
   <div className="rounded border border-(--border) bg-(--bg-white) p-4">
     <div className="flex items-start justify-between gap-3">
       <div className="min-w-0">
-        <p className="text-xs text-(--secondary)">
-          {label}
-        </p>
-
+        <p className="text-xs text-(--secondary)">{label}</p>
         <p className="mt-1.5 truncate text-lg font-semibold text-(--primary)">
           {value}
         </p>
-
         <p className="mt-1 text-[10px] text-(--text-muted)">
           {description}
         </p>
@@ -670,19 +659,13 @@ const OverviewCard = ({
   </div>
 );
 
-/* SECTION HEADING */
+/* REUSABLE SECTION HEADING */
 const SettingsSection = ({ title, description, children }) => (
   <section>
     <div className="mb-4 border-b border-(--border) pb-3">
-      <h3 className="text-xs font-semibold text-(--primary)">
-        {title}
-      </h3>
-
-      <p className="mt-1 text-[11px] text-(--secondary)">
-        {description}
-      </p>
+      <h3 className="text-xs font-semibold text-(--primary)">{title}</h3>
+      <p className="mt-1 text-[11px] text-(--secondary)">{description}</p>
     </div>
-
     {children}
   </section>
 );

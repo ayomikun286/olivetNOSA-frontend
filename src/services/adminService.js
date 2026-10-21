@@ -1276,3 +1276,118 @@ export const updateGeneralSettings = async (settings) => {
 
   return data.settings;
 };
+
+export const getPublicGeneralSettings = async () => {
+  const response = await fetch(
+    `${API}/api/public/settings/general`
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to load public settings."
+    );
+  }
+
+  return data.settings;
+};
+
+
+
+
+// ========================================
+// WEBSITE CONTENT CMS
+// ========================================
+
+export const getAdminWebsiteContent = async (pageKey) => {
+  const response = await fetch(
+    `${API}/api/admin/website-content/${pageKey}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to load website content."
+    );
+  }
+
+  return data.page;
+};
+
+export const saveWebsiteContentDraft = async (
+  pageKey,
+  content
+) => {
+  const response = await fetch(
+    `${API}/api/admin/website-content/${pageKey}/draft`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({ content }),
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to save website content draft."
+    );
+  }
+
+  return data.page;
+};
+
+export const publishWebsiteContent = async (pageKey) => {
+  const response = await fetch(
+    `${API}/api/admin/website-content/${pageKey}/publish`,
+    {
+      method: "POST",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to publish website content."
+    );
+  }
+
+  return data.page;
+};
+
+
+export const uploadWebsiteContentImage = async (image) => {
+  const formData = new FormData();
+  formData.append("image", image);
+
+  const response = await fetch(
+    `${API}/api/admin/website-content/upload-image`,
+    {
+      method: "POST",
+      credentials: "include",
+      body: formData,
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to upload website image."
+    );
+  }
+
+  return data;
+};

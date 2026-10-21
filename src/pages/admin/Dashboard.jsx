@@ -66,7 +66,7 @@ const Dashboard = () => {
           }
         }
 
-          setLoading(false)
+        setLoading(false)
       } catch (error) {
         console.error(
           "Admin notification polling error:",
@@ -89,36 +89,36 @@ const Dashboard = () => {
   }, [user?._id]);
 
   return (
-    <>
+   <div className="portal-layout flex h-dvh w-full overflow-hidden">
       <PageTitle title="Admin Dashboard | OlivetGOSA" />
 
-      <main className="flex h-screen w-screen overflow-x-hidden">
+    <main className="flex min-h-0 min-w-0 flex-1 overflow-hidden">
 
         {/* ========================================
             SIDEBAR
         ======================================== */}
         <section
-          className={`
-            fixed
-            md:relative
-            top-0
-            left-0
-            h-screen
-            z-50
-            overflow-hidden
-            transition-all
-            duration-200
-
-            ${isOpen ? "w-60 md:w-0" : "w-0 md:w-70"}
-          `}
-        >
-          <Sidebar setIsOpen={setIsOpen} />
-        </section>
+  className={`
+    fixed
+    md:relative
+    top-0
+    left-0
+    h-dvh
+    shrink-0
+    z-50
+    overflow-hidden
+    transition-all
+    duration-200
+    ${isOpen ? "w-60 md:w-0" : "w-0 md:w-70"}
+  `}
+>
+  <Sidebar setIsOpen={setIsOpen} />
+</section>
 
         {/* ========================================
             MAIN CONTENT
         ======================================== */}
-        <section className="main w-full flex flex-col overflow-y-auto overflow-x-hidden">
+        <section className=" flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
 
           {/* NAVBAR */}
           <Navbar
@@ -132,7 +132,9 @@ const Dashboard = () => {
           {/* ========================================
               PAGE CONTENT
           ======================================== */}
-          <Outlet />
+       <div className="h-0 min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto">
+    <Outlet />
+</div>
 
         </section>
 
@@ -156,7 +158,7 @@ const Dashboard = () => {
         )}
 
       </main>
-    </>
+    </div>
   );
 };
 
