@@ -154,14 +154,14 @@ const Navbar = () => {
           TOP INFORMATION BAR
       ====================================================== */}
       <div
-        className={`hidden md:flex bg-white transition-all duration-500 ease-in-out ${
+        className={`hidden lg:flex  md:hidden bg-white transition-all duration-500 ease-in-out ${
           hideTopBar
             ? "-translate-y-full opacity-0 pointer-events-none"
             : "translate-y-0 opacity-100"
         }`}
       >
         {/* Social Links */}
-        <div className="flex h-full w-80 items-center justify-center gap-3 bg-[var(--primary)]/92 p-1">
+        <div className="flex flex-wrap min-h-full w-80 items-center justify-center gap-3 bg-[var(--primary)]/92 p-1">
           <a
             href={socialLinks.facebook}
             target={socialLinks.facebook !== "#" ? "_blank" : undefined}
@@ -256,7 +256,7 @@ const Navbar = () => {
         }`}
       >
         <div
-          className={`flex items-center justify-between md:gap-20 border px-3 py-4 md:px-6 md:py-5 transition-all duration-500 md:justify-center ${
+          className={`flex items-center justify-between md:gap-20 border px-3 py-4 md:px-6 md:py-5 transition-all duration-500 lg:justify-center md:justify-between ${
             scrolled
               ? "border-slate-200 bg-white"
               : "border-slate-200 bg-white shadow"
@@ -278,6 +278,11 @@ const Navbar = () => {
               </p>
             </div>
           </Link>
+
+
+
+
+
 
           {/* DESKTOP NAVIGATION */}
           <div className="hidden items-center gap-8 lg:flex">
@@ -310,7 +315,7 @@ const Navbar = () => {
                   </Link>
 
                   <Link
-                    to="/about-school#history"
+                    to="/history"
                     className={dropdownItemClass}
                   >
                     <span className="block font-semibold text-[var(--primary)]">
@@ -357,7 +362,7 @@ const Navbar = () => {
                     </span>
                   </Link>
 
-                  <Link to="/" className={dropdownItemClass}>
+                  <Link to="/legacy-leadership" className={dropdownItemClass}>
                     <span className="block font-semibold text-[var(--primary)]">
                       Legacy Leaders
                     </span>
@@ -492,7 +497,7 @@ const Navbar = () => {
                     </Link>
 
                     <Link
-                      to="/about-school#history"
+                      to="/history"
                       onClick={() => setMobileMenu(false)}
                       className="block rounded-lg px-4 py-3 text-sm text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
                     >
@@ -538,7 +543,7 @@ const Navbar = () => {
                     </Link>
 
                     <Link
-                      to="/"
+                      to="/legacy-leadership"
                       onClick={() => setMobileMenu(false)}
                       className="block rounded-lg px-4 py-3 text-sm text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
                     >

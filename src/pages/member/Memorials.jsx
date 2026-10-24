@@ -12,9 +12,11 @@ import {
   Images,
 } from "lucide-react";
 
+
 import {
   getMemorials,
   getMemorialById,
+  getMemorialCondolences,
 } from "../../services/authService";
 
 import ContentLoading from "../../components/admin/ContentLoading";
@@ -79,6 +81,14 @@ const Memorials = () => {
     useState("");
   const [graduationYear, setGraduationYear] =
     useState("");
+
+
+
+    const [condolences, setCondolences] = useState([]);
+const [loadingCondolences, setLoadingCondolences] =
+  useState(false);
+const [condolencesError, setCondolencesError] =
+  useState("");
 
   const [loading, setLoading] = useState(true);
   const [loadingDetails, setLoadingDetails] =
@@ -177,6 +187,63 @@ const Memorials = () => {
       ),
     ].sort();
   }, [memorials]);
+
+
+  useEffect(() => {
+  const memorialId = selectedMemorial?._id;
+
+  if (!memorialId || selectedMemorial?.loading) {
+    setCondolences([]);
+    setCondolencesError("");
+    return;
+  }
+
+  let cancelled = false;
+
+  const loadCondolences = async () => {
+    try {
+      setLoadingCondolences(true);
+      setCondolencesError("");
+
+      const response =
+        await getMemorialCondolences(memorialId);
+
+      if (!cancelled) {
+        setCondolences(
+          response?.success ? response.data || [] : []
+        );
+
+        if (!response?.success) {
+          setCondolencesError(
+            response?.message ||
+              "Unable to load condolences."
+          );
+        }
+      }
+    } catch (error) {
+      if (!cancelled) {
+        console.error(
+          "Failed to load memorial condolences:",
+          error
+        );
+
+        setCondolencesError(
+          error.message || "Unable to load condolences."
+        );
+      }
+    } finally {
+      if (!cancelled) {
+        setLoadingCondolences(false);
+      }
+    }
+  };
+
+  loadCondolences();
+
+  return () => {
+    cancelled = true;
+  };
+}, [selectedMemorial?._id, selectedMemorial?.loading]);
 
   // ==========================================================
   // LOAD MEMORIAL FROM ROUTE
@@ -847,6 +914,63 @@ const Memorials = () => {
                         </div>
                       </section>
                     )}
+
+                    {/* CONDOLENCES */}
+
+<section>
+  <h3 className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-(--primary)">
+    <HeartHandshake size={14} />
+    Condolences and Tributes
+  </h3>
+
+  {loadingCondolences ? (
+    <div className="rounded border border-(--border) p-4 text-sm text-(--text-muted)">
+      Loading condolences...
+    </div>
+  ) : condolencesError ? (
+    <div className="rounded border border-(--danger)/20 bg-(--danger)/5 p-4 text-sm text-(--danger)">
+      {condolencesError}
+    </div>
+  ) : condolences.length === 0 ? (
+    <div className="rounded border border-(--border) p-4 text-sm text-(--text-muted)">
+      No approved condolences have been shared yet.
+    </div>
+  ) : (
+    <div className="space-y-3">
+      {condolences.map((condolence) => (
+        <article
+          key={condolence._id}
+          className="rounded border border-(--border) bg-(--bg-white) p-4"
+        >
+          <p className="whitespace-pre-line break-words text-sm leading-6 text-(--secondary)">
+            {condolence.message}
+          </p>
+
+          <div className="mt-3 flex flex-col gap-1 border-t border-(--border) pt-3 sm:flex-row sm:items-center sm:justify-between">
+            <span className="text-xs font-medium text-(--primary)">
+              {condolence.contributorName || "Olivetian"}
+            </span>
+
+            {condolence.createdAt && (
+              <time
+                dateTime={condolence.createdAt}
+                className="text-xs text-(--text-muted)"
+              >
+                {new Date(
+                  condolence.createdAt
+                ).toLocaleDateString("en-NG", {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                })}
+              </time>
+            )}
+          </div>
+        </article>
+      ))}
+    </div>
+  )}
+</section>
                   </>
                 )}
             </div>

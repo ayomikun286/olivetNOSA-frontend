@@ -21,6 +21,7 @@ import {
 } from "../../services/authService.js";
 import ContentLoading from "../../components/admin/ContentLoading.jsx"
 
+import { getChapters } from "../../services/chapterService.js";
 
 import { useAuth } from "../../context/AuthContext.jsx";
 
@@ -38,7 +39,8 @@ const Profile = () => {
   const [saving, setSaving] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [notification, setNotification] = useState(null);
-
+const [chapters, setChapters] = useState([]);
+const [loadingChapters, setLoadingChapters] = useState(false);
   useEffect(() => {
     if (!notification) return;
 
@@ -66,14 +68,20 @@ const Profile = () => {
         if (response?.success) {
           setMyProfile(response.data);
           setFormData({
-            firstName: response.data.firstName || "",
-            middleName: response.data.middleName || "",
-            lastName: response.data.lastName || "",
-            phone: response.data.phone || "",
-            profile: {
-              ...response.data.profile,
-            },
-          });
+  firstName: response.data.firstName || "",
+  middleName: response.data.middleName || "",
+  lastName: response.data.lastName || "",
+  phone: response.data.phone || "",
+
+  chapter:
+    response.data.chapter?._id ||
+    response.data.chapter ||
+    "",
+
+  profile: {
+    ...response.data.profile,
+  },
+});
         }
       } catch (error) {
         console.error("Failed to load member profile:", error);
@@ -84,6 +92,32 @@ const Profile = () => {
 
     loadProfile();
   }, []);
+
+  useEffect(() => {
+  const loadChapters = async () => {
+    try {
+      setLoadingChapters(true);
+
+      const response = await getChapters();
+
+      console.log("chapters response:", response , response.message)
+
+      setChapters(Array.isArray(response) ? response : Array.isArray(response?.chapters) ? response.chapters :[]);
+    } catch (error) {
+      console.error("Failed to load chapters:", error);
+
+      showNotification(
+        "error",
+        "Unable to load chapters",
+        "Please refresh the page and try again."
+      );
+    } finally {
+      setLoadingChapters(false);
+    }
+  };
+
+  loadChapters();
+}, []);
 
   const member = myProfile;
 
@@ -382,15 +416,15 @@ const Profile = () => {
 
 
             {/* PROFILE PHOTO */}
-            <div className="relative shrink-0">
+            <div className="relative  shrink-0">
               {member?.profile?.profilePhoto ? (
                 <img
                   src={member.profile.profilePhoto}
                   alt={fullName || "Profile photo"}
-                  className="h-16 w-16 rounded-full object-cover"
+                  className="h-30 w-30 rounded-full object-cover"
                 />
               ) : (
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-(--primary-light) text-(--primary)">
+                <div className="flex h-30 w-30 items-center justify-center rounded-full bg-(--primary-light) text-(--primary)">
                   <span className="text-lg font-semibold">
                     {getInitials() || <UserRound size={25} />}
                   </span>
@@ -692,6 +726,38 @@ const Profile = () => {
                         <option value="day">Day</option>
                       </select>
                     </div>
+
+                    {/* CHAPTER */}
+<div>
+  <label className="block text-xs font-medium text-(--text-muted) mb-1.5">
+    Chapter
+  </label>
+
+  <select
+    name="chapter"
+    value={formData?.chapter || ""}
+    onChange={handleChange}
+    disabled={loadingChapters || saving}
+    className="w-full px-3 py-2.5 text-sm border border-(--border) rounded bg-(--bg-white) text-(--primary) outline-none focus:border-(--primary) disabled:opacity-60"
+  >
+    <option value="">
+      {loadingChapters
+        ? "Loading chapters..."
+        : "Select your chapter"}
+    </option>
+
+    {chapters.map((chapter) => (
+      <option key={chapter._id} value={chapter._id}>
+        {chapter.name}
+      </option>
+    ))}
+  </select>
+
+  <p className="text-[11px] text-(--text-muted) mt-1">
+    Select the chapter that matches your current location.
+    Your change takes effect immediately after saving.
+  </p>
+</div>
 
                     {/* ADMISSION NUMBER */}
                     <div>

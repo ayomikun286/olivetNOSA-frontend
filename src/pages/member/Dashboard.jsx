@@ -10,6 +10,7 @@ import { getMemberProfile } from "../../services/authService.js";
 import {
   UserRoundCheck,
   ArrowUpRight,
+  X ,
 } from "lucide-react";
 
 import { getMyNotifications } from "../../services/notificationService.js";
@@ -28,6 +29,7 @@ const Dashboard = () => {
   const [profileLoading, setProfileLoading] = useState(true);
   const latestNotificationRef = useRef(null);
 
+  const [showProfileWarning, setShowProfileWarning] = useState(true);
 
   const firstName = user?.firstName || "Olivetian";
   const email = user?.email || "";
@@ -192,9 +194,19 @@ const Dashboard = () => {
 
           <div className="flex-1 overflow-y-auto">
 
-            {!profileLoading && isProfileIncomplete && (
+            {!profileLoading && isProfileIncomplete && showProfileWarning && (
               <div className="px-4 pt-4 md:px-6">
                 <div className="relative overflow-hidden rounded border border-(--primary)/15 bg-linear-to-r from-(--primary)/5 via-(--bg-white) to-(--bg-white) shadow-sm">
+
+                <button
+  type="button"
+  onClick={() => setShowProfileWarning(false)}
+  aria-label="Dismiss profile reminder"
+  title="Dismiss reminder"
+  className="absolute right-2 top-2 z-10 rounded-full p-1.5 text-(--text-secondary) transition hover:bg-(--primary)/10 hover:text-(--primary)"
+>
+  <X size={18} />
+</button>
 
                   {/* Decorative accent */}
                   <div className="absolute left-0 top-0 h-full w-1 bg-(--primary)" />
@@ -226,6 +238,8 @@ const Dashboard = () => {
                       </div>
 
                     </div>
+
+                    
 
                     {/* Button */}
                     <button

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   XCircle,
   LayoutDashboard,
@@ -20,13 +20,25 @@ import {
   Images,
   UserPlus,
    HeartHandshake,
+   Crown,
+   ChevronDown, ChevronRight,
+   ClipboardCheck 
 } from "lucide-react";
 
-import { NavLink } from "react-router-dom";
+import { NavLink , useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext.jsx";
+
 
 const Sidebar = ({ setIsOpen }) => {
   const { user, logout } = useAuth();
+
+  const location = useLocation();
+
+const isMemorialRoute = location.pathname.startsWith(
+  "/portal/admin/dashboard/memorials"
+);
+
+const [memorialsOpen, setMemorialsOpen] = useState(isMemorialRoute);
 
   const handleLinkClick = () => {
     setIsOpen(false);
@@ -185,15 +197,67 @@ const Sidebar = ({ setIsOpen }) => {
               <Images className={iconClass} />
               <span>Gallery</span>
             </NavLink>
+{/* MEMORIALS DROPDOWN */}
+<div className="space-y-1">
+  <button
+    type="button"
+    onClick={() => setMemorialsOpen((prev) => !prev)}
+    className={`
+      group w-full flex items-center gap-4
+      px-3 py-2.5 rounded
+      border border-transparent
+      font-medium text-[0.88rem]
+      transition-all duration-300 ease-out
+      ${
+        isMemorialRoute
+          ? "bg-white/10 text-[var(--secondary)] border-[var(--secondary)]/20"
+          : "text-white/90 hover:text-[var(--secondary)] hover:bg-white/[0.06] hover:border-white/10"
+      }
+    `}
+    aria-expanded={memorialsOpen}
+  >
+    <HeartHandshake className={iconClass} />
+    <span className="flex-1 text-left">Memorials</span>
+
+    {memorialsOpen ? (
+      <ChevronDown className="h-4 w-4 shrink-0" />
+    ) : (
+      <ChevronRight className="h-4 w-4 shrink-0" />
+    )}
+  </button>
+
+  {memorialsOpen && (
+    <div className="ml-5 space-y-1 border-l border-white/15 pl-3">
+      <NavLink
+        to="/portal/admin/dashboard/memorials"
+        end
+        className={linkClass}
+        onClick={handleLinkClick}
+      >
+        <HeartHandshake className={iconClass} />
+        <span>Manage Memorials</span>
+      </NavLink>
+
+      <NavLink
+        to="/portal/admin/dashboard/memorial-submissions"
+        className={linkClass}
+        onClick={handleLinkClick}
+      >
+        <ClipboardCheck className={iconClass} />
+        <span>Submissions</span>
+      </NavLink>
+    </div>
+  )}
+</div>
 
             <NavLink
-              to="/portal/admin/dashboard/memorials"
-              className={linkClass}
-              onClick={handleLinkClick}
-            >
-              <HeartHandshake className={iconClass} />
-              <span>Memorials</span>
-            </NavLink>
+  to="/portal/admin/dashboard/legacy-leadership"
+  className={linkClass}
+  onClick={handleLinkClick}
+>
+  <Crown className={iconClass} />
+  <span>Legacy Leadership</span>
+</NavLink>
 
             <NavLink
               to="/portal/admin/dashboard/website-content"

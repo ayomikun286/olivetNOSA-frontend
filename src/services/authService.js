@@ -700,7 +700,40 @@ export const getMyMemorialSubmissions = async () => {
 
 
 
+// ============================================================
+// GET APPROVED MEMORIAL CONDOLENCES
+// ============================================================
 
+export const getMemorialCondolences = async (memorialId) => {
+  try {
+    const response = await fetch(
+      `${API}/api/memorial-submissions/memorial/${memorialId}/condolences`,
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || "Unable to load condolences."
+      );
+    }
+
+    return data;
+  } catch (error) {
+    console.error(
+      "Get memorial condolences error:",
+      error
+    );
+
+    throw new Error(
+      error.message || "Unable to load condolences."
+    );
+  }
+};
 
 
 export const getCalendarEvents = async ({
@@ -811,9 +844,8 @@ export const getPublishedFinancialReports = async () => {
 };
 
 
-// ============================================================
+
 // GET PUBLISHED PUBLIC WEBSITE CONTENT
-// ============================================================
 
 export const getPublicWebsiteContent = async (pageKey) => {
   const response = await fetch(
@@ -824,6 +856,8 @@ export const getPublicWebsiteContent = async (pageKey) => {
   );
 
   const data = await response.json();
+
+  console.log(data.message)
 
   if (!response.ok) {
     throw new Error(
@@ -847,9 +881,49 @@ export const submitContactForm = async (formData) => {
 
   const data = await response.json();
 
+ 
+
   if (!response.ok) {
     throw new Error(data.message || "Failed to send your message.");
   }
 
   return data;
+};
+
+
+
+
+
+
+
+// GET PUBLIC LEGACY LEADERS
+
+export const getPublicLegacyLeaders = async () => {
+  try {
+    const response = await fetch(
+      `${API}/api/public/legacy-leaders`,
+      {
+        method: "GET",
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || "Unable to load legacy leaders."
+      );
+    }
+
+     console.log(data)
+    
+
+    return data;
+  } catch (error) {
+    console.error("Get public legacy leaders error:", error);
+
+    throw new Error(
+      error.message || "Unable to load legacy leaders."
+    );
+  }
 };

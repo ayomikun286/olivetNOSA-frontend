@@ -21,10 +21,10 @@ import WebsiteContent from "../pages/admin/WebsiteContent.jsx";
 import AdminSettings from "../pages/admin/AdminSettings.jsx";
 import Team from "../pages/admin/Team.jsx";
 import Gallery from "../pages/admin/Gallery.jsx";
-
+import LegacyLeadershipManagement from "../pages/admin/LegacyLeadershipManagement.jsx";
 import MemorialManagement from "../pages/admin/MemorialManagement.jsx";
 
-
+import MemorialSubmissions from "../pages/admin/MemorialSubmissions.jsx";
 
 
 const AdminRoutes = () => {
@@ -53,9 +53,14 @@ const AdminRoutes = () => {
             element={<WebsiteContent />}
           />
 
+          <Route
+            path="memorial-submissions"
+            element={<MemorialSubmissions />}
+          />
+
           <Route path="settings" element={<AdminSettings />} />
           <Route path="team" element={<Team />} />
-
+          < Route path="legacy-leadership" element={<LegacyLeadershipManagement />} />
           <Route path="gallery" element={<Gallery />} />
           <Route path="memorials" element={<MemorialManagement />} />
           <Route path="jobs" element={<Jobs />} />

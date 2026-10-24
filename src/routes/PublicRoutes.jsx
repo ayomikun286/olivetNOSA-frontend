@@ -15,8 +15,9 @@ import NewsEventDetails from "../pages/public/NewsEventDetails.jsx";
 import InLovingMemory from "../pages/public/InLovingMemory.jsx";
 import PrivacyPolicy from "../pages/public/PrivacyPolicy.jsx";
 
+import History from "../pages/public/History.jsx";
 import TermsAndConditions from "../pages/public/TermsAndConditions";
-
+import LegacyLeadership from "../pages/public/LegacyLeadership.jsx";
 
 export default function PublicRoutes() {
   return (
@@ -45,6 +46,9 @@ export default function PublicRoutes() {
         path="/terms-and-conditions"
         element={<TermsAndConditions />}
       />
+
+<Route path="/history" element={<History />} />
+      <Route path="/legacy-leadership" element={<LegacyLeadership />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/programs" element={<Programs />} />
       <Route path="*" element={<NotFound />} />

@@ -608,6 +608,31 @@ export const getAdminYearSetById = async (id) => {
 };
 
 // ========================================
+// CREATE ADMIN YEAR SET
+// ========================================
+
+export const createAdminYearSet = async (yearSetData) => {
+  const response = await fetch(`${API}/api/admin/year-sets`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(yearSetData),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to create Year Set."
+    );
+  }
+
+  return data;
+};
+
+// ========================================
 // ASSIGN / REASSIGN YEAR SET LEADER
 // ========================================
 
@@ -1512,4 +1537,65 @@ export const reviewAdminMemorialSubmission = async (
       body: JSON.stringify({ status, adminNotes }),
     }
   );
+};
+
+// ============================================================
+// ADMIN LEGACY LEADERSHIP API
+// ============================================================
+
+// Get legacy leaders
+export const getAdminLegacyLeaders = async ({
+  search = "",
+  status = "",
+} = {}) => {
+  const params = new URLSearchParams();
+
+  if (search.trim()) params.set("search", search.trim());
+  if (status) params.set("status", status);
+
+  const query = params.toString();
+
+  return adminMemorialRequest(
+    `/legacy-leaders${query ? `?${query}` : ""}`
+  );
+};
+
+// Get one legacy leader
+export const getAdminLegacyLeaderById = async (id) => {
+  if (!id) {
+    throw new Error("Legacy leader ID is required.");
+  }
+
+  return adminMemorialRequest(`/legacy-leaders/${id}`);
+};
+
+// Create legacy leader
+export const createAdminLegacyLeader = async (formData) => {
+  return adminMemorialRequest("/legacy-leaders", {
+    method: "POST",
+    body: formData,
+  });
+};
+
+// Update legacy leader
+export const updateAdminLegacyLeader = async (id, formData) => {
+  if (!id) {
+    throw new Error("Legacy leader ID is required.");
+  }
+
+  return adminMemorialRequest(`/legacy-leaders/${id}`, {
+    method: "PATCH",
+    body: formData,
+  });
+};
+
+// Delete legacy leader
+export const deleteAdminLegacyLeader = async (id) => {
+  if (!id) {
+    throw new Error("Legacy leader ID is required.");
+  }
+
+  return adminMemorialRequest(`/legacy-leaders/${id}`, {
+    method: "DELETE",
+  });
 };

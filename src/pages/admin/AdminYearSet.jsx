@@ -17,7 +17,7 @@ import {
 import AdminStatCard from "../../components/admin/AdminStatCard.jsx";
 import AdminTable from "../../components/admin/AdminTable.jsx";
 import Alert from "../../components/common/Alert.jsx";
-
+import CreateYearSetButton from "../../components/admin/CreateYearSetButton.jsx";
 import {
     getAdminYearSets,
     getAdminYearSetById,
@@ -597,15 +597,23 @@ const YearSets = () => {
 
                 {/* HEADER */}
 
-                <div>
-                    <h1 className="text-xl font-semibold text-(--primary)">
-                        Year Sets
-                    </h1>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <h1 className="text-xl font-semibold text-(--primary)">
+                            Year Sets
+                        </h1>
+                        <p className="mt-1 text-sm text-(--secondary)">
+                            Manage GOSA year sets, members and year set leadership.
+                        </p>
+                    </div>
 
-                    <p className="text-sm text-(--secondary) mt-1">
-                        Manage GOSA year sets, members and
-                        year set leadership.
-                    </p>
+                    <CreateYearSetButton
+                        onCreated={async (message) => {
+                            showAlert("success", message);
+                            setCurrentPage(1);
+                            await loadYearSets();
+                        }}
+                    />
                 </div>
 
                 {/* OVERVIEW CARDS */}
