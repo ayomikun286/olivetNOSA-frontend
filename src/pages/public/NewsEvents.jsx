@@ -46,6 +46,32 @@ const formatMonth = (date) => {
     .toUpperCase();
 };
 
+// Empty state card
+function EmptyStateCard({ title, description }) {
+  return (
+    <div
+      data-aos="fade-up"
+      className="rounded border border-black/10 bg-gray-50 px-6 py-12 text-center sm:px-10"
+    >
+      <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded bg-[var(--primary-dark)]/5">
+        <CalendarDays
+          size={26}
+          strokeWidth={1.6}
+          className="text-[var(--secondary)]"
+        />
+      </div>
+
+      <h3 className="text-xl font-semibold text-[var(--primary-dark)]">
+        {title}
+      </h3>
+
+      <p className="mx-auto mt-3 max-w-lg text-sm leading-7 text-[var(--text-muted)]">
+        {description}
+      </p>
+    </div>
+  );
+}
+
 export default function NewsEvents() {
   const [newsEvents, setNewsEvents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -269,97 +295,106 @@ export default function NewsEvents() {
             </p>
           </div>
 
-          {latestNews.length > 0 && (
-            <article
-              data-aos="fade-up"
-              className="grid gap-10 lg:grid-cols-[1.25fr_0.75fr] lg:items-center lg:gap-16"
-            >
-              <div className="group relative overflow-hidden">
-                <div className="aspect-[16/10] overflow-hidden">
-                  <img
-                    src={latestNews[0].image}
-                    alt={latestNews[0].title}
-                    className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]"
-                  />
-                </div>
-              </div>
-
-              <div className="lg:py-8">
-                <div className="mb-5 flex items-center gap-3 text-xs font-medium uppercase tracking-[0.18em] text-[var(--text-muted)]">
-                  <span className="text-[var(--secondary)]">
-                    {latestNews[0].category}
-                  </span>
-
-                  <span className="h-px w-8 bg-black/15" />
-
-                  <span>
-                    {formatDate(latestNews[0].publishedAt)}
-                  </span>
-                </div>
-
-                <h3 className="text-3xl font-semibold leading-tight tracking-[-0.025em] sm:text-4xl lg:text-[2.8rem]">
-                  {latestNews[0].title}
-                </h3>
-
-                <p className="mt-6 text-base leading-8 text-[var(--text-muted)]">
-                  {latestNews[0].excerpt}
-                </p>
-              </div>
-            </article>
-          )}
-
-          {/* More Stories */}
-
-          <div className="mt-24 grid gap-x-10 gap-y-14 border-t border-black/10 pt-10 md:grid-cols-2">
-            {latestNews.slice(1).map((news, index) => (
+          {latestNews.length > 0 ? (
+            <>
               <article
-                key={news._id}
                 data-aos="fade-up"
-                data-aos-delay={index * 100}
-                className="group"
+                className="grid gap-10 lg:grid-cols-[1.25fr_0.75fr] lg:items-center lg:gap-16"
               >
-                <div className="overflow-hidden">
+                <div className="group relative overflow-hidden">
                   <div className="aspect-[16/10] overflow-hidden">
                     <img
-                      src={news.image}
-                      alt={news.title}
+                      src={latestNews[0].image}
+                      alt={latestNews[0].title}
                       className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]"
                     />
                   </div>
                 </div>
 
-                <div className="pt-6">
-                  <div className="flex items-center gap-3 text-xs font-medium uppercase tracking-[0.18em] text-[var(--text-muted)]">
+                <div className="lg:py-8">
+                  <div className="mb-5 flex items-center gap-3 text-xs font-medium uppercase tracking-[0.18em] text-[var(--text-muted)]">
                     <span className="text-[var(--secondary)]">
-                      {news.category}
+                      {latestNews[0].category}
                     </span>
 
-                    <span className="h-px w-7 bg-black/15" />
+                    <span className="h-px w-8 bg-black/15" />
 
                     <span>
-                      {formatDate(news.publishedAt)}
+                      {formatDate(latestNews[0].publishedAt)}
                     </span>
                   </div>
 
-                  <h3 className="mt-4 max-w-xl text-2xl font-semibold leading-tight sm:text-3xl">
-                    {news.title}
+                  <h3 className="text-3xl font-semibold leading-tight tracking-[-0.025em] sm:text-4xl lg:text-[2.8rem]">
+                    {latestNews[0].title}
                   </h3>
 
-                  <p className="mt-4 max-w-xl text-sm leading-7 text-[var(--text-muted)] sm:text-base">
-                    {news.excerpt}
+                  <p className="mt-6 text-base leading-8 text-[var(--text-muted)]">
+                    {latestNews[0].excerpt}
                   </p>
-
-                  <Link
-                    to={`/news-events/${news.slug}`}
-                    className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[var(--primary)] transition hover:gap-3"
-                  >
-                    Read story
-                    <ArrowRight size={16} />
-                  </Link>
                 </div>
               </article>
-            ))}
-          </div>
+
+              {/* More Stories */}
+
+              {latestNews.length > 1 && (
+                <div className="mt-24 grid gap-x-10 gap-y-14 border-t border-black/10 pt-10 md:grid-cols-2">
+                  {latestNews.slice(1).map((news, index) => (
+                    <article
+                      key={news._id}
+                      data-aos="fade-up"
+                      data-aos-delay={index * 100}
+                      className="group"
+                    >
+                      <div className="overflow-hidden">
+                        <div className="aspect-[16/10] overflow-hidden">
+                          <img
+                            src={news.image}
+                            alt={news.title}
+                            className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="pt-6">
+                        <div className="flex items-center gap-3 text-xs font-medium uppercase tracking-[0.18em] text-[var(--text-muted)]">
+                          <span className="text-[var(--secondary)]">
+                            {news.category}
+                          </span>
+
+                          <span className="h-px w-7 bg-black/15" />
+
+                          <span>
+                            {formatDate(news.publishedAt)}
+                          </span>
+                        </div>
+
+                        <h3 className="mt-4 max-w-xl text-2xl font-semibold leading-tight sm:text-3xl">
+                          {news.title}
+                        </h3>
+
+                        <p className="mt-4 max-w-xl text-sm leading-7 text-[var(--text-muted)] sm:text-base">
+                          {news.excerpt}
+                        </p>
+
+                        <Link
+                          to={`/news-events/${news.slug}`}
+                          className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[var(--primary)] transition hover:gap-3"
+                        >
+                          Read story
+                          <ArrowRight size={16} />
+                        </Link>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              )}
+            </>
+          ) : (
+            <EmptyStateCard
+              title="No news updates just yet"
+              description="There are no published news stories at the moment. Please check back soon for updates from the Olivet community."
+            />
+          )}
         </div>
       </section>
 
@@ -389,61 +424,68 @@ export default function NewsEvents() {
             </p>
           </div>
 
-          <div className="border-t border-white/15">
-            {upcomingEvents.map((event, index) => (
-              <article
-                key={event._id}
-                data-aos="fade-up"
-                data-aos-delay={index * 100}
-                className="grid gap-8 border-b border-white/15 py-9 lg:grid-cols-[120px_1fr_auto] lg:items-center lg:gap-12"
-              >
-                <div className="flex items-baseline gap-3 lg:block">
-                  <span className="text-5xl font-semibold leading-none tracking-[-0.04em]">
-                    {formatDay(event.eventDate)}
-                  </span>
-
-                  <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--secondary)] lg:ml-1">
-                    {formatMonth(event.eventDate)}
-                  </span>
-                </div>
-
-                <div>
-                  <h3 className="text-2xl font-semibold leading-tight sm:text-3xl">
-                    {event.title}
-                  </h3>
-
-                  <p className="mt-3 max-w-2xl text-sm leading-7 text-white/55 sm:text-base">
-                    {event.excerpt}
-                  </p>
-
-                  <div className="mt-5 flex flex-col gap-3 text-xs text-white/50 sm:flex-row sm:gap-6">
-                    {event.location && (
-                      <span className="flex items-center gap-2">
-                        <MapPin size={15} />
-                        {event.location}
-                      </span>
-                    )}
-
-                    {event.startTime && (
-                      <span className="flex items-center gap-2">
-                        <Clock size={15} />
-                        {event.startTime}
-                        {event.endTime && ` - ${event.endTime}`}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                <Link
-                  to={`/news-events/${event.slug}`}
-                  className="inline-flex w-fit items-center gap-2 border-b border-white/25 pb-2 text-sm font-semibold text-white transition hover:gap-3 hover:border-[var(--secondary)]"
+          {upcomingEvents.length > 0 ? (
+            <div className="border-t border-white/15">
+              {upcomingEvents.map((event, index) => (
+                <article
+                  key={event._id}
+                  data-aos="fade-up"
+                  data-aos-delay={index * 100}
+                  className="grid gap-8 border-b border-white/15 py-9 lg:grid-cols-[120px_1fr_auto] lg:items-center lg:gap-12"
                 >
-                  Event details
-                  <ArrowRight size={16} />
-                </Link>
-              </article>
-            ))}
-          </div>
+                  <div className="flex items-baseline gap-3 lg:block">
+                    <span className="text-5xl font-semibold leading-none tracking-[-0.04em]">
+                      {formatDay(event.eventDate)}
+                    </span>
+
+                    <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--secondary)] lg:ml-1">
+                      {formatMonth(event.eventDate)}
+                    </span>
+                  </div>
+
+                  <div>
+                    <h3 className="text-2xl font-semibold leading-tight sm:text-3xl">
+                      {event.title}
+                    </h3>
+
+                    <p className="mt-3 max-w-2xl text-sm leading-7 text-white/55 sm:text-base">
+                      {event.excerpt}
+                    </p>
+
+                    <div className="mt-5 flex flex-col gap-3 text-xs text-white/50 sm:flex-row sm:gap-6">
+                      {event.location && (
+                        <span className="flex items-center gap-2">
+                          <MapPin size={15} />
+                          {event.location}
+                        </span>
+                      )}
+
+                      {event.startTime && (
+                        <span className="flex items-center gap-2">
+                          <Clock size={15} />
+                          {event.startTime}
+                          {event.endTime && ` - ${event.endTime}`}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <Link
+                    to={`/news-events/${event.slug}`}
+                    className="inline-flex w-fit items-center gap-2 border-b border-white/25 pb-2 text-sm font-semibold text-white transition hover:gap-3 hover:border-[var(--secondary)]"
+                  >
+                    Event details
+                    <ArrowRight size={16} />
+                  </Link>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <EmptyStateCard
+              title="No upcoming events scheduled"
+              description="There are no upcoming events announced at the moment. Please check back soon for new gatherings and community activities."
+            />
+          )}
         </div>
       </section>
 
@@ -473,37 +515,44 @@ export default function NewsEvents() {
             </p>
           </div>
 
-          <div className="border-t border-black/10">
-            {archiveNews.map((news, index) => (
-              <article
-                key={news._id}
-                data-aos="fade-up"
-                data-aos-delay={index * 70}
-                className="group flex flex-col gap-5 border-b border-black/10 py-7 sm:flex-row sm:items-center sm:justify-between sm:py-8"
-              >
-                <div>
-                  <div className="mb-3 flex items-center gap-3 text-xs font-medium uppercase tracking-[0.16em] text-[var(--text-muted)]">
-                    <span>{formatDate(news.publishedAt)}</span>
+          {archiveNews.length > 0 ? (
+            <div className="border-t border-black/10">
+              {archiveNews.map((news, index) => (
+                <article
+                  key={news._id}
+                  data-aos="fade-up"
+                  data-aos-delay={index * 70}
+                  className="group flex flex-col gap-5 border-b border-black/10 py-7 sm:flex-row sm:items-center sm:justify-between sm:py-8"
+                >
+                  <div>
+                    <div className="mb-3 flex items-center gap-3 text-xs font-medium uppercase tracking-[0.16em] text-[var(--text-muted)]">
+                      <span>{formatDate(news.publishedAt)}</span>
 
-                    <span className="h-px w-7 bg-[var(--secondary)]" />
+                      <span className="h-px w-7 bg-[var(--secondary)]" />
 
-                    <span>{news.category}</span>
+                      <span>{news.category}</span>
+                    </div>
+
+                    <h3 className="max-w-3xl text-xl font-semibold leading-tight transition group-hover:text-[var(--primary)] sm:text-2xl">
+                      {news.title}
+                    </h3>
                   </div>
 
-                  <h3 className="max-w-3xl text-xl font-semibold leading-tight transition group-hover:text-[var(--primary)] sm:text-2xl">
-                    {news.title}
-                  </h3>
-                </div>
-
-                <Link>
-                  <ArrowRight
-                    size={20}
-                    className="shrink-0 text-[var(--primary)] transition group-hover:translate-x-1"
-                  />
-                </Link>
-              </article>
-            ))}
-          </div>
+                  <Link>
+                    <ArrowRight
+                      size={20}
+                      className="shrink-0 text-[var(--primary)] transition group-hover:translate-x-1"
+                    />
+                  </Link>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <EmptyStateCard
+              title="No archived stories yet"
+              description="Older news stories will appear here as more community updates are published."
+            />
+          )}
         </div>
       </section>
 
