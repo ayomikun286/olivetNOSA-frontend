@@ -15,7 +15,7 @@ import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 import AdminRoutes from "./routes/AdminRoutes.jsx";
 import MemberRoutes from "./routes/MemberRoutes.jsx";
 import SetPassword from "./pages/auth/SetPassword.jsx";
-
+import BackToTop from "./components/public/BackToTop";
 function App() {
   return (
     <Routes>
@@ -23,7 +23,15 @@ function App() {
       {/* ========================================
           PUBLIC WEBSITE
       ======================================== */}
-      <Route path="/*" element={<PublicRoutes />} />
+      <Route
+  path="/*"
+  element={
+    <>
+      <PublicRoutes />
+      <BackToTop />
+    </>
+  }
+/>
 
 
       {/* ========================================

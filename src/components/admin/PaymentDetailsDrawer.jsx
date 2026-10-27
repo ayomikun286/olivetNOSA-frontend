@@ -1,5 +1,4 @@
-import React from "react";
-
+import React, { useState } from "react";
 import {
     X,
     UserRound,
@@ -12,6 +11,8 @@ import {
     BadgeCheck,
     CircleAlert,
     Clock3,
+    RefreshCw,
+    ShieldAlert
 } from "lucide-react";
 
 const PaymentDetailsDrawer = ({
@@ -19,8 +20,21 @@ const PaymentDetailsDrawer = ({
     open,
     loading = false,
     onClose,
+    isSuperAdmin = false,
+    onRecover,
+    recovering = false,
 }) => {
+    const [showRecoveryModal, setShowRecoveryModal] = useState(false);
+    const [recoveryReason, setRecoveryReason] = useState("");
+
     if (!open) return null;
+
+    const canRecover =
+        isSuperAdmin &&
+        payment?.gateway === "paystack" &&
+        ["failed", "cancelled",].includes(payment?.status);
+
+
 
     const formatCurrency = (amount, currency = "NGN") => {
         return new Intl.NumberFormat("en-NG", {
@@ -532,27 +546,27 @@ const PaymentDetailsDrawer = ({
 
                                     {payment.metadata
                                         ?.paystackTransactionId && (
-                                        <div className="flex items-start gap-2.5">
-                                            <Hash
-                                                size={15}
-                                                className="text-(--text-muted) mt-0.5"
-                                            />
+                                            <div className="flex items-start gap-2.5">
+                                                <Hash
+                                                    size={15}
+                                                    className="text-(--text-muted) mt-0.5"
+                                                />
 
-                                            <div>
-                                                <p className="text-xs text-(--text-muted)">
-                                                    Paystack Transaction ID
-                                                </p>
+                                                <div>
+                                                    <p className="text-xs text-(--text-muted)">
+                                                        Paystack Transaction ID
+                                                    </p>
 
-                                                <p className="text-sm text-(--primary) mt-1">
-                                                    {
-                                                        payment
-                                                            .metadata
-                                                            .paystackTransactionId
-                                                    }
-                                                </p>
+                                                    <p className="text-sm text-(--primary) mt-1">
+                                                        {
+                                                            payment
+                                                                .metadata
+                                                                .paystackTransactionId
+                                                        }
+                                                    </p>
+                                                </div>
                                             </div>
-                                        </div>
-                                    )}
+                                        )}
 
                                 </div>
                             </div>
@@ -620,37 +634,37 @@ const PaymentDetailsDrawer = ({
 
                                         {payment.metadata
                                             .failureReason && (
-                                            <div>
-                                                <p className="text-xs text-(--danger)">
-                                                    Failure Reason
-                                                </p>
+                                                <div>
+                                                    <p className="text-xs text-(--danger)">
+                                                        Failure Reason
+                                                    </p>
 
-                                                <p className="text-sm text-(--danger) mt-1">
-                                                    {
-                                                        payment
-                                                            .metadata
-                                                            .failureReason
-                                                    }
-                                                </p>
-                                            </div>
-                                        )}
+                                                    <p className="text-sm text-(--danger) mt-1">
+                                                        {
+                                                            payment
+                                                                .metadata
+                                                                .failureReason
+                                                        }
+                                                    </p>
+                                                </div>
+                                            )}
 
                                         {payment.metadata
                                             .verifiedAt && (
-                                            <div>
-                                                <p className="text-xs text-(--text-muted)">
-                                                    Verified At
-                                                </p>
+                                                <div>
+                                                    <p className="text-xs text-(--text-muted)">
+                                                        Verified At
+                                                    </p>
 
-                                                <p className="text-sm text-(--primary) mt-1">
-                                                    {formatDateTime(
-                                                        payment
-                                                            .metadata
-                                                            .verifiedAt
-                                                    )}
-                                                </p>
-                                            </div>
-                                        )}
+                                                    <p className="text-sm text-(--primary) mt-1">
+                                                        {formatDateTime(
+                                                            payment
+                                                                .metadata
+                                                                .verifiedAt
+                                                        )}
+                                                    </p>
+                                                </div>
+                                            )}
 
                                     </div>
                                 </div>
@@ -662,7 +676,19 @@ const PaymentDetailsDrawer = ({
                 </div>
 
                 {/* FOOTER */}
-                <div className="px-5 py-3 border-t border-(--border) flex justify-end">
+                <div className="px-5 py-3 border-t border-(--border) flex flex-wrap justify-end gap-3">
+
+                    {canRecover && (
+                        <button
+                            type="button"
+                            onClick={() => setShowRecoveryModal(true)}
+                            disabled={recovering || loading}
+                            className="px-4 py-2 rounded text-xs font-semibold text-white bg-(--danger) hover:opacity-90 disabled:opacity-50 inline-flex items-center gap-2 transition-colors"
+                        >
+                            <RefreshCw size={14} />
+                            Recover Payment
+                        </button>
+                    )}
 
                     <button
                         type="button"
@@ -675,6 +701,81 @@ const PaymentDetailsDrawer = ({
                 </div>
 
             </div>
+
+            {showRecoveryModal && canRecover && (
+                <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/50 p-4">
+                    <div className="w-full max-w-md rounded-xl bg-(--bg-white) shadow-2xl p-5">
+
+                        <div className="flex items-center gap-3 mb-4">
+                            <ShieldAlert
+                                size={24}
+                                className="text-(--danger)"
+                            />
+
+                            <h3 className="text-base font-semibold text-(--primary)">
+                                Recover Failed Payment
+                            </h3>
+                        </div>
+
+                        <p className="text-sm text-(--secondary) leading-6 mb-4">
+                            Paystack will be checked again before this payment
+                            is marked successful. Only proceed when you have
+                            a valid reason for recovery.
+                        </p>
+
+                        <label className="block text-xs font-semibold text-(--primary) mb-2">
+                            Recovery reason
+                        </label>
+
+                        <textarea
+                            value={recoveryReason}
+                            onChange={(event) =>
+                                setRecoveryReason(event.target.value)
+                            }
+                            rows={4}
+                            maxLength={500}
+                            placeholder="Explain why this payment needs recovery..."
+                            disabled={recovering}
+                            className="w-full rounded-lg border border-(--border) bg-(--bg-white) text-(--primary) text-sm p-3 outline-none focus:border-(--primary) resize-y disabled:opacity-60"
+                        />
+
+                        <div className="flex justify-end gap-3 mt-5">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setShowRecoveryModal(false);
+                                    setRecoveryReason("");
+                                }}
+                                disabled={recovering}
+                                className="px-4 py-2 rounded text-xs font-semibold border border-(--border) text-(--primary) hover:bg-(--bg-soft) disabled:opacity-50"
+                            >
+                                Cancel
+                            </button>
+
+                            <button
+                                type="button"
+                                disabled={recovering || !recoveryReason.trim()}
+                                onClick={async () => {
+                                    const success = await onRecover(
+                                        payment,
+                                        recoveryReason.trim()
+                                    );
+
+                                    if (success) {
+                                        setShowRecoveryModal(false);
+                                        setRecoveryReason("");
+                                    }
+                                }}
+                                className="px-4 py-2 rounded text-xs font-semibold text-white bg-(--danger) hover:opacity-90 disabled:opacity-50"
+                            >
+                                {recovering ? "Verifying..." : "Confirm Recovery"}
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            )}
+
         </div>
     );
 };

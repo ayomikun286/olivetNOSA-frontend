@@ -22,9 +22,15 @@ import {
 import {
     getAdminPayments,
     getAdminPaymentById,
+    recoverAdminPayment
 } from "../../services/adminService.js";
+import { useAuth } from "../../context/AuthContext.jsx";
 
 const AdminPayments = () => {
+
+    const { user } = useAuth();
+
+    const isSuperAdmin = user?.role === "superAdmin";
     const [paymentsData, setPaymentsData] = useState(null);
     const [summary, setSummary] = useState(null);
     const [collectionBreakdown, setCollectionBreakdown] =
@@ -56,6 +62,7 @@ const AdminPayments = () => {
         useState(false);
 
     const [alert, setAlert] = useState(null);
+    const [recoveringPayment, setRecoveringPayment] = useState(false);
 
     // ========================================
     // LOAD PAYMENTS
@@ -97,12 +104,68 @@ const AdminPayments = () => {
 
             setError(
                 error.message ||
-                    "Failed to load admin payments."
+                "Failed to load admin payments."
             );
         } finally {
             setPaymentsLoading(false);
             setLoading(false);
             setPageLoading(false);
+        }
+    };
+
+
+    // ========================================
+    // RECOVER FAILED PAYMENT
+    // ========================================
+
+    const handleRecoverPayment = async (payment, reason) => {
+        if (!payment?._id || !reason?.trim()) {
+            return false;
+        }
+
+        try {
+            setRecoveringPayment(true);
+
+            const result = await recoverAdminPayment(
+                payment._id,
+                reason.trim()
+            );
+
+            // Refresh the payment list and collection totals.
+            await loadPayments(currentPage);
+
+            // Refresh the open payment details.
+            const updatedPayment = await getAdminPaymentById(
+                payment._id
+            );
+
+            setSelectedPayment(updatedPayment);
+
+            setAlert({
+                type: "success",
+                title: result?.alreadyProcessed
+                    ? "Payment Already Processed"
+                    : "Payment Recovered",
+                message: result?.alreadyProcessed
+                    ? "This payment was already processed. Its latest details have been loaded."
+                    : "Paystack verification succeeded and the payment has been updated.",
+            });
+
+            return true;
+        } catch (error) {
+            console.error("Payment recovery error:", error);
+
+            setAlert({
+                type: "error",
+                title: "Payment Recovery Failed",
+                message:
+                    error.message ||
+                    "Unable to recover this payment. Please verify its status and try again.",
+            });
+
+            return false;
+        } finally {
+            setRecoveringPayment(false);
         }
     };
 
@@ -532,7 +595,7 @@ const AdminPayments = () => {
     const canGoNext =
         pagination &&
         pagination.page <
-            pagination.totalPages;
+        pagination.totalPages;
 
     const handlePrevious = () => {
         if (
@@ -659,7 +722,7 @@ const AdminPayments = () => {
                         label="Total Received"
                         value={`₦${Number(
                             summary?.totalReceived ??
-                                0
+                            0
                         ).toLocaleString(
                             "en-NG"
                         )}`}
@@ -766,7 +829,7 @@ const AdminPayments = () => {
                                 successful
                                 transaction
                                 {totalCollectionTransactions ===
-                                1
+                                    1
                                     ? ""
                                     : "s"}
                             </p>
@@ -778,11 +841,10 @@ const AdminPayments = () => {
 
                                 <p className="text-xs font-medium text-(--primary) mt-1">
                                     {startDate ||
-                                    endDate
-                                        ? `${startDate || "Start"} → ${
-                                              endDate ||
-                                              "Present"
-                                          }`
+                                        endDate
+                                        ? `${startDate || "Start"} → ${endDate ||
+                                        "Present"
+                                        }`
                                         : "All available transactions"}
                                 </p>
                             </div>
@@ -796,10 +858,10 @@ const AdminPayments = () => {
                                     (item) => {
                                         const percentage =
                                             totalCollection >
-                                            0
+                                                0
                                                 ? (item.amount /
-                                                      totalCollection) *
-                                                  100
+                                                    totalCollection) *
+                                                100
                                                 : 0;
 
                                         return (
@@ -836,7 +898,7 @@ const AdminPayments = () => {
                                                             )}{" "}
                                                             transaction
                                                             {item.transactions ===
-                                                            1
+                                                                1
                                                                 ? ""
                                                                 : "s"}
                                                         </p>
@@ -1096,7 +1158,7 @@ const AdminPayments = () => {
 
                     {pagination &&
                         pagination.total >
-                            0 && (
+                        0 && (
                             <div className="px-5 py-3 border-t border-(--border) flex items-center justify-between">
                                 <p className="text-xs text-(--primary)">
                                     Page{" "}
@@ -1163,20 +1225,13 @@ const AdminPayments = () => {
             {/* PAYMENT DETAILS DRAWER */}
 
             <PaymentDetailsDrawer
-                payment={
-                    selectedPayment
-                }
-                open={
-                    paymentDrawerOpen
-                }
-                loading={
-                    paymentDetailsLoading
-                }
-                onClose={() =>
-                    setPaymentDrawerOpen(
-                        false
-                    )
-                }
+                payment={selectedPayment}
+                open={paymentDrawerOpen}
+                loading={paymentDetailsLoading}
+                onClose={() => setPaymentDrawerOpen(false)}
+                isSuperAdmin={isSuperAdmin}
+                onRecover={handleRecoverPayment}
+                recovering={recoveringPayment}
             />
         </div>
     );

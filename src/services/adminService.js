@@ -420,6 +420,39 @@ export const getAdminPaymentById = async (paymentId) => {
 
 
 
+export const recoverAdminPayment = async (paymentId, reason) => {
+  if (!paymentId) {
+    throw new Error("Payment ID is required.");
+  }
+
+  if (!reason?.trim()) {
+    throw new Error("Recovery reason is required.");
+  }
+
+  const response = await fetch(
+    `${API}/api/admin/payments/${paymentId}/recover`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        reason: reason.trim(),
+      }),
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to recover payment."
+    );
+  }
+
+  return data;
+};
 
 
 
