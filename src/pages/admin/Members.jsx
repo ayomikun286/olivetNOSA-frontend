@@ -7,7 +7,7 @@ import AdminStatCard from "../../components/admin/AdminStatCard.jsx";
 import AdminTable from "../../components/admin/AdminTable.jsx";
 import MemberDetailsDrawer from "../../components/admin/MemberDetailsDrawer.jsx";
 import AddMemberModal from "../../components/admin/AddMemberModal.jsx";
-import {ApproveMember} from "../../services/adminService.js";
+import { ApproveMember, SuspendMember, ReactivateMember, DeleteMember } from "../../services/adminService.js";
 import {
   Users,
   UserCheck,
@@ -53,7 +53,7 @@ const Members = () => {
   const [loadMemberPage, setLoadMemberPage] = useState(true)
 
   const [chapters, setChapters] = useState([]);
-
+  const [memberActionLoading, setMemberActionLoading] = useState(false);
   const [alert, setAlert] = useState(null);
 
 
@@ -76,26 +76,25 @@ const Members = () => {
 
 
 
-  const loadDashboard = async () => {
+  const loadDashboard = async ({ showLoader = true } = {}) => {
     try {
-      setLoading(true);
-      setLoadMemberPage(true)
+      if (showLoader) {
+        setLoading(true);
+        setLoadMemberPage(true);
+      }
+
       setError("");
 
       const result = await getAdminDashboard();
-      
-     
-
       setData(result);
     } catch (error) {
       console.error("Admin dashboard error:", error);
-
-      setError(
-        error.message || "Failed to load admin dashboard."
-      );
+      setError(error.message || "Failed to load admin dashboard.");
     } finally {
-      setLoading(false);
-      setLoadMemberPage(false)
+      if (showLoader) {
+        setLoading(false);
+        setLoadMemberPage(false);
+      }
     }
   };
 
@@ -111,7 +110,7 @@ const Members = () => {
         statusFilter
       );
 
-     
+
 
       setMembersData(result);
       setMembersPagination(result.pagination);
@@ -144,7 +143,7 @@ const Members = () => {
         message: result.message,
       });
 
-      if(result.success === true){
+      if (result.success === true) {
         setAddMemberOpen(false);
       }
 
@@ -160,37 +159,140 @@ const Members = () => {
     }
   };
 
+  const refreshAfterMemberAction = async () => {
+    await Promise.all([
+      loadDashboard({ showLoader: false }),
+      loadMembers(currentPage),
+    ]);
+
+    setMemberDrawerOpen(false);
+    setSelectedMember(null);
+  };
+
   const handleApproveMember = async (userId) => {
-  setLoading(true);
+    setMemberActionLoading(true);
+
+    try {
+      const result = await ApproveMember(userId);
+
+      setAlert({
+        type: result.success ? "success" : "warning",
+        title: result.success ? "Member Approved" : "Approval Failed",
+        message: result.message,
+      });
+
+      if (result.success) {
+        await refreshAfterMemberAction();
+      }
+    } catch (err) {
+      console.error("Approve member error:", err);
+
+      setAlert({
+        type: "error",
+        title: "Approval Failed",
+        message: err.message || "Failed to approve member.",
+      });
+    } finally {
+      setMemberActionLoading(false);
+    }
+  };
+
+  const handleSuspendMember = async (userId) => {
+    setMemberActionLoading(true);
+
+    try {
+      const result = await SuspendMember(userId);
+
+      setAlert({
+        type: result.success ? "success" : "warning",
+        title: result.success ? "Member Suspended" : "Suspension Failed",
+        message: result.message,
+      });
+
+      if (result.success) {
+        await refreshAfterMemberAction();
+      }
+    } catch (err) {
+      console.error("Suspend member error:", err);
+
+      setAlert({
+        type: "error",
+        title: "Suspension Failed",
+        message: err.message || "Failed to suspend member.",
+      });
+    } finally {
+      setMemberActionLoading(false);
+    }
+  };
+
+  const handleReactivateMember = async (userId) => {
+    setMemberActionLoading(true);
+
+    try {
+      const result = await ReactivateMember(userId);
+
+      setAlert({
+        type: result.success ? "success" : "warning",
+        title: result.success ? "Member Reactivated" : "Reactivation Failed",
+        message: result.message,
+      });
+
+      if (result.success) {
+        await refreshAfterMemberAction();
+      }
+    } catch (err) {
+      console.error("Reactivate member error:", err);
+
+      setAlert({
+        type: "error",
+        title: "Reactivation Failed",
+        message: err.message || "Failed to reactivate member.",
+      });
+    } finally {
+      setMemberActionLoading(false);
+    }
+  };
+
+
+  const handleDeleteMember = async (userId) => {
+  const confirmed = window.confirm(
+    "Are you sure you want to permanently delete this pending applicant? This action cannot be undone."
+  );
+
+  if (!confirmed) return;
+
+  setMemberActionLoading(true);
 
   try {
-    const result = await ApproveMember(userId);
+    const result = await DeleteMember(userId);
 
     setAlert({
-      type: result.success ? "success" : "warning",
-      title: result.success
-        ? "Member Approved"
-        : "Member Approval Failed",
+      type: "success",
+      title: "Member Deleted",
       message: result.message,
     });
 
-    if (result.success) {
-      await loadDashboard();
-      await loadMembers(currentPage);
-      setMemberDrawerOpen(false)
-    }
+    await Promise.all([
+      loadDashboard({ showLoader: false }),
+      loadMembers(currentPage),
+    ]);
+
+    setMemberDrawerOpen(false);
+    setSelectedMember(null);
   } catch (err) {
-    console.error("Approve member error:", err);
+    console.error("Delete member error:", err);
 
     setAlert({
       type: "error",
-      title: "Approval Failed",
-      message: err.message || "Failed to approve member.",
+      title: "Deletion Failed",
+      message: err.message || "Failed to delete member.",
     });
   } finally {
-    setLoading(false);
+    setMemberActionLoading(false);
   }
 };
+
+
 
 
 
@@ -212,7 +314,7 @@ const Members = () => {
 
   const members = data?.members || {};
 
-  
+
   // TABLE COLUMNS
   const memberColumns = [
     {
@@ -387,7 +489,7 @@ const Members = () => {
 
   return (
     <div className="p-4">
-      {loadMemberPage && < ContentLoading /> }
+      {loadMemberPage && < ContentLoading />}
       <div className="space-y-5">
 
         {alert && (
@@ -401,20 +503,20 @@ const Members = () => {
 
         {/* HEADER */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-         <div>
-              <h1 className="text-xl font-semibold text-(--primary)">
-                Members
-              </h1>
+          <div>
+            <h1 className="text-xl font-semibold text-(--primary)">
+              Members
+            </h1>
 
-              <p className="text-sm text-(--secondary) mt-1">
-                Manage and monitor OlivetGOSA members.
-              </p>
-         </div>
+            <p className="text-sm text-(--secondary) mt-1">
+              Manage and monitor OlivetGOSA members.
+            </p>
+          </div>
 
-           <button
-                type="button"
-                onClick={() => setAddMemberOpen(true)}
-                className="
+          <button
+            type="button"
+            onClick={() => setAddMemberOpen(true)}
+            className="
                           h-9
                           px-3.5
                           rounded
@@ -429,10 +531,10 @@ const Members = () => {
                           hover:opacity-90
                           transition-opacity
                         "
-              >
-                <UserPlus size={15} />
-                Add Member
-              </button>
+          >
+            <UserPlus size={15} />
+            Add Member
+          </button>
 
         </div>
 
@@ -498,7 +600,7 @@ const Members = () => {
                 </p>
               </div>
 
-             
+
               <div className="flex flex-col sm:flex-row gap-2">
 
                 {/* SEARCH */}
@@ -651,9 +753,13 @@ const Members = () => {
         member={selectedMember}
         open={memberDrawerOpen}
         ApproveMember={handleApproveMember}
-        loading={loading}
-        
+        SuspendMember={handleSuspendMember}
+        ReactivateMember={handleReactivateMember}
+        DeleteMember={handleDeleteMember}
+        loading={loading || memberActionLoading}
         onClose={() => {
+          if (memberActionLoading) return;
+
           setMemberDrawerOpen(false);
           setSelectedMember(null);
         }}

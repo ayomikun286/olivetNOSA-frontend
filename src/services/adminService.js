@@ -109,6 +109,65 @@ export const ApproveMember = async (userId) => {
 
 }
 
+export const SuspendMember = async (userId) => {
+  const response = await fetch(
+    `${API}/api/admin/members/${userId}/suspend`,
+    {
+      method: "PATCH",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to suspend member."
+    );
+  }
+
+  return data;
+};
+
+
+export const ReactivateMember = async (userId) => {
+  const response = await fetch(
+    `${API}/api/admin/members/${userId}/reactivate`,
+    {
+      method: "PATCH",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to reactivate member."
+    );
+  }
+
+  return data;
+};
+
+export const DeleteMember = async (userId) => {
+  const response = await fetch(
+    `${API}/api/admin/members/${userId}`,
+    {
+      method: "DELETE",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to delete member.");
+  }
+
+  return data;
+};
+
 // ========================================
 // OBLIGATIONS
 // ========================================

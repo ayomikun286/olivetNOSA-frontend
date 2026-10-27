@@ -613,7 +613,7 @@ const Signup = () => {
                       htmlFor="lastName"
                       className="mb-2 block text-sm font-medium text-[var(--primary-dark)]"
                     >
-                      Last Name *
+                     Surname *
                     </label>
 
                     <input

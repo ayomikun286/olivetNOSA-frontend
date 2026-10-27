@@ -17,8 +17,12 @@ const MemberDetailsDrawer = ({
     open,
     onClose,
     loading,
-    ApproveMember
+    ApproveMember,
+    SuspendMember,
+    ReactivateMember,
+    DeleteMember,
 }) => {
+
     if (!open || !member) return null;
 
     const fullName = [
@@ -36,9 +40,9 @@ const MemberDetailsDrawer = ({
     };
 
 
-   
 
-   
+
+
 
     return (
         <>
@@ -65,23 +69,23 @@ const MemberDetailsDrawer = ({
                             flex
                             flex-col
                             "
-                        >
-                        {/* HEADER */}
-                        <div className="px-5 py-4 border-b border-(--border) flex items-center justify-between">
-                            <div>
-                                <h2 className="text-sm font-semibold text-(--primary)">
-                                    Member Details
-                                </h2>
+            >
+                {/* HEADER */}
+                <div className="px-5 py-4 border-b border-(--border) flex items-center justify-between">
+                    <div>
+                        <h2 className="text-sm font-semibold text-(--primary)">
+                            Member Details
+                        </h2>
 
-                                <p className="text-xs text-(--secondary) mt-0.5">
-                                    View member account information
-                                </p>
-                            </div>
+                        <p className="text-xs text-(--secondary) mt-0.5">
+                            View member account information
+                        </p>
+                    </div>
 
-                            <button
-                                type="button"
-                                onClick={onClose}
-                                className="
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="
                                         w-8
                                         h-8
                                         rounded-lg
@@ -93,22 +97,22 @@ const MemberDetailsDrawer = ({
                                         hover:text-(--primary)
                                         transition-colors
                                         "
-                                aria-label="Close"
-                            >
-                                <X size={18} />
-                            </button>
-                        </div>
+                        aria-label="Close"
+                    >
+                        <X size={18} />
+                    </button>
+                </div>
 
-                        {/* CONTENT */}
-                        <div className="flex-1 overflow-y-auto">
+                {/* CONTENT */}
+                <div className="flex-1 overflow-y-auto">
 
-                            {/* MEMBER SUMMARY */}
-                            <div className="px-5 py-6 border-b border-(--border)">
-                                <div className="flex items-start gap-3">
+                    {/* MEMBER SUMMARY */}
+                    <div className="px-5 py-6 border-b border-(--border)">
+                        <div className="flex items-start gap-3">
 
-                                    {/* INITIALS */}
-                                    <div
-                                        className="
+                            {/* INITIALS */}
+                            <div
+                                className="
                                                     w-12
                                                     h-12
                                                     shrink-0
@@ -120,249 +124,252 @@ const MemberDetailsDrawer = ({
                                                     justify-center
                                                     font-semibold
                         "
-                                    >
-                                        {member.firstName?.charAt(0)}
-                                        {member.lastName?.charAt(0)}
-                                    </div>
-
-                                    <div className="min-w-0 flex-1">
-                                        <h3 className="text-base font-semibold text-(--primary)">
-                                            {fullName}
-                                        </h3>
-
-                                        <p className="text-xs text-(--text-muted) mt-0.5 truncate">
-                                            {member.email}
-                                        </p>
-
-                                        <div className="flex flex-wrap items-center gap-2 mt-2">
-
-                                            <span
-                                                className={`inline-flex items-center px-2.5 py-1 rounded text-xs font-medium capitalize ${statusStyles[member.status] ||
-                                                    "bg-(--bg-soft) text-(--secondary)"
-                                                    }`}
-                                            >
-                                                {member.status}
-                                            </span>
-
-                                            {member.isEmailVerified && (
-                                                <span className="inline-flex items-center gap-1 text-xs text-(--success)">
-                                                    <ShieldCheck size={13} />
-                                                    Email verified
-                                                </span>
-                                            )}
-
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* ALUMNI ID */}
-                                <div className="mt-5 p-3 rounded-lg bg-(--bg-soft)">
-                                    <p className="text-[11px] font-medium uppercase tracking-wide text-(--primary)">
-                                        Alumni ID
-                                    </p>
-
-                                    <p className="text-sm font-semibold text-(--text-muted) mt-1">
-                                        {member.alumniId || "Not assigned"}
-                                    </p>
-                                </div>
+                            >
+                                {member.firstName?.charAt(0)}
+                                {member.lastName?.charAt(0)}
                             </div>
 
-                            {/* PERSONAL INFORMATION */}
-                            <section className="px-5 py-5 border-b border-(--border)">
-                                <h4 className="text-xs font-semibold uppercase tracking-wide text-(--primary)">
-                                    Personal Information
-                                </h4>
+                            <div className="min-w-0 flex-1">
+                                <h3 className="text-base font-semibold text-(--primary)">
+                                    {fullName}
+                                </h3>
 
-                                <div className="mt-4 space-y-4">
+                                <p className="text-xs text-(--text-muted) mt-0.5 truncate">
+                                    {member.email}
+                                </p>
 
-                                    <InfoRow
-                                        icon={Users}
-                                        label="Full Name"
-                                        value={fullName}
-                                    />
+                                <div className="flex flex-wrap items-center gap-2 mt-2">
 
-                                    <InfoRow
-                                        icon={Mail}
-                                        label="Email"
-                                        value={member.email}
-                                    />
+                                    <span
+                                        className={`inline-flex items-center px-2.5 py-1 rounded text-xs font-medium capitalize ${statusStyles[member.status] ||
+                                            "bg-(--bg-soft) text-(--secondary)"
+                                            }`}
+                                    >
+                                        {member.status}
+                                    </span>
 
-                                    <InfoRow
-                                        icon={Phone}
-                                        label="Phone"
-                                        value={member.phone}
-                                    />
-
-                                    <InfoRow
-                                        icon={CalendarDays}
-                                        label="Enrollment Year"
-                                        value={member.enrollmentYear}
-                                    />
-
-                                    <InfoRow
-                                        icon={GraduationCap}
-                                        label="Graduation Year"
-                                        value={member.graduationYear}
-                                    />
+                                    {member.isEmailVerified && (
+                                        <span className="inline-flex items-center gap-1 text-xs text-(--success)">
+                                            <ShieldCheck size={13} />
+                                            Email verified
+                                        </span>
+                                    )}
 
                                 </div>
-                            </section>
-
-                            {/* ASSOCIATION */}
-                            <section className="px-5 py-5 border-b border-(--border)">
-                                <h4 className="text-xs font-semibold uppercase tracking-wide text-(--primary)">
-                                    Association
-                                </h4>
-
-                                <div className="mt-4 space-y-4">
-
-                                    <InfoRow
-                                        icon={MapPin}
-                                        label="Chapter"
-                                        value={member.chapter?.name || "Not assigned"}
-                                    />
-
-                                    <InfoRow
-                                        icon={GraduationCap}
-                                        label="Year Set"
-                                        value={member.yearSet?.year || "Not assigned"}
-                                    />
-
-                                </div>
-                            </section>
-
-                            {/* ACCOUNT */}
-                            <section className="px-5 py-5">
-                                <h4 className="text-xs font-semibold uppercase tracking-wide text-(--primary)">
-                                    Account
-                                </h4>
-
-                                <div className="mt-4 space-y-4">
-
-                                    <InfoRow
-                                        icon={CalendarDays}
-                                        label="Registered"
-                                        value={
-                                            member.createdAt
-                                                ? new Date(member.createdAt).toLocaleDateString(
-                                                    "en-NG",
-                                                    {
-                                                        day: "numeric",
-                                                        month: "short",
-                                                        year: "numeric",
-                                                    }
-                                                )
-                                                : "—"
-                                        }
-                                    />
-
-                                    <InfoRow
-                                        icon={ShieldCheck}
-                                        label="Email Verified"
-                                        value={
-                                            member.isEmailVerified
-                                                ? "Yes"
-                                                : "No"
-                                        }
-                                    />
-
-                                    <InfoRow
-                                        icon={UserCheck}
-                                        label="Account Status"
-                                        value={
-                                            member.status
-                                                ? member.status
-                                                : "—"
-                                        }
-                                    />
-
-                                </div>
-                            </section>
+                            </div>
                         </div>
 
-                        {/* ACTIONS */}
-                        <div className="px-5 py-4 border-t border-(--border)  bg-(--bg-white)">
+                        {/* ALUMNI ID */}
+                        <div className="mt-5 p-3 rounded-lg bg-(--bg-soft)">
+                            <p className="text-[11px] font-medium uppercase tracking-wide text-(--primary)">
+                                Alumni ID
+                            </p>
 
-                            {member.status === "active" && (
-                                 <button
-                                        type="button"
-                                        disabled={loading}
-                                        className="
-                                        w-full
-                                        inline-flex
-                                        items-center
-                                        justify-center
-                                        gap-2
-                                        px-4
-                                        py-2.5
-                                        rounded
-                                        border
-                                        border-(--success)
-                                        text-(--success)
-                                        text-sm
-                                        font-semibold
-                                        transition-colors
-                                    "
-                                >
-                                    <UserCheck size={16} />
-                                     Member Approved
-                                </button>
-                            )}
+                            <p className="text-sm font-semibold text-(--text-muted) mt-1">
+                                {member.alumniId || "Not assigned"}
+                            </p>
+                        </div>
+                    </div>
 
-                            {member.status === "suspended" && (
-                                <button
-                                    type="button"
-                                    disabled={loading}
-                                    className="
-                                            w-full
-                                            inline-flex
-                                            items-center
-                                            justify-center
-                                            gap-2
-                                            px-4
-                                            py-2.5
-                                            rounded
-                                            bg-(--primary)
-                                            text-white
-                                            text-sm
-                                            font-semibold
-                                            hover:bg-(--primary-dark)
-                                            transition-colors
-                                        "
-                                >
-                                    <UserCheck size={16} />
-                                    Reactivate Member
-                                </button>
-                            )}
+                    {/* PERSONAL INFORMATION */}
+                    <section className="px-5 py-5 border-b border-(--border)">
+                        <h4 className="text-xs font-semibold uppercase tracking-wide text-(--primary)">
+                            Personal Information
+                        </h4>
 
-                            {member.status === "pending" && (
-                                <button
-                                    type="button"
-                                    onClick={()=> ApproveMember(member._id)}
-                                     disabled={loading}
-                                    className="
-                                        w-full
-                                        inline-flex
-                                        items-center
-                                        justify-center
-                                        gap-2
-                                        px-4
-                                        py-2.5
-                                        rounded
-                                        bg-(--primary)
-                                        text-white
-                                        text-sm
-                                        font-semibold
-                                        hover:bg-(--primary-dark)
-                                        transition-colors
-                                    "
-                                >
-                                    <UserCheck size={16} />
-                                    {loading ? "Approving..." : "Approve Member"}
-                                </button>
-                            )}
+                        <div className="mt-4 space-y-4">
+
+                            <InfoRow
+                                icon={Users}
+                                label="Full Name"
+                                value={fullName}
+                            />
+
+                            <InfoRow
+                                icon={Mail}
+                                label="Email"
+                                value={member.email}
+                            />
+
+                            <InfoRow
+                                icon={Phone}
+                                label="Phone"
+                                value={member.phone}
+                            />
+
+                            <InfoRow
+                                icon={CalendarDays}
+                                label="Enrollment Year"
+                                value={member.enrollmentYear}
+                            />
+
+                            <InfoRow
+                                icon={GraduationCap}
+                                label="Graduation Year"
+                                value={member.graduationYear}
+                            />
 
                         </div>
+                    </section>
+
+                    {/* ASSOCIATION */}
+                    <section className="px-5 py-5 border-b border-(--border)">
+                        <h4 className="text-xs font-semibold uppercase tracking-wide text-(--primary)">
+                            Association
+                        </h4>
+
+                        <div className="mt-4 space-y-4">
+
+                            <InfoRow
+                                icon={MapPin}
+                                label="Chapter"
+                                value={member.chapter?.name || "Not assigned"}
+                            />
+
+                            <InfoRow
+                                icon={GraduationCap}
+                                label="Year Set"
+                                value={member.yearSet?.year || "Not assigned"}
+                            />
+
+                        </div>
+                    </section>
+
+                    {/* ACCOUNT */}
+                    <section className="px-5 py-5">
+                        <h4 className="text-xs font-semibold uppercase tracking-wide text-(--primary)">
+                            Account
+                        </h4>
+
+                        <div className="mt-4 space-y-4">
+
+                            <InfoRow
+                                icon={CalendarDays}
+                                label="Registered"
+                                value={
+                                    member.createdAt
+                                        ? new Date(member.createdAt).toLocaleDateString(
+                                            "en-NG",
+                                            {
+                                                day: "numeric",
+                                                month: "short",
+                                                year: "numeric",
+                                            }
+                                        )
+                                        : "—"
+                                }
+                            />
+
+                            <InfoRow
+                                icon={ShieldCheck}
+                                label="Email Verified"
+                                value={
+                                    member.isEmailVerified
+                                        ? "Yes"
+                                        : "No"
+                                }
+                            />
+
+                            <InfoRow
+                                icon={UserCheck}
+                                label="Account Status"
+                                value={
+                                    member.status
+                                        ? member.status
+                                        : "—"
+                                }
+                            />
+
+                        </div>
+                    </section>
+                </div>
+
+
+                {/* ACTIONS */}
+                <div className="px-5 py-4 border-t border-(--border) bg-(--bg-white)">
+                    {member.status === "active" && (
+                        <button
+                            type="button"
+                            onClick={() => SuspendMember(member._id)}
+                            disabled={loading}
+                            className="
+        w-full inline-flex items-center justify-center gap-2
+        px-4 py-2.5 rounded border border-(--danger)
+        text-(--danger) text-sm font-semibold
+        hover:bg-(--danger-light)
+        disabled:opacity-50 disabled:cursor-not-allowed
+        transition-colors
+      "
+                        >
+                            <UserX size={16} />
+                            {loading ? "Suspending..." : "Suspend Member"}
+                        </button>
+                    )}
+
+                    {member.status === "suspended" && (
+                        <button
+                            type="button"
+                            onClick={() => ReactivateMember(member._id)}
+                            disabled={loading}
+                            className="
+        w-full inline-flex items-center justify-center gap-2
+        px-4 py-2.5 rounded bg-(--primary)
+        text-white text-sm font-semibold
+        hover:bg-(--primary-dark)
+        disabled:opacity-50 disabled:cursor-not-allowed
+        transition-colors
+      "
+                        >
+                            <UserCheck size={16} />
+                            {loading ? "Reactivating..." : "Reactivate Member"}
+                        </button>
+                    )}
+
+                    {member.status === "pending" && (
+                        <button
+                            type="button"
+                            onClick={() => ApproveMember(member._id)}
+                            disabled={loading}
+                            className="
+        w-full inline-flex items-center justify-center gap-2
+        px-4 py-2.5 rounded bg-(--primary)
+        text-white text-sm font-semibold
+        hover:bg-(--primary-dark)
+        disabled:opacity-50 disabled:cursor-not-allowed
+        transition-colors
+      "
+                        >
+                            <UserCheck size={16} />
+                            {loading ? "Approving..." : "Approve Member"}
+                        </button>
+                    )}
+
+
+                    {member.status === "pending" && !member.alumniId && (
+                        <button
+                            type="button"
+                            onClick={() => DeleteMember(member._id)}
+                            disabled={loading}
+                            className="
+                                mt-3 w-full inline-flex items-center justify-center gap-2
+                                px-4 py-2.5 rounded border border-(--danger)
+                                text-(--danger) text-sm font-semibold
+                                hover:bg-(--danger-light)
+                                disabled:opacity-50 disabled:cursor-not-allowed
+                                transition-colors
+                                "
+                        >
+                            <UserX size={16} />
+                            {loading ? "Deleting..." : "Delete Pending Applicant"}
+                        </button>
+                    )}
+
+                    {["inactive", "deactivated"].includes(member.status) && (
+                        <p className="text-sm text-(--secondary) text-center">
+                            This account has a status of {member.status}. No action is available here.
+                        </p>
+                    )}
+                </div>
             </aside>
         </>
     );
