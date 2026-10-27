@@ -198,6 +198,14 @@ const Members = () => {
   };
 
   const handleSuspendMember = async (userId) => {
+
+    const confirmed = window.confirm(
+      "Are you sure you want to suspend this member? This action will restrict their account access."
+    );
+
+    if (!confirmed) return;
+
+
     setMemberActionLoading(true);
 
     try {
@@ -255,42 +263,42 @@ const Members = () => {
 
 
   const handleDeleteMember = async (userId) => {
-  const confirmed = window.confirm(
-    "Are you sure you want to permanently delete this pending applicant? This action cannot be undone."
-  );
+    const confirmed = window.confirm(
+      "Are you sure you want to permanently delete this pending applicant? This action cannot be undone."
+    );
 
-  if (!confirmed) return;
+    if (!confirmed) return;
 
-  setMemberActionLoading(true);
+    setMemberActionLoading(true);
 
-  try {
-    const result = await DeleteMember(userId);
+    try {
+      const result = await DeleteMember(userId);
 
-    setAlert({
-      type: "success",
-      title: "Member Deleted",
-      message: result.message,
-    });
+      setAlert({
+        type: "success",
+        title: "Member Deleted",
+        message: result.message,
+      });
 
-    await Promise.all([
-      loadDashboard({ showLoader: false }),
-      loadMembers(currentPage),
-    ]);
+      await Promise.all([
+        loadDashboard({ showLoader: false }),
+        loadMembers(currentPage),
+      ]);
 
-    setMemberDrawerOpen(false);
-    setSelectedMember(null);
-  } catch (err) {
-    console.error("Delete member error:", err);
+      setMemberDrawerOpen(false);
+      setSelectedMember(null);
+    } catch (err) {
+      console.error("Delete member error:", err);
 
-    setAlert({
-      type: "error",
-      title: "Deletion Failed",
-      message: err.message || "Failed to delete member.",
-    });
-  } finally {
-    setMemberActionLoading(false);
-  }
-};
+      setAlert({
+        type: "error",
+        title: "Deletion Failed",
+        message: err.message || "Failed to delete member.",
+      });
+    } finally {
+      setMemberActionLoading(false);
+    }
+  };
 
 
 
