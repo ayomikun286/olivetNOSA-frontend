@@ -811,3 +811,347 @@ export const exportAdminFinancialReportToPDF = async (
 
   doc.save(filename);
 };
+
+
+
+
+
+/* =========================================================
+   PAYMENT HISTORY EXCEL EXPORT
+   Separate from existing financial report exports
+========================================================= */
+
+const formatExportDate = (date) => {
+  if (!date) return "";
+
+  const parsed = new Date(date);
+
+  if (Number.isNaN(parsed.getTime())) return "";
+
+  return parsed.toLocaleString("en-NG", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+};
+
+const formatExportAmount = (amount) =>
+  Number(amount || 0);
+
+
+export const exportAdminPaymentHistoryToExcel = async (report) => {
+    const {
+        startDate,
+        endDate,
+        collectionSummary = {},
+        yearSetSummary = [],
+        chapterSummary = [],
+        individualObligations = [],
+        paymentHistory = [],
+    } = report || {};
+
+    if (!startDate || !endDate) {
+        throw new Error("A start date and end date are required.");
+    }
+
+    const workbook = XLSX.utils.book_new();
+
+    const addSheet = (name, rows, widths) => {
+        const sheet = XLSX.utils.aoa_to_sheet(rows);
+        sheet["!cols"] = widths.map((wch) => ({ wch }));
+
+        XLSX.utils.book_append_sheet(workbook, sheet, name);
+
+        return sheet;
+    };
+
+    const formatCurrencyColumn = (
+        sheet,
+        column,
+        startRow,
+        endRow
+    ) => {
+        for (let row = startRow; row <= endRow; row++) {
+            const cell = sheet[`${column}${row}`];
+
+            if (cell && typeof cell.v === "number") {
+                cell.z = '₦#,##0.00';
+            }
+        }
+    };
+
+    // --------------------------------------------------
+    // 1. COLLECTION RECONCILIATION
+    // --------------------------------------------------
+
+    const breakdown = collectionSummary.collectionByCategory || {};
+
+    const reconciliationRows = [
+        ["ONW GOSA — COLLECTION RECONCILIATION"],
+        ["Report Start Date", startDate],
+        ["Report End Date", endDate],
+        [],
+        ["Collection Metric", "Value"],
+        [
+            "Successful Transactions",
+            Number(collectionSummary.successfulTransactionCount || 0),
+        ],
+        [
+            "Total Collected",
+            Number(collectionSummary.totalCollected || 0),
+        ],
+        [
+            "Category Breakdown Total",
+            Number(collectionSummary.categoryCollected || 0),
+        ],
+        [
+            "Reconciliation Difference",
+            Number(collectionSummary.reconciliationDifference || 0),
+        ],
+        [
+            "Reconciliation Status",
+            collectionSummary.reconciled ? "RECONCILED" : "CHECK REQUIRED",
+        ],
+        [],
+        ["Category", "Successful Transactions", "Amount Collected"],
+        [
+            "Individual",
+            Number(breakdown.individual?.transactions || 0),
+            Number(breakdown.individual?.amount || 0),
+        ],
+        [
+            "Year Set",
+            Number(breakdown.yearSet?.transactions || 0),
+            Number(breakdown.yearSet?.amount || 0),
+        ],
+        [
+            "Chapter",
+            Number(breakdown.chapter?.transactions || 0),
+            Number(breakdown.chapter?.amount || 0),
+        ],
+        [
+            "Unclassified",
+            Number(breakdown.unclassified?.transactions || 0),
+            Number(breakdown.unclassified?.amount || 0),
+        ],
+        [],
+        [
+            "Unclassified Transactions Requiring Review",
+            Number(collectionSummary.unclassifiedTransactionCount || 0),
+        ],
+        [
+            "Unclassified Amount Requiring Review",
+            Number(collectionSummary.unclassifiedAmount || 0),
+        ],
+        [],
+        [
+            "Basis",
+            "Only successful payments with paidAt within the selected period.",
+        ],
+        [
+            "Important",
+            "Unclassified payments remain included in Total Collected.",
+        ],
+    ];
+
+    const reconciliationSheet = addSheet(
+        "Collection Reconciliation",
+        reconciliationRows,
+        [43, 30, 24]
+    );
+
+    ["B", "C"].forEach((column) => {
+        [7, 8, 9, 13, 14, 15, 16, 19].forEach((row) => {
+            const cell = reconciliationSheet[`${column}${row}`];
+
+            if (cell && typeof cell.v === "number") {
+                cell.z = '₦#,##0.00';
+            }
+        });
+    });
+
+    // --------------------------------------------------
+    // 2. YEAR SET SUMMARY
+    // --------------------------------------------------
+
+    const yearSetRows = [
+        [
+            "Year Set",
+            "Amount Due",
+            "Amount Paid During Period",
+            "Current Outstanding",
+            "Successful Payment Count",
+        ],
+        ...yearSetSummary.map((item) => [
+            item.name || "Unassigned",
+            formatExportAmount(item.amountDue),
+            formatExportAmount(item.amountPaid),
+            formatExportAmount(item.outstanding),
+            Number(item.successfulPaymentCount || 0),
+        ]),
+    ];
+
+    const yearSetSheet = addSheet(
+        "Year Set Summary",
+        yearSetRows,
+        [28, 20, 28, 22, 26]
+    );
+
+    ["B", "C", "D"].forEach((column) =>
+        formatCurrencyColumn(
+            yearSetSheet,
+            column,
+            2,
+            yearSetRows.length
+        )
+    );
+
+    // --------------------------------------------------
+    // 3. CHAPTER SUMMARY
+    // --------------------------------------------------
+
+    const chapterRows = [
+        [
+            "Chapter",
+            "Amount Due",
+            "Amount Paid During Period",
+            "Current Outstanding",
+            "Successful Payment Count",
+        ],
+        ...chapterSummary.map((item) => [
+            item.name || "Unassigned",
+            formatExportAmount(item.amountDue),
+            formatExportAmount(item.amountPaid),
+            formatExportAmount(item.outstanding),
+            Number(item.successfulPaymentCount || 0),
+        ]),
+    ];
+
+    const chapterSheet = addSheet(
+        "Chapter Summary",
+        chapterRows,
+        [28, 20, 28, 22, 26]
+    );
+
+    ["B", "C", "D"].forEach((column) =>
+        formatCurrencyColumn(
+            chapterSheet,
+            column,
+            2,
+            chapterRows.length
+        )
+    );
+
+    // --------------------------------------------------
+    // 4. INDIVIDUAL OBLIGATIONS
+    // --------------------------------------------------
+
+    const individualRows = [
+        [
+            "Alumni ID",
+            "Member Name",
+            "Year Set",
+            "Obligation",
+            "Amount Due",
+            "Paid During Period",
+            "Current Outstanding",
+            "Current Amount Paid",
+            "Assignment Status",
+            "Record Note",
+        ],
+        ...individualObligations.map((item) => [
+            item.alumniId || "",
+            item.memberName || "",
+            item.yearSet || "",
+            item.obligation || "",
+            formatExportAmount(item.amountDue),
+            formatExportAmount(item.amountPaid),
+            formatExportAmount(item.outstanding),
+            formatExportAmount(item.currentAmountPaid),
+            item.assignmentStatus || "",
+            item.recordNote || "",
+        ]),
+    ];
+
+    const individualSheet = addSheet(
+        "Individual Obligations",
+        individualRows,
+        [18, 28, 18, 32, 18, 22, 22, 22, 20, 42]
+    );
+
+    ["E", "F", "G", "H"].forEach((column) =>
+        formatCurrencyColumn(
+            individualSheet,
+            column,
+            2,
+            individualRows.length
+        )
+    );
+
+    // --------------------------------------------------
+    // 5. SUCCESSFUL PAYMENT HISTORY
+    // --------------------------------------------------
+
+    const historyRows = [
+        [
+            "Transaction Date",
+            "Payment ID",
+            "Payer",
+            "Email",
+            "Alumni ID",
+            "Payer Category",
+            "Year Set",
+            "Chapter",
+            "Obligation",
+            "Reference",
+            "Payment Status",
+            "Payment Method",
+            "Gateway",
+            "Currency",
+            "Amount",
+            "Record Note",
+        ],
+        ...paymentHistory.map((item) => [
+            formatExportDate(item.transactionDate),
+            item.paymentId || "",
+            item.payer || "",
+            item.email || "",
+            item.alumniId || "",
+            item.payerCategory || "",
+            item.yearSet || "",
+            item.chapter || "",
+            item.obligation || "",
+            item.reference || "",
+            item.paymentStatus || "",
+            item.paymentMethod || "",
+            item.gateway || "",
+            item.currency || "NGN",
+            formatExportAmount(item.amount),
+            item.recordNote || "",
+        ]),
+    ];
+
+    const historySheet = addSheet(
+        "Payment History",
+        historyRows,
+        [
+            24, 26, 26, 32, 18, 18, 18, 24,
+            32, 32, 18, 20, 16, 12, 18, 48,
+        ]
+    );
+
+    formatCurrencyColumn(
+        historySheet,
+        "O",
+        2,
+        historyRows.length
+    );
+
+    // --------------------------------------------------
+    // DOWNLOAD
+    // --------------------------------------------------
+
+    const filename =
+        `ONW-GOSA-Payment-History-${startDate}-to-${endDate}.xlsx`;
+
+    XLSX.writeFile(workbook, filename);
+};

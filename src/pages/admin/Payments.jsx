@@ -17,13 +17,18 @@ import {
     AlertCircle,
     ArrowUpRight,
     Banknote,
+    Download,
 } from "lucide-react";
-
 import {
     getAdminPayments,
     getAdminPaymentById,
-    recoverAdminPayment
+    recoverAdminPayment,
+    getAdminPaymentHistoryExport,
 } from "../../services/adminService.js";
+
+import {
+    exportAdminPaymentHistoryToExcel,
+} from "../../utils/financialReportExport.js";
 import { useAuth } from "../../context/AuthContext.jsx";
 
 const AdminPayments = () => {
@@ -46,8 +51,10 @@ const AdminPayments = () => {
     const [search, setSearch] = useState("");
     const [statusFilter, setStatusFilter] = useState("");
     const [gatewayFilter, setGatewayFilter] = useState("");
-    const [paymentMethodFilter, setPaymentMethodFilter] =
-        useState("");
+    const [paymentMethodFilter, setPaymentMethodFilter] = useState("");
+
+    const [exportLoading, setExportLoading] = useState(false);
+
 
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
@@ -114,6 +121,59 @@ const AdminPayments = () => {
     };
 
 
+
+    // ========================================
+// EXPORT PAYMENT HISTORY
+// ========================================
+
+
+const handleExportPaymentHistory = async () => {
+  if (!startDate || !endDate) {
+    setAlert({
+      type: "error",
+      title: "Date Range Required",
+      message: "Please select both a start date and an end date.",
+    });
+    return;
+  }
+
+  if (startDate > endDate) {
+    setAlert({
+      type: "error",
+      title: "Invalid Date Range",
+      message: "The start date cannot be after the end date.",
+    });
+    return;
+  }
+
+  try {
+    setExportLoading(true);
+
+    const report = await getAdminPaymentHistoryExport({
+      startDate,
+      endDate,
+    });
+
+    exportAdminPaymentHistoryToExcel(report);
+
+    setAlert({
+      type: "success",
+      title: "Export Complete",
+      message: "Your payment history workbook has been downloaded.",
+    });
+  } catch (error) {
+    console.error("Payment history export error:", error);
+
+    setAlert({
+      type: "error",
+      title: "Export Failed",
+      message:
+        error.message || "Unable to export payment history.",
+    });
+  } finally {
+    setExportLoading(false);
+  }
+};
     // ========================================
     // RECOVER FAILED PAYMENT
     // ========================================
@@ -696,20 +756,32 @@ const AdminPayments = () => {
                 )}
 
                 {/* HEADER */}
+{/* HEADER */}
 
-                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                    <div>
-                        <h1 className="text-xl font-semibold text-(--primary)">
-                            Payments
-                        </h1>
+<div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+    <div>
+        <h1 className="text-xl font-semibold text-(--primary)">
+            Payments
+        </h1>
 
-                        <p className="text-sm text-(--secondary) mt-1">
-                            Monitor and manage
-                            OlivetGOSA payment
-                            transactions.
-                        </p>
-                    </div>
-                </div>
+        <p className="text-sm text-(--secondary) mt-1">
+            Monitor and manage OlivetGOSA payment transactions.
+        </p>
+    </div>
+
+    <button
+        type="button"
+        onClick={handleExportPaymentHistory}
+        disabled={exportLoading}
+        className="inline-flex items-center justify-center gap-2 h-10 px-4 rounded bg-(--primary) text-white text-sm font-medium hover:bg-(--primary-dark) disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+    >
+        <Download size={16} />
+
+        {exportLoading
+            ? "Preparing Excel..."
+            : "Export Payment History"}
+    </button>
+</div>
 
                 {/* OVERVIEW CARDS */}
 

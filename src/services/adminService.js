@@ -1691,3 +1691,47 @@ export const deleteAdminLegacyLeader = async (id) => {
     method: "DELETE",
   });
 };
+
+
+
+
+// ========================================
+// EXPORT ADMIN PAYMENT HISTORY
+// ========================================
+
+export const getAdminPaymentHistoryExport = async ({
+  startDate,
+  endDate,
+} = {}) => {
+  if (!startDate || !endDate) {
+    throw new Error("Both start and end dates are required.");
+  }
+
+  if (startDate > endDate) {
+    throw new Error("Start date cannot be after end date.");
+  }
+
+  const params = new URLSearchParams({
+    startDate,
+    endDate,
+  });
+
+  const response = await fetch(
+    `${API}/api/admin/payments/export-history?${params.toString()}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to export payment history."
+    );
+  }
+
+  // Adjust this return only if your controller uses a different response shape.
+  return data.data;
+};
