@@ -41,7 +41,7 @@ const AboutNOSA = () => {
         }
       } catch (error) {
         console.warn(
-          "Unable to load published About GOSA content. Using defaults.",
+          "Unable to load published About NOSA content. Using defaults.",
           error.message
         );
       }
@@ -59,7 +59,7 @@ const AboutNOSA = () => {
       <Navbar />
 
       <main className="overflow-x-hidden bg-white text-[var(--primary-dark)] mt-0 md:mt-15">
-        <PageTitle title={pageContent.pageTitle || "About GOSA | OlivetGOSA"} />
+        <PageTitle title={pageContent.pageTitle || "About Alumni Global | Olivet Alumni Global"} />
 
         {/* =========================================================
             HERO
@@ -91,7 +91,7 @@ const AboutNOSA = () => {
                   <span className="h-px w-10 bg-[var(--secondary)]" />
 
                   <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-[var(--secondary)] sm:text-xs">
-                    About GOSA
+                    About Olivetians
                   </span>
                 </div>
 
@@ -125,7 +125,7 @@ const AboutNOSA = () => {
                     to="/olivetians"
                     className="group inline-flex items-center gap-3 rounded-xl bg-[var(--secondary)] px-6 py-3.5 text-sm font-semibold text-[var(--primary-dark)] transition duration-300 hover:opacity-90"
                   >
-                    Explore GOSA
+                    Explore olivetians"
 
                     <ArrowUpRight
                       className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
@@ -223,7 +223,7 @@ const AboutNOSA = () => {
                   <span className="h-px w-8 bg-[var(--secondary)]" />
 
                   <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--primary)]">
-                    Why GOSA exists
+                    Why the Olivetian Alumni Community Exists
                   </p>
                 </div>
               </div>
@@ -250,9 +250,7 @@ const AboutNOSA = () => {
                   data-aos-delay="150"
                   className="mt-5 max-w-3xl text-base leading-7 text-[var(--text-muted)] sm:text-lg sm:leading-8"
                 >
-                  GOSA exists to preserve that connection — giving Olivetians
-                  a way to find one another, stay involved, support the school
-                  and help shape what comes next.
+                  The Olivetian alumni community exists to preserve that connection — giving former students a way to find one another, stay involved, support the school, and help shape its future.
                 </p>
 
                 <div
@@ -414,7 +412,7 @@ const AboutNOSA = () => {
                   <span className="h-px w-8 bg-[var(--secondary)]" />
 
                   <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--primary)]">
-                    What GOSA does
+                    What the Olivetian Alumni Community Does
                   </p>
                 </div>
 
@@ -445,7 +443,7 @@ const AboutNOSA = () => {
                   className="mt-8 max-w-2xl text-base leading-7 text-[var(--text-muted)] sm:text-lg sm:leading-8"
                 >
                   {pageContent.mission ||
-                    "GOSA is more than a name or an organisation. It is the structure through which Olivetians continue to connect, contribute and celebrate the community they share."}
+                    "The Olivetian alumni community is more than a name or an organization. It provides a way for former students to stay connected, contribute to shared goals, and celebrate the community they share. community they share."}
                 </p>
 
                 {pageContent.objectives && (
@@ -562,7 +560,7 @@ const AboutNOSA = () => {
                   <span className="h-px w-8 bg-[var(--secondary)]" />
 
                   <p className="text-xs font-semibold uppercase tracking-[0.25em] text-white/50">
-                    How GOSA is connected
+                    How NOSA is connected
                   </p>
                 </div>
               </div>
@@ -580,9 +578,7 @@ const AboutNOSA = () => {
                   data-aos-delay="100"
                   className="mt-8 max-w-3xl text-base leading-7 text-white/65 sm:text-lg sm:leading-8"
                 >
-                  From national leadership to individual members, GOSA works
-                  through a community structure that gives everyone a place
-                  within the wider association.
+                  From national leadership to individual members, the Olivetian alumni community brings former students together through a shared structure that gives everyone a place within the wider community.
                 </p>
 
                 <div className="mt-16 border-t border-white/15">
@@ -662,8 +658,7 @@ const AboutNOSA = () => {
                       </h3>
 
                       <p className="mt-2 max-w-xl text-sm leading-6 text-white/50">
-                        The people at the heart of GOSA — each carrying a
-                        different Olivet story.
+                        The people at the heart of the Olivetian community, each carrying a unique story and shared memories of Olivet.
                       </p>
                     </div>
 
@@ -699,9 +694,7 @@ const AboutNOSA = () => {
                 </h2>
 
                 <p className="mt-7 max-w-xl text-base leading-7 text-[var(--text-muted)] sm:text-lg sm:leading-8">
-                  Chapters give members a local expression of the wider GOSA
-                  community — a place to meet, share experiences and remain
-                  involved.
+                  Chapters bring members together within their local communities, creating opportunities to meet, share experiences, and stay involved in the wider Olivetian alumni community.
                 </p>
 
                 <div className="mt-12 overflow-hidden">
@@ -806,7 +799,7 @@ const AboutNOSA = () => {
                   className="mt-9 max-w-3xl text-base leading-7 text-white/70 sm:text-lg sm:leading-8"
                 >
                   {pageContent.vision ||
-                    "The future of GOSA is not simply about becoming bigger. It is about becoming more connected, more useful to its members and more meaningful to the generations that follow."}
+                    "The future of NOSA is not simply about becoming bigger. It is about becoming more connected, more useful to its members and more meaningful to the generations that follow."}
                 </p>
 
                 <div
@@ -854,8 +847,7 @@ const AboutNOSA = () => {
                   className="mt-20 border-t border-white/15 pt-10"
                 >
                   <p className="max-w-4xl text-3xl font-medium leading-[1.25] tracking-[-0.025em] text-white/90 sm:text-4xl">
-                    GOSA is not simply about where we came from. It is about
-                    what we choose to build together from here.
+                    The Olivetian alumni community is not just about where we came from. It is about what we can achieve and build together for the future.
                   </p>
                 </div>
               </div>
@@ -898,7 +890,7 @@ const AboutNOSA = () => {
                     to="/portal/Signup"
                     className="group inline-flex items-center gap-3 rounded-xl bg-[var(--primary)] px-6 py-3.5 text-sm font-semibold text-white transition duration-300 hover:opacity-90"
                   >
-                    Join GOSA
+                    Join NOSA
 
                     <ArrowUpRight
                       className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"

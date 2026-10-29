@@ -159,7 +159,7 @@ const ArchiveCard = ({ number, title, period, description, icon: Icon }) => (
 const History = () => {
   return (
     <main className="mt-0 min-h-screen bg-white text-[var(--primary-dark)] md:mt-15">
-      <PageTitle title="History of Olivet Baptist High School | OlivetGOSA" />
+      <PageTitle title="History of Olivet Baptist High School | OlivetNOSA" />
 
       <header className="absolute left-0 right-0 top-0 z-50">
         <Navbar />

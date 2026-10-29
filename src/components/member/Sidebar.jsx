@@ -86,13 +86,13 @@ const Sidebar = ({ setIsOpen }) => {
           <XCircle className="w-5 h-5" />
         </button>
 
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl shrink-0">
+        <NavLink to="/"  className="flex h-12 w-12 items-center justify-center rounded-xl shrink-0">
           <img
             src="/images/Logo-NOSA.png"
             alt="Olivet NOSA"
             className="h-full w-full object-contain"
           />
-        </div>
+        </NavLink>
 
         <div className="leading-none">
           <p className="text-[11px] font-bold tracking-wide text-white leading-4 tracking-1">

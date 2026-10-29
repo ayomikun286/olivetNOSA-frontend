@@ -179,7 +179,7 @@ export default function LegacyLeadership() {
 
   return (
     <main className="mt-0 min-h-screen overflow-x-hidden bg-white text-(--primary-dark) md:mt-15">
-      <PageTitle title={`${pageTitle} | OlivetGOSA`} />
+      <PageTitle title={`${pageTitle} | OlivetNOSA`} />
 
       <header>
         <Navbar />

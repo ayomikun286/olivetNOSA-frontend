@@ -51,7 +51,7 @@ export default function NOSAChapters() {
   return (
     <main className="min-h-screen bg-white text-(--primary-dark) mt-0 md:mt-15 overflow-x-hidden">
       <PageTitle
-  title={`${pageContent.pageTitle || "Chapters"} | OlivetGOSA`}
+  title={`${pageContent.pageTitle || "Chapters"} | OlivetNOSA`}
 />
       {/* =========================================================
           NAVBAR
@@ -82,7 +82,7 @@ export default function NOSAChapters() {
                 className="mb-7 flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.28em] text-[var(--secondary-light)]"
               >
                 <span className="h-px w-10 bg-[var(--secondary)]" />
-                GOSA Chapters
+                NOSA Chapters
               </div>
 
               <h1
@@ -111,7 +111,7 @@ export default function NOSAChapters() {
                 className="mt-10 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between"
               >
                 <p className="max-w-xl text-base leading-8 text-white/75 sm:text-lg">
-  {pageContent.intro || "GOSA chapters bring Olivetians together within their local  communities while keeping them connected to the wider  National Old Students' Association."}
+  {pageContent.intro || "Olivetian chapters bring former students together in their local communities while keeping them connected to the wider national alumni association."}
 </p>
                 <a
                   href="#chapter-network"
@@ -194,10 +194,7 @@ export default function NOSAChapters() {
                 </p>
 
                 <p className="text-base leading-8 text-[var(--text-muted)]">
-                  Through the chapter network, members can reconnect with
-                  fellow Olivetians, participate in activities and contribute
-                  to the wider work of GOSA while remaining part of a shared
-                  Olivetian heritage.
+                  Through the chapter network, members can reconnect with fellow Olivetians, participate in local activities, and contribute to the wider alumni community while preserving their shared Olivetian heritage.
                 </p>
               </div>
             </div>
@@ -226,7 +223,7 @@ export default function NOSAChapters() {
 
               <div className="mt-5 flex items-start justify-between border-t border-black/10 pt-4">
                 <p className="text-xs uppercase tracking-[0.22em] text-[var(--text-muted)]">
-                  OlivetGOSA
+                  OlivetNOSA
                 </p>
 
                 <p className="max-w-xs text-right text-sm leading-6 text-[var(--text-muted)]">
@@ -253,9 +250,7 @@ export default function NOSAChapters() {
               </p>
 
               <p className="mt-6 text-lg leading-8 text-[var(--text-muted)]">
-                They are also part of something larger. Each chapter remains
-                connected to the wider GOSA community, creating a network that
-                reaches beyond individual locations.
+                They are also part of something bigger. Each chapter stays connected to the wider Olivetian alumni community, building a network that reaches beyond individual locations.
               </p>
 
               <div className="mt-10 border-t border-black/10">
@@ -346,10 +341,7 @@ export default function NOSAChapters() {
 
             <div data-aos="fade-left">
               <p className="max-w-3xl text-xl leading-9 text-[var(--primary-dark)] sm:text-2xl">
-                A chapter is one part of the wider OlivetGOSA network. Its
-                strength comes from the relationships created locally and the
-                connection those relationships maintain with the association
-                as a whole.
+                A chapter is one part of the wider Olivetian alumni network. Its strength comes from the relationships built locally and the connections that bring each chapter together as part of the larger community.
               </p>
 
               <div className="mt-16 border-t border-black/10">
@@ -377,7 +369,7 @@ export default function NOSAChapters() {
 
                 <div className="grid gap-8 py-8 md:grid-cols-[0.3fr_1fr]">
                   <div className="text-sm font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
-                    GOSA
+                    NOSA
                   </div>
 
                   <p className="max-w-xl text-base leading-7 text-[var(--text-muted)]">
@@ -414,9 +406,7 @@ export default function NOSAChapters() {
 
             <div data-aos="fade-left">
               <p className="max-w-3xl text-xl leading-9 text-white/70 sm:text-2xl">
-                Chapters create a practical way for members to take part in
-                the life of GOSA. Connection can lead to collaboration,
-                support and meaningful contribution to the Olivet community.
+                Chapters give members a practical way to participate in the life of the alumni community. These connections create opportunities for collaboration, mutual support, and meaningful contributions to the Olivet community.
               </p>
 
               <div className="mt-14">
@@ -498,9 +488,7 @@ export default function NOSAChapters() {
               </h2>
 
               <p className="mt-7 max-w-md leading-7 text-[var(--text-muted)]">
-                As the OlivetGOSA chapter network grows, information about
-                recognised chapters and their communities can be made
-                available here.
+                As the Olivetian chapter network grows, information about recognized chapters and their local communities will be available here.
               </p>
             </div>
 
@@ -526,9 +514,7 @@ export default function NOSAChapters() {
 
                 <div className="py-10">
                   <p className="max-w-xl text-lg leading-8 text-[var(--text-muted)]">
-                    Chapter information will be published as the official
-                    chapter directory is established and maintained by
-                    OlivetGOSA.
+                    Chapter information will be published here as the official chapter directory is established and maintained by the alumni association.
                   </p>
 
                   <p className="mt-5 max-w-xl text-sm leading-7 text-[var(--text-muted)]">
@@ -582,8 +568,7 @@ export default function NOSAChapters() {
             data-aos-delay="200"
             className="mx-auto mt-8 max-w-2xl text-lg leading-8 text-[var(--primary-dark)]/65"
           >
-            Register with OlivetGOSA and remain connected to the alumni
-            community through the wider association and its member network.
+            Register with the Olivetian alumni community and stay connected with fellow former students through the wider association and its member network.
           </p>
 
           <div
@@ -608,7 +593,7 @@ export default function NOSAChapters() {
                 hover:bg-[var(--primary)]
               "
             >
-              Join OlivetGOSA
+              Join OlivetNOSA
               <ArrowUpRight size={18} />
             </a>
           </div>

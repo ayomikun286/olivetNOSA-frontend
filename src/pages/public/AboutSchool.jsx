@@ -98,7 +98,7 @@ const AboutSchool = () => {
 
 
       <PageTitle
-        title={pageContent.pageTitle || "About Olivet School | OlivetGOSA"}
+        title={pageContent.pageTitle || "About Olivet School | Olivet Alumni Global "}
       />
 
       <header className="absolute left-0 right-0 top-0 z-50">
@@ -1079,9 +1079,7 @@ const AboutSchool = () => {
               </h2>
 
               <p className="mt-7 max-w-2xl text-base leading-8 text-[var(--text-muted)] sm:text-lg">
-                OlivetGOSA provides a way for former students to remain
-                connected with one another, preserve the history of the school
-                and contribute to the continuing Olivet community.
+               The Olivetian alumni community provides a way for former students to stay connected, preserve the school's history, and contribute to the growth and development of the Olivet community.
               </p>
             </div>
 
@@ -1089,8 +1087,7 @@ const AboutSchool = () => {
               to="/about-gosa"
               className="group inline-flex items-center gap-3 text-sm font-semibold text-[var(--primary)]"
             >
-              Discover OlivetGOSA
-
+             Discover the Olivetian Community
               <ArrowRight
                 size={17}
                 className="transition-transform duration-300 group-hover:translate-x-1"

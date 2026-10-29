@@ -205,7 +205,7 @@ export default function Gallery() {
 
   return (
     <main className="mt-0 bg-white overflow-x-hidden text-[var(--primary-dark)] md:mt-15">
-      <PageTitle title={`${pageContent.pageTitle || "Gallery"} | OlivetGOSA`} />
+      <PageTitle title={`${pageContent.pageTitle || "Gallery"} | OlivetNOSA`} />
       .
 
       <Navbar />

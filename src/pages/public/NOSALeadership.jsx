@@ -46,7 +46,7 @@ const NOSALeadership = () => {
   return (
     <main className="min-h-screen bg-white text-(--primary-dark) mt-0 md:mt-15 overflow-x-hidden">
       <PageTitle
-        title={`${pageContent.pageTitle || "Leadership"} | OlivetGOSA`}
+        title={`${pageContent.pageTitle || "Leadership"} | OlivetNOSA`}
       />
       {/* =========================================================
           NAVBAR
@@ -77,7 +77,7 @@ const NOSALeadership = () => {
                 className="flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.28em] text-[var(--secondary-light)]"
               >
                 <span className="h-px w-10 bg-[var(--secondary)]" />
-                GOSA Leadership
+                Alumni Leadership
               </div>
 
               <h1
@@ -108,7 +108,7 @@ const NOSALeadership = () => {
               >
                 <p className="max-w-xl text-base leading-8 text-white/75 sm:text-lg">
                   {pageContent.intro ||
-                    "GOSA is guided by Olivetians who give their time, experience and commitment to the service of the wider alumni community."}
+                    "NOSA is guided by Olivetians who give their time, experience and commitment to the service of the wider alumni community."}
                 </p>
 
                 <a
@@ -187,9 +187,7 @@ const NOSALeadership = () => {
 
               <div className="mt-10 grid gap-8 md:grid-cols-2">
                 <p className="text-base leading-8 text-[var(--text-muted)]">
-                  Leadership within GOSA carries the responsibility of keeping
-                  the association focused on its purpose while responding to
-                  the needs of its members and the wider Olivetian community.
+                  Leadership within the alumni association carries the responsibility of keeping the community focused on its purpose while responding to the needs of its members and the wider Olivetian community.
                 </p>
 
                 <p className="text-base leading-8 text-[var(--text-muted)]">
@@ -302,7 +300,7 @@ const NOSALeadership = () => {
 
               <div className="mt-5 flex items-start justify-between border-t border-black/10 pt-4">
                 <p className="text-xs uppercase tracking-[0.22em] text-[var(--text-muted)]">
-                  OlivetGOSA
+                  OlivetNOSA
                 </p>
 
                 <p className="max-w-xs text-right text-sm leading-6 text-[var(--text-muted)]">
@@ -322,7 +320,7 @@ const NOSALeadership = () => {
               </h2>
 
               <p className="mt-8 text-lg leading-8 text-[var(--text-muted)]">
-                GOSA leadership provides the structure through which the
+                Alumni leadership provides the structure through which the
                 association's work can be coordinated and its priorities
                 carried forward.
               </p>
@@ -348,8 +346,7 @@ const NOSALeadership = () => {
                     </h3>
 
                     <p className="mt-2 text-sm leading-7 text-[var(--text-muted)]">
-                      GOSA is strengthened by the participation and service of
-                      Olivetians across generations.
+                      The Olivetian alumni community is strengthened by the participation and service of former students across generations.
                     </p>
                   </div>
                 </div>
@@ -375,9 +372,7 @@ const NOSALeadership = () => {
               </h2>
 
               <p className="mt-7 max-w-md leading-8 text-white/55">
-                Leadership works alongside the different parts of the
-                OlivetGOSA community to keep the association connected and
-                purposeful.
+                Leadership works with different parts of the Olivetian alumni community to keep the association connected, organized, and focused on its shared purpose.
               </p>
             </div>
 
@@ -411,8 +406,7 @@ const NOSALeadership = () => {
                   <h3 className="text-2xl font-medium">Chapters</h3>
 
                   <p className="mt-3 max-w-xl leading-7 text-white/50">
-                    Creating local communities where Olivetians can remain
-                    connected and participate in the life of GOSA.
+                   Creating local communities where Olivetians can stay connected, build relationships, and participate in the wider alumni community.
                   </p>
                 </div>
               </div>
@@ -463,7 +457,7 @@ const NOSALeadership = () => {
               </p>
 
               <h2 className="mt-6 max-w-md text-4xl font-medium leading-[1.05] tracking-[-0.035em] text-[var(--primary-dark)] sm:text-5xl">
-                The people serving GOSA.
+                The People Serving the Olivetian Community
               </h2>
             </div>
 
@@ -489,10 +483,7 @@ const NOSALeadership = () => {
 
                 <div className="py-8">
                   <p className="max-w-xl text-base leading-7 text-[var(--text-muted)]">
-                    This section is intentionally prepared for verified GOSA
-                    leadership information. Names and positions should be
-                    added from the association's official records rather than
-                    presented without confirmation.
+                    This section is reserved for verified alumni leadership information. Names and positions will be added based on the association's official records to ensure accuracy.
                   </p>
                 </div>
               </div>
@@ -540,7 +531,7 @@ const NOSALeadership = () => {
                   hover:bg-[var(--primary)]
                 "
               >
-                Join OlivetGOSA
+                Join OlivetNOSA
                 <ArrowUpRight size={18} />
               </a>
             </div>

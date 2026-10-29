@@ -11,7 +11,7 @@ const privacySections = [
     id: "introduction",
     title: "Introduction",
     paragraphs: [
-      "Olivet Baptist High School Global Old Students' Association (GOSA) respects your privacy and is committed to the responsible collection, use, protection and management of your personal information.",
+      "Olivet Baptist High School Global Old Students' Association (NOSA) respects your privacy and is committed to the responsible collection, use, protection and management of your personal information.",
       "This Privacy Policy explains how we handle personal data when you visit our website, register as an alumnus, use the membership portal, make payments, donate, contact the Association or participate in activities offered through our digital platform.",
       "Our approach is guided by the Nigeria Data Protection Act 2023, relevant regulatory guidance and other applicable data-protection requirements.",
       "By using our services, you acknowledge that you have been informed about our data-processing practices as described in this Policy. Where consent is legally required, we will request it separately.",
@@ -21,12 +21,12 @@ const privacySections = [
     id: "who-we-are",
     title: "Who We Are",
     paragraphs: [
-      "For the purposes of this Policy, OlivetGOSA is the Association responsible for determining how and why personal information is processed through the platform, subject to confirmation of the appropriate legal data controller.",
+      "For the purposes of this Policy, OlivetNOSA is the Association responsible for determining how and why personal information is processed through the platform, subject to confirmation of the appropriate legal data controller.",
     ],
     details: [
-      ["Data Controller", "Global Old Students' Association (GOSA)"],
+      ["Data Controller", "Global Old Students' Association (NOSA)"],
       ["Website", "https://olivetbhsnosa.org/"],
-      ["Official Address", "The Secretariat, GOSA Lagos, Nigeria"],
+      ["Official Address", "The Secretariat, NOSA Lagos, Nigeria"],
       ["Privacy Contact", "olivetgosasupport@olivetbhsnosa.org"],
     ],
   },
@@ -193,7 +193,7 @@ const privacySections = [
     id: "alumni-directory",
     title: "Alumni Directory and Information Visibility",
     paragraphs: [
-      "The OlivetGOSA directory is intended to support alumni identification and reconnection.",
+      "The OlivetNOSA directory is intended to support alumni identification and reconnection.",
       "The approved directory information is limited to:",
     ],
     bullets: [
@@ -212,7 +212,7 @@ const privacySections = [
     id: "payments-and-providers",
     title: "Payments, Donations and Third-Party Providers",
     paragraphs: [
-      "The OlivetGOSA platform is designed to support secure financial transactions. Approved third-party services include:",
+      "The OlivetNOSA platform is designed to support secure financial transactions. Approved third-party services include:",
     ],
     subsections: [
       {
@@ -265,7 +265,7 @@ const privacySections = [
     id: "international-transfers",
     title: "International Data Transfers",
     paragraphs: [
-      "OlivetGOSA serves an alumni community that may include members residing outside Nigeria. Some authorised technology providers may also process information using infrastructure located outside Nigeria.",
+      "OlivetNOSA serves an alumni community that may include members residing outside Nigeria. Some authorised technology providers may also process information using infrastructure located outside Nigeria.",
       "Where personal information is transferred internationally, the Association will assess the applicable legal requirements and implement any safeguards required by Nigerian data-protection law and other applicable legislation.",
       "Individuals may contact the Association for further information about relevant transfers and safeguards.",
     ],
@@ -298,7 +298,7 @@ const privacySections = [
     id: "retention-and-deletion",
     title: "Data Retention and Deletion",
     paragraphs: [
-      "OlivetGOSA retains personal information only for as long as reasonably necessary for the purposes for which it was collected, subject to applicable legal obligations.",
+      "OlivetNOSA retains personal information only for as long as reasonably necessary for the purposes for which it was collected, subject to applicable legal obligations.",
       "Retention may depend on:",
     ],
     bullets: [
@@ -320,7 +320,7 @@ const privacySections = [
     title: "Cookies and Similar Technologies",
     paragraphs: [
       "Cookies are small data files that may be stored on your device when you visit our website.",
-      "OlivetGOSA may use the following categories of cookies, depending on the technology enabled.",
+      "OlivetNOSA may use the following categories of cookies, depending on the technology enabled.",
     ],
     subsections: [
       {
@@ -359,7 +359,7 @@ const privacySections = [
     id: "communication-preferences",
     title: "Communication Preferences",
     paragraphs: [
-      "OlivetGOSA may send service-related communications such as:",
+      "OlivetNOSA may send service-related communications such as:",
     ],
     bullets: [
       "Email verification messages.",
@@ -432,7 +432,7 @@ const privacySections = [
     id: "external-websites",
     title: "External Websites",
     paragraphs: [
-      "The OlivetGOSA website may contain links to independent third-party websites. We do not control the privacy practices of those websites.",
+      "The OlivetNOSA website may contain links to independent third-party websites. We do not control the privacy practices of those websites.",
       "Users are encouraged to review the privacy policies of external services before providing personal information.",
     ],
   },
@@ -450,7 +450,7 @@ const privacySections = [
     title: "Contact and Privacy Enquiries",
     paragraphs: [
       "For questions, requests or complaints concerning personal information, please contact:",
-      "Olivet Baptist High School Global Old Students' Association (GOSA)",
+      "Olivet Baptist High School Global Old Students' Association (NOSA)",
     ],
     details: [
       ["Website", "https://olivetbhsnosa.org/"],
@@ -458,7 +458,7 @@ const privacySections = [
     ],
     ending: [
       "Individuals may also raise concerns with the Nigeria Data Protection Commission (NDPC) through its official website: https://ndpc.gov.ng/",
-      "OlivetGOSA is committed to protecting the personal information entrusted to the Association and supporting responsible, secure alumni engagement.",
+      "OlivetNOSA is committed to protecting the personal information entrusted to the Association and supporting responsible, secure alumni engagement.",
     ],
   },
 ];
@@ -466,7 +466,7 @@ const privacySections = [
 const PrivacyPolicy = () => {
   return (
     <>
-      <PageTitle title="Privacy Policy | OlivetGOSA" />
+      <PageTitle title="Privacy Policy | OlivetNOSA" />
       <Navbar />
 
       <main className="bg-white text-[var(--primary-dark)]">
@@ -484,7 +484,7 @@ const PrivacyPolicy = () => {
               </h1>
 
               <p className="mt-7 max-w-2xl text-base font-light leading-8 text-[var(--text-muted)] sm:text-lg">
-                Learn how OlivetGOSA collects, uses, protects and manages your
+                Learn how OlivetNOSA collects, uses, protects and manages your
                 personal information when you use our website and alumni
                 services.
               </p>
@@ -712,7 +712,7 @@ const PrivacyPolicy = () => {
                 </h2>
                 <p className="mt-3 text-sm leading-7 text-[var(--text-muted)]">
                   For privacy enquiries, correction requests or other
-                  data-protection concerns, contact OlivetGOSA using the email
+                  data-protection concerns, contact OlivetNOSA using the email
                   address below.
                 </p>
                 <a

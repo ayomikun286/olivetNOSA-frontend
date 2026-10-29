@@ -1,6 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext.jsx";
 import {
   ChevronDown,
   Menu,
@@ -19,6 +20,9 @@ import {
 import usePublicGeneralSettings from "../../hooks/usePublicGeneralSettings";
 
 const Navbar = () => {
+  const { isAuthenticated, loading } = useAuth();
+
+
   const location = useLocation();
   const settings = usePublicGeneralSettings();
 
@@ -34,7 +38,7 @@ const Navbar = () => {
 
   const associationName =
     settings?.associationName ||
-    "Global Old Students Association Website";
+    "Olivet NOSA Worldwide Website";
 
   const contactEmail =
     settings?.contactEmail ||
@@ -122,20 +126,18 @@ const Navbar = () => {
   // DESKTOP NAV LINK STYLING
   // =========================================
   const navLinkClass = ({ isActive }) =>
-    `text-sm font-medium transition-colors duration-500 ${
-      isActive
-        ? "text-[var(--secondary)]"
-        : "text-[var(--primary)]"
+    `text-sm font-medium transition-colors duration-500 ${isActive
+      ? "text-[var(--secondary)]"
+      : "text-[var(--primary)]"
     }`;
 
   // =========================================
   // DROPDOWN PARENT STYLING
   // =========================================
   const dropdownNavLinkClass = ({ isActive }) =>
-    `flex items-center gap-1 text-sm font-medium transition-colors duration-500 ${
-      isActive
-        ? "text-[var(--secondary)]"
-        : "text-[var(--primary)]"
+    `flex items-center gap-1 text-sm font-medium transition-colors duration-500 ${isActive
+      ? "text-[var(--secondary)]"
+      : "text-[var(--primary)]"
     }`;
 
   // =========================================
@@ -146,19 +148,17 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
-        scrolled ? "border-slate-200" : "border-slate-200"
-      }`}
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${scrolled ? "border-slate-200" : "border-slate-200"
+        }`}
     >
       {/* =====================================================
           TOP INFORMATION BAR
       ====================================================== */}
       <div
-        className={`hidden lg:flex  md:hidden bg-white transition-all duration-500 ease-in-out ${
-          hideTopBar
+        className={`hidden lg:flex  md:hidden bg-white transition-all duration-500 ease-in-out ${hideTopBar
             ? "-translate-y-full opacity-0 pointer-events-none"
             : "translate-y-0 opacity-100"
-        }`}
+          }`}
       >
         {/* Social Links */}
         <div className="flex flex-wrap min-h-full w-80 items-center justify-center gap-3 bg-[var(--primary)]/92 p-1">
@@ -222,10 +222,10 @@ const Navbar = () => {
           </Link>
 
           <Link
-            to="/about-gosa"
+            to="/about-NOSA"
             className="flex h-full items-center justify-center gap-2 px-3 py-2 text-[14px] font-medium text-[var(--primary)]/50 transition hover:text-[var(--secondary)]"
           >
-            GOSA
+            NOSA
           </Link>
 
           <Link
@@ -251,16 +251,14 @@ const Navbar = () => {
           MAIN NAVBAR
       ====================================================== */}
       <div
-        className={`transition-all duration-500 ease-in-out ${
-          hideTopBar ? "md:-translate-y-[53px]" : "translate-y-0"
-        }`}
+        className={`transition-all duration-500 ease-in-out ${hideTopBar ? "md:-translate-y-[53px]" : "translate-y-0"
+          }`}
       >
         <div
-          className={`flex items-center justify-between md:gap-20 border px-3 py-4 md:px-6 md:py-5 transition-all duration-500 lg:justify-center md:justify-between ${
-            scrolled
+          className={`flex items-center justify-between md:gap-20 border px-3 py-4 md:px-6 md:py-5 transition-all duration-500 lg:justify-center md:justify-between ${scrolled
               ? "border-slate-200 bg-white"
               : "border-slate-200 bg-white shadow"
-          }`}
+            }`}
         >
           {/* LOGO AND ASSOCIATION NAME */}
           <Link to="/" className="flex items-center gap-3">
@@ -329,13 +327,13 @@ const Navbar = () => {
               </div>
             </div>
 
-            {/* GOSA DROPDOWN */}
+            {/* NOSA DROPDOWN */}
             <div className="group relative">
               <NavLink
-                to="/about-gosa"
+                to="/about-NOSA"
                 className={dropdownNavLinkClass}
               >
-                GOSA
+                NOSA
                 <ChevronDown
                   size={14}
                   className="transition-transform duration-300 group-hover:rotate-180"
@@ -344,18 +342,18 @@ const Navbar = () => {
 
               <div className="invisible absolute left-1/2 top-full z-50 w-64 -translate-x-1/2 translate-y-2 pt-4 opacity-0 transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
                 <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl">
-                  <Link to="/about-gosa" className={dropdownItemClass}>
+                  <Link to="/about-NOSA" className={dropdownItemClass}>
                     <span className="block font-semibold text-[var(--primary)]">
-                      About GOSA
+                      About NOSA
                     </span>
                     <span className="mt-1 block text-xs text-slate-400">
                       Who we are &amp; what we do
                     </span>
                   </Link>
 
-                  <Link to="/gosa-leadership" className={dropdownItemClass}>
+                  <Link to="/NOSA-leadership" className={dropdownItemClass}>
                     <span className="block font-semibold text-[var(--primary)]">
-                      GOSA Leadership
+                      NOSA Leadership
                     </span>
                     <span className="mt-1 block text-xs text-slate-400">
                       Our past Leaders
@@ -383,7 +381,7 @@ const Navbar = () => {
                     </span>
                   </Link>
 
-                  <Link to="/gosa-chapters" className={dropdownItemClass}>
+                  <Link to="/NOSA-chapters" className={dropdownItemClass}>
                     <span className="block font-semibold text-[var(--primary)]">
                       Chapters
                     </span>
@@ -416,12 +414,24 @@ const Navbar = () => {
             </NavLink>
           </div>
 
-          {/* JOIN GOSA */}
+          {/* JOIN NOSA */}
+          {/* JOIN GOSA / BACK TO PORTAL */}
           <Link
-            to="/portal/signup"
+            to={
+              loading
+                ? "/portal/signup"
+                : isAuthenticated
+                  ? "/portal/dashboard"
+                  : "/portal/signup"
+            }
             className="group hidden items-center gap-2 border border-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-dark)] transition-all duration-300 hover:shadow-md md:flex"
           >
-            Join GOSA
+            {loading
+              ? "Join NOSA"
+              : isAuthenticated
+                ? "Back to Portal"
+                : "Join NOSA"}
+
             <ArrowRight
               size={15}
               className="transition-transform duration-300 group-hover:translate-x-1"
@@ -434,11 +444,10 @@ const Navbar = () => {
             onClick={() => setMobileMenu(!mobileMenu)}
             aria-label={mobileMenu ? "Close menu" : "Open menu"}
             aria-expanded={mobileMenu}
-            className={`flex h-10 w-10 items-center justify-center rounded-xl border transition-all duration-500 lg:hidden ${
-              scrolled
+            className={`flex h-10 w-10 items-center justify-center rounded-xl border transition-all duration-500 lg:hidden ${scrolled
                 ? "border-slate-200 text-[var(--primary)] hover:bg-slate-50"
                 : "border-slate-200 text-[var(--primary)] hover:bg-slate-50"
-            }`}
+              }`}
           >
             {mobileMenu ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -447,11 +456,10 @@ const Navbar = () => {
         {/* MOBILE NAVIGATION */}
         {mobileMenu && (
           <div
-            className={`mt-0 border p-5 backdrop-blur-xl transition-all duration-500 lg:hidden ${
-              scrolled
+            className={`mt-0 border p-5 backdrop-blur-xl transition-all duration-500 lg:hidden ${scrolled
                 ? "border-slate-200 bg-white/95"
                 : "border-slate-200 bg-white/95"
-            }`}
+              }`}
           >
             <div className="flex flex-col gap-1">
               <NavLink
@@ -459,10 +467,9 @@ const Navbar = () => {
                 end
                 onClick={() => setMobileMenu(false)}
                 className={({ isActive }) =>
-                  `rounded-xl px-4 py-3 text-sm transition-all duration-300 ${
-                    isActive
-                      ? "bg-[var(--primary-light)] font-semibold text-[var(--secondary)]"
-                      : "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
+                  `rounded-xl px-4 py-3 text-sm transition-all duration-300 ${isActive
+                    ? "bg-[var(--primary-light)] font-semibold text-[var(--secondary)]"
+                    : "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
                   }`
                 }
               >
@@ -480,9 +487,8 @@ const Navbar = () => {
                   <span>About</span>
                   <ChevronDown
                     size={16}
-                    className={`transition-transform duration-300 ${
-                      mobileAbout ? "rotate-180" : ""
-                    }`}
+                    className={`transition-transform duration-300 ${mobileAbout ? "rotate-180" : ""
+                      }`}
                   />
                 </button>
 
@@ -507,7 +513,7 @@ const Navbar = () => {
                 )}
               </div>
 
-              {/* MOBILE GOSA */}
+              {/* MOBILE NOSA */}
               <div>
                 <button
                   type="button"
@@ -515,31 +521,30 @@ const Navbar = () => {
                   aria-expanded={mobileNosa}
                   className="flex w-full items-center justify-between rounded-xl px-4 py-3 text-sm text-slate-600 transition-all duration-300 hover:bg-slate-50 hover:text-[var(--primary)]"
                 >
-                  <span>GOSA</span>
+                  <span>NOSA</span>
                   <ChevronDown
                     size={16}
-                    className={`transition-transform duration-300 ${
-                      mobileNosa ? "rotate-180" : ""
-                    }`}
+                    className={`transition-transform duration-300 ${mobileNosa ? "rotate-180" : ""
+                      }`}
                   />
                 </button>
 
                 {mobileNosa && (
                   <div className="ml-3 mt-1 border-l border-slate-200 pl-3">
                     <Link
-                      to="/about-gosa"
+                      to="/about-NOSA"
                       onClick={() => setMobileMenu(false)}
                       className="block rounded-lg px-4 py-3 text-sm text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
                     >
-                      About GOSA
+                      About NOSA
                     </Link>
 
                     <Link
-                      to="/gosa-leadership"
+                      to="/NOSA-leadership"
                       onClick={() => setMobileMenu(false)}
                       className="block rounded-lg px-4 py-3 text-sm text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
                     >
-                      GOSA Leadership
+                      NOSA Leadership
                     </Link>
 
                     <Link
@@ -564,7 +569,7 @@ const Navbar = () => {
                     </Link>
 
                     <Link
-                      to="/gosa-chapters"
+                      to="/NOSA-chapters"
                       onClick={() => setMobileMenu(false)}
                       className="block rounded-lg px-4 py-3 text-sm text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
                     >
@@ -578,10 +583,9 @@ const Navbar = () => {
                 to="/olivetians"
                 onClick={() => setMobileMenu(false)}
                 className={({ isActive }) =>
-                  `rounded-xl px-4 py-3 text-sm transition-all duration-300 ${
-                    isActive
-                      ? "bg-[var(--primary-light)] font-semibold text-[var(--secondary)]"
-                      : "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
+                  `rounded-xl px-4 py-3 text-sm transition-all duration-300 ${isActive
+                    ? "bg-[var(--primary-light)] font-semibold text-[var(--secondary)]"
+                    : "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
                   }`
                 }
               >
@@ -592,10 +596,9 @@ const Navbar = () => {
                 to="/programs"
                 onClick={() => setMobileMenu(false)}
                 className={({ isActive }) =>
-                  `rounded-xl px-4 py-3 text-sm transition-all duration-300 ${
-                    isActive
-                      ? "bg-[var(--primary-light)] font-semibold text-[var(--secondary)]"
-                      : "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
+                  `rounded-xl px-4 py-3 text-sm transition-all duration-300 ${isActive
+                    ? "bg-[var(--primary-light)] font-semibold text-[var(--secondary)]"
+                    : "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
                   }`
                 }
               >
@@ -606,10 +609,9 @@ const Navbar = () => {
                 to="/news"
                 onClick={() => setMobileMenu(false)}
                 className={({ isActive }) =>
-                  `rounded-xl px-4 py-3 text-sm transition-all duration-300 ${
-                    isActive
-                      ? "bg-[var(--primary-light)] font-semibold text-[var(--secondary)]"
-                      : "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
+                  `rounded-xl px-4 py-3 text-sm transition-all duration-300 ${isActive
+                    ? "bg-[var(--primary-light)] font-semibold text-[var(--secondary)]"
+                    : "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
                   }`
                 }
               >
@@ -620,10 +622,9 @@ const Navbar = () => {
                 to="/gallery"
                 onClick={() => setMobileMenu(false)}
                 className={({ isActive }) =>
-                  `rounded-xl px-4 py-3 text-sm transition-all duration-300 ${
-                    isActive
-                      ? "bg-[var(--primary-light)] font-semibold text-[var(--secondary)]"
-                      : "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
+                  `rounded-xl px-4 py-3 text-sm transition-all duration-300 ${isActive
+                    ? "bg-[var(--primary-light)] font-semibold text-[var(--secondary)]"
+                    : "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
                   }`
                 }
               >
@@ -634,10 +635,9 @@ const Navbar = () => {
                 to="/contact"
                 onClick={() => setMobileMenu(false)}
                 className={({ isActive }) =>
-                  `rounded-xl px-4 py-3 text-sm transition-all duration-300 ${
-                    isActive
-                      ? "bg-[var(--primary-light)] font-semibold text-[var(--secondary)]"
-                      : "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
+                  `rounded-xl px-4 py-3 text-sm transition-all duration-300 ${isActive
+                    ? "bg-[var(--primary-light)] font-semibold text-[var(--secondary)]"
+                    : "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
                   }`
                 }
               >
@@ -655,11 +655,21 @@ const Navbar = () => {
               </Link>
 
               <Link
-                to="/portal/signup"
+                to={
+                  loading
+                    ? "/portal/signup"
+                    : isAuthenticated
+                      ? "/portal/dashboard"
+                      : "/portal/signup"
+                }
                 onClick={() => setMobileMenu(false)}
                 className="mt-2 bg-[var(--secondary)] px-4 py-3 text-center text-sm font-semibold text-[var(--primary-dark)] transition hover:shadow-lg"
               >
-                Join GOSA
+                {loading
+                  ? "Join NOSA"
+                  : isAuthenticated
+                    ? "Back to Portal"
+                    : "Join NOSA"}
               </Link>
             </div>
           </div>

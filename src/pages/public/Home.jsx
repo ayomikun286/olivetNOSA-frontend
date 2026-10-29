@@ -54,11 +54,7 @@ export default function Home() {
         };
     }, []);
 
-    // =========================================================
-    // HERO SLIDES
-    // CMS controls the first slide's title, subtitle and image.
-    // The remaining slides stay unchanged.
-    // =========================================================
+    
     const heroSlides = [
         {
             image: pageContent.heroImage || "/images/olivetNOSA-4.jpg",
@@ -67,7 +63,7 @@ export default function Home() {
             highlight: pageContent.heroSubtitle || "Global Old Students Association.",
             description:
                 "Connecting Olivetians across generations through fellowship, shared memories and a commitment to our alma mater.",
-            linkText: "Discover GOSA",
+            linkText: "Discover Olivet Alumni",
             linkTo: "/about-gosa",
         },
         {
@@ -84,7 +80,7 @@ export default function Home() {
             image: pageContent.heroImage3 || "/images/olivetNOSA-10.jpg",
             eyebrow: "Our Global Community",
             title: "One school brought us together,",
-            highlight: "GOSA keeps us connected.",
+            highlight: "Olivet Alumni keeps us connected.",
             description:
                 "Uniting Olivetians across chapters, year sets, and branches worldwide, fostering fellowship, networking and shared growth.",
             linkText: "Meet the Olivetians",
@@ -146,7 +142,7 @@ export default function Home() {
 
     return (
         <main className="min-h-screen bg-white text-[var(--primary-dark)] overflow-x-hidden mt-10 md:mt-15">
-            <PageTitle title="OlivetGOSA | Olivet Nigerian School Alumni Association" />
+            <PageTitle title="OlivetNOSA | Old Student Association, Oyo" />
 
             <header>
                 <Navbar />
@@ -371,7 +367,7 @@ export default function Home() {
                                     <>
                                         One school brought us together.
                                         <span className="block text-[var(--primary)]">
-                                            GOSA keeps us connected.
+                                            Olivet keeps us connected.
                                         </span>
                                     </>
                                 )}
@@ -396,7 +392,7 @@ export default function Home() {
                                     to="/about-gosa"
                                     className="group inline-flex items-center gap-3 text-sm font-semibold text-[var(--primary)]"
                                 >
-                                    About OlivetGOSA
+                                    About Olivet Alumni
                                     <ArrowRight
                                         size={16}
                                         className="transition-transform group-hover:translate-x-1"
@@ -538,7 +534,7 @@ export default function Home() {
 
                         <div data-aos="fade-left">
                             <p className="max-w-3xl text-xl leading-9 text-[var(--primary-dark)] sm:text-2xl">
-                                GOSA exists to keep the Olivetian community
+                                Global website exists to keep the Olivetian community
                                 connected, to honour where we came from and to
                                 help shape where we are going.
                             </p>
@@ -603,8 +599,8 @@ export default function Home() {
                             </div>
 
                             <p className="mt-7 text-xs uppercase tracking-[0.2em] text-[var(--text-muted)]">
-                                Draft statements — subject to official GOSA
-                                approval
+                                Draft statements — subject to official NOSA
+                                approval 
                             </p>
                         </div>
                     </div>
@@ -619,7 +615,7 @@ export default function Home() {
                     <div className="grid gap-14 lg:grid-cols-[0.7fr_1.3fr] lg:gap-24">
                         <div data-aos="fade-right">
                             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-                                OlivetGOSA Today
+                                Olivetian Today
                             </p>
 
                             <h2 className="mt-6 max-w-md text-4xl font-medium leading-[1.05] tracking-[-0.035em] sm:text-5xl">
@@ -636,7 +632,7 @@ export default function Home() {
                                 to="/about-gosa"
                                 className="group mt-9 inline-flex items-center gap-3 border-b border-[var(--secondary)] pb-2 text-sm font-semibold text-white"
                             >
-                                Learn more about GOSA
+                                Learn more about Olivetians
                                 <ArrowRight
                                     size={16}
                                     className="transition-transform group-hover:translate-x-1"
@@ -668,9 +664,7 @@ export default function Home() {
                                         Chapters
                                     </h3>
                                     <p className="mt-3 max-w-xl leading-7 text-white/50">
-                                        Local communities through which
-                                        Olivetians can stay connected and take
-                                        part in the life of GOSA.
+                                        Local communities where Olivetians can stay connected and participate in the life of the association.
                                     </p>
                                     <span className="mt-5 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--secondary)]">
                                         Explore chapters
@@ -797,11 +791,7 @@ export default function Home() {
                             </h2>
 
                             <p className="mt-8 max-w-2xl text-lg leading-8 text-[var(--text-muted)]">
-                                The alumni community brings together people
-                                whose paths began in the same place. GOSA
-                                provides a way to reconnect, participate and
-                                remain part of something that continues beyond
-                                the school years.
+                                The alumni community brings together people whose paths began in the same place. The association provides a way to reconnect, participate, and remain part of something that continues beyond the school years.
                             </p>
 
                             <div className="mt-10 border-t border-black/10">
@@ -844,7 +834,7 @@ export default function Home() {
                                         />
                                         <div>
                                             <h3 className="font-semibold text-[var(--primary-dark)]">
-                                                Become part of GOSA
+                                                Become part of the Olivetian alumni community.
                                             </h3>
                                             <p className="mt-1 text-sm leading-6 text-[var(--text-muted)]">
                                                 Join the community and stay
@@ -880,9 +870,7 @@ export default function Home() {
                             </h2>
 
                             <p className="mt-7 max-w-md text-base leading-8 text-[var(--text-muted)]">
-                                Keep up with announcements, community stories,
-                                reunions and moments taking place across
-                                Olivet and GOSA.
+                               Keep up with announcements, community stories, reunions, and memorable moments from across the Olivetian community.
                             </p>
 
                             <Link

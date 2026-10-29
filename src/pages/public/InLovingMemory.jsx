@@ -151,7 +151,7 @@ export default function InLovingMemory() {
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-white text-(--primary-dark) mt-0 md:mt-15">
-      <PageTitle title="In Loving Memory | OlivetGOSA" />
+      <PageTitle title="In Loving Memory | OlivetNOSA" />
 
       {/* =========================================================
           NAVBAR

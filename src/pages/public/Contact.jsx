@@ -116,7 +116,7 @@ const Contact = () => {
     }
   };
 
-  const pageTitle = pageContent.pageTitle || "Contact | OlivetGOSA";
+  const pageTitle = pageContent.pageTitle || "Contact | OlivetNOSA";
 
   const intro =
     pageContent.intro ||
@@ -160,7 +160,7 @@ const Contact = () => {
               <span className="h-px w-12 bg-[var(--secondary)]" />
 
               <span className="text-xs font-semibold uppercase tracking-[0.28em] text-white/70">
-                Contact OlivetGOSA
+                Contact OlivetNOSA
               </span>
             </div>
 
@@ -219,7 +219,7 @@ const Contact = () => {
 
             <div data-aos="fade-up" data-aos-delay="100">
               <p className="max-w-2xl text-base leading-8 text-[var(--text-muted)] sm:text-lg">
-                Have a question about GOSA, membership, an event, an initiative,
+                Have a question about NOSA, membership, an event, an initiative,
                 or reconnecting with fellow Olivetians? Get in touch with us.
               </p>
 
@@ -365,7 +365,7 @@ const Contact = () => {
             </h2>
 
             <p className="mt-7 max-w-md text-base leading-8 text-white/60 sm:text-lg">
-              Send us a message and the appropriate member of the OlivetGOSA
+              Send us a message and the appropriate member of the OlivetNOSA
               community will get back to you.
             </p>
 
@@ -381,7 +381,7 @@ const Contact = () => {
               </div>
 
               <div className="border-b border-white/10 py-5">
-                <h3 className="text-sm font-semibold">GOSA initiatives</h3>
+                <h3 className="text-sm font-semibold">NOSA initiatives</h3>
 
                 <p className="mt-1 text-sm leading-6 text-white/45">
                   Enquiries about projects, partnerships and community
@@ -416,7 +416,7 @@ const Contact = () => {
                 </h3>
 
                 <p className="mt-3 max-w-md text-sm leading-7 text-[var(--text-muted)]">
-                  Thank you for reaching out to OlivetGOSA. Your message has
+                  Thank you for reaching out to OlivetNOSA. Your message has
                   been received and someone from the team will get back to you.
                 </p>
 
@@ -491,7 +491,7 @@ const Contact = () => {
 
                     <option value="membership">Membership</option>
                     <option value="event">Events</option>
-                    <option value="initiative">GOSA Initiative</option>
+                    <option value="initiative">NOSA Initiative</option>
                     <option value="partnership">Partnership</option>
                     <option value="general">General Enquiry</option>
                   </select>

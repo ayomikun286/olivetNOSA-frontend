@@ -8,7 +8,7 @@ const NotFound = () => {
         <div className="max-w-3xl">
 
           <p className="mb-5 text-sm font-semibold uppercase tracking-[0.25em] text-[var(--primary)]">
-            OlivetGOSA
+            OlivetNOSA
           </p>
 
           <h1 className="text-7xl font-light tracking-tight sm:text-8xl lg:text-9xl">
