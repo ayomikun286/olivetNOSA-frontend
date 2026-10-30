@@ -485,6 +485,16 @@ const AdminDonations = () => {
                         value={summary?.failedDonations ?? 0}
                         description="Unsuccessful donations"
                     />
+
+                    <AdminStatCard
+                        icon={XCircle}
+                        iconBg="bg-(--danger-light)"
+                        iconClass="text-(--danger)"
+                        badge="Failed"
+                        label="Failed"
+                        value={summary?.unsuccessfulDonations ?? 0}
+                        description="Unsuccessful donations"
+                    />
                 </div>
 
                 {/* DONATION COLLECTION OVERVIEW */}
