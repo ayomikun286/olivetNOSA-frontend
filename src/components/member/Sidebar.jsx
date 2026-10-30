@@ -16,7 +16,8 @@ import {
   NotebookTabs,
   FileText,
   Newspaper,
-  BriefcaseBusiness
+  BriefcaseBusiness,
+  Megaphone
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
@@ -95,8 +96,8 @@ const Sidebar = ({ setIsOpen }) => {
         </NavLink>
 
         <div className="leading-none">
-          <p className="text-[11px] font-bold tracking-wide text-white leading-4 tracking-1">
-            Olivet NOSA Worldwide Portal
+          <p className="text-[13px] font-bold tracking-wide text-white leading-4 tracking-1">
+            Olivet NOSA <br></br>Worldwide Portal
           </p>
 
 
@@ -240,6 +241,15 @@ const Sidebar = ({ setIsOpen }) => {
             >
               <NotebookTabs className={iconClass} />
               <span>Calendar</span>
+            </NavLink>
+
+            <NavLink 
+            to="/portal/member/dashboard/announcements"
+            className={linkClass}
+              onClick={handleLinkClick} >
+            <Megaphone className={iconClass} />
+            <span>Announcements</span>
+
             </NavLink>
 
             <NavLink

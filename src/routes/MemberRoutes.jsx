@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 
 import ProtectedRoute from "./ProtectedRoute.jsx";
 
+import Announcements from "../pages/member/Announcements.jsx";
 import Dashboard from "../pages/member/Dashboard.jsx";
 import Main from "../pages/member/Main.jsx";
 import Profile from "../pages/member/Profile.jsx";
@@ -63,7 +64,7 @@ const MemberRoutes = () => {
           />
 
           <Route path="articles" element={<Articles />} />
-
+          <Route path="announcements" element={<Announcements />} />
           <Route
             path="articles/:slug"
             element={<MemberArticleDetails />}

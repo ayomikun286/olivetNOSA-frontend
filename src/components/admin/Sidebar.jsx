@@ -102,8 +102,8 @@ const [memorialsOpen, setMemorialsOpen] = useState(isMemorialRoute);
         </div>
 
         <div className="leading-none">
-          <p className="text-[11px] font-bold tracking-wide text-white leading-4 tracking-1">
-            Olivet NOSA Worldwide Portal
+           <p className="text-[13px] font-bold tracking-wide text-white leading-4 tracking-1">
+            Olivet NOSA <br></br>Worldwide Portal
           </p>
 
         </div>

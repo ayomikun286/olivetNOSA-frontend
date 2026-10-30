@@ -14,11 +14,11 @@ import Programs from "../pages/public/Programs.jsx";
 import NewsEventDetails from "../pages/public/NewsEventDetails.jsx";
 import InLovingMemory from "../pages/public/InLovingMemory.jsx";
 import PrivacyPolicy from "../pages/public/PrivacyPolicy.jsx";
-
+import Donation from "../pages/public/Donations.jsx";
 import History from "../pages/public/History.jsx";
 import TermsAndConditions from "../pages/public/TermsAndConditions";
 import LegacyLeadership from "../pages/public/LegacyLeadership.jsx";
-
+import DonationVerification from "../pages/public/DonationVerification.jsx";
 export default function PublicRoutes() {
   return (
     <Routes>
@@ -26,9 +26,9 @@ export default function PublicRoutes() {
 
       <Route path="/about-school" element={<AboutSchool />} />
 
-      <Route path="/about-gosa" element={<AboutNOSA />} />
-      <Route path="/gosa-leadership" element={<NOSALeadership />} />
-      <Route path="/gosa-chapters" element={<NOSAChapters />} />
+      <Route path="/about-nosa" element={<AboutNOSA />} />
+      <Route path="/nosa-leadership" element={<NOSALeadership />} />
+      <Route path="/nosa-chapters" element={<NOSAChapters />} />
 
       <Route path="/olivetians" element={<Olivetians />} />
 
@@ -46,7 +46,11 @@ export default function PublicRoutes() {
         path="/terms-and-conditions"
         element={<TermsAndConditions />}
       />
-
+<Route path="/donation" element={<Donation />} />
+<Route
+  path="/donation/verify"
+  element={<DonationVerification />}
+/>
 <Route path="/history" element={<History />} />
       <Route path="/legacy-leadership" element={<LegacyLeadership />} />
       <Route path="/contact" element={<Contact />} />

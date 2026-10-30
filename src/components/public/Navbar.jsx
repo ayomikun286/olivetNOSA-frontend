@@ -222,7 +222,7 @@ const Navbar = () => {
           </Link>
 
           <Link
-            to="/about-NOSA"
+            to="/about-nosa"
             className="flex h-full items-center justify-center gap-2 px-3 py-2 text-[14px] font-medium text-[var(--primary)]/50 transition hover:text-[var(--secondary)]"
           >
             NOSA
@@ -255,7 +255,7 @@ const Navbar = () => {
           }`}
       >
         <div
-          className={`flex items-center justify-between md:gap-20 border px-3 py-4 md:px-6 md:py-5 transition-all duration-500 lg:justify-center md:justify-between ${scrolled
+          className={`flex items-center justify-between md:gap-20 border  py-4 md:px-6 md:py-5 transition-all duration-500 lg:justify-center md:justify-between ${scrolled
               ? "border-slate-200 bg-white"
               : "border-slate-200 bg-white shadow"
             }`}
@@ -330,7 +330,7 @@ const Navbar = () => {
             {/* NOSA DROPDOWN */}
             <div className="group relative">
               <NavLink
-                to="/about-NOSA"
+                to="/about-nosa"
                 className={dropdownNavLinkClass}
               >
                 NOSA
@@ -342,7 +342,7 @@ const Navbar = () => {
 
               <div className="invisible absolute left-1/2 top-full z-50 w-64 -translate-x-1/2 translate-y-2 pt-4 opacity-0 transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
                 <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl">
-                  <Link to="/about-NOSA" className={dropdownItemClass}>
+                  <Link to="/about-nosa" className={dropdownItemClass}>
                     <span className="block font-semibold text-[var(--primary)]">
                       About NOSA
                     </span>
@@ -351,12 +351,12 @@ const Navbar = () => {
                     </span>
                   </Link>
 
-                  <Link to="/NOSA-leadership" className={dropdownItemClass}>
+                  <Link to="/nosa-leadership" className={dropdownItemClass}>
                     <span className="block font-semibold text-[var(--primary)]">
                       NOSA Leadership
                     </span>
                     <span className="mt-1 block text-xs text-slate-400">
-                      Our past Leaders
+                        Leadership &amp; service
                     </span>
                   </Link>
 
@@ -365,7 +365,7 @@ const Navbar = () => {
                       Legacy Leaders
                     </span>
                     <span className="mt-1 block text-xs text-slate-400">
-                      Leadership &amp; service
+                      Our past Leaders
                     </span>
                   </Link>
 
@@ -381,7 +381,7 @@ const Navbar = () => {
                     </span>
                   </Link>
 
-                  <Link to="/NOSA-chapters" className={dropdownItemClass}>
+                  <Link to="/nosa-chapters" className={dropdownItemClass}>
                     <span className="block font-semibold text-[var(--primary)]">
                       Chapters
                     </span>
@@ -409,13 +409,18 @@ const Navbar = () => {
               Gallery
             </NavLink>
 
+            <NavLink to="/donation" className={navLinkClass}>
+              Donation
+            </NavLink>
+    
+
             <NavLink to="/contact" className={navLinkClass}>
               Contact
             </NavLink>
           </div>
 
           {/* JOIN NOSA */}
-          {/* JOIN GOSA / BACK TO PORTAL */}
+          {/* JOIN nosa / BACK TO PORTAL */}
           <Link
             to={
               loading
@@ -532,7 +537,7 @@ const Navbar = () => {
                 {mobileNosa && (
                   <div className="ml-3 mt-1 border-l border-slate-200 pl-3">
                     <Link
-                      to="/about-NOSA"
+                      to="/about-nosa"
                       onClick={() => setMobileMenu(false)}
                       className="block rounded-lg px-4 py-3 text-sm text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
                     >
@@ -540,7 +545,7 @@ const Navbar = () => {
                     </Link>
 
                     <Link
-                      to="/NOSA-leadership"
+                      to="/nosa-leadership"
                       onClick={() => setMobileMenu(false)}
                       className="block rounded-lg px-4 py-3 text-sm text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
                     >
@@ -569,7 +574,7 @@ const Navbar = () => {
                     </Link>
 
                     <Link
-                      to="/NOSA-chapters"
+                      to="/nosa-chapters"
                       onClick={() => setMobileMenu(false)}
                       className="block rounded-lg px-4 py-3 text-sm text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
                     >
@@ -629,6 +634,18 @@ const Navbar = () => {
                 }
               >
                 Gallery
+              </NavLink>
+               <NavLink
+                to="/donation"
+                onClick={() => setMobileMenu(false)}
+                className={({ isActive }) =>
+                  `rounded-xl px-4 py-3 text-sm transition-all duration-300 ${isActive
+                    ? "bg-[var(--primary-light)] font-semibold text-[var(--secondary)]"
+                    : "text-slate-600 hover:bg-slate-50 hover:text-[var(--primary)]"
+                  }`
+                }
+              >
+                Donation
               </NavLink>
 
               <NavLink

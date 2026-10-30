@@ -1,557 +1,1308 @@
-import React, { useEffect, useState } from "react";
-import { getPublicWebsiteContent } from "../../services/authService.js";
+// import React, { useEffect, useState } from "react";
+// import { getPublicWebsiteContent } from "../../services/authService.js";
 
-import Navbar from "../../components/public/Navbar";
-import Footer from "../../components/public/footer";
+// import Navbar from "../../components/public/Navbar";
+// import Footer from "../../components/public/footer";
+
+// import {
+//   ArrowDown,
+//   ArrowUpRight,
+//   UsersRound,
+//   ShieldCheck,
+//   Network,
+//   HeartHandshake,
+// } from "lucide-react";
+// import PageTitle from "../../components/common/PageTitle.jsx";
+
+// const NOSALeadership = () => {
+//   const [pageContent, setPageContent] = useState({});
+
+//   useEffect(() => {
+//     let isMounted = true;
+
+//     const loadPageContent = async () => {
+//       try {
+//         const result = await getPublicWebsiteContent("leaders-chapters");
+
+//         if (isMounted && result?.success && result?.page?.content) {
+//           setPageContent(result.page.content);
+//         }
+//       } catch (error) {
+//         console.warn(
+//           "Unable to load published Leaders & Chapters content. Using defaults.",
+//           error.message
+//         );
+//       }
+//     };
+
+//     loadPageContent();
+
+//     return () => {
+//       isMounted = false;
+//     };
+//   }, []);
+
+
+//   return (
+//     <main className="min-h-screen bg-white text-(--primary-dark) mt-0 md:mt-15 overflow-x-hidden">
+//       <PageTitle
+//         title={`${pageContent.pageTitle || "Leadership"} | OlivetNOSA`}
+//       />
+//       {/* =========================================================
+//           NAVBAR
+//       ========================================================= */}
+//       <header>
+//         <Navbar />
+//       </header>
+
+//       {/* =========================================================
+//           HERO
+//       ========================================================= */}
+//       <section className="relative flex min-h-[92vh] items-end overflow-hidden bg-[var(--primary-dark)]">
+//         <img
+//           src="/images/olivetNOSA-6.jpg"
+//           alt="OlivetNOSA leadership and alumni community"
+//           className="absolute inset-0 h-full w-full object-cover"
+//         />
+
+//         <div className="absolute inset-0 bg-[var(--primary-dark)]/70" />
+
+//         <div className="absolute inset-0 bg-gradient-to-t from-[var(--primary-dark)] via-[var(--primary-dark)]/30 to-transparent" />
+
+//         <div className="relative z-10 w-full px-6 pb-14 pt-40 sm:px-10 lg:px-16 lg:pb-20">
+//           <div className="mx-auto max-w-7xl">
+//             <div className="max-w-5xl">
+//               <div
+//                 data-aos="fade-up"
+//                 className="flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.28em] text-[var(--secondary-light)]"
+//               >
+//                 <span className="h-px w-10 bg-[var(--secondary)]" />
+//                 Alumni Leadership
+//               </div>
+
+//               <h1
+//                 data-aos="fade-up"
+//                 data-aos-delay="100"
+//                 className="
+//                   mt-7
+//                   max-w-5xl
+//                   text-5xl
+//                   font-medium
+//                   leading-[0.95]
+//                   tracking-[-0.045em]
+//                   text-white
+//                   sm:text-6xl
+//                   lg:text-[7.5rem]
+//                 "
+//               >
+//                 Leadership rooted in
+//                 <span className="block text-[var(--secondary)]">
+//                   service and responsibility.
+//                 </span>
+//               </h1>
+
+//               <div
+//                 data-aos="fade-up"
+//                 data-aos-delay="200"
+//                 className="mt-10 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between"
+//               >
+//                 <p className="max-w-xl text-base leading-8 text-white/75 sm:text-lg">
+//                   {pageContent.intro ||
+//                     "NOSA is guided by Olivetians who give their time, experience and commitment to the service of the wider alumni community."}
+//                 </p>
+
+//                 <a
+//                   href="#leadership"
+//                   className="
+//                     inline-flex
+//                     w-fit
+//                     items-center
+//                     gap-3
+//                     border-b
+//                     border-[var(--secondary)]
+//                     pb-2
+//                     text-sm
+//                     font-semibold
+//                     text-white
+//                     transition
+//                     hover:gap-5
+//                   "
+//                 >
+//                   Meet the leadership
+//                   <ArrowDown size={17} />
+//                 </a>
+//               </div>
+//             </div>
+
+//             <div
+//               data-aos="fade-up"
+//               data-aos-delay="300"
+//               className="
+//                 mt-20
+//                 flex
+//                 flex-col
+//                 gap-3
+//                 border-t
+//                 border-white/20
+//                 pt-5
+//                 sm:flex-row
+//                 sm:items-center
+//                 sm:justify-between
+//               "
+//             >
+//               <p className="text-xs uppercase tracking-[0.25em] text-white/45">
+//                 Global Old Students' Association
+//               </p>
+
+//               <p className="text-sm italic text-white/50">
+//                 Cum Christo Progredere
+//               </p>
+//             </div>
+//           </div>
+//         </div>
+//       </section>
+
+//       {/* =========================================================
+//           LEADERSHIP INTRODUCTION
+//       ========================================================= */}
+//       <section
+//         id="leadership"
+//         className="bg-white py-24 sm:py-32 lg:py-25"
+//       >
+//         <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
+//           <div className="grid gap-14 lg:grid-cols-[0.7fr_1.3fr] lg:gap-24">
+//             <div data-aos="fade-up">
+//               <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
+//                 Leadership & Service
+//               </p>
+
+//               <div className="mt-6 h-px w-16 bg-[var(--secondary)]" />
+//             </div>
+
+//             <div data-aos="fade-up" data-aos-delay="100">
+//               <h2 className="max-w-4xl text-4xl font-medium leading-[1.05] tracking-[-0.035em] text-[var(--primary-dark)] sm:text-5xl lg:text-6xl">
+//                 The strength of NOSA is reflected in the people willing to
+//                 serve it.
+//               </h2>
+
+//               <div className="mt-10 grid gap-8 md:grid-cols-2">
+//                 <p className="text-base leading-8 text-[var(--text-muted)]">
+//                   Leadership within the alumni association carries the responsibility of keeping the community focused on its purpose while responding to the needs of its members and the wider Olivetian community.
+//                 </p>
+
+//                 <p className="text-base leading-8 text-[var(--text-muted)]">
+//                   It brings together experience from different generations of
+//                   Olivetians and provides the coordination needed for chapters,
+//                   year sets and members to work towards shared objectives.
+//                 </p>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </section>
+
+//       {/* =========================================================
+//           PRINCIPLES
+//       ========================================================= */}
+//       <section className="bg-[var(--background-soft)] py-24 sm:py-32 lg:py-20">
+//         <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
+//           <div className="grid gap-14 lg:grid-cols-[0.75fr_1.25fr] lg:gap-24">
+//             <div data-aos="fade-right">
+//               <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
+//                 Our Approach
+//               </p>
+
+//               <h2 className="mt-6 max-w-md text-4xl font-medium leading-[1.05] tracking-[-0.035em] text-[var(--primary-dark)] sm:text-5xl">
+//                 Leadership with the community at its centre.
+//               </h2>
+//             </div>
+
+//             <div data-aos="fade-left">
+//               <p className="max-w-3xl text-xl leading-9 text-[var(--primary-dark)] sm:text-2xl">
+//                 Good leadership gives an association direction without losing
+//                 sight of the people it represents.
+//               </p>
+
+//               <div className="mt-14 border-t border-black/10">
+//                 <div className="grid gap-6 border-b border-black/10 py-8 md:grid-cols-[auto_0.3fr_1fr] md:items-start">
+//                   <Network
+//                     size={23}
+//                     strokeWidth={1.5}
+//                     className="text-[var(--secondary)]"
+//                   />
+
+//                   <h3 className="text-xl font-semibold text-[var(--primary-dark)]">
+//                     Collaboration
+//                   </h3>
+
+//                   <p className="max-w-xl text-sm leading-7 text-[var(--text-muted)]">
+//                     Bringing members, chapters and year sets together so that
+//                     the association can work with a shared sense of purpose.
+//                   </p>
+//                 </div>
+
+//                 <div className="grid gap-6 border-b border-black/10 py-8 md:grid-cols-[auto_0.3fr_1fr] md:items-start">
+//                   <HeartHandshake
+//                     size={23}
+//                     strokeWidth={1.5}
+//                     className="text-[var(--secondary)]"
+//                   />
+
+//                   <h3 className="text-xl font-semibold text-[var(--primary-dark)]">
+//                     Service
+//                   </h3>
+
+//                   <p className="max-w-xl text-sm leading-7 text-[var(--text-muted)]">
+//                     Giving time, knowledge and experience to strengthen the
+//                     Olivetian community and support its continued development.
+//                   </p>
+//                 </div>
+
+//                 <div className="grid gap-6 py-8 md:grid-cols-[auto_0.3fr_1fr] md:items-start">
+//                   <ShieldCheck
+//                     size={23}
+//                     strokeWidth={1.5}
+//                     className="text-[var(--secondary)]"
+//                   />
+
+//                   <h3 className="text-xl font-semibold text-[var(--primary-dark)]">
+//                     Stewardship
+//                   </h3>
+
+//                   <p className="max-w-xl text-sm leading-7 text-[var(--text-muted)]">
+//                     Protecting the values, relationships and legacy entrusted
+//                     to the association by generations of Olivetians.
+//                   </p>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </section>
+
+//       {/* =========================================================
+//           LEADERSHIP IMAGE / CONTENT
+//       ========================================================= */}
+//       <section className="bg-white py-24 sm:py-32 lg:py-20">
+//         <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
+//           <div className="grid gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-24">
+//             <div
+//               data-aos="fade-right"
+//               className="relative overflow-hidden"
+//             >
+//               <div className="aspect-[4/3] overflow-hidden">
+//                 <img
+//                   src="/images/olivetNOSA.jpg"
+//                   alt="OlivetNOSA leadership"
+//                   className="h-full w-full object-cover transition duration-700 hover:scale-[1.03]"
+//                 />
+//               </div>
+
+//               <div className="mt-5 flex items-start justify-between border-t border-black/10 pt-4">
+//                 <p className="text-xs uppercase tracking-[0.22em] text-[var(--text-muted)]">
+//                   OlivetNOSA
+//                 </p>
+
+//                 <p className="max-w-xs text-right text-sm leading-6 text-[var(--text-muted)]">
+//                   Leadership entrusted with serving the wider Olivetian
+//                   community.
+//                 </p>
+//               </div>
+//             </div>
+
+//             <div data-aos="fade-left">
+//               <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
+//                 Serving the Association
+//               </p>
+
+//               <h2 className="mt-6 text-4xl font-medium leading-[1.05] tracking-[-0.035em] text-[var(--primary-dark)] sm:text-5xl">
+//                 Bringing experience together for the benefit of the community.
+//               </h2>
+
+//               <p className="mt-8 text-lg leading-8 text-[var(--text-muted)]">
+//                 Alumni leadership provides the structure through which the
+//                 association's work can be coordinated and its priorities
+//                 carried forward.
+//               </p>
+
+//               <p className="mt-6 text-lg leading-8 text-[var(--text-muted)]">
+//                 The responsibility extends beyond administration. Leaders help
+//                 create the conditions for members to participate, chapters to
+//                 remain connected and initiatives to make a meaningful
+//                 contribution to the Olivetian community.
+//               </p>
+
+//               <div className="mt-10 border-t border-black/10 pt-7">
+//                 <div className="flex gap-5">
+//                   <UsersRound
+//                     size={22}
+//                     strokeWidth={1.5}
+//                     className="mt-1 shrink-0 text-[var(--primary)]"
+//                   />
+
+//                   <div>
+//                     <h3 className="font-semibold text-[var(--primary-dark)]">
+//                       A community-led association
+//                     </h3>
+
+//                     <p className="mt-2 text-sm leading-7 text-[var(--text-muted)]">
+//                       The Olivetian alumni community is strengthened by the participation and service of former students across generations.
+//                     </p>
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </section>
+
+//       {/* =========================================================
+//           LEADERSHIP STRUCTURE
+//       ========================================================= */}
+//       <section className="bg-[var(--primary-dark)] py-24 text-white sm:py-32 lg:py-20">
+//         <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
+//           <div className="grid gap-14 lg:grid-cols-[0.7fr_1.3fr] lg:gap-24">
+//             <div data-aos="fade-right">
+//               <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
+//                 Working Together
+//               </p>
+
+//               <h2 className="mt-6 max-w-md text-4xl font-medium leading-[1.05] tracking-[-0.035em] sm:text-5xl">
+//                 One association, many parts.
+//               </h2>
+
+//               <p className="mt-7 max-w-md leading-8 text-white/55">
+//                 Leadership works with different parts of the Olivetian alumni community to keep the association connected, organized, and focused on its shared purpose.
+//               </p>
+//             </div>
+
+//             <div
+//               data-aos="fade-left"
+//               className="divide-y divide-white/15 border-y border-white/15"
+//             >
+//               <div className="grid gap-5 py-8 sm:grid-cols-[0.35fr_1fr]">
+//                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
+//                   National
+//                 </p>
+
+//                 <div>
+//                   <h3 className="text-2xl font-medium">
+//                     National Leadership
+//                   </h3>
+
+//                   <p className="mt-3 max-w-xl leading-7 text-white/50">
+//                     Providing direction, coordination and oversight across
+//                     the wider association.
+//                   </p>
+//                 </div>
+//               </div>
+
+//               <div className="grid gap-5 py-8 sm:grid-cols-[0.35fr_1fr]">
+//                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
+//                   Local
+//                 </p>
+
+//                 <div>
+//                   <h3 className="text-2xl font-medium">Chapters</h3>
+
+//                   <p className="mt-3 max-w-xl leading-7 text-white/50">
+//                    Creating local communities where Olivetians can stay connected, build relationships, and participate in the wider alumni community.
+//                   </p>
+//                 </div>
+//               </div>
+
+//               <div className="grid gap-5 py-8 sm:grid-cols-[0.35fr_1fr]">
+//                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
+//                   Generations
+//                 </p>
+
+//                 <div>
+//                   <h3 className="text-2xl font-medium">Year Sets</h3>
+
+//                   <p className="mt-3 max-w-xl leading-7 text-white/50">
+//                     Preserving relationships between classmates and
+//                     strengthening connections across generations.
+//                   </p>
+//                 </div>
+//               </div>
+
+//               <div className="grid gap-5 py-8 sm:grid-cols-[0.35fr_1fr]">
+//                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
+//                   Members
+//                 </p>
+
+//                 <div>
+//                   <h3 className="text-2xl font-medium">Olivetians</h3>
+
+//                   <p className="mt-3 max-w-xl leading-7 text-white/50">
+//                     The members whose participation, ideas and commitment give
+//                     the association its strength.
+//                   </p>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </section>
+
+//       {/* =========================================================
+//           LEADERSHIP DIRECTORY PLACEHOLDER
+//       ========================================================= */}
+//       <section className="bg-white py-24 sm:py-32 lg:py-20">
+//         <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
+//           <div className="grid gap-12 lg:grid-cols-[0.7fr_1.3fr] lg:gap-24">
+//             <div data-aos="fade-right">
+//               <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
+//                 Leadership
+//               </p>
+
+//               <h2 className="mt-6 max-w-md text-4xl font-medium leading-[1.05] tracking-[-0.035em] text-[var(--primary-dark)] sm:text-5xl">
+//                 The People Serving the Olivetian Community
+//               </h2>
+//             </div>
+
+//             <div data-aos="fade-left">
+//               <div className="border-t border-black/10">
+//                 <div className="flex flex-col gap-5 border-b border-black/10 py-8 sm:flex-row sm:items-center sm:justify-between">
+//                   <div>
+//                     <p className="text-xs uppercase tracking-[0.2em] text-[var(--text-muted)]">
+//                       National Leadership
+//                     </p>
+
+//                     <h3 className="mt-2 text-xl font-semibold text-[var(--primary-dark)]">
+//                       Leadership profiles
+//                     </h3>
+//                   </div>
+
+//                   <p className="max-w-md text-sm leading-6 text-[var(--text-muted)] sm:text-right">
+//                     Official leadership profiles can be presented here,
+//                     including names, positions and relevant service
+//                     information.
+//                   </p>
+//                 </div>
+
+//                 <div className="py-8">
+//                   <p className="max-w-xl text-base leading-7 text-[var(--text-muted)]">
+//                     This section is reserved for verified alumni leadership information. Names and positions will be added based on the association's official records to ensure accuracy.
+//                   </p>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </section>
+
+//       {/* =========================================================
+//           FINAL CTA
+//       ========================================================= */}
+//       <section className="bg-[var(--secondary-light)] py-24 sm:py-32 lg:py-20">
+//         <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
+//           <div
+//             data-aos="fade-up"
+//             className="border-t border-[var(--primary)]/10 pt-14"
+//           >
+//             <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
+//               <div>
+//                 <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
+//                   The Olivetian Community
+//                 </p>
+
+//                 <h2 className="mt-6 max-w-4xl text-5xl font-medium leading-[0.98] tracking-[-0.045em] text-[var(--primary-dark)] sm:text-6xl lg:text-7xl">
+//                   A stronger association begins with people willing to serve.
+//                 </h2>
+//               </div>
+
+//               <a
+//                 href="/portal/signup"
+//                 className="
+//                   inline-flex
+//                   w-fit
+//                   shrink-0
+//                   items-center
+//                   gap-3
+//                   bg-[var(--primary-dark)]
+//                   px-7
+//                   py-4
+//                   text-sm
+//                   font-semibold
+//                   text-white
+//                   transition
+//                   hover:gap-5
+//                   hover:bg-[var(--primary)]
+//                 "
+//               >
+//                 Join OlivetNOSA
+//                 <ArrowUpRight size={18} />
+//               </a>
+//             </div>
+
+//             <div className="mt-16 flex flex-col justify-between gap-5 border-t border-[var(--primary)]/10 pt-6 sm:flex-row sm:items-center">
+//               <p className="text-sm text-[var(--text-muted)]">
+//                 Global Old Students' Association
+//               </p>
+
+//               <p className="text-sm font-medium italic text-[var(--secondary)]">
+//                 Cum Christo Progredere
+//               </p>
+//             </div>
+//           </div>
+//         </div>
+//       </section>
+
+//       <Footer />
+//     </main>
+//   );
+// };
+
+// export default NOSALeadership;
+
+
+
+
+import React, { useEffect, useMemo, useState } from "react";
 
 import {
   ArrowDown,
   ArrowUpRight,
+  ArrowLeft,
+  ArrowRight,
+  X,
+  Crown,
   UsersRound,
-  ShieldCheck,
-  Network,
   HeartHandshake,
+  LoaderCircle,
+  AlertCircle,
 } from "lucide-react";
+
+import {
+  getPublicWebsiteContent,
+  getPublicNOSALeaders,
+} from "../../services/authService.js";
+
+import Navbar from "../../components/public/Navbar";
+import Footer from "../../components/public/footer";
 import PageTitle from "../../components/common/PageTitle.jsx";
 
-const NOSALeadership = () => {
+const getInitials = (name = "") =>
+  name
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join("")
+    .toUpperCase();
+
+export default function NOSALeadership() {
   const [pageContent, setPageContent] = useState({});
+  const [leaders, setLeaders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [selectedLeader, setSelectedLeader] = useState(null);
 
   useEffect(() => {
     let isMounted = true;
 
-    const loadPageContent = async () => {
-      try {
-        const result = await getPublicWebsiteContent("leaders-chapters");
+    const loadPage = async () => {
+      const results = await Promise.allSettled([
+        getPublicWebsiteContent("nosa-leadership"),
+        getPublicNOSALeaders(),
+      ]);
 
-        if (isMounted && result?.success && result?.page?.content) {
+      if (!isMounted) return;
+
+      const [contentResult, leadersResult] = results;
+
+      if (contentResult.status === "fulfilled") {
+        const result = contentResult.value;
+
+        if (result?.success && result?.page?.content) {
           setPageContent(result.page.content);
         }
-      } catch (error) {
+      } else {
         console.warn(
-          "Unable to load published Leaders & Chapters content. Using defaults.",
-          error.message
+          "Unable to load NOSA Leadership page content:",
+          contentResult.reason
         );
       }
+
+      if (leadersResult.status === "fulfilled") {
+        const result = leadersResult.value;
+
+        if (result?.success && Array.isArray(result.data)) {
+          setLeaders(result.data);
+        } else {
+          setError("The leadership records could not be loaded.");
+        }
+      } else {
+        console.error(
+          "Unable to load published NOSA leaders:",
+          leadersResult.reason
+        );
+
+        setError(
+          "We couldn't load the leadership records. Please try again."
+        );
+      }
+
+      setLoading(false);
     };
 
-    loadPageContent();
+    loadPage();
 
     return () => {
       isMounted = false;
     };
   }, []);
 
+  const currentPresident = useMemo(
+    () => leaders.find((leader) => leader.isPresident),
+    [leaders]
+  );
+
+  const otherLeaders = useMemo(
+    () => leaders.filter((leader) => !leader.isPresident),
+    [leaders]
+  );
+
+  const selectedIndex = useMemo(
+    () =>
+      selectedLeader
+        ? leaders.findIndex(
+            (leader) => leader._id === selectedLeader._id
+          )
+        : -1,
+    [leaders, selectedLeader]
+  );
+
+  const showAdjacentLeader = (direction) => {
+    if (selectedIndex < 0) return;
+
+    const nextIndex = selectedIndex + direction;
+
+    if (nextIndex >= 0 && nextIndex < leaders.length) {
+      setSelectedLeader(leaders[nextIndex]);
+    }
+  };
+
+  useEffect(() => {
+    if (!selectedLeader) return;
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") setSelectedLeader(null);
+      if (event.key === "ArrowLeft") showAdjacentLeader(-1);
+      if (event.key === "ArrowRight") showAdjacentLeader(1);
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "";
+    };
+  }, [selectedLeader, selectedIndex, leaders]);
+
+  const pageTitle = pageContent.pageTitle || "NOSA Leadership";
+
+  const LeaderImage = ({ leader, featured = false }) => (
+    <div
+      className={`relative overflow-hidden bg-(--primary-dark)/10 ${
+        featured ? "h-full min-h-[360px] md:min-h-[480px]" : "aspect-[4/5]"
+      }`}
+    >
+      {leader.image ? (
+        <img
+          src={leader.image}
+          alt={leader.name}
+          loading="lazy"
+          className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]"
+        />
+      ) : (
+        <div className="flex h-full w-full flex-col items-center justify-center bg-gradient-to-br from-(--primary-dark) to-(--primary)">
+          <div
+            className={`flex items-center justify-center rounded-full border border-white/25 font-medium text-white ${
+              featured ? "h-32 w-32 text-5xl" : "h-24 w-24 text-3xl"
+            }`}
+          >
+            {getInitials(leader.name)}
+          </div>
+
+          <p className="mt-5 text-xs uppercase tracking-[0.2em] text-white/55">
+            {leader.position}
+          </p>
+        </div>
+      )}
+
+      {featured && (
+        <div className="absolute inset-0 bg-gradient-to-t from-(--primary-dark)/60 via-transparent to-transparent" />
+      )}
+    </div>
+  );
 
   return (
-    <main className="min-h-screen bg-white text-(--primary-dark) mt-0 md:mt-15 overflow-x-hidden">
-      <PageTitle
-        title={`${pageContent.pageTitle || "Leadership"} | OlivetNOSA`}
-      />
-      {/* =========================================================
-          NAVBAR
-      ========================================================= */}
+    <main className="mt-0 min-h-screen overflow-x-hidden bg-white text-(--primary-dark) md:mt-15">
+      <PageTitle title={`${pageTitle} | OlivetNOSA`} />
+
       <header>
         <Navbar />
       </header>
 
-      {/* =========================================================
-          HERO
-      ========================================================= */}
-      <section className="relative flex min-h-[92vh] items-end overflow-hidden bg-[var(--primary-dark)]">
+      {/* HERO */}
+      <section className="relative flex min-h-[82vh] items-end overflow-hidden bg-(--primary-dark)">
         <img
-          src="/images/olivetNOSA-6.jpg"
-          alt="OlivetNOSA leadership and alumni community"
-          className="absolute inset-0 h-full w-full object-cover"
+          src={pageContent.heroImage || "/images/olivetNOSA-6.jpg"}
+          alt="OlivetNOSA leadership"
+          className="absolute inset-0 h-full w-full object-cover opacity-40"
         />
 
-        <div className="absolute inset-0 bg-[var(--primary-dark)]/70" />
+        <div className="absolute inset-0 bg-gradient-to-t from-(--primary-dark) via-(--primary-dark)/65 to-(--primary-dark)/20" />
 
-        <div className="absolute inset-0 bg-gradient-to-t from-[var(--primary-dark)] via-[var(--primary-dark)]/30 to-transparent" />
-
-        <div className="relative z-10 w-full px-6 pb-14 pt-40 sm:px-10 lg:px-16 lg:pb-20">
-          <div className="mx-auto max-w-7xl">
-            <div className="max-w-5xl">
-              <div
-                data-aos="fade-up"
-                className="flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.28em] text-[var(--secondary-light)]"
-              >
-                <span className="h-px w-10 bg-[var(--secondary)]" />
-                Alumni Leadership
-              </div>
-
-              <h1
-                data-aos="fade-up"
-                data-aos-delay="100"
-                className="
-                  mt-7
-                  max-w-5xl
-                  text-5xl
-                  font-medium
-                  leading-[0.95]
-                  tracking-[-0.045em]
-                  text-white
-                  sm:text-6xl
-                  lg:text-[7.5rem]
-                "
-              >
-                Leadership rooted in
-                <span className="block text-[var(--secondary)]">
-                  service and responsibility.
-                </span>
-              </h1>
-
-              <div
-                data-aos="fade-up"
-                data-aos-delay="200"
-                className="mt-10 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between"
-              >
-                <p className="max-w-xl text-base leading-8 text-white/75 sm:text-lg">
-                  {pageContent.intro ||
-                    "NOSA is guided by Olivetians who give their time, experience and commitment to the service of the wider alumni community."}
-                </p>
-
-                <a
-                  href="#leadership"
-                  className="
-                    inline-flex
-                    w-fit
-                    items-center
-                    gap-3
-                    border-b
-                    border-[var(--secondary)]
-                    pb-2
-                    text-sm
-                    font-semibold
-                    text-white
-                    transition
-                    hover:gap-5
-                  "
-                >
-                  Meet the leadership
-                  <ArrowDown size={17} />
-                </a>
-              </div>
+        <div className="relative z-10 mx-auto w-full max-w-7xl px-6 pb-14 pt-36 sm:px-10 lg:px-16 lg:pb-24">
+          <div className="max-w-5xl">
+            <div
+              data-aos="fade-up"
+              className="mb-7 flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.25em] text-(--secondary-light)"
+            >
+              <span className="h-px w-10 bg-(--secondary)" />
+              Our National Leadership
             </div>
+
+            <h1
+              data-aos="fade-up"
+              data-aos-delay="100"
+              className="text-5xl font-medium leading-[0.98] tracking-[-0.045em] text-white sm:text-6xl lg:text-[7rem]"
+            >
+              {pageContent.heroTitle || (
+                <>
+                  United by purpose.
+                  <span className="block text-(--secondary)">
+                    Driven by service.
+                  </span>
+                </>
+              )}
+            </h1>
 
             <div
               data-aos="fade-up"
-              data-aos-delay="300"
-              className="
-                mt-20
-                flex
-                flex-col
-                gap-3
-                border-t
-                border-white/20
-                pt-5
-                sm:flex-row
-                sm:items-center
-                sm:justify-between
-              "
+              data-aos-delay="200"
+              className="mt-9 flex flex-col gap-7 sm:flex-row sm:items-end sm:justify-between"
             >
-              <p className="text-xs uppercase tracking-[0.25em] text-white/45">
-                Global Old Students' Association
+              <p className="max-w-2xl text-base leading-8 text-white/70 sm:text-lg">
+                {pageContent.intro ||
+                  "Meet the individuals entrusted with guiding our National Old Students' Association and advancing the shared interests of every Olivetian."}
               </p>
-
-              <p className="text-sm italic text-white/50">
-                Cum Christo Progredere
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* =========================================================
-          LEADERSHIP INTRODUCTION
-      ========================================================= */}
-      <section
-        id="leadership"
-        className="bg-white py-24 sm:py-32 lg:py-25"
-      >
-        <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
-          <div className="grid gap-14 lg:grid-cols-[0.7fr_1.3fr] lg:gap-24">
-            <div data-aos="fade-up">
-              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-                Leadership & Service
-              </p>
-
-              <div className="mt-6 h-px w-16 bg-[var(--secondary)]" />
-            </div>
-
-            <div data-aos="fade-up" data-aos-delay="100">
-              <h2 className="max-w-4xl text-4xl font-medium leading-[1.05] tracking-[-0.035em] text-[var(--primary-dark)] sm:text-5xl lg:text-6xl">
-                The strength of NOSA is reflected in the people willing to
-                serve it.
-              </h2>
-
-              <div className="mt-10 grid gap-8 md:grid-cols-2">
-                <p className="text-base leading-8 text-[var(--text-muted)]">
-                  Leadership within the alumni association carries the responsibility of keeping the community focused on its purpose while responding to the needs of its members and the wider Olivetian community.
-                </p>
-
-                <p className="text-base leading-8 text-[var(--text-muted)]">
-                  It brings together experience from different generations of
-                  Olivetians and provides the coordination needed for chapters,
-                  year sets and members to work towards shared objectives.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* =========================================================
-          PRINCIPLES
-      ========================================================= */}
-      <section className="bg-[var(--background-soft)] py-24 sm:py-32 lg:py-20">
-        <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
-          <div className="grid gap-14 lg:grid-cols-[0.75fr_1.25fr] lg:gap-24">
-            <div data-aos="fade-right">
-              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-                Our Approach
-              </p>
-
-              <h2 className="mt-6 max-w-md text-4xl font-medium leading-[1.05] tracking-[-0.035em] text-[var(--primary-dark)] sm:text-5xl">
-                Leadership with the community at its centre.
-              </h2>
-            </div>
-
-            <div data-aos="fade-left">
-              <p className="max-w-3xl text-xl leading-9 text-[var(--primary-dark)] sm:text-2xl">
-                Good leadership gives an association direction without losing
-                sight of the people it represents.
-              </p>
-
-              <div className="mt-14 border-t border-black/10">
-                <div className="grid gap-6 border-b border-black/10 py-8 md:grid-cols-[auto_0.3fr_1fr] md:items-start">
-                  <Network
-                    size={23}
-                    strokeWidth={1.5}
-                    className="text-[var(--secondary)]"
-                  />
-
-                  <h3 className="text-xl font-semibold text-[var(--primary-dark)]">
-                    Collaboration
-                  </h3>
-
-                  <p className="max-w-xl text-sm leading-7 text-[var(--text-muted)]">
-                    Bringing members, chapters and year sets together so that
-                    the association can work with a shared sense of purpose.
-                  </p>
-                </div>
-
-                <div className="grid gap-6 border-b border-black/10 py-8 md:grid-cols-[auto_0.3fr_1fr] md:items-start">
-                  <HeartHandshake
-                    size={23}
-                    strokeWidth={1.5}
-                    className="text-[var(--secondary)]"
-                  />
-
-                  <h3 className="text-xl font-semibold text-[var(--primary-dark)]">
-                    Service
-                  </h3>
-
-                  <p className="max-w-xl text-sm leading-7 text-[var(--text-muted)]">
-                    Giving time, knowledge and experience to strengthen the
-                    Olivetian community and support its continued development.
-                  </p>
-                </div>
-
-                <div className="grid gap-6 py-8 md:grid-cols-[auto_0.3fr_1fr] md:items-start">
-                  <ShieldCheck
-                    size={23}
-                    strokeWidth={1.5}
-                    className="text-[var(--secondary)]"
-                  />
-
-                  <h3 className="text-xl font-semibold text-[var(--primary-dark)]">
-                    Stewardship
-                  </h3>
-
-                  <p className="max-w-xl text-sm leading-7 text-[var(--text-muted)]">
-                    Protecting the values, relationships and legacy entrusted
-                    to the association by generations of Olivetians.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* =========================================================
-          LEADERSHIP IMAGE / CONTENT
-      ========================================================= */}
-      <section className="bg-white py-24 sm:py-32 lg:py-20">
-        <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
-          <div className="grid gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-24">
-            <div
-              data-aos="fade-right"
-              className="relative overflow-hidden"
-            >
-              <div className="aspect-[4/3] overflow-hidden">
-                <img
-                  src="/images/olivetNOSA.jpg"
-                  alt="OlivetNOSA leadership"
-                  className="h-full w-full object-cover transition duration-700 hover:scale-[1.03]"
-                />
-              </div>
-
-              <div className="mt-5 flex items-start justify-between border-t border-black/10 pt-4">
-                <p className="text-xs uppercase tracking-[0.22em] text-[var(--text-muted)]">
-                  OlivetNOSA
-                </p>
-
-                <p className="max-w-xs text-right text-sm leading-6 text-[var(--text-muted)]">
-                  Leadership entrusted with serving the wider Olivetian
-                  community.
-                </p>
-              </div>
-            </div>
-
-            <div data-aos="fade-left">
-              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-                Serving the Association
-              </p>
-
-              <h2 className="mt-6 text-4xl font-medium leading-[1.05] tracking-[-0.035em] text-[var(--primary-dark)] sm:text-5xl">
-                Bringing experience together for the benefit of the community.
-              </h2>
-
-              <p className="mt-8 text-lg leading-8 text-[var(--text-muted)]">
-                Alumni leadership provides the structure through which the
-                association's work can be coordinated and its priorities
-                carried forward.
-              </p>
-
-              <p className="mt-6 text-lg leading-8 text-[var(--text-muted)]">
-                The responsibility extends beyond administration. Leaders help
-                create the conditions for members to participate, chapters to
-                remain connected and initiatives to make a meaningful
-                contribution to the Olivetian community.
-              </p>
-
-              <div className="mt-10 border-t border-black/10 pt-7">
-                <div className="flex gap-5">
-                  <UsersRound
-                    size={22}
-                    strokeWidth={1.5}
-                    className="mt-1 shrink-0 text-[var(--primary)]"
-                  />
-
-                  <div>
-                    <h3 className="font-semibold text-[var(--primary-dark)]">
-                      A community-led association
-                    </h3>
-
-                    <p className="mt-2 text-sm leading-7 text-[var(--text-muted)]">
-                      The Olivetian alumni community is strengthened by the participation and service of former students across generations.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* =========================================================
-          LEADERSHIP STRUCTURE
-      ========================================================= */}
-      <section className="bg-[var(--primary-dark)] py-24 text-white sm:py-32 lg:py-20">
-        <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
-          <div className="grid gap-14 lg:grid-cols-[0.7fr_1.3fr] lg:gap-24">
-            <div data-aos="fade-right">
-              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-                Working Together
-              </p>
-
-              <h2 className="mt-6 max-w-md text-4xl font-medium leading-[1.05] tracking-[-0.035em] sm:text-5xl">
-                One association, many parts.
-              </h2>
-
-              <p className="mt-7 max-w-md leading-8 text-white/55">
-                Leadership works with different parts of the Olivetian alumni community to keep the association connected, organized, and focused on its shared purpose.
-              </p>
-            </div>
-
-            <div
-              data-aos="fade-left"
-              className="divide-y divide-white/15 border-y border-white/15"
-            >
-              <div className="grid gap-5 py-8 sm:grid-cols-[0.35fr_1fr]">
-                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
-                  National
-                </p>
-
-                <div>
-                  <h3 className="text-2xl font-medium">
-                    National Leadership
-                  </h3>
-
-                  <p className="mt-3 max-w-xl leading-7 text-white/50">
-                    Providing direction, coordination and oversight across
-                    the wider association.
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid gap-5 py-8 sm:grid-cols-[0.35fr_1fr]">
-                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
-                  Local
-                </p>
-
-                <div>
-                  <h3 className="text-2xl font-medium">Chapters</h3>
-
-                  <p className="mt-3 max-w-xl leading-7 text-white/50">
-                   Creating local communities where Olivetians can stay connected, build relationships, and participate in the wider alumni community.
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid gap-5 py-8 sm:grid-cols-[0.35fr_1fr]">
-                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
-                  Generations
-                </p>
-
-                <div>
-                  <h3 className="text-2xl font-medium">Year Sets</h3>
-
-                  <p className="mt-3 max-w-xl leading-7 text-white/50">
-                    Preserving relationships between classmates and
-                    strengthening connections across generations.
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid gap-5 py-8 sm:grid-cols-[0.35fr_1fr]">
-                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
-                  Members
-                </p>
-
-                <div>
-                  <h3 className="text-2xl font-medium">Olivetians</h3>
-
-                  <p className="mt-3 max-w-xl leading-7 text-white/50">
-                    The members whose participation, ideas and commitment give
-                    the association its strength.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* =========================================================
-          LEADERSHIP DIRECTORY PLACEHOLDER
-      ========================================================= */}
-      <section className="bg-white py-24 sm:py-32 lg:py-20">
-        <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
-          <div className="grid gap-12 lg:grid-cols-[0.7fr_1.3fr] lg:gap-24">
-            <div data-aos="fade-right">
-              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-                Leadership
-              </p>
-
-              <h2 className="mt-6 max-w-md text-4xl font-medium leading-[1.05] tracking-[-0.035em] text-[var(--primary-dark)] sm:text-5xl">
-                The People Serving the Olivetian Community
-              </h2>
-            </div>
-
-            <div data-aos="fade-left">
-              <div className="border-t border-black/10">
-                <div className="flex flex-col gap-5 border-b border-black/10 py-8 sm:flex-row sm:items-center sm:justify-between">
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.2em] text-[var(--text-muted)]">
-                      National Leadership
-                    </p>
-
-                    <h3 className="mt-2 text-xl font-semibold text-[var(--primary-dark)]">
-                      Leadership profiles
-                    </h3>
-                  </div>
-
-                  <p className="max-w-md text-sm leading-6 text-[var(--text-muted)] sm:text-right">
-                    Official leadership profiles can be presented here,
-                    including names, positions and relevant service
-                    information.
-                  </p>
-                </div>
-
-                <div className="py-8">
-                  <p className="max-w-xl text-base leading-7 text-[var(--text-muted)]">
-                    This section is reserved for verified alumni leadership information. Names and positions will be added based on the association's official records to ensure accuracy.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* =========================================================
-          FINAL CTA
-      ========================================================= */}
-      <section className="bg-[var(--secondary-light)] py-24 sm:py-32 lg:py-20">
-        <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
-          <div
-            data-aos="fade-up"
-            className="border-t border-[var(--primary)]/10 pt-14"
-          >
-            <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-                  The Olivetian Community
-                </p>
-
-                <h2 className="mt-6 max-w-4xl text-5xl font-medium leading-[0.98] tracking-[-0.045em] text-[var(--primary-dark)] sm:text-6xl lg:text-7xl">
-                  A stronger association begins with people willing to serve.
-                </h2>
-              </div>
 
               <a
-                href="/portal/signup"
-                className="
-                  inline-flex
-                  w-fit
-                  shrink-0
-                  items-center
-                  gap-3
-                  bg-[var(--primary-dark)]
-                  px-7
-                  py-4
-                  text-sm
-                  font-semibold
-                  text-white
-                  transition
-                  hover:gap-5
-                  hover:bg-[var(--primary)]
-                "
+                href="#leadership-directory"
+                className="inline-flex w-fit shrink-0 items-center gap-3 border-b border-(--secondary) pb-2 text-sm font-semibold text-white transition hover:gap-5"
               >
-                Join OlivetNOSA
-                <ArrowUpRight size={18} />
+                Meet our leaders
+                <ArrowDown size={17} />
               </a>
             </div>
 
-            <div className="mt-16 flex flex-col justify-between gap-5 border-t border-[var(--primary)]/10 pt-6 sm:flex-row sm:items-center">
-              <p className="text-sm text-[var(--text-muted)]">
-                Global Old Students' Association
+            <div className="mt-16 grid grid-cols-1 border-t border-white/20 pt-7 sm:grid-cols-3">
+              {[
+                {
+                  value: leaders.length,
+                  label: "Published leaders",
+                },
+                {
+                  value: currentPresident ? "1" : "—",
+                  label: "National President",
+                },
+                {
+                  value: "1",
+                  label: "United community",
+                },
+              ].map((stat, index) => (
+                <div
+                  key={stat.label}
+                  className={`py-4 sm:px-6 ${
+                    index > 0 ? "sm:border-l sm:border-white/15" : ""
+                  }`}
+                >
+                  <p className="text-4xl font-medium tracking-tight text-white sm:text-5xl">
+                    {stat.value}
+                  </p>
+
+                  <p className="mt-3 text-xs uppercase tracking-[0.17em] text-white/50">
+                    {stat.label}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* INTRODUCTION */}
+      <section className="py-20 sm:py-28">
+        <div className="mx-auto grid max-w-7xl gap-10 px-6 sm:px-10 lg:grid-cols-[0.7fr_1.3fr] lg:gap-24 lg:px-16">
+          <div data-aos="fade-up">
+            <p className="text-sm font-semibold uppercase tracking-[0.23em] text-(--secondary)">
+              Leading Together
+            </p>
+
+            <div className="mt-6 h-px w-16 bg-(--secondary)" />
+          </div>
+
+          <div data-aos="fade-up" data-aos-delay="100">
+            <h2 className="text-4xl font-medium leading-[1.05] tracking-[-0.04em] sm:text-5xl lg:text-6xl">
+              A shared responsibility. A common vision.
+            </h2>
+
+            <div className="mt-8 grid gap-6 text-base leading-8 text-(--text-muted) md:grid-cols-2">
+              <p>
+                The National Old Students' Association brings together
+                generations of Olivetians through shared memories, common
+                interests, and a lasting connection to our alma mater.
               </p>
 
-              <p className="text-sm font-medium italic text-[var(--secondary)]">
-                Cum Christo Progredere
+              <p>
+                Our national leaders provide direction, encourage
+                participation, and help turn our collective vision into
+                meaningful action. Their service represents a commitment to
+                keeping the Olivetian community connected and moving forward.
               </p>
             </div>
           </div>
         </div>
       </section>
+
+      {/* LEADERSHIP DIRECTORY */}
+      <section
+        id="leadership-directory"
+        className="scroll-mt-24 bg-(--background-soft) py-20 sm:py-28"
+      >
+        <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
+          <div data-aos="fade-up">
+            <p className="text-sm font-semibold uppercase tracking-[0.23em] text-(--secondary)">
+              The People Who Lead
+            </p>
+
+            <h2 className="mt-5 max-w-3xl text-4xl font-medium leading-[1.05] tracking-[-0.04em] sm:text-5xl lg:text-6xl">
+              Meet our national executives.
+            </h2>
+
+            <p className="mt-5 max-w-2xl leading-7 text-(--text-muted)">
+              Meet the individuals serving our association and working
+              together to strengthen the Olivetian community.
+            </p>
+          </div>
+
+          {/* LOADING / ERROR / EMPTY STATES */}
+          {loading ? (
+            <div className="flex min-h-64 items-center justify-center gap-3 text-(--text-muted)">
+              <LoaderCircle size={22} className="animate-spin" />
+              <span>Loading leadership records...</span>
+            </div>
+          ) : error ? (
+            <div className="mt-12 flex items-start gap-4 border border-red-200 bg-white p-6 text-red-700">
+              <AlertCircle size={22} className="mt-1 shrink-0" />
+
+              <div>
+                <p className="font-semibold">
+                  Unable to display leaders
+                </p>
+
+                <p className="mt-2 text-sm leading-6">{error}</p>
+
+                <button
+                  type="button"
+                  onClick={() => window.location.reload()}
+                  className="mt-4 text-sm font-semibold underline underline-offset-4"
+                >
+                  Try again
+                </button>
+              </div>
+            </div>
+          ) : leaders.length === 0 ? (
+            <div className="mt-12 border-t border-black/10 py-14">
+              <UsersRound size={28} className="text-(--secondary)" />
+
+              <h3 className="mt-5 text-2xl font-medium">
+                Leadership records coming soon
+              </h3>
+
+              <p className="mt-3 max-w-xl leading-7 text-(--text-muted)">
+                Our national leadership records will appear here once they
+                have been published.
+              </p>
+            </div>
+          ) : (
+            <>
+              {/* FEATURED PRESIDENT */}
+              {currentPresident && (
+                <article
+                  data-aos="fade-up"
+                  className="group relative mt-12 overflow-hidden border border-(--secondary)/40 bg-(--primary-dark) text-white"
+                >
+                  <div className="grid md:grid-cols-2">
+                    <div className="relative min-h-[360px] md:min-h-[480px]">
+                      <LeaderImage
+                        leader={currentPresident}
+                        featured
+                      />
+
+                      <div className="absolute left-6 top-6 inline-flex items-center gap-2 bg-(--secondary) px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-(--primary-dark)">
+                        <Crown size={15} />
+                        National President
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col justify-center p-7 sm:p-10 lg:p-14">
+                      <p className="text-xs font-semibold uppercase tracking-[0.24em] text-(--secondary)">
+                        National Leadership
+                      </p>
+
+                      <h3 className="mt-5 text-4xl font-medium leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+                        {currentPresident.name}
+                      </h3>
+
+                      <p className="mt-4 text-base text-white/65">
+                        {currentPresident.position}
+                      </p>
+
+                      <div className="my-7 h-px w-16 bg-(--secondary)" />
+
+                      <p className="max-w-xl text-sm leading-7 text-white/70 sm:text-base">
+                        {pageContent.presidentMessage ||
+                          "Providing leadership, direction, and service in advancing the shared vision and aspirations of the Olivetian community."}
+                      </p>
+
+                      <div className="mt-8">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setSelectedLeader(currentPresident)
+                          }
+                          className="inline-flex items-center gap-3 bg-(--secondary) px-6 py-3.5 text-sm font-semibold text-(--primary-dark) transition hover:gap-5"
+                        >
+                          View president's profile
+                          <ArrowUpRight size={18} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              )}
+
+              {/* OTHER EXECUTIVES */}
+              {otherLeaders.length > 0 && (
+                <div className="mt-20">
+                  <div className="flex flex-col gap-4 border-b border-black/10 pb-6 sm:flex-row sm:items-end sm:justify-between">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-(--secondary)">
+                        The Executive Team
+                      </p>
+
+                      <h3 className="mt-3 text-3xl font-medium tracking-tight sm:text-4xl">
+                        Serving the association.
+                      </h3>
+                    </div>
+
+                    <p className="text-sm text-(--text-muted)">
+                      {otherLeaders.length} executive
+                      {otherLeaders.length !== 1 ? "s" : ""}
+                    </p>
+                  </div>
+
+                  <div className="mt-10 grid gap-x-7 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    {otherLeaders.map((leader, index) => (
+                      <article
+                        key={leader._id}
+                        data-aos="fade-up"
+                        data-aos-delay={Math.min((index % 4) * 70, 210)}
+                        className="group min-w-0"
+                      >
+                        <button
+                          type="button"
+                          onClick={() => setSelectedLeader(leader)}
+                          className="block w-full text-left"
+                          aria-label={`View details for ${leader.name}`}
+                        >
+                          <div className="relative aspect-[4/5] overflow-hidden bg-(--primary-dark)/10">
+                            {leader.image ? (
+                              <img
+                                src={leader.image}
+                                alt={leader.name}
+                                loading="lazy"
+                                className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]"
+                              />
+                            ) : (
+                              <div className="flex h-full w-full flex-col items-center justify-center bg-gradient-to-br from-(--primary-dark) to-(--primary)">
+                                <div className="flex h-24 w-24 items-center justify-center rounded-full border border-white/25 text-3xl font-medium text-white">
+                                  {getInitials(leader.name)}
+                                </div>
+
+                                <p className="mt-5 text-xs uppercase tracking-[0.2em] text-white/55">
+                                  {leader.position}
+                                </p>
+                              </div>
+                            )}
+
+                            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-5 pt-16">
+                              <p className="text-xl font-medium text-white">
+                                {leader.name}
+                              </p>
+                            </div>
+
+                            <div className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white text-(--primary-dark) transition group-hover:bg-(--secondary)">
+                              <ArrowUpRight size={19} />
+                            </div>
+                          </div>
+
+                          <div className="flex items-center justify-between gap-3 border-b border-black/10 py-4">
+                            <span className="text-sm text-(--text-muted)">
+                              {leader.position}
+                            </span>
+
+                            <span className="shrink-0 text-xs text-(--secondary)">
+                              View profile
+                            </span>
+                          </div>
+                        </button>
+                      </article>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </section>
+
+      {/* SERVICE */}
+      <section className="bg-white py-20 sm:py-28">
+        <div className="mx-auto grid max-w-7xl gap-12 px-6 sm:px-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24 lg:px-16">
+          <div data-aos="fade-right">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-(--primary-light) text-(--primary)">
+              <HeartHandshake size={22} strokeWidth={1.5} />
+            </div>
+
+            <p className="mt-8 text-sm font-semibold uppercase tracking-[0.23em] text-(--secondary)">
+              The Spirit of Service
+            </p>
+
+            <h2 className="mt-5 text-4xl font-medium leading-[1.05] tracking-[-0.04em] sm:text-5xl">
+              Leadership brings us together. Service moves us forward.
+            </h2>
+
+            <div className="mt-10 space-y-4 border-l p-4 text-xl italic">
+              <p>Every generation has something to offer.</p>
+              <p>Every contribution helps us move forward.</p>
+            </div>
+          </div>
+
+          <div data-aos="fade-left">
+            <p className="text-xl leading-9 text-(--text-muted)">
+              A strong association is built through participation,
+              collaboration, and a shared commitment to its future.
+              Leadership provides direction, but meaningful progress
+              comes from the collective effort of its members.
+            </p>
+
+            <p className="mt-3 text-xl leading-9 text-(--text-muted)">
+              Our national executives serve with the responsibility of
+              representing the interests of Olivetians, strengthening
+              relationships, and creating opportunities for every
+              generation to remain involved.
+            </p>
+
+            <div className="mt-10 border-t border-black/10">
+              {[
+                {
+                  number: "01",
+                  title: "Stay connected",
+                  description:
+                    "Strengthen the relationships that connect Olivetians across different sets and generations.",
+                },
+                {
+                  number: "02",
+                  title: "Participate and contribute",
+                  description:
+                    "Share your time, experience, and ideas in support of the association and its activities.",
+                },
+                {
+                  number: "03",
+                  title: "Build a lasting future",
+                  description:
+                    "Work together to create an association that future generations can be proud to belong to.",
+                },
+              ].map((item) => (
+                <div
+                  key={item.number}
+                  className="grid gap-4 border-b border-black/10 py-7 sm:grid-cols-[60px_1fr]"
+                >
+                  <span className="text-sm font-semibold text-(--secondary)">
+                    {item.number}
+                  </span>
+
+                  <div>
+                    <h3 className="text-xl font-medium">
+                      {item.title}
+                    </h3>
+
+                    <p className="mt-3 max-w-2xl leading-7 text-(--text-muted)">
+                      {item.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FINAL CTA */}
+      <section className="relative overflow-hidden bg-(--primary-dark) py-20 text-white sm:py-28">
+        <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-(--secondary)/15 blur-3xl" />
+
+        <div className="relative mx-auto max-w-5xl px-6 text-center sm:px-10">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-(--secondary)">
+            <UsersRound size={22} />
+          </div>
+
+          <p className="mt-7 text-sm font-semibold uppercase tracking-[0.23em] text-(--secondary)">
+            One Olivetian Family
+          </p>
+
+          <h2 className="mt-5 text-4xl font-medium leading-[1.03] tracking-[-0.04em] sm:text-6xl lg:text-7xl">
+            A shared connection.
+            <span className="block text-white/45">
+              A future we shape together.
+            </span>
+          </h2>
+
+          <p className="mx-auto mt-7 max-w-2xl text-lg leading-8 text-white/65">
+            Our association grows stronger when every Olivetian
+            remains connected, participates, and contributes.
+          </p>
+
+          <a
+            href="/portal/signup"
+            className="mt-9 inline-flex items-center gap-3 bg-(--secondary) px-7 py-4 text-sm font-semibold text-(--primary-dark) transition hover:gap-5"
+          >
+            Stay connected
+            <ArrowUpRight size={18} />
+          </a>
+        </div>
+      </section>
+
+      {/* LEADER DETAIL MODAL */}
+      {selectedLeader && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-black/75 p-4 backdrop-blur-sm sm:p-8"
+          onClick={(event) => {
+            if (event.target === event.currentTarget) {
+              setSelectedLeader(null);
+            }
+          }}
+        >
+          <section
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="leader-modal-title"
+            className="relative my-auto grid w-full max-w-4xl overflow-hidden bg-white shadow-2xl md:grid-cols-[0.8fr_1.2fr]"
+          >
+            <button
+              type="button"
+              onClick={() => setSelectedLeader(null)}
+              aria-label="Close leader details"
+              className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white text-(--primary-dark) shadow transition hover:bg-(--secondary-light)"
+            >
+              <X size={20} />
+            </button>
+
+            <div className="min-h-64 bg-(--primary-dark) md:min-h-[500px]">
+              {selectedLeader.image ? (
+                <img
+                  src={selectedLeader.image}
+                  alt={selectedLeader.name}
+                  className="h-full max-h-[360px] w-full object-cover md:max-h-none"
+                />
+              ) : (
+                <div className="flex h-full min-h-64 flex-col items-center justify-center bg-gradient-to-br from-(--primary-dark) to-(--primary) p-8 md:min-h-[500px]">
+                  <div className="flex h-28 w-28 items-center justify-center rounded-full border border-white/30 text-4xl font-medium text-white">
+                    {getInitials(selectedLeader.name)}
+                  </div>
+
+                  <p className="mt-5 text-xs uppercase tracking-[0.2em] text-white/55">
+                    NOSA Leadership
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <div className="flex flex-col p-6 sm:p-10 md:p-12">
+              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-(--secondary)">
+                {selectedLeader.isPresident && <Crown size={16} />}
+                {selectedLeader.isPresident
+                  ? "National President"
+                  : "National Executive"}
+              </div>
+
+              <h2
+                id="leader-modal-title"
+                className="mt-4 pr-8 text-3xl font-medium leading-tight tracking-tight text-(--primary-dark) sm:text-4xl"
+              >
+                {selectedLeader.name}
+              </h2>
+
+              <p className="mt-3 text-sm text-(--text-muted)">
+                {selectedLeader.position}
+              </p>
+
+              <div className="my-7 h-px w-16 bg-(--secondary)" />
+
+              <div className="flex-1">
+                <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-(--primary-dark)">
+                  Position and responsibility
+                </h3>
+
+                <p className="mt-4 text-sm leading-7 text-(--text-muted)">
+                  {selectedLeader.position} — serving the Olivetian
+                  community through leadership, participation, and
+                  commitment to the association.
+                </p>
+              </div>
+
+              <div className="mt-8 flex items-center justify-between border-t border-black/10 pt-5">
+                <button
+                  type="button"
+                  disabled={selectedIndex <= 0}
+                  onClick={() => showAdjacentLeader(-1)}
+                  className="inline-flex items-center gap-2 text-sm font-semibold text-(--primary-dark) transition hover:text-(--primary) disabled:cursor-not-allowed disabled:opacity-30"
+                >
+                  <ArrowLeft size={17} />
+                  Previous
+                </button>
+
+                <span className="text-xs text-(--text-muted)">
+                  {selectedIndex + 1} of {leaders.length}
+                </span>
+
+                <button
+                  type="button"
+                  disabled={
+                    selectedIndex < 0 ||
+                    selectedIndex >= leaders.length - 1
+                  }
+                  onClick={() => showAdjacentLeader(1)}
+                  className="inline-flex items-center gap-2 text-sm font-semibold text-(--primary-dark) transition hover:text-(--primary) disabled:cursor-not-allowed disabled:opacity-30"
+                >
+                  Next
+                  <ArrowRight size={17} />
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+      )}
 
       <Footer />
     </main>
   );
-};
-
-export default NOSALeadership;
+}

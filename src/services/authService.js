@@ -961,3 +961,320 @@ export const completeMemberOnboarding = async () => {
     throw error;
   }
 };
+
+
+
+// ============================================================
+// GET PUBLISHED ANNOUNCEMENTS
+// ============================================================
+
+export const getAnnouncements = async () => {
+  try {
+    const response = await fetch(
+      `${API}/api/announcements`,
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || "Unable to load announcements."
+      );
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Get announcements error:", error);
+    throw error;
+  }
+};
+
+
+
+// ============================================================
+// CREATE ANNOUNCEMENT
+// ============================================================
+
+export const createAnnouncement = async (announcementData) => {
+  try {
+    const response = await fetch(
+      `${API}/api/announcements`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(announcementData),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || "Unable to publish announcement."
+      );
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Create announcement error:", error);
+    throw error;
+  }
+};
+
+
+
+
+
+// ============================================================
+// GET ALL ANNOUNCEMENTS — PRESIDENT
+// ============================================================
+
+export const getAllAnnouncements = async () => {
+  try {
+    const response = await fetch(`${API}/api/announcements/manage`, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Unable to load announcements.");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Get all announcements error:", error);
+    throw error;
+  }
+};
+
+
+// ============================================================
+// UPDATE ANNOUNCEMENT
+// ============================================================
+
+export const updateAnnouncement = async (id, announcementData) => {
+  try {
+    const response = await fetch(`${API}/api/announcements/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(announcementData),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Unable to update announcement.");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Update announcement error:", error);
+    throw error;
+  }
+};
+
+
+// ============================================================
+// PUBLISH ANNOUNCEMENT
+// ============================================================
+
+export const publishAnnouncement = async (id) => {
+  try {
+    const response = await fetch(
+      `${API}/api/announcements/${id}/publish`,
+      {
+        method: "PATCH",
+        credentials: "include",
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Unable to publish announcement.");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Publish announcement error:", error);
+    throw error;
+  }
+};
+
+
+// ============================================================
+// ARCHIVE ANNOUNCEMENT
+// ============================================================
+
+export const archiveAnnouncement = async (id) => {
+  try {
+    const response = await fetch(
+      `${API}/api/announcements/${id}/archive`,
+      {
+        method: "PATCH",
+        credentials: "include",
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Unable to archive announcement.");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Archive announcement error:", error);
+    throw error;
+  }
+};
+
+
+
+// ============================================================
+// RESTORE ANNOUNCEMENT
+// ============================================================
+
+export const restoreAnnouncement = async (id) => {
+  try {
+    const response = await fetch(
+      `${API}/api/announcements/${id}/restore`,
+      {
+        method: "PATCH",
+        credentials: "include",
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Unable to restore announcement.");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Restore announcement error:", error);
+    throw error;
+  }
+};
+
+
+
+// ============================================================
+// DELETE ANNOUNCEMENT
+// ============================================================
+
+export const deleteAnnouncement = async (id) => {
+  try {
+    const response = await fetch(`${API}/api/announcements/${id}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Unable to delete announcement.");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Delete announcement error:", error);
+    throw error;
+  }
+};
+
+
+
+// ============================================================
+// INITIALIZE DONATION
+// ============================================================
+
+export const initializeDonation = async (donationData) => {
+  try {
+    const response = await fetch(`${API}/api/donation/initialize`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(donationData),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || "Unable to initialize donation."
+      );
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Initialize donation error:", error);
+    throw error;
+  }
+};
+
+
+// ============================================================
+// VERIFY DONATION
+// ============================================================
+
+export const verifyDonation = async (reference) => {
+  try {
+    const response = await fetch(
+      `${API}/api/donation/verify/${encodeURIComponent(reference)}`,
+      {
+        method: "GET",
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || "Unable to verify donation."
+      );
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Verify donation error:", error);
+    throw error;
+  }
+};
+
+
+
+
+
+export const getPublicNOSALeaders = async () => {
+  try {
+    const response = await fetch(`${API}/api/public/nosa-leaders`);
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || "Unable to retrieve NOSA leaders."
+      );
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Get public NOSA leaders error:", error);
+    throw error;
+  }
+};

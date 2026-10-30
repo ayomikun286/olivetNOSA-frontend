@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import PaymentDetailsModal from "../../components/member/PaymentDetailsModal.jsx";
 import {
     CheckCircle2,
@@ -20,7 +20,7 @@ const PaymentHistory = () => {
     const [selectedPayment, setSelectedPayment] = useState(null);
     const [verificationMessage, setVerificationMessage] = useState("");
     const [payments, setPayments] = useState([]);
-
+    const verificationStarted = useRef(false);
     const [summary, setSummary] = useState({
         totalPaid: 0,
         successful: 0,
@@ -32,119 +32,131 @@ const PaymentHistory = () => {
 
     const [error, setError] = useState("");
 
+useEffect(() => {
+    let isMounted = true;
 
-    useEffect(() => {
-        const loadPayments = async () => {
-            try {
+    const loadPayments = async (showLoader = false) => {
+        try {
+            if (showLoader && isMounted) {
                 setLoading(true);
-                setError("");
+            }
 
-                const data = await getMyPayments();
+            setError("");
 
-                console.log(data)
+            const data = await getMyPayments();
 
-                setPayments(data.payments || []);
+            if (!isMounted) return;
 
-                setSummary(
-                    data.summary || {
-                        totalPaid: 0,
-                        successful: 0,
-                        pending: 0,
-                        failed: 0,
-                    }
-                );
-            } catch (error) {
-                console.error(
-                    "Payment history error:",
-                    error
-                );
+            setPayments(data.payments || []);
 
-                setError(
-                    error.message ||
-                    "Failed to load payment history."
-                );
-            } finally {
+            setSummary(
+                data.summary || {
+                    totalPaid: 0,
+                    successful: 0,
+                    pending: 0,
+                    failed: 0,
+                }
+            );
+        } catch (error) {
+            if (!isMounted) return;
+
+            console.error("Payment history error:", error);
+
+            setError(
+                error.message || "Failed to load payment history."
+            );
+        } finally {
+            if (isMounted && showLoader) {
                 setLoading(false);
             }
-        };
+        }
+    };
 
+    const verifyReturnedPayment = async () => {
+        const paymentStatus = searchParams.get("payment");
+        const reference = searchParams.get("reference");
 
+        // Load payment history immediately.
+        await loadPayments(true);
 
-       
+        if (!isMounted) return;
 
+        if (!paymentStatus) return;
 
-        const verifyReturnedPayment = async () => {
-            const paymentStatus = searchParams.get("payment");
-            const reference = searchParams.get("reference");
+        if (paymentStatus === "failed") {
+            setVerificationMessage(
+                "Your payment could not be completed. You can try again from your outstanding obligations."
+            );
 
-            // Nothing to verify
-            if (!paymentStatus) {
-                await loadPayments();
-                return;
-            }
+            setSearchParams({});
+            return;
+        }
 
-            // Payment failed or Paystack callback did not return a reference
-            if (paymentStatus === "failed") {
+        if (paymentStatus !== "verify" || !reference) {
+            setSearchParams({});
+            return;
+        }
+
+        if (verificationStarted.current) return;
+
+        verificationStarted.current = true;
+
+        try {
+            setVerifying(true);
+            setVerificationMessage("Verifying your payment...");
+            setError("");
+
+            const data = await verifyPayment(reference);
+
+            if (!isMounted) return;
+
+            if (data.success) {
+                window.dispatchEvent(
+                    new CustomEvent("nosa:payment-success", {
+                        detail: {
+                            title: "Payment Successful",
+                            message: `Your payment of ₦${data.payment?.amount?.toLocaleString() || ""} was successful.`,
+                            link: "/portal/member/dashboard/payment-history",
+                        },
+                    })
+                );
+
                 setVerificationMessage(
-                    "Your payment could not be completed. You can try again from your outstanding obligations."
+                    "Payment successful. Your payment history has been updated."
                 );
-
-                await loadPayments();
-
-                setSearchParams({});
-                return;
+            } else {
+                setVerificationMessage(
+                    data.message || "Payment was not successful."
+                );
             }
 
-            // Verify successful Paystack return
-            if (paymentStatus !== "verify" || !reference) {
-                await loadPayments();
-                return;
-            }
+            // Refresh history after verification.
+            await loadPayments();
 
-            try {
-                setVerifying(true);
-                setVerificationMessage("Verifying your payment...");
-                setError("");
-
-                const data = await verifyPayment(reference);
-
-                if (data.success) {
-                    window.dispatchEvent(
-                        new CustomEvent("nosa:payment-success", {
-                            detail: {
-                                title: "Payment Successful",
-                                message: `Your payment of ₦${data.payment?.amount?.toLocaleString() || ""
-                                    } was successful.`,
-                                link: "/portal/member/dashboard/payment-history",
-                            },
-                        })
-                    );
-
-                    setVerificationMessage(
-                        "Payment successful. Your payment history has been updated."
-                    );
-                } else {
-                    setVerificationMessage(
-                        data.message || "Payment was not successful."
-                    );
-                }
-
-                await loadPayments();
-
+            if (isMounted) {
                 setSearchParams({});
-            } catch (error) {
-                console.error("Payment verification error:", error);
+            }
+        } catch (error) {
+            if (!isMounted) return;
 
-                setError(
-                    error.message ||
-                    "We could not verify your payment."
-                );
-            } finally {
+            console.error("Payment verification error:", error);
+
+            setError(
+                error.message || "We could not verify your payment."
+            );
+        } finally {
+            if (isMounted) {
                 setVerifying(false);
             }
-        };
-        verifyReturnedPayment();
-    }, [searchParams, setSearchParams]);
+        }
+    };
+
+    verifyReturnedPayment();
+
+    return () => {
+        isMounted = false;
+    };
+}, [searchParams, setSearchParams]);
 
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat("en-NG", {
