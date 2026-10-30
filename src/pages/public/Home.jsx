@@ -58,8 +58,8 @@ export default function Home() {
     const heroSlides = [
         {
             image: pageContent.heroImage || "/images/olivetNOSA-4.jpg",
-            eyebrow: "Global Old Students' Association",
-            title: pageContent.heroTitle || "Welcome to Olivet Baptist High School",
+            eyebrow: "Olivet NOSA Worldwide Website",
+            title: pageContent.heroTitle || "Welcome to OBHS NOSA Worldwide Website",
             highlight: pageContent.heroSubtitle || "Global Old Students Association.",
             description:
                 "Connecting Olivetians across generations through fellowship, shared memories and a commitment to our alma mater.",
