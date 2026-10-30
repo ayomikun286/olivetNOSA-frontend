@@ -445,7 +445,7 @@ const AdminDonations = () => {
 
                 {/* OVERVIEW CARDS */}
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-3">
+               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
                     <AdminStatCard
                         icon={Banknote}
                         iconBg="bg-(--primary-light)"
@@ -476,15 +476,7 @@ const AdminDonations = () => {
                         description="Awaiting completion"
                     />
 
-                    <AdminStatCard
-                        icon={AlertCircle}
-                        iconBg="bg-(--danger-light)"
-                        iconClass="text-(--danger)"
-                        badge="Failed"
-                        label="Failed"
-                        value={summary?.failedDonations ?? 0}
-                        description="Unsuccessful donations"
-                    />
+                    
 
                     <AdminStatCard
                         icon={AlertCircle}
