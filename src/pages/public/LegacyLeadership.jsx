@@ -426,7 +426,7 @@ export default function LegacyLeadership() {
           {!loading && !error && currentPresident && (
             <article
               data-aos="fade-up"
-              className="relative mt-20 overflow-hidden border border-(--secondary)/40 bg-(--primary-dark) text-white"
+              className="relative mt-20 overflow-hidden border  p-6 border-(--secondary)/40 bg-(--primary-dark) text-white"
             >
 
 
