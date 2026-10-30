@@ -143,7 +143,7 @@ const Jobs = () => {
           </div>
 
           <p className="text-sm text-(--secondary) mt-2">
-            Discover career opportunities shared with the ONW GOSA community.
+            Discover career opportunities shared with the  NOSA community.
           </p>
         </div>
 

@@ -12,8 +12,8 @@ const termsSections = [
     id: "introduction",
     title: "Introduction",
     paragraphs: [
-      'Welcome to the official website and alumni management portal of Olivet Baptist High School Global Old Students\' Association (GOSA), referred to in these Terms & Conditions as "OlivetGOSA", "the Association", "we", "us" or "our".',
-      "These Terms & Conditions govern your access to and use of the OlivetGOSA website, alumni registration system, membership portal, payment facilities, directories, communications and other services made available through the platform.",
+      'Welcome to the official website and alumni management portal of Olivet Baptist High School Global Old Students\' Association (NOSA), referred to in these Terms & Conditions as "OlivetNOSA", "the Association", "we", "us" or "our".',
+      "These Terms & Conditions govern your access to and use of the OlivetNOSA website, alumni registration system, membership portal, payment facilities, directories, communications and other services made available through the platform.",
       "By accessing or using the website, you agree to comply with these Terms & Conditions and all applicable laws and regulations. If you do not agree with these Terms, please discontinue your use of the website.",
     ],
   },
@@ -21,7 +21,7 @@ const termsSections = [
     id: "purpose",
     title: "Purpose of the Website",
     paragraphs: [
-      "The OlivetGOSA website is established to:",
+      "The OlivetNOSA website is established to:",
     ],
     bullets: [
       "Connect former students of Olivet Baptist High School.",
@@ -170,7 +170,7 @@ const termsSections = [
     id: "donations",
     title: "Donations and Voluntary Contributions",
     paragraphs: [
-      "OlivetGOSA may accept donations and voluntary contributions from members, nonmembers, individuals and supporting organisations. Donations may support approved projects, programmes, alumni initiatives or institutional development.",
+      "OlivetNOSA may accept donations and voluntary contributions from members, nonmembers, individuals and supporting organisations. Donations may support approved projects, programmes, alumni initiatives or institutional development.",
       "Donors may be offered the option to contribute anonymously. Anonymous donation preferences concern public acknowledgement and do not necessarily prevent the collection of information required for secure payment processing, legal compliance or financial recordkeeping.",
       "The Association will seek to apply designated donations to their stated purposes, subject to any clearly disclosed campaign terms.",
     ],
@@ -211,7 +211,7 @@ const termsSections = [
       "Disrupt the operation or security of the website.",
     ],
     ending: [
-      "OlivetGOSA may moderate or remove content that violates these requirements, subject to applicable procedures.",
+      "OlivetNOSA may moderate or remove content that violates these requirements, subject to applicable procedures.",
     ],
   },
   {
@@ -245,7 +245,7 @@ const termsSections = [
     title: "Third-Party Services and External Links",
     paragraphs: [
       "The website may connect to external services, payment gateways, email providers or third-party websites.",
-      "OlivetGOSA is not responsible for the independent content, privacy policies or business practices of third-party websites outside its control. Users should review relevant third-party terms before using those services.",
+      "OlivetNOSA is not responsible for the independent content, privacy policies or business practices of third-party websites outside its control. Users should review relevant third-party terms before using those services.",
     ],
   },
   {
@@ -253,7 +253,7 @@ const termsSections = [
     title: "Website Availability and Liability",
     paragraphs: [
       "The Association aims to maintain a secure and reliable platform but cannot guarantee uninterrupted or error-free access. Maintenance, technical faults, network interruptions or security incidents may temporarily affect service availability.",
-      "To the extent permitted by law, OlivetGOSA is not responsible for losses caused solely by circumstances outside its reasonable control.",
+      "To the extent permitted by law, OlivetNOSA is not responsible for losses caused solely by circumstances outside its reasonable control.",
       "Nothing in these Terms excludes liability that cannot lawfully be excluded, including liability arising from fraud or other legally protected claims.",
     ],
   },
@@ -270,7 +270,7 @@ const termsSections = [
     id: "changes",
     title: "Changes to These Terms",
     paragraphs: [
-      "OlivetGOSA may amend these Terms to reflect changes in platform functionality, Association requirements or applicable law. The revised version will be published with its effective date.",
+      "OlivetNOSA may amend these Terms to reflect changes in platform functionality, Association requirements or applicable law. The revised version will be published with its effective date.",
       "Material changes affecting members' rights or obligations will be communicated where required.",
       "Changes do not automatically impose new financial obligations retrospectively.",
     ],
@@ -289,15 +289,15 @@ const termsSections = [
     title: "Contact Information",
     paragraphs: [
       "For membership enquiries, technical support, payment concerns or complaints, contact:",
-      "Olivet Baptist High School Global Old Students' Association (GOSA)",
+      "Olivet Baptist High School Global Old Students' Association (NOSA)",
     ],
     details: [
       ["Website", "https://olivetbhsnosa.org/"],
-      ["Email", "olivetgosasupport@olivetbhsnosa.org"],
+      ["Email", "olivetNOSAsupport@olivetbhsnosa.org"],
       ["Contact Address", "Lagos, Nigeria"],
     ],
     ending: [
-      "By registering or using the OlivetGOSA website, you acknowledge that you have read and understood these Terms & Conditions.",
+      "By registering or using the OlivetNOSA website, you acknowledge that you have read and understood these Terms & Conditions.",
     ],
   },
 ];
@@ -352,7 +352,7 @@ function LegalTable({ table }) {
 const TermsAndConditions = () => {
   return (
     <>
-      <PageTitle title="Terms & Conditions | OlivetGOSA" />
+      <PageTitle title="Terms & Conditions | OlivetNOSA" />
       <Navbar />
 
       <main className="bg-white text-[var(--primary-dark)]">
@@ -431,7 +431,7 @@ const TermsAndConditions = () => {
                   Need help with membership, payments or these terms?
                 </p>
                 <a
-                  href="mailto:olivetgosasupport@olivetbhsnosa.org"
+                  href="mailto:olivetNOSAsupport@olivetbhsnosa.org"
                   className="mt-2 inline-flex items-center gap-2 text-sm font-medium text-[var(--primary)] hover:underline"
                 >
                   Contact our team <ArrowRight size={15} />
@@ -445,7 +445,7 @@ const TermsAndConditions = () => {
                 <p className="text-base leading-8 text-[var(--text-muted)]">
                   These Terms explain the rules for using our website,
                   registering as an alumnus, accessing membership services,
-                  making payments and participating in the OlivetGOSA
+                  making payments and participating in the OlivetNOSA
                   community. They operate alongside the Association's
                   Constitution and applicable laws.
                 </p>
@@ -598,13 +598,13 @@ const TermsAndConditions = () => {
                 </h2>
                 <p className="mt-3 text-sm leading-7 text-[var(--text-muted)]">
                   For membership enquiries, technical support, payment
-                  concerns or complaints, please contact OlivetGOSA.
+                  concerns or complaints, please contact OlivetNOSA.
                 </p>
                 <a
-                  href="mailto:olivetgosasupport@olivetbhsnosa.org"
+                  href="mailto:olivetNOSAsupport@olivetbhsnosa.org"
                   className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[var(--primary)] hover:underline"
                 >
-                  olivetgosasupport@olivetbhsnosa.org
+                  olivetNOSAsupport@olivetbhsnosa.org
                   <ArrowRight size={16} />
                 </a>
               </div>

@@ -134,7 +134,7 @@ const Events = () => {
                     </h1>
 
                     <p className="text-sm text-(--secondary) mt-1">
-                        Stay updated with OlivetGOSA events,
+                        Stay updated with OlivetNOSA events,
                         announcements and community news.
                     </p>
                 </div>

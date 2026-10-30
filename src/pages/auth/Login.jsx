@@ -215,7 +215,7 @@ if (authenticated) {
 
   return (
     <main className="min-h-screen bg-white">
-      <PageTitle title="Login | OlivetGOSA" />
+      <PageTitle title="Login | OlivetNOSA" />
 
       {/* REDIRECT LOADER */}
       {redirect && <NosaLoader />}
@@ -250,25 +250,28 @@ if (authenticated) {
 
         <section className="relative hidden min-h-screen overflow-hidden lg:block">
 
+         <a href="/" >
           <img
             src="/images/olivetNOSA-6.jpg"
             alt="Olivet Baptist High School"
             className="absolute inset-0 h-full w-full object-cover"
           />
 
+         
+         </a>
           {/* Overlay */}
           <div className="absolute inset-0 bg-black/60" />
 
           <div className="relative z-10 flex h-full flex-col justify-between p-10 xl:p-14">
 
             {/* LOGO */}
-            <div>
+            <a href="/">
               <img
                 src="/images/Logo-NOSA.png"
                 alt="OlivetNOSA"
                 className="w-30"
               />
-            </div>
+            </a>
 
             {/* HERITAGE MESSAGE */}
             <div className="max-w-xl text-white">
@@ -327,7 +330,7 @@ if (authenticated) {
               </h2>
 
               <p className="mt-2 text-sm leading-6 text-slate-500">
-                Sign in to continue to your OlivetGOSA account.
+                Sign in to continue to your OlivetNOSA account.
               </p>
 
             </div>

@@ -382,7 +382,7 @@ const [loadingChapters, setLoadingChapters] = useState(false);
             </h1>
 
             <p className="text-sm text-(--secondary) mt-1">
-              View and manage your OlivetGOSA member information.
+              View and manage your OlivetNOSA member information.
             </p>
           </div>
 
@@ -1685,7 +1685,7 @@ const [loadingChapters, setLoadingChapters] = useState(false);
                       </h2>
 
                       <p className="text-xs text-(--secondary) mt-0.5">
-                        Your OlivetGOSA membership details.
+                        Your OlivetNOSA membership details.
                       </p>
                     </div>
                   </div>
@@ -2049,7 +2049,7 @@ const [loadingChapters, setLoadingChapters] = useState(false);
                 </h2>
 
                 <p className="text-xs text-(--secondary) mt-0.5">
-                  Your OlivetGOSA account status.
+                  Your OlivetNOSA account status.
                 </p>
               </div>
             </div>

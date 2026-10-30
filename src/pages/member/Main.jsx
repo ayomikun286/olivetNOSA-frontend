@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { NavLink } from "react-router-dom";
 
 import {
   CreditCard,
@@ -353,13 +354,13 @@ const Main = () => {
               </small>
             </div>
 
-            <div>
+            <NavLink to="/" >
               <img
                 src="/images/Logo-NOSA.png"
                 alt="logo"
                 className="w-20"
               />
-            </div>
+            </NavLink>
           </div>
 
           <div className="flex justify-between gap-3 md:px-15 px-2 items-start md:justify-between md:items-center flex-wrap">

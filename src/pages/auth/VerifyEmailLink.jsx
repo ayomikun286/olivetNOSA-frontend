@@ -84,7 +84,7 @@ const VerifyEmailLink = () => {
   return (
     <main className="min-h-screen bg-[var(--bg-light)] flex items-center justify-center px-5 py-12">
 
-      <PageTitle title="Verify Email | OlivetGOSA" />
+      <PageTitle title="Verify Email | OlivetNOSA" />
 
       <div className="w-full max-w-md">
 
@@ -185,7 +185,7 @@ const VerifyEmailLink = () => {
             to="/"
             className="text-sm text-[var(--text-muted)] transition hover:text-[var(--primary)]"
           >
-            ← Back to OlivetGOSA
+            ← Back to OlivetNOSA
           </Link>
 
         </div>

@@ -927,3 +927,37 @@ export const getPublicLegacyLeaders = async () => {
     );
   }
 };
+
+
+
+
+
+
+// ============================================================
+// COMPLETE MEMBER ONBOARDING
+// ============================================================
+
+export const completeMemberOnboarding = async () => {
+  try {
+    const response = await fetch(
+      `${API}/auth/onboarding/complete`,
+      {
+        method: "PATCH",
+        credentials: "include",
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || "Unable to complete onboarding."
+      );
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Complete onboarding error:", error);
+    throw error;
+  }
+};

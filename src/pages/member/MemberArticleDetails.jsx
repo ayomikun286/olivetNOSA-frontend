@@ -160,7 +160,7 @@ const MemberArticleDetails = () => {
                     article.createdBy.lastName,
                   ]
                     .filter(Boolean)
-                    .join(" ") || "ONW GOSA"}
+                    .join(" ") || "NOSA"}
                 </span>
               )}
             </div>

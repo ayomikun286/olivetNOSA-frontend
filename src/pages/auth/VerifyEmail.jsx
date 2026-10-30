@@ -74,7 +74,7 @@ const VerifyEmail = () => {
   if (!email) {
     return (
       <div className="verify-email-page">
-        <PageTitle title="Verify Email | OlivetGOSA" />
+        <PageTitle title="Verify Email | OlivetNOSA" />
 
         <div className="verify-email-card">
           <div className="py-4 text-center">
@@ -135,7 +135,7 @@ const VerifyEmail = () => {
             <p className="verify-email-description">
               Your email verification is complete.
               You can now continue to login to your
-              Olivet GOSA account.
+              Olivet NOSA account.
             </p>
 
             <Link
@@ -218,7 +218,7 @@ const VerifyEmail = () => {
                   <strong>Spam</strong> or{" "}
                   <strong>Junk</strong> folder.
                   You can also search your inbox for{" "}
-                  <strong>"Olivet GOSA"</strong>.
+                  <strong>"Olivet NOSA"</strong>.
                 </p>
 
                 <p>

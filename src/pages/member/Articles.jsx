@@ -93,7 +93,7 @@ const Articles = () => {
               Articles
             </h1>
             <p className="mt-1 text-sm text-(--secondary)">
-              Insights, knowledge and stories from the GOSA community.
+              Insights, knowledge and stories from the NOSA community.
             </p>
           </div>
         </div>

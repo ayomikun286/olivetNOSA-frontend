@@ -350,7 +350,7 @@ const Signup = () => {
 
   return (
     <main className="min-h-screen bg-[var(--background-soft)]">
-      <PageTitle title="Create Account | OlivetGOSA" />
+      <PageTitle title="Create Account | OlivetNOSA" />
 
       {redirect && <NosaLoader />}
 
@@ -371,11 +371,12 @@ const Signup = () => {
 
         <section className="relative hidden overflow-hidden bg-[var(--primary-dark)] lg:block">
 
+          <a href="/">
           <img
             src="/images/olivetNOSA-2.jpg"
             alt="Olivetians"
             className="absolute inset-0 h-full w-full object-cover"
-          />
+          /></a>
 
           <div className="absolute inset-0 bg-[var(--primary-dark)]/85" />
 
@@ -419,7 +420,7 @@ const Signup = () => {
 
               <p className="mt-6 max-w-lg text-base leading-7 text-white/70">
 
-                Create your OlivetGOSA member account and stay connected
+                Create your OlivetNOSA member account and stay connected
                 with the people, memories and community that began at Olivet.
 
               </p>
@@ -480,7 +481,7 @@ const Signup = () => {
 
               <p className="mt-3 max-w-xl text-sm leading-6 text-[var(--text-muted)] sm:text-base">
 
-                Join the OlivetGOSA community and keep your connection to
+                Join the OlivetNOSA community and keep your connection to
                 Olivet alive across generations.
 
               </p>
@@ -1038,7 +1039,7 @@ const Signup = () => {
 
                   <span className="text-xs leading-5 text-slate-500">
 
-                    I agree to the OlivetGOSA{" "}
+                    I agree to the OlivetNOSA{" "}
 
                     <a href="">
                       
@@ -1135,7 +1136,7 @@ const Signup = () => {
                 to="/"
                 className="text-sm text-slate-400 transition hover:text-[var(--primary)]"
               >
-                ← Back to OlivetGOSA
+                ← Back to OlivetNOSA
               </Link>
 
             </div>

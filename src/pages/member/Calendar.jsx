@@ -577,7 +577,7 @@ const Calendar = () => {
     <div className="p-4">
       <PageTitle
         title="Calendar"
-        subtitle="Stay updated with important GOSA meetings, seminars and events."
+        subtitle="Stay updated with important NOSA meetings, seminars and events."
       />
 
       {/* ======================================================
@@ -587,11 +587,11 @@ const Calendar = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-1 mb-5">
         <div>
           <h1 className="text-xl md:text-2xl font-semibold text-(--primary)">
-            {currentYear} GOSA Calendar
+            {currentYear} NOSA Calendar
           </h1>
 
           <p className="text-sm text-(--secondary) mt-1">
-            Official schedule of GOSA activities for{" "}
+            Official schedule of NOSA activities for{" "}
             {currentYear}.
           </p>
         </div>
@@ -970,7 +970,7 @@ const Calendar = () => {
                   </p>
 
                   <p className="text-xs text-(--text-muted) mt-1">
-                    There are no GOSA events
+                    There are no NOSA events
                     scheduled for this date.
                   </p>
                 </div>
@@ -1047,7 +1047,7 @@ const Calendar = () => {
               </h3>
 
               <p className="text-xs text-(--text-muted) mt-1">
-                Next scheduled GOSA activities.
+                Next scheduled NOSA activities.
               </p>
             </div>
 

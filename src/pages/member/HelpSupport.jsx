@@ -47,7 +47,7 @@ const faqs = [
     {
         question: "How do I become a financial member?",
         answer:
-            "To become a financial member of ONW GOSA, you must meet the association's applicable financial obligations. Open My Obligations from your member dashboard to view your assigned dues and levies, then make payments using the available payment options. Your payments must be verified before your financial status is updated. If you have completed your payments but your status has not changed, contact the association administrator for assistance.",
+            "To become a financial member of ONW NOSA, you must meet the association's applicable financial obligations. Open My Obligations from your member dashboard to view your assigned dues and levies, then make payments using the available payment options. Your payments must be verified before your financial status is updated. If you have completed your payments but your status has not changed, contact the association administrator for assistance.",
     },
     {
         question: "Why can't I pay an obligation?",

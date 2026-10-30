@@ -96,8 +96,7 @@ const Sidebar = ({ setIsOpen }) => {
 
         <div className="leading-none">
           <p className="text-[11px] font-bold tracking-wide text-white leading-4 tracking-1">
-            GLOBAL OLD STUDENTS
-            ASSOCIATION PORTAL
+            Olivet NOSA Worldwide Portal
           </p>
 
 

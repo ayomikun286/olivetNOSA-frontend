@@ -5,12 +5,13 @@ import PageTitle from "../../components/common/PageTitle.jsx";
 import { useAuth } from "../../context/AuthContext.jsx";
 import Sidebar from "../../components/member/Sidebar.jsx";
 import Navbar from "../../components/member/Navbar.jsx";
+import MemberOnboardingModal from "../../components/member/MemberOnboardingModal.jsx";
 import NotificationAlert from "../../components/common/NotificationAlert.jsx";
-import { getMemberProfile } from "../../services/authService.js";
+import { getMemberProfile, completeMemberOnboarding } from "../../services/authService.js";
 import {
   UserRoundCheck,
   ArrowUpRight,
-  X ,
+  X,
 } from "lucide-react";
 
 import { getMyNotifications } from "../../services/notificationService.js";
@@ -23,6 +24,7 @@ const Dashboard = () => {
 
 
 
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const [isOpen, setIsOpen] = useState(false)
   const [alertNotification, setAlertNotification] = useState(null);
   const [memberProfile, setMemberProfile] = useState(null);
@@ -138,6 +140,27 @@ const Dashboard = () => {
   }, []);
 
 
+  useEffect(() => {
+    const shouldShowOnboarding =
+      user?.memberStatus === "active" &&
+      !!user?.approvedAt &&
+      !user?.hasCompletedOnboarding;
+
+    setShowOnboarding(shouldShowOnboarding);
+  }, [
+    user?.memberStatus,
+    user?.approvedAt,
+    user?.hasCompletedOnboarding,
+  ]);
+
+
+
+
+  const handleCompleteOnboarding = async () => {
+    await completeMemberOnboarding();
+    setShowOnboarding(false);
+  };
+
   const isProfileIncomplete = !memberProfile?.phone ||
     !memberProfile?.profile?.country ||
     !memberProfile?.profile?.city ||
@@ -154,7 +177,7 @@ const Dashboard = () => {
     <>
 
       <main className='flex h-screen overflow-x-hidden w-screen'>
-        <PageTitle title="Member Dashboard | OlivetGOSA" />
+        <PageTitle title="Member Dashboard | OlivetNOSA" />
 
         {/*sidebar*/}
         <section className={`
@@ -198,15 +221,15 @@ const Dashboard = () => {
               <div className="px-4 pt-4 md:px-6">
                 <div className="relative overflow-hidden rounded border border-(--primary)/15 bg-linear-to-r from-(--primary)/5 via-(--bg-white) to-(--bg-white) shadow-sm">
 
-                <button
-  type="button"
-  onClick={() => setShowProfileWarning(false)}
-  aria-label="Dismiss profile reminder"
-  title="Dismiss reminder"
-  className="absolute right-2 top-2 z-10 rounded-full p-1.5 text-(--text-secondary) transition hover:bg-(--primary)/10 hover:text-(--primary)"
->
-  <X size={18} />
-</button>
+                  <button
+                    type="button"
+                    onClick={() => setShowProfileWarning(false)}
+                    aria-label="Dismiss profile reminder"
+                    title="Dismiss reminder"
+                    className="absolute right-2 top-2 z-10 rounded-full p-1.5 text-(--text-secondary) transition hover:bg-(--primary)/10 hover:text-(--primary)"
+                  >
+                    <X size={18} />
+                  </button>
 
                   {/* Decorative accent */}
                   <div className="absolute left-0 top-0 h-full w-1 bg-(--primary)" />
@@ -233,13 +256,13 @@ const Dashboard = () => {
 
                         <p className="mt-1 max-w-xl text-xs leading-5 text-(--text-secondary) sm:text-sm">
                           Your profile is not complete yet. Add your personal and
-                          professional details to keep your OlivetGOSA profile up to date.
+                          professional details to keep your OlivetNOSA profile up to date.
                         </p>
                       </div>
 
                     </div>
 
-                    
+
 
                     {/* Button */}
                     <button
@@ -284,6 +307,12 @@ const Dashboard = () => {
 
 
 
+
+        {showOnboarding && (
+          <MemberOnboardingModal
+            onComplete={handleCompleteOnboarding}
+          />
+        )}
 
 
       </main>
