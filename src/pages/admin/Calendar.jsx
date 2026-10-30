@@ -724,7 +724,7 @@ const Calendar = () => {
             </h1>
 
             <p className="text-xs text-(--text-muted) mt-1">
-              Manage GOSA meetings, seminars, NEC
+              Manage NOSA meetings, seminars, NEC
               sessions, AGM and other important events.
             </p>
           </div>
@@ -1128,7 +1128,7 @@ const Calendar = () => {
 
                 <p className="text-[11px] text-(--text-muted) mt-1">
                   {modal === "create"
-                    ? "Add a new GOSA calendar event."
+                    ? "Add a new NOSA calendar event."
                     : "Update the details of this calendar event."}
                 </p>
 
@@ -1413,7 +1413,7 @@ const Calendar = () => {
                       name="participants"
                       value={form.participants}
                       onChange={handleChange}
-                      placeholder="e.g. All GOSA members"
+                      placeholder="e.g. All NOSA members"
                       className="
                         w-full h-9 px-3
                         rounded border border-(--border)

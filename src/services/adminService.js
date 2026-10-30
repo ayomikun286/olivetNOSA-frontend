@@ -1735,3 +1735,49 @@ export const getAdminPaymentHistoryExport = async ({
   // Adjust this return only if your controller uses a different response shape.
   return data.data;
 };
+
+
+
+
+// ============================================================
+// ADMIN DONATIONS API
+// ============================================================
+
+export const getAdminDonations = async ({
+    page = 1,
+    limit = 10,
+    search = "",
+    status = "",
+    gateway = "",
+    startDate = "",
+    endDate = "",
+} = {}) => {
+    const params = new URLSearchParams();
+
+    params.set("page", page);
+    params.set("limit", limit);
+
+    if (search.trim()) params.set("search", search.trim());
+    if (status) params.set("status", status);
+    if (gateway) params.set("gateway", gateway);
+    if (startDate) params.set("startDate", startDate);
+    if (endDate) params.set("endDate", endDate);
+
+    return adminMemorialRequest(
+        `/donations?${params.toString()}`
+    );
+};
+
+// Get donation summary
+export const getAdminDonationSummary = async () => {
+    return adminMemorialRequest("/donations/summary");
+};
+
+// Get one donation
+export const getAdminDonationById = async (donationId) => {
+    if (!donationId) {
+        throw new Error("Donation ID is required.");
+    }
+
+    return adminMemorialRequest(`/donations/${donationId}`);
+};

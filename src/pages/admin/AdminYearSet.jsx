@@ -603,7 +603,7 @@ const YearSets = () => {
                             Year Sets
                         </h1>
                         <p className="mt-1 text-sm text-(--secondary)">
-                            Manage GOSA year sets, members and year set leadership.
+                            Manage NOSA year sets, members and year set leadership.
                         </p>
                     </div>
 

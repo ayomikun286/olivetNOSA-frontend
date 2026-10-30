@@ -682,7 +682,7 @@ const Chapters = () => {
           </h1>
 
           <p className="text-sm text-(--secondary) mt-1">
-            Manage GOSA chapters, members and
+            Manage NOSA chapters, members and
             chapter leadership.
           </p>
         </div>

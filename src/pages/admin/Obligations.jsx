@@ -934,7 +934,7 @@ const Obligations = () => {
             </h1>
 
             <p className="text-sm text-(--secondary) mt-1">
-              Manage GOSA financial obligations,
+              Manage NOSA financial obligations,
               dues and payment plans.
             </p>
           </div>
@@ -1083,7 +1083,7 @@ const Obligations = () => {
                 </h2>
 
                 <p className="text-xs text-(--secondary) mt-1">
-                  View and manage registered GOSA
+                  View and manage registered NOSA
                   financial obligations.
                 </p>
               </div>
@@ -1319,7 +1319,7 @@ const Obligations = () => {
       {createModalOpen && (
         <ObligationFormModal
           title="Create Obligation"
-          description="Create a new GOSA financial obligation and payment plan."
+          description="Create a new NOSA financial obligation and payment plan."
           form={form}
           saving={saving}
           onChange={handleFormChange}

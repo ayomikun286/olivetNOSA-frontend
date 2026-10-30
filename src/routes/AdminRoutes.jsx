@@ -17,6 +17,8 @@ import Jobs from "../pages/admin/Jobs.jsx";
 import AdminNotifications from "../pages/admin/AdminNotifications.jsx";
 import AdminSupport from "../pages/admin/AdminSupport.jsx";
 
+
+import AdminDonations from "../pages/admin/AdminDonations.jsx"
 import WebsiteContent from "../pages/admin/WebsiteContent.jsx";
 import AdminSettings from "../pages/admin/AdminSettings.jsx";
 import Team from "../pages/admin/Team.jsx";
@@ -57,7 +59,7 @@ const AdminRoutes = () => {
             path="memorial-submissions"
             element={<MemorialSubmissions />}
           />
-
+            <Route path="donations" element={<AdminDonations />} />
           <Route path="settings" element={<AdminSettings />} />
           <Route path="team" element={<Team />} />
           < Route path="legacy-leadership" element={<LegacyLeadershipManagement />} />

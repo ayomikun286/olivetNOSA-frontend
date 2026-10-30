@@ -90,7 +90,7 @@ const Dashboard = () => {
 
   return (
    <div className="portal-layout flex h-dvh w-full overflow-hidden">
-      <PageTitle title="Admin Dashboard | OlivetGOSA" />
+      <PageTitle title="Admin Dashboard | OlivetNOSA" />
 
     <main className="flex min-h-0 min-w-0 flex-1 overflow-hidden">
 

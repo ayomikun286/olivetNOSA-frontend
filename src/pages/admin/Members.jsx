@@ -517,7 +517,7 @@ const Members = () => {
             </h1>
 
             <p className="text-sm text-(--secondary) mt-1">
-              Manage and monitor OlivetGOSA members.
+              Manage and monitor OlivetNOSA members.
             </p>
           </div>
 
@@ -604,7 +604,7 @@ const Members = () => {
                 </h2>
 
                 <p className="text-xs text-(--secondary) mt-1">
-                  View and manage registered OlivetGOSA members.
+                  View and manage registered OlivetNOSA members.
                 </p>
               </div>
 

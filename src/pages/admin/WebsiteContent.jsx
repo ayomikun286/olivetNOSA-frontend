@@ -63,7 +63,7 @@ const WEBSITE_PAGES = {
         ],
     },
     "about-gosa": {
-        label: "About ONW GOSA",
+        label: "About ONW NOSA",
         description: "Association history, objectives and introduction.",
         fields: [
             "pageTitle",

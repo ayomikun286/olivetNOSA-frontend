@@ -765,7 +765,7 @@ const handleExportPaymentHistory = async () => {
         </h1>
 
         <p className="text-sm text-(--secondary) mt-1">
-            Monitor and manage OlivetGOSA payment transactions.
+            Monitor and manage OlivetNOSA payment transactions.
         </p>
     </div>
 

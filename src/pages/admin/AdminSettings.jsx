@@ -31,8 +31,8 @@ import {
 } from "../../services/adminService.js";
 
 const emptySettings = {
-  associationName: "ONW GOSA",
-  shortName: "ONW GOSA",
+  associationName: " NOSA",
+  shortName: "NOSA",
   contactEmail: "",
   phone: "",
   address: "",
@@ -310,7 +310,7 @@ const AdminSettings = () => {
         <OverviewCard
           icon={Building2}
           label="Association"
-          value={settings.shortName || "ONW GOSA"}
+          value={settings.shortName || "NOSA"}
           description="Organisation identity"
           iconBg="bg-(--primary-light)"
           iconClass="text-(--primary)"
@@ -383,7 +383,7 @@ const AdminSettings = () => {
                     onChange={handleChange}
                     required
                     maxLength={150}
-                    placeholder="ONW GOSA"
+                    placeholder="NOSA"
                   />
 
                   <Field
@@ -393,7 +393,7 @@ const AdminSettings = () => {
                     onChange={handleChange}
                     required
                     maxLength={50}
-                    placeholder="ONW GOSA"
+                    placeholder="NOSA"
                   />
 
                   {/* LOGO UPLOAD */}
