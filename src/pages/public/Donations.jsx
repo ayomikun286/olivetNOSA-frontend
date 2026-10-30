@@ -143,104 +143,7 @@ export default function Donation() {
                 </div>
             </section>
 
-            {/* INTRODUCTION */}
-            <section className="bg-white py-20 lg:py-28">
-                <div className="mx-auto grid max-w-7xl gap-12 px-6 sm:px-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24 lg:px-16">
-                    <div>
-                        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-                            The Power of Giving
-                        </p>
-
-                        <div className="mt-6 h-px w-16 bg-[var(--secondary)]" />
-
-                        <h2 className="mt-7 text-4xl font-medium leading-tight tracking-[-0.035em] text-[var(--primary-dark)] sm:text-5xl">
-                            Our shared heritage deserves our collective support.
-                        </h2>
-                    </div>
-
-                    <div>
-                        <p className="text-lg leading-9 text-[var(--text-muted)]">
-                            Olivet has been part of the story of many
-                            generations. As Olivetians, we have an opportunity
-                            to give back to the community and institution that
-                            helped shape our journeys.
-                        </p>
-
-                        <p className="mt-6 text-base leading-8 text-[var(--text-muted)]">
-                            Every contribution, regardless of size, represents
-                            a commitment to fellowship, service and the
-                            continued development of our shared heritage.
-                        </p>
-                    </div>
-                </div>
-            </section>
-
-            {/* AREAS OF IMPACT */}
-            <section className="bg-[var(--background-soft)] py-20 lg:py-24">
-                <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
-                    <div className="max-w-2xl">
-                        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
-                            Your Contribution
-                        </p>
-
-                        <h2 className="mt-5 text-4xl font-medium leading-tight tracking-[-0.035em] text-[var(--primary-dark)] sm:text-5xl">
-                            Giving towards a stronger Olivet community.
-                        </h2>
-
-                        <p className="mt-5 leading-8 text-[var(--text-muted)]">
-                            Your support can help advance initiatives that
-                            benefit the school, its alumni and future
-                            generations.
-                        </p>
-                    </div>
-
-                    <div className="mt-14 grid gap-6 md:grid-cols-3">
-                        {[
-                            {
-                                icon: GraduationCap,
-                                title: "Education & Mentorship",
-                                description:
-                                    "Encouraging learning, guidance and opportunities for students and younger generations.",
-                            },
-                            {
-                                icon: Landmark,
-                                title: "School Development",
-                                description:
-                                    "Supporting initiatives that contribute to the improvement and development of our alma mater.",
-                            },
-                            {
-                                icon: UsersRound,
-                                title: "Alumni Community",
-                                description:
-                                    "Strengthening fellowship, engagement and meaningful community initiatives.",
-                            },
-                        ].map((item, index) => {
-                            const Icon = item.icon;
-
-                            return (
-                                <div
-                                    key={item.title}
-                                    className="bg-white border border-black/5 p-8 transition duration-300 hover:-translate-y-1 hover:shadow-lg"
-                                >
-                                    <div className="flex h-14 w-14 items-center justify-center bg-[var(--primary-light)] text-[var(--primary)]">
-                                        <Icon size={25} strokeWidth={1.5} />
-                                    </div>
-
-                                    <h3 className="mt-7 text-xl font-semibold text-[var(--primary-dark)]">
-                                        {item.title}
-                                    </h3>
-
-                                    <p className="mt-4 text-sm leading-7 text-[var(--text-muted)]">
-                                        {item.description}
-                                    </p>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-            </section>
-
-            {/* DONATION FORM */}
+             {/* DONATION FORM */}
             <section
                 id="donation-form"
                 className="bg-white py-20 lg:py-28"
@@ -490,6 +393,105 @@ export default function Donation() {
                     </form>
                 </div>
             </section>
+
+            {/* INTRODUCTION */}
+            <section className="bg-white py-20 lg:py-28">
+                <div className="mx-auto grid max-w-7xl gap-12 px-6 sm:px-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24 lg:px-16">
+                    <div>
+                        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
+                            The Power of Giving
+                        </p>
+
+                        <div className="mt-6 h-px w-16 bg-[var(--secondary)]" />
+
+                        <h2 className="mt-7 text-4xl font-medium leading-tight tracking-[-0.035em] text-[var(--primary-dark)] sm:text-5xl">
+                            Our shared heritage deserves our collective support.
+                        </h2>
+                    </div>
+
+                    <div>
+                        <p className="text-lg leading-9 text-[var(--text-muted)]">
+                            Olivet has been part of the story of many
+                            generations. As Olivetians, we have an opportunity
+                            to give back to the community and institution that
+                            helped shape our journeys.
+                        </p>
+
+                        <p className="mt-6 text-base leading-8 text-[var(--text-muted)]">
+                            Every contribution, regardless of size, represents
+                            a commitment to fellowship, service and the
+                            continued development of our shared heritage.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            {/* AREAS OF IMPACT */}
+            <section className="bg-[var(--background-soft)] py-20 lg:py-24">
+                <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
+                    <div className="max-w-2xl">
+                        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
+                            Your Contribution
+                        </p>
+
+                        <h2 className="mt-5 text-4xl font-medium leading-tight tracking-[-0.035em] text-[var(--primary-dark)] sm:text-5xl">
+                            Giving towards a stronger Olivet community.
+                        </h2>
+
+                        <p className="mt-5 leading-8 text-[var(--text-muted)]">
+                            Your support can help advance initiatives that
+                            benefit the school, its alumni and future
+                            generations.
+                        </p>
+                    </div>
+
+                    <div className="mt-14 grid gap-6 md:grid-cols-3">
+                        {[
+                            {
+                                icon: GraduationCap,
+                                title: "Education & Mentorship",
+                                description:
+                                    "Encouraging learning, guidance and opportunities for students and younger generations.",
+                            },
+                            {
+                                icon: Landmark,
+                                title: "School Development",
+                                description:
+                                    "Supporting initiatives that contribute to the improvement and development of our alma mater.",
+                            },
+                            {
+                                icon: UsersRound,
+                                title: "Alumni Community",
+                                description:
+                                    "Strengthening fellowship, engagement and meaningful community initiatives.",
+                            },
+                        ].map((item, index) => {
+                            const Icon = item.icon;
+
+                            return (
+                                <div
+                                    key={item.title}
+                                    className="bg-white border border-black/5 p-8 transition duration-300 hover:-translate-y-1 hover:shadow-lg"
+                                >
+                                    <div className="flex h-14 w-14 items-center justify-center bg-[var(--primary-light)] text-[var(--primary)]">
+                                        <Icon size={25} strokeWidth={1.5} />
+                                    </div>
+
+                                    <h3 className="mt-7 text-xl font-semibold text-[var(--primary-dark)]">
+                                        {item.title}
+                                    </h3>
+
+                                    <p className="mt-4 text-sm leading-7 text-[var(--text-muted)]">
+                                        {item.description}
+                                    </p>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            </section>
+
+           
 
             {/* FINAL CTA */}
             <section className="bg-[var(--primary-dark)] py-20 text-white">

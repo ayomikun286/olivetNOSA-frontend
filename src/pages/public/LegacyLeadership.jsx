@@ -284,34 +284,7 @@ export default function LegacyLeadership() {
         </div>
       </section>
 
-      {/* INTRODUCTION */}
-      <section className="py-20 sm:py-28">
-        <div className="mx-auto grid max-w-7xl gap-10 px-6 sm:px-10 lg:grid-cols-[0.7fr_1.3fr] lg:gap-24 lg:px-16">
-          <div data-aos="fade-up">
-            <p className="text-sm font-semibold uppercase tracking-[0.23em] text-(--secondary)">
-              A Continuing Story
-            </p>
-            <div className="mt-6 h-px w-16 bg-(--secondary)" />
-          </div>
-
-          <div data-aos="fade-up" data-aos-delay="100">
-            <h2 className="text-4xl font-medium leading-[1.05] tracking-[-0.04em] sm:text-5xl lg:text-6xl">
-              Leadership is a chapter. Belonging is lifelong.
-            </h2>
-
-            <div className="mt-8 grid gap-6 text-base leading-8 text-(--text-muted) md:grid-cols-2">
-              <p>
-                An old students’ association is a meeting place for different generations, experiences and ambitions. It gives our connection to Olivet a continuing purpose: to stay involved, support one another and contribute to the community we share.
-              </p>
-              <p>
-                Since 1985, eleven presidents have led our National Old Students’ Association, including our current President, Ayobami Olubiyi. We celebrate their service as part of an ongoing story of participation and leadership—one that invites every Olivetian to contribute.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* LEADERSHIP DIRECTORY */}
+       {/* LEADERSHIP DIRECTORY */}
       <section
         id="leadership-directory"
         className="scroll-mt-24 bg-(--background-soft) py-20 sm:py-28"
@@ -522,6 +495,35 @@ export default function LegacyLeadership() {
           )}
         </div>
       </section>
+
+      {/* INTRODUCTION */}
+      <section className="py-20 sm:py-28">
+        <div className="mx-auto grid max-w-7xl gap-10 px-6 sm:px-10 lg:grid-cols-[0.7fr_1.3fr] lg:gap-24 lg:px-16">
+          <div data-aos="fade-up">
+            <p className="text-sm font-semibold uppercase tracking-[0.23em] text-(--secondary)">
+              A Continuing Story
+            </p>
+            <div className="mt-6 h-px w-16 bg-(--secondary)" />
+          </div>
+
+          <div data-aos="fade-up" data-aos-delay="100">
+            <h2 className="text-4xl font-medium leading-[1.05] tracking-[-0.04em] sm:text-5xl lg:text-6xl">
+              Leadership is a chapter. Belonging is lifelong.
+            </h2>
+
+            <div className="mt-8 grid gap-6 text-base leading-8 text-(--text-muted) md:grid-cols-2">
+              <p>
+                An old students’ association is a meeting place for different generations, experiences and ambitions. It gives our connection to Olivet a continuing purpose: to stay involved, support one another and contribute to the community we share.
+              </p>
+              <p>
+                Since 1985, eleven presidents have led our National Old Students’ Association, including our current President, Ayobami Olubiyi. We celebrate their service as part of an ongoing story of participation and leadership—one that invites every Olivetian to contribute.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+     
 
       {/* SERVICE */}
       <section className="bg-white py-20 sm:py-28">
