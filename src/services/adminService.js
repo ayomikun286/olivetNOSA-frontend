@@ -1781,3 +1781,135 @@ export const getAdminDonationById = async (donationId) => {
 
     return adminMemorialRequest(`/donations/${donationId}`);
 };
+
+
+
+
+
+// ============================================================
+// ADMIN NOSA LEADERSHIP API
+// ============================================================
+
+
+export const getAdminNOSALeaders = async ({
+  search = "",
+  status = "",
+} = {}) => {
+  const params = new URLSearchParams();
+
+  if (search.trim()) params.set("search", search.trim());
+  if (status) params.set("status", status);
+
+  const query = params.toString();
+
+  return adminMemorialRequest(
+    `/nosa-leaders${query ? `?${query}` : ""}`
+  );
+};
+
+// Get one NOSA leader
+export const getAdminNOSALeaderById = async (id) => {
+  if (!id) {
+    throw new Error("NOSA leader ID is required.");
+  }
+
+  return adminMemorialRequest(`/nosa-leaders/${id}`);
+};
+
+// Create NOSA leader
+export const createAdminNOSALeader = async (formData) => {
+  return adminMemorialRequest("/nosa-leaders", {
+    method: "POST",
+    body: formData,
+  });
+};
+
+// Update NOSA leader
+export const updateAdminNOSALeader = async (id, formData) => {
+  if (!id) {
+    throw new Error("NOSA leader ID is required.");
+  }
+
+  return adminMemorialRequest(`/nosa-leaders/${id}`, {
+    method: "PATCH",
+    body: formData,
+  });
+};
+
+// Delete NOSA leader
+export const deleteAdminNOSALeader = async (id) => {
+  if (!id) {
+    throw new Error("NOSA leader ID is required.");
+  }
+
+  return adminMemorialRequest(`/nosa-leaders/${id}`, {
+    method: "DELETE",
+  });
+};
+
+
+
+// ============================================================
+// ADMIN TREASURER API
+// ============================================================
+
+// Get Treasurer member directory
+export const getTreasurerMembers = async ({
+  page = 1,
+  limit = 20,
+  search = "",
+  status = "",
+  financialStatus = "",
+} = {}) => {
+  const params = new URLSearchParams({
+    page: String(page),
+    limit: String(limit),
+  });
+
+  if (search.trim()) {
+    params.set("search", search.trim());
+  }
+
+  if (status) {
+    params.set("status", status);
+  }
+
+  if (financialStatus) {
+    params.set("financialStatus", financialStatus);
+  }
+
+  return adminMemorialRequest(
+    `/treasurer/members?${params.toString()}`
+  );
+};
+
+
+// Get individual member financial details
+export const getTreasurerMemberDetails = async (userId) => {
+  if (!userId) {
+    throw new Error("Member ID is required.");
+  }
+
+  return adminMemorialRequest(
+    `/treasurer/members/${userId}`
+  );
+};
+
+
+// Record offline payment
+export const recordTreasurerOfflinePayment = async (paymentData) => {
+  if (!paymentData) {
+    throw new Error("Payment details are required.");
+  }
+
+  return adminMemorialRequest(
+    "/treasurer/payments/offline",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(paymentData),
+    }
+  );
+};

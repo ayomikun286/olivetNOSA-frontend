@@ -27,8 +27,8 @@ import LegacyLeadershipManagement from "../pages/admin/LegacyLeadershipManagemen
 import MemorialManagement from "../pages/admin/MemorialManagement.jsx";
 
 import MemorialSubmissions from "../pages/admin/MemorialSubmissions.jsx";
-
-
+import NOSALeadershipManagement from "../pages/admin/NOSALeadershipManagement.jsx";
+import TreasurerDashboard from "../pages/admin/TreasurerDashboard.jsx";
 const AdminRoutes = () => {
   return (
     <Routes>
@@ -45,10 +45,12 @@ const AdminRoutes = () => {
           <Route path="news-events" element={<NewsEvents />} />
 
           <Route path="support" element={<AdminSupport />} />
+          <Route path="nosa-leaders" element={<NOSALeadershipManagement />} />
           <Route
             path="notifications"
             element={<AdminNotifications />}
           />
+          <Route path="treasurer" element={<TreasurerDashboard />} />
 
           <Route
             path="website-content"

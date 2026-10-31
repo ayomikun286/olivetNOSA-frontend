@@ -24,6 +24,7 @@ import {
   ChevronDown, ChevronRight,
   ClipboardCheck,
   Heart,
+  Wallet,
 } from "lucide-react";
 
 import { NavLink, useLocation } from "react-router-dom";
@@ -259,6 +260,15 @@ const Sidebar = ({ setIsOpen }) => {
             </NavLink>
 
             <NavLink
+              to="/portal/admin/dashboard/nosa-leaders"
+              className={linkClass}
+              onClick={handleLinkClick}
+            >
+              <Crown className={iconClass} />
+              <span>NOSA Leadership</span>
+            </NavLink>
+
+            <NavLink
               to="/portal/admin/dashboard/website-content"
               className={linkClass}
               onClick={handleLinkClick}
@@ -302,6 +312,17 @@ const Sidebar = ({ setIsOpen }) => {
               <ChartNoAxesCombined className={iconClass} />
               <span>Financial Reports</span>
             </NavLink>
+
+            {["admin", "treasurer", "superAdmin"].includes(user?.role) && (
+              <NavLink
+                to="/portal/admin/dashboard/treasurer"
+                className={linkClass}
+                onClick={handleLinkClick}
+              >
+                <Wallet className={iconClass} />
+                <span>Treasurer</span>
+              </NavLink>
+            )}
 
             <NavLink
               to="/portal/admin/dashboard/donations"

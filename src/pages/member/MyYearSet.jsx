@@ -17,7 +17,7 @@ import {
 
 import PageTitle from "../../components/common/PageTitle.jsx";
 import { useAuth } from "../../context/AuthContext.jsx";
-import { getyearSetObligation } from "../../services/yearSetService.js";
+import { getyearSetObligation, approveYearSetMember } from "../../services/yearSetService.js";
 
 const MyYearSet = () => {
     const { user } = useAuth();
@@ -27,6 +27,9 @@ const MyYearSet = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
+    const [approvalLoading, setApprovalLoading] = useState(false);
+    const [approvalError, setApprovalError] = useState("");
+    const [approvalSuccess, setApprovalSuccess] = useState("");
     const [paymentModal, setPaymentModal] = useState(null);
     const [paymentAmount, setPaymentAmount] = useState("");
     const [paymentLoading, setPaymentLoading] = useState(false);
@@ -300,6 +303,60 @@ const MyYearSet = () => {
             setPaymentLoading(false);
         }
     };
+
+
+    const handleApproveMember = async () => {
+        if (!selectedMember || approvalLoading) return;
+
+        const confirmed = window.confirm(
+            `Are you sure you want to approve ${selectedMember.firstName} ${selectedMember.lastName}?`
+        );
+
+        if (!confirmed) return;
+
+        setApprovalLoading(true);
+        setApprovalError("");
+        setApprovalSuccess("");
+
+        try {
+            const response = await approveYearSetMember(
+                selectedMember._id
+            );
+
+            // Update the selected member immediately.
+            const updatedMember = {
+                ...selectedMember,
+                status: "active",
+                alumniId: response.data?.alumniId ||
+                    response.alumniId,
+            };
+
+            setSelectedMember(updatedMember);
+
+            // Update the members displayed on the page.
+            setYearSetData((prev) => ({
+                ...prev,
+                members: prev.members.map((member) =>
+                    member._id === selectedMember._id
+                        ? updatedMember
+                        : member
+                ),
+            }));
+
+            setApprovalSuccess("Member approved successfully.");
+
+        } catch (error) {
+            console.error("Member approval error:", error);
+
+            setApprovalError(
+                error.message || "Failed to approve member."
+            );
+        } finally {
+            setApprovalLoading(false);
+        }
+    };
+
+
 
     return (
         <>
@@ -899,129 +956,129 @@ const MyYearSet = () => {
                                 <div className="divide-y divide-(--border) max-h-125 overflow-y-auto scrollbar-hide">
 
                                     {members.slice(0, 5).map((member) => {
-    const finances = member.financialSummary || {};
-    const status = getFinancialStatus(member);
+                                        const finances = member.financialSummary || {};
+                                        const status = getFinancialStatus(member);
 
-    return (
-        <div
-            key={member._id}
-            className="p-4 sm:p-5 hover:bg-(--bg-light)/50 transition"
-        >
-            {/* MEMBER PROFILE */}
-            <div className="flex items-start justify-between gap-3">
-                <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-10 h-10 shrink-0 rounded-lg bg-(--primary-light) text-(--primary) flex items-center justify-center">
-                        <UserRound size={18} />
-                    </div>
+                                        return (
+                                            <div
+                                                key={member._id}
+                                                className="p-4 sm:p-5 hover:bg-(--bg-light)/50 transition"
+                                            >
+                                                {/* MEMBER PROFILE */}
+                                                <div className="flex items-start justify-between gap-3">
+                                                    <div className="flex items-center gap-3 min-w-0">
+                                                        <div className="w-10 h-10 shrink-0 rounded-lg bg-(--primary-light) text-(--primary) flex items-center justify-center">
+                                                            <UserRound size={18} />
+                                                        </div>
 
-                    <div className="min-w-0">
-                        <h3 className="text-sm font-semibold text-(--primary) break-words">
-                            {member.firstName}{" "}
-                            {member.middleName
-                                ? `${member.middleName} `
-                                : ""}
-                            {member.lastName}
-                        </h3>
+                                                        <div className="min-w-0">
+                                                            <h3 className="text-sm font-semibold text-(--primary) break-words">
+                                                                {member.firstName}{" "}
+                                                                {member.middleName
+                                                                    ? `${member.middleName} `
+                                                                    : ""}
+                                                                {member.lastName}
+                                                            </h3>
 
-                        <p className="text-xs text-(--secondary) mt-1 break-all">
-                            {member.alumniId || "No Alumni ID"}
-                        </p>
+                                                            <p className="text-xs text-(--secondary) mt-1 break-all">
+                                                                {member.alumniId || "No Alumni ID"}
+                                                            </p>
 
-                        <span
-                            className={`inline-flex mt-2 text-[10px] font-semibold px-2 py-1 rounded-full ${status.className}`}
-                        >
-                            {status.label}
-                        </span>
-                    </div>
-                </div>
+                                                            <span
+                                                                className={`inline-flex mt-2 text-[10px] font-semibold px-2 py-1 rounded-full ${status.className}`}
+                                                            >
+                                                                {status.label}
+                                                            </span>
+                                                        </div>
+                                                    </div>
 
-                <div className="text-right shrink-0 max-w-[35%]">
-                    <p className="text-xs font-semibold text-(--primary) break-words">
-                        {member.chapter?.code || "—"}
-                    </p>
+                                                    <div className="text-right shrink-0 max-w-[35%]">
+                                                        <p className="text-xs font-semibold text-(--primary) break-words">
+                                                            {member.chapter?.code || "—"}
+                                                        </p>
 
-                    <p className="text-xs text-(--text-muted) mt-1">
-                        Class of {member.graduationYear || "—"}
-                    </p>
-                </div>
-            </div>
+                                                        <p className="text-xs text-(--text-muted) mt-1">
+                                                            Class of {member.graduationYear || "—"}
+                                                        </p>
+                                                    </div>
+                                                </div>
 
-            {/* MANDATORY FINANCIAL SUMMARY */}
-            <div className="grid grid-cols-3 gap-2 sm:gap-3 mt-5 pt-4 border-t border-(--border)">
-                <div className="min-w-0">
-                    <p className="text-[10px] sm:text-xs text-(--text-muted)">
-                        Total Due
-                    </p>
+                                                {/* MANDATORY FINANCIAL SUMMARY */}
+                                                <div className="grid grid-cols-3 gap-2 sm:gap-3 mt-5 pt-4 border-t border-(--border)">
+                                                    <div className="min-w-0">
+                                                        <p className="text-[10px] sm:text-xs text-(--text-muted)">
+                                                            Total Due
+                                                        </p>
 
-                    <p className="text-xs sm:text-sm font-semibold text-(--primary) mt-1 break-words">
-                        {formatCurrency(finances.totalDue || 0)}
-                    </p>
-                </div>
+                                                        <p className="text-xs sm:text-sm font-semibold text-(--primary) mt-1 break-words">
+                                                            {formatCurrency(finances.totalDue || 0)}
+                                                        </p>
+                                                    </div>
 
-                <div className="min-w-0">
-                    <p className="text-[10px] sm:text-xs text-(--text-muted)">
-                        Paid
-                    </p>
+                                                    <div className="min-w-0">
+                                                        <p className="text-[10px] sm:text-xs text-(--text-muted)">
+                                                            Paid
+                                                        </p>
 
-                    <p className="text-xs sm:text-sm font-semibold text-(--success) mt-1 break-words">
-                        {formatCurrency(finances.amountPaid || 0)}
-                    </p>
-                </div>
+                                                        <p className="text-xs sm:text-sm font-semibold text-(--success) mt-1 break-words">
+                                                            {formatCurrency(finances.amountPaid || 0)}
+                                                        </p>
+                                                    </div>
 
-                <div className="min-w-0">
-                    <p className="text-[10px] sm:text-xs text-(--text-muted)">
-                        Outstanding
-                    </p>
+                                                    <div className="min-w-0">
+                                                        <p className="text-[10px] sm:text-xs text-(--text-muted)">
+                                                            Outstanding
+                                                        </p>
 
-                    <p className="text-xs sm:text-sm font-semibold text-(--primary) mt-1 break-words">
-                        {formatCurrency(finances.outstanding || 0)}
-                    </p>
-                </div>
-            </div>
+                                                        <p className="text-xs sm:text-sm font-semibold text-(--primary) mt-1 break-words">
+                                                            {formatCurrency(finances.outstanding || 0)}
+                                                        </p>
+                                                    </div>
+                                                </div>
 
-            {/* OPTIONAL CONTRIBUTIONS */}
-            {(Number(finances.optionalDue) > 0 ||
-                Number(finances.optionalPaid) > 0) && (
-                <div className="mt-3 rounded-lg bg-(--bg-light) px-3 py-2">
-                    <p className="text-[11px] text-(--secondary)">
-                        Optional Contributions
-                    </p>
+                                                {/* OPTIONAL CONTRIBUTIONS */}
+                                                {(Number(finances.optionalDue) > 0 ||
+                                                    Number(finances.optionalPaid) > 0) && (
+                                                        <div className="mt-3 rounded-lg bg-(--bg-light) px-3 py-2">
+                                                            <p className="text-[11px] text-(--secondary)">
+                                                                Optional Contributions
+                                                            </p>
 
-                    <div className="flex flex-wrap justify-between gap-x-4 gap-y-1 mt-1 text-xs">
-                        <span className="text-(--text-muted)">
-                            Paid:{" "}
-                            <strong className="text-(--success)">
-                                {formatCurrency(finances.optionalPaid || 0)}
-                            </strong>
-                        </span>
+                                                            <div className="flex flex-wrap justify-between gap-x-4 gap-y-1 mt-1 text-xs">
+                                                                <span className="text-(--text-muted)">
+                                                                    Paid:{" "}
+                                                                    <strong className="text-(--success)">
+                                                                        {formatCurrency(finances.optionalPaid || 0)}
+                                                                    </strong>
+                                                                </span>
 
-                        <span className="text-(--text-muted)">
-                            Remaining:{" "}
-                            <strong className="text-(--primary)">
-                                {formatCurrency(
-                                    finances.optionalOutstanding || 0
-                                )}
-                            </strong>
-                        </span>
-                    </div>
-                </div>
-            )}
+                                                                <span className="text-(--text-muted)">
+                                                                    Remaining:{" "}
+                                                                    <strong className="text-(--primary)">
+                                                                        {formatCurrency(
+                                                                            finances.optionalOutstanding || 0
+                                                                        )}
+                                                                    </strong>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    )}
 
-            {/* VIEW DETAILS ACTION */}
-            <div className="mt-4 pt-3 border-t border-(--border) flex justify-end">
-                <button
-                    type="button"
-                    onClick={() => setSelectedMember(member)}
-                    className="inline-flex items-center justify-center gap-2 rounded-lg border border-(--border) px-3 py-2 text-xs sm:text-sm font-semibold text-(--primary) hover:bg-(--bg-light) transition"
-                >
-                    <UserRound size={15} />
-                    View Details
-                    <ArrowUpRight size={15} />
-                </button>
-            </div>
-        </div>
-    );
-})}
+                                                {/* VIEW DETAILS ACTION */}
+                                                <div className="mt-4 pt-3 border-t border-(--border) flex justify-end">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setSelectedMember(member)}
+                                                        className="inline-flex items-center justify-center gap-2 rounded-lg border border-(--border) px-3 py-2 text-xs sm:text-sm font-semibold text-(--primary) hover:bg-(--bg-light) transition"
+                                                    >
+                                                        <UserRound size={15} />
+                                                        View Details
+                                                        <ArrowUpRight size={15} />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
 
                                 </div>
                             )}
@@ -1515,14 +1572,44 @@ const MyYearSet = () => {
 
                                         <span
                                             className={`mt-2 inline-flex rounded-full px-3 py-1 text-xs font-semibold ${selectedMember.financialStatus === "financial"
-                                                    ? "bg-green-50 text-green-700"
-                                                    : "bg-amber-50 text-amber-700"
+                                                ? "bg-green-50 text-green-700"
+                                                : "bg-amber-50 text-amber-700"
                                                 }`}
                                         >
                                             {selectedMember.financialStatus === "financial"
                                                 ? "Financial"
                                                 : "Non-financial"}
                                         </span>
+
+                                        <div className="mt-3 flex flex-wrap items-center gap-2">
+
+                                            <span
+                                                className={`rounded-full px-3 py-1 text-xs font-semibold ${selectedMember.status === "active"
+                                                    ? "bg-green-50 text-green-700"
+                                                    : "bg-amber-50 text-amber-700"
+                                                    }`}
+                                            >
+                                                {selectedMember.status === "active"
+                                                    ? "Approved"
+                                                    : selectedMember.status}
+                                            </span>
+
+                                            {selectedMember.status !== "active" && (
+                                                <span
+                                                    className={`text-xs ${selectedMember.isEmailVerified
+                                                        ? "text-green-600"
+                                                        : "text-amber-600"
+                                                        }`}
+                                                >
+                                                    {selectedMember.isEmailVerified
+                                                        ? "Email verified"
+                                                        : "Email not verified"}
+                                                </span>
+                                            )}
+
+                                        </div>
+
+
                                     </div>
                                 </div>
 
@@ -1644,13 +1731,59 @@ const MyYearSet = () => {
                                 </p>
                             </section>
 
-                            <button
-                                type="button"
-                                onClick={() => setSelectedMember(null)}
-                                className="w-full rounded-xl bg-(--primary) px-4 py-3 text-sm font-semibold text-white transition hover:opacity-90"
-                            >
-                                Close Details
-                            </button>
+                            {/* APPROVAL FEEDBACK */}
+
+                            {approvalError && (
+                                <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+                                    {approvalError}
+                                </div>
+                            )}
+
+                            {approvalSuccess && (
+                                <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+                                    {approvalSuccess}
+                                </div>
+                            )}
+
+                            <div className="flex flex-col-reverse sm:flex-row gap-3">
+
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setSelectedMember(null);
+                                        setApprovalError("");
+                                        setApprovalSuccess("");
+                                    }}
+                                    className="flex-1 rounded-xl border border-(--border) px-4 py-3 text-sm font-semibold text-(--primary) hover:bg-(--bg-light) transition"
+                                >
+                                    Close Details
+                                </button>
+
+                                {selectedMember.status !== "active" && (
+                                    <button
+                                        type="button"
+                                        disabled={
+                                            approvalLoading ||
+                                            !selectedMember.isEmailVerified
+                                        }
+                                        onClick={handleApproveMember}
+                                        className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-(--primary) px-4 py-3 text-sm font-semibold text-white transition hover:bg-(--primary-dark) disabled:cursor-not-allowed disabled:opacity-50"
+                                    >
+                                        {approvalLoading ? (
+                                            <>
+                                                <Loader2 size={16} className="animate-spin" />
+                                                Approving...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <CheckCircle2 size={16} />
+                                                Approve Member
+                                            </>
+                                        )}
+                                    </button>
+                                )}
+
+                            </div>
                         </div>
                     </div>
                 </div>
