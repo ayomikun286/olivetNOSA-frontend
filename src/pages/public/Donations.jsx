@@ -218,59 +218,39 @@ export default function Donation() {
                             </div>
                         )}
 
-                        {/* AMOUNT */}
-                        <div className="mt-8">
-                            <label className="text-sm font-semibold text-[var(--primary-dark)]">
-                                Select donation amount
-                            </label>
+                       
+                       {/* AMOUNT */}
+<div className="mt-8">
+    <label className="text-sm font-semibold text-[var(--primary-dark)]">
+        Enter donation amount
+    </label>
 
-                            <div className="mt-4 grid grid-cols-2 gap-3">
-                                {donationAmounts.map((value) => (
-                                    <button
-                                        key={value}
-                                        type="button"
-                                        onClick={() => {
-                                            setAmount(String(value));
-                                            setCustomAmount("");
-                                        }}
-                                        className={`border px-4 py-4 text-sm font-semibold transition ${
-                                            amount === String(value)
-                                                ? "border-[var(--primary)] bg-[var(--primary)] text-white"
-                                                : "border-black/10 text-[var(--primary-dark)] hover:border-[var(--primary)]"
-                                        }`}
-                                    >
-                                        {formatCurrency(value)}
-                                    </button>
-                                ))}
-                            </div>
+    <div className="mt-4">
+        <div className="flex items-center border border-black/15 focus-within:border-[var(--primary)]">
+            <span className="border-r border-black/10 px-4 py-3 text-[var(--text-muted)]">
+                ₦
+            </span>
 
-                            <button
-                                type="button"
-                                onClick={() => setAmount("custom")}
-                                className={`mt-3 w-full border px-4 py-3 text-sm font-semibold transition ${
-                                    amount === "custom"
-                                        ? "border-[var(--primary)] bg-[var(--primary)] text-white"
-                                        : "border-black/10 text-[var(--primary-dark)] hover:border-[var(--primary)]"
-                                }`}
-                            >
-                                Enter a custom amount
-                            </button>
+            <input
+                type="number"
+                min="100"
+                step="1"
+                value={customAmount}
+                onChange={(e) => {
+                    setCustomAmount(e.target.value);
+                    setAmount("custom");
+                }}
+                placeholder="Enter amount in Naira"
+                className="w-full px-4 py-3 outline-none"
+                required
+            />
+        </div>
 
-                            {amount === "custom" && (
-                                <input
-                                    type="number"
-                                    min="100"
-                                    step="1"
-                                    value={customAmount}
-                                    onChange={(e) =>
-                                        setCustomAmount(e.target.value)
-                                    }
-                                    placeholder="Enter amount in Naira"
-                                    className="mt-3 w-full border border-black/15 px-4 py-3 outline-none focus:border-[var(--primary)]"
-                                    required
-                                />
-                            )}
-                        </div>
+        <p className="mt-2 text-xs text-[var(--text-muted)]">
+            Minimum donation amount is ₦100.
+        </p>
+    </div>
+</div>
 
                         {/* DONOR DETAILS */}
                         <div className="mt-8 space-y-5">
