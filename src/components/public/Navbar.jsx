@@ -10,6 +10,7 @@ import {
   Phone,
   User,
   ArrowRight,
+   HeartHandshake,
 } from "lucide-react";
 import {
   FaFacebookF,

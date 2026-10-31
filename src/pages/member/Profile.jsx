@@ -34,13 +34,13 @@ const Profile = () => {
   const [myProfile, setMyProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
-  
+
   const [formData, setFormData] = useState(null);
   const [saving, setSaving] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [notification, setNotification] = useState(null);
-const [chapters, setChapters] = useState([]);
-const [loadingChapters, setLoadingChapters] = useState(false);
+  const [chapters, setChapters] = useState([]);
+  const [loadingChapters, setLoadingChapters] = useState(false);
   useEffect(() => {
     if (!notification) return;
 
@@ -68,20 +68,20 @@ const [loadingChapters, setLoadingChapters] = useState(false);
         if (response?.success) {
           setMyProfile(response.data);
           setFormData({
-  firstName: response.data.firstName || "",
-  middleName: response.data.middleName || "",
-  lastName: response.data.lastName || "",
-  phone: response.data.phone || "",
+            firstName: response.data.firstName || "",
+            middleName: response.data.middleName || "",
+            lastName: response.data.lastName || "",
+            phone: response.data.phone || "",
 
-  chapter:
-    response.data.chapter?._id ||
-    response.data.chapter ||
-    "",
+            chapter:
+              response.data.chapter?._id ||
+              response.data.chapter ||
+              "",
 
-  profile: {
-    ...response.data.profile,
-  },
-});
+            profile: {
+              ...response.data.profile,
+            },
+          });
         }
       } catch (error) {
         console.error("Failed to load member profile:", error);
@@ -94,30 +94,30 @@ const [loadingChapters, setLoadingChapters] = useState(false);
   }, []);
 
   useEffect(() => {
-  const loadChapters = async () => {
-    try {
-      setLoadingChapters(true);
+    const loadChapters = async () => {
+      try {
+        setLoadingChapters(true);
 
-      const response = await getChapters();
+        const response = await getChapters();
 
-      console.log("chapters response:", response , response.message)
+        console.log("chapters response:", response, response.message)
 
-      setChapters(Array.isArray(response) ? response : Array.isArray(response?.chapters) ? response.chapters :[]);
-    } catch (error) {
-      console.error("Failed to load chapters:", error);
+        setChapters(Array.isArray(response) ? response : Array.isArray(response?.chapters) ? response.chapters : []);
+      } catch (error) {
+        console.error("Failed to load chapters:", error);
 
-      showNotification(
-        "error",
-        "Unable to load chapters",
-        "Please refresh the page and try again."
-      );
-    } finally {
-      setLoadingChapters(false);
-    }
-  };
+        showNotification(
+          "error",
+          "Unable to load chapters",
+          "Please refresh the page and try again."
+        );
+      } finally {
+        setLoadingChapters(false);
+      }
+    };
 
-  loadChapters();
-}, []);
+    loadChapters();
+  }, []);
 
   const member = myProfile;
 
@@ -133,7 +133,7 @@ const [loadingChapters, setLoadingChapters] = useState(false);
     .join(" ");
 
 
- if (loading) {
+  if (loading) {
     return (
       <ContentLoading />
     );
@@ -242,7 +242,7 @@ const [loadingChapters, setLoadingChapters] = useState(false);
           "error",
           "Profile update failed",
           response?.message ||
-            "Unable to update your profile. Please try again."
+          "Unable to update your profile. Please try again."
         );
       }
     } catch (error) {
@@ -315,7 +315,7 @@ const [loadingChapters, setLoadingChapters] = useState(false);
           "success",
           "Profile photo updated",
           response.message ||
-            "Your profile photo has been uploaded successfully."
+          "Your profile photo has been uploaded successfully."
         );
       } else {
         showNotification(
@@ -331,7 +331,7 @@ const [loadingChapters, setLoadingChapters] = useState(false);
         "error",
         "Photo upload failed",
         error.message ||
-          "Unable to upload your profile photo. Please try again."
+        "Unable to upload your profile photo. Please try again."
       );
     } finally {
       setUploadingPhoto(false);
@@ -345,11 +345,10 @@ const [loadingChapters, setLoadingChapters] = useState(false);
 
         {notification && (
           <div
-            className={`fixed top-4 right-4 z-[100] w-[min(380px,calc(100vw-2rem))] rounded border px-4 py-3 shadow-lg ${
-              notification.type === "success"
-                ? "border-(--success) bg-(--success-light) text-(--success)"
-                : "border-red-200 bg-red-50 text-red-700"
-            }`}
+            className={`fixed top-4 right-4 z-[100] w-[min(380px,calc(100vw-2rem))] rounded border px-4 py-3 shadow-lg ${notification.type === "success"
+              ? "border-(--success) bg-(--success-light) text-(--success)"
+              : "border-red-200 bg-red-50 text-red-700"
+              }`}
             role="alert"
           >
             <div className="flex items-start justify-between gap-3">
@@ -433,11 +432,10 @@ const [loadingChapters, setLoadingChapters] = useState(false);
 
               <label
                 htmlFor="profile-photo-upload"
-                className={`absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full border-2 border-(--bg-white) bg-(--primary) text-white transition ${
-                  uploadingPhoto
-                    ? "cursor-not-allowed opacity-80"
-                    : "cursor-pointer hover:opacity-90"
-                }`}
+                className={`absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full border-2 border-(--bg-white) bg-(--primary) text-white transition ${uploadingPhoto
+                  ? "cursor-not-allowed opacity-80"
+                  : "cursor-pointer hover:opacity-90"
+                  }`}
                 title={
                   uploadingPhoto ? "Uploading photo..." : "Change profile photo"
                 }
@@ -669,6 +667,26 @@ const [loadingChapters, setLoadingChapters] = useState(false);
                       />
                     </div>
 
+                    {/* GENDER */}
+                    <div>
+                      <label className="block text-xs font-medium text-(--text-muted) mb-1.5">
+                        Gender
+                      </label>
+
+                      <select
+                        name="gender"
+                        value={formData?.profile?.gender || ""}
+                        onChange={handleProfileChange}
+                        className="w-full px-3 py-2.5 text-sm border border-(--border) rounded bg-(--bg-white) text-(--primary) outline-none focus:border-(--primary)"
+                      >
+                        <option value="">Select gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                      </select>
+                    </div>
+
+
+
                     {/* NICKNAME */}
                     <div>
                       <label className="block text-xs font-medium text-(--text-muted) mb-1.5">
@@ -728,36 +746,36 @@ const [loadingChapters, setLoadingChapters] = useState(false);
                     </div>
 
                     {/* CHAPTER */}
-<div>
-  <label className="block text-xs font-medium text-(--text-muted) mb-1.5">
-    Chapter
-  </label>
+                    <div>
+                      <label className="block text-xs font-medium text-(--text-muted) mb-1.5">
+                        Chapter
+                      </label>
 
-  <select
-    name="chapter"
-    value={formData?.chapter || ""}
-    onChange={handleChange}
-    disabled={loadingChapters || saving}
-    className="w-full px-3 py-2.5 text-sm border border-(--border) rounded bg-(--bg-white) text-(--primary) outline-none focus:border-(--primary) disabled:opacity-60"
-  >
-    <option value="">
-      {loadingChapters
-        ? "Loading chapters..."
-        : "Select your chapter"}
-    </option>
+                      <select
+                        name="chapter"
+                        value={formData?.chapter || ""}
+                        onChange={handleChange}
+                        disabled={loadingChapters || saving}
+                        className="w-full px-3 py-2.5 text-sm border border-(--border) rounded bg-(--bg-white) text-(--primary) outline-none focus:border-(--primary) disabled:opacity-60"
+                      >
+                        <option value="">
+                          {loadingChapters
+                            ? "Loading chapters..."
+                            : "Select your chapter"}
+                        </option>
 
-    {chapters.map((chapter) => (
-      <option key={chapter._id} value={chapter._id}>
-        {chapter.name}
-      </option>
-    ))}
-  </select>
+                        {chapters.map((chapter) => (
+                          <option key={chapter._id} value={chapter._id}>
+                            {chapter.name}
+                          </option>
+                        ))}
+                      </select>
 
-  <p className="text-[11px] text-(--text-muted) mt-1">
-    Select the chapter that matches your current location.
-    Your change takes effect immediately after saving.
-  </p>
-</div>
+                      <p className="text-[11px] text-(--text-muted) mt-1">
+                        Select the chapter that matches your current location.
+                        Your change takes effect immediately after saving.
+                      </p>
+                    </div>
 
                     {/* ADMISSION NUMBER */}
                     <div>
@@ -1594,6 +1612,29 @@ const [loadingChapters, setLoadingChapters] = useState(false);
                   </div>
                 </div>
 
+                {/* MAIDEN NAME */}
+                <div>
+                  <p className="text-xs text-(--text-muted)">
+                    Maiden Name
+                  </p>
+
+                  <p className="text-sm font-medium text-(--primary) mt-1">
+                    {member?.profile?.maidenName || "—"}
+                  </p>
+                </div>
+
+                {/* GENDER */}
+                <div>
+                  <p className="text-xs text-(--text-muted)">
+                    Gender
+                  </p>
+
+                  <p className="text-sm font-medium text-(--primary) mt-1 capitalize">
+                    {member?.profile?.gender || "—"}
+                  </p>
+                </div>
+
+
                 {/* EMAIL */}
                 <div>
                   <p className="text-xs text-(--text-muted)">
@@ -2060,7 +2101,7 @@ const [loadingChapters, setLoadingChapters] = useState(false);
 
 
 
-          
+
 
           <div className="p-5">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">

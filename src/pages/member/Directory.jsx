@@ -483,6 +483,24 @@ const Directory = () => {
                 </div>
               </div>
 
+              {/* PERSONAL INFORMATION */}
+<DirectorySection title="Personal Information">
+  <DirectoryItem
+    label="Maiden Name"
+    value={selectedUser.profile?.maidenName}
+  />
+
+  <DirectoryItem
+    label="Gender"
+    value={
+      selectedUser.profile?.gender
+        ? selectedUser.profile.gender.charAt(0).toUpperCase() +
+          selectedUser.profile.gender.slice(1)
+        : undefined
+    }
+  />
+</DirectorySection>
+
               {/* OLIVET BACKGROUND */}
               <DirectorySection title="Olivet Background">
                 <DirectoryItem

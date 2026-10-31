@@ -266,7 +266,7 @@ const AnnouncementCard = ({
 const Announcements = () => {
   const { user } = useAuth();
 
-  const isPresident = user?.isPresident === true;
+ const isPresident = user?.role === "president";
 
   const [announcements, setAnnouncements] = useState([]);
 

@@ -17,6 +17,8 @@ import {
     assignTeamRole,
     getTeamMembers,
     suspendTeamRole,
+    assignPresident,
+    getAdminMembers,
 } from "../../services/adminService.js";
 
 const TEAM_ROLES = [
@@ -48,6 +50,16 @@ const Team = () => {
     const [membersError, setMembersError] = useState("");
     const [suspendingId, setSuspendingId] = useState(null);
 
+    // President management
+    const [activeMembers, setActiveMembers] = useState([]);
+    const [selectedPresident, setSelectedPresident] = useState("");
+    const [presidentLoading, setPresidentLoading] = useState(true);
+    const [appointingPresident, setAppointingPresident] = useState(false);
+
+    const currentPresident = teamMembers.find(
+        (member) => member.role === "president"
+    );
+
     const selectedRole = TEAM_ROLES.find(
         (item) => item.value === role
     );
@@ -72,9 +84,82 @@ const Team = () => {
         }
     }, []);
 
+    // Load active members eligible for President appointment.
+    const loadActiveMembers = useCallback(async () => {
+        setPresidentLoading(true);
+
+        try {
+            const result = await getAdminMembers(1, 100, "", "active");
+
+            setActiveMembers(
+                Array.isArray(result.members) ? result.members : []
+            );
+        } catch (error) {
+            console.error("Failed to load active members:", error);
+        } finally {
+            setPresidentLoading(false);
+        }
+    }, []);
+
     useEffect(() => {
         loadTeamMembers();
-    }, [loadTeamMembers]);
+        loadActiveMembers();
+    }, [loadTeamMembers, loadActiveMembers]);
+
+    // Appoint or replace the President.
+    const handleAssignPresident = async (event) => {
+        event.preventDefault();
+
+        if (!selectedPresident) {
+            setFeedback({
+                type: "error",
+                message: "Please select a member.",
+            });
+            return;
+        }
+
+        const selectedMember = activeMembers.find(
+            (member) => member._id === selectedPresident
+        );
+
+        const fullName = selectedMember
+            ? `${selectedMember.firstName} ${selectedMember.lastName}`
+            : "this member";
+
+        const confirmed = window.confirm(
+            `Appoint ${fullName} as President?\n\nThis will replace the current President, if one exists.`
+        );
+
+        if (!confirmed) return;
+
+        try {
+            setAppointingPresident(true);
+            setFeedback(null);
+
+            const result = await assignPresident(selectedPresident);
+
+            setFeedback({
+                type: "success",
+                message:
+                    result.message || "President appointed successfully.",
+            });
+
+            setSelectedPresident("");
+
+            await Promise.all([
+                loadTeamMembers(),
+                loadActiveMembers(),
+            ]);
+        } catch (error) {
+            setFeedback({
+                type: "error",
+                message:
+                    error.message || "Failed to appoint President.",
+            });
+        } finally {
+            setAppointingPresident(false);
+        }
+    };
 
     // Assign a team role.
     const handleSubmit = async (event) => {
@@ -165,8 +250,13 @@ const Team = () => {
         }
     };
 
+    const presidentCount = teamMembers.filter(
+        (member) => member.role === "president"
+    ).length;
+
     return (
         <div className="space-y-6 p-4 sm:p-6">
+
             {/* Page header */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
@@ -191,6 +281,7 @@ const Team = () => {
                         size={16}
                         className="text-(--primary)"
                     />
+
                     <span className="text-xs font-medium text-(--primary)">
                         Role Management
                     </span>
@@ -218,6 +309,156 @@ const Team = () => {
                     </div>
                 </div>
             </div>
+
+           
+{/* President Management */}
+<div className="max-w-2xl overflow-hidden rounded border border-(--border) bg-(--bg-white)">
+    {/* Section header */}
+    <div className="border-b border-(--border) px-5 py-4">
+        <div className="flex items-center gap-2">
+            <ShieldCheck
+                size={17}
+                className="text-(--primary)"
+            />
+
+            <h2 className="text-sm font-semibold text-(--primary)">
+                President Management
+            </h2>
+        </div>
+
+        <p className="mt-1 text-xs text-(--secondary)">
+            Appoint or replace the current NOSA President.
+        </p>
+    </div>
+
+    <div className="space-y-5 p-5">
+        {/* Current President */}
+        <div className="rounded border border-(--border) bg-(--bg-soft) p-4">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-(--secondary)">
+                Current President
+            </p>
+
+            {currentPresident ? (
+                <div className="mt-3 flex items-center gap-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-(--primary-light) text-(--primary)">
+                        <Users size={18} />
+                    </div>
+
+                    <div className="min-w-0">
+                        <p className="text-sm font-semibold text-(--primary)">
+                            {currentPresident.firstName}{" "}
+                            {currentPresident.lastName}
+                        </p>
+
+                        <p className="mt-1 truncate text-xs text-(--secondary)">
+                            {currentPresident.email}
+                        </p>
+                    </div>
+
+                    <span className="ml-auto shrink-0 rounded border border-(--success) bg-(--success-light) px-2 py-1 text-[10px] font-medium text-(--success)">
+                        Active
+                    </span>
+                </div>
+            ) : (
+                <p className="mt-3 text-xs text-(--secondary)">
+                    No President has been appointed yet.
+                </p>
+            )}
+        </div>
+
+        {/* Appointment form */}
+        <form
+            onSubmit={handleAssignPresident}
+            className="space-y-4"
+        >
+            <div>
+                <label
+                    htmlFor="president-member"
+                    className="mb-2 block text-xs font-medium text-(--primary)"
+                >
+                    Select Active Member
+                </label>
+
+                <div className="relative">
+                    <select
+                        id="president-member"
+                        value={selectedPresident}
+                        onChange={(event) =>
+                            setSelectedPresident(event.target.value)
+                        }
+                        disabled={
+                            presidentLoading ||
+                            appointingPresident
+                        }
+                        className="h-11 w-full appearance-none rounded border border-(--border) bg-(--bg-white) px-3 pr-10 text-sm text-(--primary) outline-none transition-colors focus:border-(--primary) disabled:opacity-60"
+                    >
+                        <option value="">
+                            {presidentLoading
+                                ? "Loading members..."
+                                : "Choose a member"}
+                        </option>
+
+                        {activeMembers.map((member) => (
+                            <option
+                                key={member._id}
+                                value={member._id}
+                            >
+                                {member.firstName} {member.lastName} —{" "}
+                                {member.email}
+                            </option>
+                        ))}
+                    </select>
+
+                    <ChevronDown
+                        size={16}
+                        className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-(--text-muted)"
+                    />
+                </div>
+
+                {!presidentLoading &&
+                    activeMembers.length === 0 && (
+                        <p className="mt-2 text-[11px] text-(--danger)">
+                            No active members are currently available for appointment.
+                        </p>
+                    )}
+            </div>
+
+            <div className="flex flex-col gap-3 border-t border-(--border) pt-4 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-[11px] leading-5 text-(--text-muted)">
+                    Appointing a new President will replace the current appointment.
+                </p>
+
+                <button
+                    type="submit"
+                    disabled={
+                        !selectedPresident ||
+                        presidentLoading ||
+                        appointingPresident
+                    }
+                    className="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded bg-(--primary) px-5 text-xs font-semibold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                    {appointingPresident ? (
+                        <>
+                            <LoaderCircle
+                                size={14}
+                                className="animate-spin"
+                            />
+                            Appointing...
+                        </>
+                    ) : (
+                        <>
+                            <ShieldCheck size={14} />
+                            {currentPresident
+                                ? "Replace President"
+                                : "Appoint President"}
+                        </>
+                    )}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 
             {/* Assignment form */}
             <div className="max-w-2xl overflow-hidden rounded border border-(--border) bg-(--bg-white)">
@@ -259,7 +500,10 @@ const Team = () => {
                                     setEmail(event.target.value)
                                 }
                                 placeholder="member@example.com"
-                                disabled={loading || suspendingId !== null}
+                                disabled={
+                                    loading ||
+                                    suspendingId !== null
+                                }
                                 className="h-11 w-full rounded border border-(--border) bg-(--bg-white) pl-10 pr-3 text-sm text-(--primary) outline-none transition-colors focus:border-(--primary) disabled:opacity-60"
                             />
                         </div>
@@ -285,7 +529,10 @@ const Team = () => {
                                 onChange={(event) =>
                                     setRole(event.target.value)
                                 }
-                                disabled={loading || suspendingId !== null}
+                                disabled={
+                                    loading ||
+                                    suspendingId !== null
+                                }
                                 className="h-11 w-full appearance-none rounded border border-(--border) bg-(--bg-white) px-3 pr-10 text-sm text-(--primary) outline-none focus:border-(--primary) disabled:opacity-60"
                             >
                                 {TEAM_ROLES.map((item) => (
@@ -362,7 +609,10 @@ const Team = () => {
                     <div className="flex flex-col-reverse gap-3 border-t border-(--border) pt-5 sm:flex-row sm:justify-end">
                         <button
                             type="button"
-                            disabled={loading || suspendingId !== null}
+                            disabled={
+                                loading ||
+                                suspendingId !== null
+                            }
                             onClick={() => {
                                 setEmail("");
                                 setRole("secretary");
@@ -375,7 +625,10 @@ const Team = () => {
 
                         <button
                             type="submit"
-                            disabled={loading || suspendingId !== null}
+                            disabled={
+                                loading ||
+                                suspendingId !== null
+                            }
                             className="inline-flex h-10 items-center justify-center gap-2 rounded bg-(--primary) px-5 text-xs font-semibold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
                         >
                             {loading ? (
@@ -406,14 +659,18 @@ const Team = () => {
                         </h2>
 
                         <p className="mt-1 text-xs text-(--secondary)">
-                            View and manage members with administrative responsibilities.
+                            View and manage members with administrative
+                            responsibilities.
                         </p>
                     </div>
 
                     <button
                         type="button"
                         onClick={loadTeamMembers}
-                        disabled={membersLoading || suspendingId !== null}
+                        disabled={
+                            membersLoading ||
+                            suspendingId !== null
+                        }
                         className="inline-flex h-9 items-center justify-center gap-2 self-start rounded border border-(--border) px-3 text-xs font-medium text-(--primary) hover:bg-(--bg-soft) disabled:opacity-50"
                     >
                         <RefreshCw
@@ -422,12 +679,13 @@ const Team = () => {
                                 membersLoading ? "animate-spin" : ""
                             }
                         />
+
                         Refresh list
                     </button>
                 </div>
 
                 {/* Role counts */}
-                <div className="grid grid-cols-1 gap-3 border-b border-(--border) p-4 sm:grid-cols-3">
+                <div className="grid grid-cols-1 gap-3 border-b border-(--border) p-4 sm:grid-cols-2 lg:grid-cols-4">
                     {TEAM_ROLES.map((item) => {
                         const count = teamMembers.filter(
                             (member) => member.role === item.value
@@ -448,6 +706,17 @@ const Team = () => {
                             </div>
                         );
                     })}
+
+                    {/* President count */}
+                    <div className="rounded border border-(--border) bg-(--bg-soft) p-3">
+                        <p className="text-xs text-(--secondary)">
+                            President
+                        </p>
+
+                        <p className="mt-1 text-xl font-semibold text-(--primary)">
+                            {presidentCount}
+                        </p>
+                    </div>
                 </div>
 
                 {/* Loading state */}
@@ -494,8 +763,9 @@ const Team = () => {
                             </p>
 
                             <p className="mt-1 text-xs text-(--secondary)">
-                                Assigned administrators, treasurers
-                                and secretaries will appear here.
+                                Assigned administrators, treasurers,
+                                secretaries and the President will
+                                appear here.
                             </p>
                         </div>
                     )}
@@ -562,8 +832,10 @@ const Team = () => {
                                             <td className="px-5 py-4">
                                                 <span className="inline-flex items-center gap-1.5 rounded border border-(--border) px-2.5 py-1 text-xs font-medium text-(--primary)">
                                                     <ShieldCheck size={13} />
-                                                    {memberRole?.label ||
-                                                        member.role}
+
+                                                    {member.role === "president"
+                                                        ? "President"
+                                                        : memberRole?.label || member.role}
                                                 </span>
                                             </td>
 
@@ -583,40 +855,39 @@ const Team = () => {
                                                         }`}
                                                     />
 
-                                                    {member.status ||
-                                                        "Unknown"}
+                                                    {member.status || "Unknown"}
                                                 </span>
                                             </td>
 
                                             <td className="px-5 py-4">
-                                                <button
-                                                    type="button"
-                                                    onClick={() =>
-                                                        handleSuspend(member)
-                                                    }
-                                                    disabled={
-                                                        loading ||
-                                                        suspendingId !== null
-                                                    }
-                                                    className="inline-flex h-8 items-center justify-center gap-2 whitespace-nowrap rounded border border-(--danger) px-3 text-xs font-medium text-(--danger) transition-colors hover:bg-(--danger-light) disabled:cursor-not-allowed disabled:opacity-50"
-                                                >
-                                                    {isSuspending ? (
-                                                        <>
-                                                            <LoaderCircle
-                                                                size={13}
-                                                                className="animate-spin"
-                                                            />
-                                                            Suspending...
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            <UserRoundX
-                                                                size={13}
-                                                            />
-                                                            Suspend role
-                                                        </>
-                                                    )}
-                                                </button>
+                                                {member.role !== "president" && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() =>
+                                                            handleSuspend(member)
+                                                        }
+                                                        disabled={
+                                                            loading ||
+                                                            suspendingId !== null
+                                                        }
+                                                        className="inline-flex h-8 items-center justify-center gap-2 whitespace-nowrap rounded border border-(--danger) px-3 text-xs font-medium text-(--danger) transition-colors hover:bg-(--danger-light) disabled:cursor-not-allowed disabled:opacity-50"
+                                                    >
+                                                        {isSuspending ? (
+                                                            <>
+                                                                <LoaderCircle
+                                                                    size={13}
+                                                                    className="animate-spin"
+                                                                />
+                                                                Suspending...
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <UserRoundX size={13} />
+                                                                Suspend role
+                                                            </>
+                                                        )}
+                                                    </button>
+                                                )}
                                             </td>
                                         </tr>
                                     );

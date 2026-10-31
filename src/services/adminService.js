@@ -1913,3 +1913,40 @@ export const recordTreasurerOfflinePayment = async (paymentData) => {
     }
   );
 };
+
+
+
+
+
+
+// ========================================
+// PRESIDENT APPOINTMENT
+// ========================================
+
+export const assignPresident = async (userId) => {
+  if (!userId) {
+    throw new Error("Member ID is required.");
+  }
+
+  const response = await fetch(
+    `${API}/api/admin/team/president`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({ userId }),
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to appoint President."
+    );
+  }
+
+  return data;
+};

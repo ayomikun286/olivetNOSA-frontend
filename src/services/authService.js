@@ -1278,3 +1278,359 @@ export const getPublicNOSALeaders = async () => {
     throw error;
   }
 };
+
+
+
+
+
+
+// ============================================================
+// GET PUBLISHED STEWARDSHIP REPORTS — MEMBERS
+// ============================================================
+
+export const getPublishedStewardshipReports = async () => {
+  try {
+    const response = await fetch(
+      `${API}/api/stewardship-reports`,
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || "Unable to load stewardship reports."
+      );
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Get stewardship reports error:", error);
+    throw error;
+  }
+};
+
+
+// ============================================================
+// GET PRESIDENT'S STEWARDSHIP REPORTS
+// ============================================================
+
+export const getPresidentStewardshipReports = async () => {
+  try {
+    const response = await fetch(
+      `${API}/api/stewardship-reports/president`,
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || "Unable to load your stewardship reports."
+      );
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Get president stewardship reports error:", error);
+    throw error;
+  }
+};
+
+
+// ============================================================
+// CREATE STEWARDSHIP REPORT — PRESIDENT
+// ============================================================
+
+export const createStewardshipReport = async (formData) => {
+  try {
+    const response = await fetch(
+      `${API}/api/stewardship-reports`,
+      {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || "Unable to create stewardship report."
+      );
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Create stewardship report error:", error);
+    throw error;
+  }
+};
+
+
+// ============================================================
+// UPDATE STEWARDSHIP REPORT — PRESIDENT
+// ============================================================
+
+export const updateStewardshipReport = async (id, formData) => {
+  try {
+    const response = await fetch(
+      `${API}/api/stewardship-reports/${id}`,
+      {
+        method: "PUT",
+        credentials: "include",
+        body: formData,
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || "Unable to update stewardship report."
+      );
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Update stewardship report error:", error);
+    throw error;
+  }
+};
+
+
+
+// ============================================================
+// EXCOM — MEMBERSHIP MANAGEMENT
+// ============================================================
+
+// GET ELIGIBLE MEMBERS
+export const getEligibleExcomMembers = async () => {
+  const response = await fetch(
+    `${API}/api/excom/members/eligible-members`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Unable to load eligible members.");
+  }
+
+  return data;
+};
+
+
+// GET ACTIVE EXCOM MEMBERS
+export const getExcomMembers = async () => {
+  const response = await fetch(`${API}/api/excom/members`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Unable to load EXCOM members.");
+  }
+
+  return data;
+};
+
+
+// APPOINT EXCOM MEMBER
+export const appointExcomMember = async (membershipData) => {
+  const response = await fetch(`${API}/api/excom/members`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(membershipData),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Unable to appoint EXCOM member.");
+  }
+
+  return data;
+};
+
+
+// REMOVE EXCOM MEMBER
+export const removeExcomMember = async (membershipId) => {
+  const response = await fetch(
+    `${API}/api/excom/members/${membershipId}/remove`,
+    {
+      method: "PATCH",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Unable to remove EXCOM member.");
+  }
+
+  return data;
+};
+
+
+// ============================================================
+// EXCOM — DISCUSSIONS
+// ============================================================
+
+// GET EXCOM DISCUSSIONS
+export const getExcomConversations = async () => {
+  const response = await fetch(`${API}/api/excom/conversations`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Unable to load EXCOM discussions.");
+  }
+
+  return data;
+};
+
+
+// CREATE EXCOM DISCUSSION — PRESIDENT
+export const createExcomConversation = async (conversationData) => {
+  const response = await fetch(`${API}/api/excom/conversations`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(conversationData),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Unable to create discussion.");
+  }
+
+  return data;
+};
+
+
+// GET SINGLE EXCOM DISCUSSION
+export const getExcomConversationDetails = async (conversationId) => {
+  const response = await fetch(
+    `${API}/api/excom/conversations/${conversationId}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Unable to load discussion.");
+  }
+
+  return data;
+};
+
+
+// REPLY TO EXCOM DISCUSSION
+export const replyToExcomConversation = async (
+  conversationId,
+  message
+) => {
+  const response = await fetch(
+    `${API}/api/excom/conversations/${conversationId}/replies`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({ message }),
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Unable to send reply.");
+  }
+
+  return data;
+};
+
+
+
+// ============================================================
+// UPDATE EXCOM DISCUSSION STATUS — PRESIDENT
+// ============================================================
+
+export const updateExcomConversationStatus = async (
+  conversationId,
+  status
+) => {
+  const response = await fetch(
+    `${API}/api/excom/conversations/${conversationId}/status`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({ status }),
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Unable to update discussion status."
+    );
+  }
+
+  return data;
+};
+
+
+// ============================================================
+// DELETE EXCOM DISCUSSION — PRESIDENT
+// ============================================================
+
+export const deleteExcomConversation = async (conversationId) => {
+  const response = await fetch(
+    `${API}/api/excom/conversations/${conversationId}`,
+    {
+      method: "DELETE",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Unable to delete discussion."
+    );
+  }
+
+  return data;
+};

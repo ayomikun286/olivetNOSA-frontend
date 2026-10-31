@@ -3,6 +3,17 @@ import { Routes, Route } from "react-router-dom";
 
 import ProtectedRoute from "./ProtectedRoute.jsx";
 
+
+
+
+
+import { useAuth } from "../context/AuthContext.jsx";
+
+import PresidentExcomPage from "../pages/member/PresidentExcomPage.jsx";
+import MemberExcomPage from "../pages/member/MemberExcomPage.jsx";
+
+
+import StewardshipReports from "../pages/member/StewardshipReports.jsx";
 import Announcements from "../pages/member/Announcements.jsx";
 import Dashboard from "../pages/member/Dashboard.jsx";
 import Main from "../pages/member/Main.jsx";
@@ -23,6 +34,19 @@ import Calendar from "../pages/member/Calendar.jsx";
 import Jobs from "../pages/member/Jobs.jsx";
 import Articles from "../pages/member/Articles.jsx";
 import MemberArticleDetails from "../pages/member/MemberArticleDetails.jsx";
+
+const ExcomRoutePage = () => {
+  const { user } = useAuth();
+
+  if (user?.role === "president") {
+    return <PresidentExcomPage />;
+  }
+
+  return <MemberExcomPage />;
+};
+
+
+
 const MemberRoutes = () => {
   return (
     <Routes>
@@ -70,7 +94,14 @@ const MemberRoutes = () => {
             element={<MemberArticleDetails />}
           />
           <Route path="calendar" element={<Calendar />} />
+
+          <Route
+            path="stewardship-reports"
+            element={<StewardshipReports />}
+          />
           <Route path="jobs" element={<Jobs />} />
+          <Route path="excom" element={<ExcomRoutePage />} />
+
         </Route>
 
       </Route>

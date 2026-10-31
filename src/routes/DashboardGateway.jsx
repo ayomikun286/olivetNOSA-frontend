@@ -30,7 +30,7 @@ const DashboardGateway = () => {
     return <Navigate to="/portal/admin/dashboard" replace />;
   }
 
-  if (user.role === "member") {
+  if (user.role === "member" || user.role === "president") {
     return <Navigate to="/portal/member/dashboard" replace />;
   }
 

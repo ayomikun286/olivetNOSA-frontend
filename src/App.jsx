@@ -16,6 +16,7 @@ import AdminRoutes from "./routes/AdminRoutes.jsx";
 import MemberRoutes from "./routes/MemberRoutes.jsx";
 import SetPassword from "./pages/auth/SetPassword.jsx";
 import BackToTop from "./components/public/BackToTop";
+import FloatingDonationButton from "./components/public/FloatingDonationButton.jsx";
 function App() {
   return (
     <Routes>
@@ -29,6 +30,7 @@ function App() {
     <>
       <PublicRoutes />
       <BackToTop />
+       <FloatingDonationButton />
     </>
   }
 />

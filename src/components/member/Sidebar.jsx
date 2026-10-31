@@ -17,15 +17,15 @@ import {
   FileText,
   Newspaper,
   BriefcaseBusiness,
-  Megaphone
+  Megaphone,
+  MessageSquare,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 
-const handleLinkClick = () => {
-  setIsOpen(false);
-};
+
+
 const Sidebar = ({ setIsOpen }) => {
   const { user, logout } = useAuth();
 
@@ -87,7 +87,7 @@ const Sidebar = ({ setIsOpen }) => {
           <XCircle className="w-5 h-5" />
         </button>
 
-        <NavLink to="/"  className="flex h-12 w-12 items-center justify-center rounded-xl shrink-0">
+        <NavLink to="/" className="flex h-12 w-12 items-center justify-center rounded-xl shrink-0">
           <img
             src="/images/Logo-NOSA.png"
             alt="Olivet NOSA"
@@ -243,14 +243,23 @@ const Sidebar = ({ setIsOpen }) => {
               <span>Calendar</span>
             </NavLink>
 
-            <NavLink 
-            to="/portal/member/dashboard/announcements"
-            className={linkClass}
+            <NavLink
+              to="/portal/member/dashboard/announcements"
+              className={linkClass}
               onClick={handleLinkClick} >
-            <Megaphone className={iconClass} />
-            <span>Announcements</span>
+              <Megaphone className={iconClass} />
+              <span>Announcements</span>
 
             </NavLink>
+
+            <NavLink
+  to="/portal/member/dashboard/excom"
+  className={linkClass}
+  onClick={handleLinkClick}
+>
+  <MessageSquare className={iconClass} />
+  <span>EXCOM Portal</span>
+</NavLink>
 
             <NavLink
               to="/portal/member/dashboard/financial-reports"
@@ -259,6 +268,15 @@ const Sidebar = ({ setIsOpen }) => {
             >
               <FileText className={iconClass} />
               <span>Financial Reports</span>
+            </NavLink>
+
+            <NavLink
+              to="/portal/member/dashboard/stewardship-reports"
+              className={linkClass}
+              onClick={handleLinkClick}
+            >
+              <FileText className={iconClass} />
+              <span>Stewardship Reports</span>
             </NavLink>
 
             <NavLink
