@@ -24,6 +24,8 @@ import { useAuth } from "../../context/AuthContext";
 
 import {
   getAnnouncements,
+  markAnnouncementAsViewed,
+  getPublishedStewardshipReports,
   getAllAnnouncements,
   createAnnouncement,
   updateAnnouncement,
@@ -67,9 +69,8 @@ const statusLabels = {
 
 const StatusBadge = ({ status }) => (
   <span
-    className={`inline-flex items-center rounded border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide ${
-      statusStyles[status] || statusStyles.draft
-    }`}
+    className={`inline-flex items-center rounded border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide ${statusStyles[status] || statusStyles.draft
+      }`}
   >
     {statusLabels[status] || status}
   </span>
@@ -79,9 +80,11 @@ const StatusBadge = ({ status }) => (
 // ANNOUNCEMENT CARD
 // ============================================================
 
+
 const AnnouncementCard = ({
   announcement,
-  isPresident,
+  canManage,
+  canDelete,
   onEdit,
   onPublish,
   onArchive,
@@ -92,6 +95,12 @@ const AnnouncementCard = ({
   const [expanded, setExpanded] = useState(false);
   const [showActions, setShowActions] = useState(false);
 
+  const isStewardship = announcement.sourceType === "stewardship";
+
+  const author = announcement.createdBy
+    ? `${announcement.createdBy.firstName || ""} ${announcement.createdBy.lastName || ""}`.trim()
+    : "Association";
+
   return (
     <article className="overflow-visible rounded border border-(--border) bg-(--bg-white) transition hover:border-(--primary)/30">
       <div className="p-5">
@@ -100,7 +109,11 @@ const AnnouncementCard = ({
 
         <div className="flex items-start gap-3">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-(--primary-light) text-(--primary)">
-            <Megaphone size={18} />
+            {isStewardship ? (
+              <FileText size={18} />
+            ) : (
+              <Megaphone size={18} />
+            )}
           </div>
 
           <div className="min-w-0 flex-1">
@@ -109,23 +122,43 @@ const AnnouncementCard = ({
                 {announcement.title}
               </h2>
 
-              {isPresident && (
+              {/* ITEM TYPE */}
+
+              <span
+                className={`inline-flex items-center rounded border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide ${isStewardship
+                  ? "border-blue-500/20 bg-blue-500/10 text-blue-700"
+                  : "border-(--primary)/20 bg-(--primary)/5 text-(--primary)"
+                  }`}
+              >
+                {isStewardship ? "Stewardship Report" : "Announcement"}
+              </span>
+
+              {/* MANAGEMENT STATUS */}
+
+              {canManage && !isStewardship && (
                 <StatusBadge status={announcement.status} />
               )}
             </div>
 
+            {/* STEWARDSHIP REPORTING PERIOD */}
+
+            {isStewardship && (
+              <p className="mt-1 text-xs text-(--text-muted)">
+                Reporting period: {announcement.reportingMonth}{" "}
+                {announcement.reportingYear}
+              </p>
+            )}
+
+            {/* AUTHOR AND DATE */}
+
             <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2">
               <span className="flex items-center gap-1.5 text-xs text-(--text-muted)">
                 <UserRound size={13} />
-
-                {announcement.createdBy
-                  ? `${announcement.createdBy.firstName || ""} ${announcement.createdBy.lastName || ""}`.trim()
-                  : "Association"}
+                {author}
               </span>
 
               <span className="flex items-center gap-1.5 text-xs text-(--text-muted)">
                 <CalendarDays size={13} />
-
                 {formatDate(
                   announcement.publishedAt || announcement.createdAt
                 )}
@@ -133,15 +166,16 @@ const AnnouncementCard = ({
             </div>
           </div>
 
-          {/* PRESIDENT ACTIONS */}
+          {/* GENERAL ANNOUNCEMENT MANAGEMENT ACTIONS */}
 
-          {isPresident && (
+          {canManage && !isStewardship && (
             <div className="relative shrink-0">
               <button
                 type="button"
                 onClick={() => setShowActions((prev) => !prev)}
                 disabled={busy}
-                className="flex h-8 w-8 items-center justify-center rounded text-(--text-muted) transition hover:bg-(--bg-light) hover:text-(--primary)"
+                aria-label="Announcement actions"
+                className="flex h-8 w-8 items-center justify-center rounded text-(--text-muted) transition hover:bg-(--bg-light) hover:text-(--primary) disabled:opacity-50"
               >
                 <MoreVertical size={18} />
               </button>
@@ -157,6 +191,8 @@ const AnnouncementCard = ({
 
                   <div className="absolute right-0 top-9 z-20 w-48 overflow-hidden rounded border border-(--border) bg-(--bg-white) py-1 shadow-lg">
 
+                    {/* EDIT */}
+
                     {announcement.status !== "archived" && (
                       <button
                         type="button"
@@ -170,6 +206,8 @@ const AnnouncementCard = ({
                         Edit announcement
                       </button>
                     )}
+
+                    {/* PUBLISH */}
 
                     {announcement.status === "draft" && (
                       <button
@@ -185,6 +223,8 @@ const AnnouncementCard = ({
                       </button>
                     )}
 
+                    {/* ARCHIVE */}
+
                     {announcement.status !== "archived" && (
                       <button
                         type="button"
@@ -198,6 +238,8 @@ const AnnouncementCard = ({
                         Archive
                       </button>
                     )}
+
+                    {/* RESTORE */}
 
                     {announcement.status === "archived" && (
                       <button
@@ -213,19 +255,25 @@ const AnnouncementCard = ({
                       </button>
                     )}
 
-                    <div className="my-1 border-t border-(--border)" />
+                    {/* SUPER ADMIN DELETE */}
 
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowActions(false);
-                        onDelete(announcement);
-                      }}
-                      className="flex w-full items-center gap-3 px-3 py-2.5 text-left text-xs text-(--danger) transition hover:bg-(--danger)/5"
-                    >
-                      <Trash2 size={14} />
-                      Delete permanently
-                    </button>
+                    {canDelete && (
+                      <>
+                        <div className="my-1 border-t border-(--border)" />
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowActions(false);
+                            onDelete(announcement);
+                          }}
+                          className="flex w-full items-center gap-3 px-3 py-2.5 text-left text-xs text-(--danger) transition hover:bg-(--danger)/5"
+                        >
+                          <Trash2 size={14} />
+                          Delete permanently
+                        </button>
+                      </>
+                    )}
                   </div>
                 </>
               )}
@@ -237,9 +285,8 @@ const AnnouncementCard = ({
 
         <div className="mt-5 border-t border-(--border) pt-4">
           <p
-            className={`whitespace-pre-line break-words text-sm leading-7 text-(--secondary) ${
-              expanded ? "" : "line-clamp-4"
-            }`}
+            className={`whitespace-pre-line break-words text-sm leading-7 text-(--secondary) ${expanded ? "" : "line-clamp-4"
+              }`}
           >
             {announcement.content}
           </p>
@@ -247,17 +294,45 @@ const AnnouncementCard = ({
           {announcement.content?.length > 220 && (
             <button
               type="button"
-              onClick={() => setExpanded(!expanded)}
+              onClick={() => setExpanded((prev) => !prev)}
               className="mt-3 text-xs font-semibold text-(--primary) hover:opacity-75"
             >
               {expanded ? "Show less" : "Read more"}
             </button>
+          )}
+
+          {/* STEWARDSHIP PDF ACTIONS */}
+
+          {isStewardship && announcement.pdfUrl && (
+            <div className="mt-5 flex flex-wrap gap-3 border-t border-(--border) pt-4">
+              <a
+                href={announcement.pdfUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded border border-(--primary) px-4 py-2 text-xs font-medium text-(--primary) transition hover:bg-(--primary) hover:text-white"
+              >
+                <Eye size={15} />
+                View Report
+              </a>
+
+              <a
+                href={announcement.pdfUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                download
+                className="inline-flex items-center gap-2 rounded border border-(--border) px-4 py-2 text-xs font-medium text-(--secondary) transition hover:bg-(--bg-light)"
+              >
+                <FileText size={15} />
+                Download PDF
+              </a>
+            </div>
           )}
         </div>
       </div>
     </article>
   );
 };
+
 
 // ============================================================
 // MAIN COMPONENT
@@ -266,7 +341,7 @@ const AnnouncementCard = ({
 const Announcements = () => {
   const { user } = useAuth();
 
- const isPresident = user?.role === "president";
+  const isPresident = user?.role === "president";
 
   const [announcements, setAnnouncements] = useState([]);
 
@@ -306,17 +381,95 @@ const Announcements = () => {
 
       setError("");
 
-      const response = isPresident
-        ? await getAllAnnouncements()
-        : await getAnnouncements();
+      let combinedItems = [];
+      let unreadAnnouncement = null;
 
-      if (!response?.success) {
-        throw new Error(
-          response?.message || "Unable to load announcements."
+      if (isPresident) {
+        const [response, memberResponse] = await Promise.all([
+          getAllAnnouncements(),
+          getAnnouncements(),
+        ]);
+
+        if (!response?.success) {
+          throw new Error(
+            response?.message || "Unable to load announcements."
+          );
+        }
+
+        unreadAnnouncement = memberResponse?.newAnnouncement || null;
+
+        combinedItems = response.announcements || [];
+      } else {
+        const [announcementResponse, stewardshipResponse] =
+          await Promise.all([
+            getAnnouncements(),
+            getPublishedStewardshipReports(),
+          ]);
+
+        if (!announcementResponse?.success) {
+          throw new Error(
+            announcementResponse?.message ||
+            "Unable to load announcements."
+          );
+        }
+
+        if (!stewardshipResponse?.success) {
+          throw new Error(
+            stewardshipResponse?.message ||
+            "Unable to load stewardship reports."
+          );
+        }
+
+        unreadAnnouncement =
+          announcementResponse.newAnnouncement || null;
+
+        const generalAnnouncements = (
+          announcementResponse.announcements || []
+        ).map((item) => ({
+          ...item,
+          sourceType: "announcement",
+        }));
+
+        const stewardshipReports = (
+          stewardshipResponse.data || []
+        ).map((item) => ({
+          ...item,
+          sourceType: "stewardship",
+        }));
+
+        combinedItems = [
+          ...generalAnnouncements,
+          ...stewardshipReports,
+        ].sort(
+          (a, b) =>
+            new Date(b.publishedAt || b.createdAt) -
+            new Date(a.publishedAt || a.createdAt)
         );
       }
 
-      setAnnouncements(response.announcements || []);
+      setAnnouncements(combinedItems);
+
+
+      // Mark the latest outstanding announcement as viewed
+
+      if (unreadAnnouncement?._id) {
+  try {
+    await markAnnouncementAsViewed(
+      unreadAnnouncement._id,
+      unreadAnnouncement.sourceType
+    );
+
+    window.dispatchEvent(
+      new Event("nosa:announcement-viewed")
+    );
+  } catch (viewError) {
+    console.error(
+      "Announcement view update error:",
+      viewError
+    );
+  }
+}
+
     } catch (error) {
       console.error("Load announcements error:", error);
 
@@ -698,11 +851,10 @@ const Announcements = () => {
                   key={filter.key}
                   type="button"
                   onClick={() => setActiveFilter(filter.key)}
-                  className={`rounded border px-3 py-2 text-xs font-medium transition ${
-                    activeFilter === filter.key
-                      ? "border-(--primary) bg-(--primary) text-white"
-                      : "border-(--border) text-(--secondary) hover:border-(--primary)/40"
-                  }`}
+                  className={`rounded border px-3 py-2 text-xs font-medium transition ${activeFilter === filter.key
+                    ? "border-(--primary) bg-(--primary) text-white"
+                    : "border-(--border) text-(--secondary) hover:border-(--primary)/40"
+                    }`}
                 >
                   {filter.label}
                   <span className="ml-1.5 opacity-70">
@@ -752,9 +904,10 @@ const Announcements = () => {
           <div className="space-y-3">
             {filteredAnnouncements.map((announcement) => (
               <AnnouncementCard
-                key={announcement._id}
+                key={`${announcement.sourceType || "announcement"}-${announcement._id}`}
                 announcement={announcement}
-                isPresident={isPresident}
+                canManage={isPresident}
+                canDelete={false}
                 onEdit={openEditDrawer}
                 onPublish={handlePublish}
                 onArchive={handleArchive}

@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { getAnnouncements } from "../../services/authService";
+
 import {
   XCircle,
   Home,
@@ -28,6 +30,42 @@ import { useAuth } from "../../context/AuthContext";
 
 const Sidebar = ({ setIsOpen }) => {
   const { user, logout } = useAuth();
+
+  const [hasNewAnnouncement, setHasNewAnnouncement] = useState(false);
+
+  useEffect(() => {
+  if (!user) return;
+
+  const checkAnnouncements = async () => {
+    try {
+      const response = await getAnnouncements();
+
+      if (response?.success) {
+        setHasNewAnnouncement(response.hasNewAnnouncement);
+      }
+    } catch (error) {
+      console.error("Check announcements error:", error);
+    }
+  };
+
+  const handleAnnouncementViewed = () => {
+    setHasNewAnnouncement(false);
+  };
+
+  checkAnnouncements();
+
+  window.addEventListener(
+    "nosa:announcement-viewed",
+    handleAnnouncementViewed
+  );
+
+  return () => {
+    window.removeEventListener(
+      "nosa:announcement-viewed",
+      handleAnnouncementViewed
+    );
+  };
+}, [user]);
 
   const handleLinkClick = () => {
     setIsOpen(false);
@@ -246,20 +284,25 @@ const Sidebar = ({ setIsOpen }) => {
             <NavLink
               to="/portal/member/dashboard/announcements"
               className={linkClass}
-              onClick={handleLinkClick} >
+              onClick={handleLinkClick}
+            >
               <Megaphone className={iconClass} />
-              <span>Announcements</span>
 
+              <span className="flex-1">Announcements</span>
+
+              {hasNewAnnouncement && (
+                <span className="h-2.5 w-2.5 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.7)]" />
+              )}
             </NavLink>
 
             <NavLink
-  to="/portal/member/dashboard/excom"
-  className={linkClass}
-  onClick={handleLinkClick}
->
-  <MessageSquare className={iconClass} />
-  <span>EXCOM Portal</span>
-</NavLink>
+              to="/portal/member/dashboard/excom"
+              className={linkClass}
+              onClick={handleLinkClick}
+            >
+              <MessageSquare className={iconClass} />
+              <span>EXCOM Portal</span>
+            </NavLink>
 
             <NavLink
               to="/portal/member/dashboard/financial-reports"
@@ -270,14 +313,16 @@ const Sidebar = ({ setIsOpen }) => {
               <span>Financial Reports</span>
             </NavLink>
 
-            <NavLink
-              to="/portal/member/dashboard/stewardship-reports"
-              className={linkClass}
-              onClick={handleLinkClick}
-            >
-              <FileText className={iconClass} />
-              <span>Stewardship Reports</span>
-            </NavLink>
+            {user?.role === "president" && (
+              <NavLink
+                to="/portal/member/dashboard/stewardship-reports"
+                className={linkClass}
+                onClick={handleLinkClick}
+              >
+                <FileText className={iconClass} />
+                <span>Stewardship Reports</span>
+              </NavLink>
+            )}
 
             <NavLink
               to="/portal/member/dashboard/events"

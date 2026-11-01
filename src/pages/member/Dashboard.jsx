@@ -7,11 +7,19 @@ import Sidebar from "../../components/member/Sidebar.jsx";
 import Navbar from "../../components/member/Navbar.jsx";
 import MemberOnboardingModal from "../../components/member/MemberOnboardingModal.jsx";
 import NotificationAlert from "../../components/common/NotificationAlert.jsx";
-import { getMemberProfile, completeMemberOnboarding } from "../../services/authService.js";
+import {
+  getMemberProfile,
+  completeMemberOnboarding,
+  getAnnouncements,
+
+} from "../../services/authService.js";
+
+
 import {
   UserRoundCheck,
   ArrowUpRight,
   X,
+  Megaphone
 } from "lucide-react";
 
 import { getMyNotifications } from "../../services/notificationService.js";
@@ -22,6 +30,13 @@ const Dashboard = () => {
     logout,
   } = useAuth();
 
+
+
+
+
+  const [newAnnouncement, setNewAnnouncement] = useState(null);
+  const [showAnnouncementPopup, setShowAnnouncementPopup] = useState(false);
+  const [announcementLoading, setAnnouncementLoading] = useState(false);
 
 
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -141,6 +156,26 @@ const Dashboard = () => {
 
 
   useEffect(() => {
+  const handleAnnouncementViewed = () => {
+    setShowAnnouncementPopup(false);
+    setNewAnnouncement(null);
+  };
+
+  window.addEventListener(
+    "nosa:announcement-viewed",
+    handleAnnouncementViewed
+  );
+
+  return () => {
+    window.removeEventListener(
+      "nosa:announcement-viewed",
+      handleAnnouncementViewed
+    );
+  };
+}, []);
+
+
+  useEffect(() => {
     const shouldShowOnboarding =
       user?.memberStatus === "active" &&
       !!user?.approvedAt &&
@@ -154,12 +189,54 @@ const Dashboard = () => {
   ]);
 
 
+  useEffect(() => {
+    console.log("Dashboard user:", user);
+   if (!user?.id) return;
+
+    let isMounted = true;
+
+    const checkAnnouncements = async () => {
+      console.log("Checking announcements...");
+      try {
+        setAnnouncementLoading(true);
+
+        const response = await getAnnouncements();
+
+        console.log("Dashboard announcement response:", response);
+        if (!isMounted || !response?.success) return;
+
+        if (response.hasNewAnnouncement && response.newAnnouncement) {
+          setNewAnnouncement(response.newAnnouncement);
+          setShowAnnouncementPopup(true);
+        } else {
+          setNewAnnouncement(null);
+          setShowAnnouncementPopup(false);
+        }
+      } catch (error) {
+        console.error("Announcement check error:", error);
+      } finally {
+        if (isMounted) {
+          setAnnouncementLoading(false);
+        }
+      }
+    };
+
+    checkAnnouncements();
+
+    return () => {
+      isMounted = false;
+    };
+  },  [user?.id]);
+
 
 
   const handleCompleteOnboarding = async () => {
     await completeMemberOnboarding();
     setShowOnboarding(false);
   };
+
+
+
 
   const isProfileIncomplete = !memberProfile?.phone ||
     !memberProfile?.profile?.country ||
@@ -301,6 +378,65 @@ const Dashboard = () => {
               }
             }}
           />
+        )}
+
+        {showAnnouncementPopup && newAnnouncement && (
+          <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
+            <div className="relative w-full max-w-md overflow-hidden rounded-lg border border-(--border) bg-(--bg-white) shadow-2xl">
+
+              <button
+                type="button"
+                onClick={() => setShowAnnouncementPopup(false)}
+                className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full text-(--text-muted) transition hover:bg-(--bg-light) hover:text-(--primary)"
+                aria-label="Close announcement"
+              >
+                <X size={18} />
+              </button>
+
+              <div className="bg-(--primary) px-6 py-6 text-white">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/15">
+                  <Megaphone size={23} />
+                </div>
+
+                <p className="mt-4 text-xs font-semibold uppercase tracking-widest text-white/70">
+                  New Announcement
+                </p>
+
+                <h2 className="mt-2 pr-5 text-xl font-semibold leading-7">
+                  {newAnnouncement.title}
+                </h2>
+              </div>
+
+              <div className="p-6">
+                <p className="whitespace-pre-line break-words text-sm leading-7 text-(--secondary) line-clamp-5">
+                  {newAnnouncement.content}
+                </p>
+
+                <p className="mt-4 text-xs text-(--text-muted)">
+                  Published{" "}
+                  {new Date(newAnnouncement.publishedAt).toLocaleDateString(
+                    "en-NG",
+                    {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    }
+                  )}
+                </p>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigate("/portal/member/dashboard/announcements");
+                  }}
+                  className="mt-6 flex w-full items-center justify-center gap-2 rounded bg-(--primary) px-5 py-3 text-sm font-semibold text-white transition hover:opacity-90"
+                >
+                  View Announcement
+                  <ArrowUpRight size={16} />
+                </button>
+              </div>
+            </div>
+          </div>
         )}
 
 

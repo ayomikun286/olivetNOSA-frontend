@@ -994,6 +994,42 @@ export const getAnnouncements = async () => {
 };
 
 
+// ============================================================
+// MARK ANNOUNCEMENT AS VIEWED
+// ============================================================
+
+export const markAnnouncementAsViewed = async (
+  id,
+  type = "announcement"
+) => {
+  try {
+    const response = await fetch(
+      `${API}/api/announcements/${id}/view`,
+      {
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ type }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || "Unable to mark content as viewed."
+      );
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Mark content as viewed error:", error);
+    throw error;
+  }
+};
+
 
 // ============================================================
 // CREATE ANNOUNCEMENT
