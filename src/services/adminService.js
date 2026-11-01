@@ -1950,3 +1950,130 @@ export const assignPresident = async (userId) => {
 
   return data;
 };
+
+
+
+
+// ============================================================
+// ADMIN EXCOM MANAGEMENT API
+// ============================================================
+
+const adminExcomRequest = async (path, options = {}) => {
+  const response = await fetch(
+    `${API}/api/excom/history${path}`,
+    {
+      credentials: "include",
+      ...options,
+    }
+  );
+
+  const contentType = response.headers.get("content-type") || "";
+  const data = contentType.includes("application/json")
+    ? await response.json()
+    : { message: await response.text() };
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Unable to complete EXCOM request."
+    );
+  }
+
+  return data;
+};
+
+// Get all presidential tenures
+export const getAdminPresidentialTenures = async () => {
+  return adminExcomRequest("/tenures");
+};
+
+// Get presidential tenure details
+export const getAdminPresidentialTenureDetails = async (tenureId) => {
+  if (!tenureId) {
+    throw new Error("Presidential tenure ID is required.");
+  }
+
+  return adminExcomRequest(`/tenures/${tenureId}`);
+};
+
+// Export tenure discussions as PDF
+export const exportAdminPresidentialTenurePDF = async (tenureId) => {
+    if (!tenureId) {
+        throw new Error("Presidential tenure ID is required.");
+    }
+
+    const response = await fetch(
+        `${API}/api/excom/history/tenures/${tenureId}/export`,
+        {
+            method: "GET",
+            credentials: "include",
+        }
+    );
+
+    if (!response.ok) {
+        const contentType = response.headers.get("content-type") || "";
+
+        let message = "Unable to export EXCOM discussion archive.";
+
+        if (contentType.includes("application/json")) {
+            const data = await response.json();
+            message = data.message || message;
+        } else {
+            const text = await response.text();
+
+            if (text) message = text;
+        }
+
+        throw new Error(message);
+    }
+
+    return response.blob();
+};
+
+// Get EXCOM members for a tenure
+export const getAdminExcomMembers = async (tenureId) => {
+  if (!tenureId) {
+    throw new Error("Presidential tenure ID is required.");
+  }
+
+  return adminExcomRequest(`/tenures/${tenureId}/members`);
+};
+
+// Appoint an EXCOM member
+export const assignAdminExcomMember = async (memberData) => {
+  return adminExcomRequest("/members", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(memberData),
+  });
+};
+
+// Update an EXCOM member's position
+export const updateAdminExcomMember = async (
+  membershipId,
+  memberData
+) => {
+  if (!membershipId) {
+    throw new Error("EXCOM membership ID is required.");
+  }
+
+  return adminExcomRequest(`/members/${membershipId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(memberData),
+  });
+};
+
+// Remove an EXCOM member
+export const removeAdminExcomMember = async (membershipId) => {
+  if (!membershipId) {
+    throw new Error("EXCOM membership ID is required.");
+  }
+
+  return adminExcomRequest(`/members/${membershipId}/remove`, {
+    method: "PATCH",
+  });
+};

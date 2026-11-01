@@ -25,6 +25,8 @@ import {
   ClipboardCheck,
   Heart,
   Wallet,
+  UsersRound,
+  History,
 } from "lucide-react";
 
 import { NavLink, useLocation } from "react-router-dom";
@@ -357,6 +359,15 @@ const Sidebar = ({ setIsOpen }) => {
 
 
           <div className="space-y-1">
+
+            <NavLink
+              to="/portal/admin/dashboard/excom-management"
+              className={linkClass}
+              onClick={handleLinkClick}
+            >
+              <UsersRound className={iconClass} />
+              <span>EXCOM Management</span>
+            </NavLink>
 
             <NavLink
               to="/portal/admin/dashboard/team"

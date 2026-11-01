@@ -28,6 +28,7 @@ import MemorialManagement from "../pages/admin/MemorialManagement.jsx";
 
 import MemorialSubmissions from "../pages/admin/MemorialSubmissions.jsx";
 import NOSALeadershipManagement from "../pages/admin/NOSALeadershipManagement.jsx";
+import ExcomManagement from "../pages/admin/ExcomManagement.jsx";
 import TreasurerDashboard from "../pages/admin/TreasurerDashboard.jsx";
 const AdminRoutes = () => {
   return (
@@ -51,7 +52,7 @@ const AdminRoutes = () => {
             element={<AdminNotifications />}
           />
           <Route path="treasurer" element={<TreasurerDashboard />} />
-
+            <Route path="excom-management" element={<ExcomManagement />} />
           <Route
             path="website-content"
             element={<WebsiteContent />}
