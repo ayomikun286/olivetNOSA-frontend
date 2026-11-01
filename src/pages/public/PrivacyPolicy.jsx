@@ -11,7 +11,7 @@ const privacySections = [
     id: "introduction",
     title: "Introduction",
     paragraphs: [
-      "Olivet Baptist High School Global Old Students' Association (NOSA) respects your privacy and is committed to the responsible collection, use, protection and management of your personal information.",
+      "Olivet Baptist High School National Old Students' Association (NOSA) respects your privacy and is committed to the responsible collection, use, protection and management of your personal information.",
       "This Privacy Policy explains how we handle personal data when you visit our website, register as an alumnus, use the membership portal, make payments, donate, contact the Association or participate in activities offered through our digital platform.",
       "Our approach is guided by the Nigeria Data Protection Act 2023, relevant regulatory guidance and other applicable data-protection requirements.",
       "By using our services, you acknowledge that you have been informed about our data-processing practices as described in this Policy. Where consent is legally required, we will request it separately.",
@@ -24,7 +24,7 @@ const privacySections = [
       "For the purposes of this Policy, OlivetNOSA is the Association responsible for determining how and why personal information is processed through the platform, subject to confirmation of the appropriate legal data controller.",
     ],
     details: [
-      ["Data Controller", "Global Old Students' Association (NOSA)"],
+      ["Data Controller", "National Old Students' Association (NOSA)"],
       ["Website", "https://olivetbhsnosa.org/"],
       ["Official Address", "The Secretariat, NOSA Lagos, Nigeria"],
       ["Privacy Contact", "olivetgosasupport@olivetbhsnosa.org"],
@@ -450,7 +450,7 @@ const privacySections = [
     title: "Contact and Privacy Enquiries",
     paragraphs: [
       "For questions, requests or complaints concerning personal information, please contact:",
-      "Olivet Baptist High School Global Old Students' Association (NOSA)",
+      "Olivet Baptist High School National Old Students' Association (NOSA)",
     ],
     details: [
       ["Website", "https://olivetbhsnosa.org/"],

@@ -12,7 +12,7 @@ const termsSections = [
     id: "introduction",
     title: "Introduction",
     paragraphs: [
-      'Welcome to the official website and alumni management portal of Olivet Baptist High School Global Old Students\' Association (NOSA), referred to in these Terms & Conditions as "OlivetNOSA", "the Association", "we", "us" or "our".',
+      'Welcome to the official website and alumni management portal of Olivet Baptist High School National Old Students\' Association (NOSA), referred to in these Terms & Conditions as "OlivetNOSA", "the Association", "we", "us" or "our".',
       "These Terms & Conditions govern your access to and use of the OlivetNOSA website, alumni registration system, membership portal, payment facilities, directories, communications and other services made available through the platform.",
       "By accessing or using the website, you agree to comply with these Terms & Conditions and all applicable laws and regulations. If you do not agree with these Terms, please discontinue your use of the website.",
     ],
@@ -289,7 +289,7 @@ const termsSections = [
     title: "Contact Information",
     paragraphs: [
       "For membership enquiries, technical support, payment concerns or complaints, contact:",
-      "Olivet Baptist High School Global Old Students' Association (NOSA)",
+      "Olivet Baptist High School National Old Students' Association (NOSA)",
     ],
     details: [
       ["Website", "https://olivetbhsnosa.org/"],
@@ -371,7 +371,7 @@ const TermsAndConditions = () => {
 
               <p className="mt-7 max-w-2xl text-base font-light leading-8 text-[var(--text-muted)] sm:text-lg">
                 Please review the terms governing your access to and use of
-                the Olivet Baptist High School Global Old Students'
+                the Olivet Baptist High School National Old Students'
                 Association website and alumni management portal.
               </p>
 

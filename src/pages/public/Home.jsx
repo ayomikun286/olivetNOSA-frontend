@@ -68,7 +68,7 @@ export default function Home() {
         },
         {
             image: pageContent.heroImage2 || "/images/olivetNOSA-2.jpg",
-            eyebrow: "Global Old Students' Association",
+            eyebrow: "National Old Students' Association",
             title: "A connection that began at Olivet",
             highlight: "continues across generations.",
             description:
@@ -1253,7 +1253,7 @@ export default function Home() {
 
                         <div className="mt-16 flex flex-col justify-between gap-5 border-t border-[var(--primary)]/10 pt-6 sm:flex-row sm:items-center">
                             <p className="text-sm text-[var(--text-muted)]">
-                                Global Old Students' Association
+                                National Old Students' Association
                             </p>
 
                             <p className="text-sm font-medium italic text-[var(--secondary)]">

@@ -271,7 +271,7 @@ export default function InLovingMemory() {
           >
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-xs uppercase tracking-[0.25em] text-white/35">
-                Global Old Students' Association
+                National Old Students' Association
               </p>
 
               <p className="text-sm italic text-white/45">

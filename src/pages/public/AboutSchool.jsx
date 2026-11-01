@@ -98,7 +98,7 @@ const AboutSchool = () => {
 
 
       <PageTitle
-        title={pageContent.pageTitle || "About Olivet School | Olivet Alumni Global "}
+        title={pageContent.pageTitle || "About Olivet School | National Old Students' Association "}
       />
 
       <header className="absolute left-0 right-0 top-0 z-50">
@@ -698,7 +698,7 @@ const AboutSchool = () => {
                   </h3>
 
                   <p className="mt-4 text-base leading-7 text-white/60">
-                    The establishment of the Global Old Students Association
+                    The establishment of the National Old Students Association
                     created another way for generations of Olivetians to remain
                     connected to one another and to their school.
                   </p>

@@ -59,7 +59,8 @@ const AboutNOSA = () => {
       <Navbar />
 
       <main className="overflow-x-hidden bg-white text-[var(--primary-dark)] mt-0 md:mt-15">
-        <PageTitle title={pageContent.pageTitle || "About Alumni Global | Olivet Alumni Global"} />
+        <PageTitle title={pageContent.pageTitle || "About OlivetNOSA | National Old Students' Association"} />
+Old Students' Association
 
         {/* =========================================================
             HERO
