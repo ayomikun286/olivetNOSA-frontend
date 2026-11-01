@@ -18,9 +18,9 @@ const Footer = () => {
 
   const associationName =
     settings?.associationName ||
-    "Global Old Students Association Website";
+    "National Old Students Association Website";
 
-  const shortName =  "Baptist High School";
+  const shortName =  "Olivet Baptist High School";
 
   const contactEmail =
     settings?.contactEmail || "customerservice@olivetbhsnosa.org";
@@ -128,7 +128,7 @@ const Footer = () => {
                   to="/about-gosa"
                   className="text-sm text-white/55 transition hover:text-[var(--secondary)]"
                 >
-                  About GOSA
+                  About NOSA
                 </Link>
               </li>
 
@@ -193,7 +193,7 @@ const Footer = () => {
                   to="/portal/signup"
                   className="text-sm text-white/55 transition hover:text-[var(--secondary)]"
                 >
-                  Join GOSA
+                  Join NOSA
                 </Link>
               </li>
             </ul>
@@ -206,7 +206,7 @@ const Footer = () => {
             </h3>
 
             <p className="mt-6 text-sm leading-7 text-white/55">
-              Keep up with {shortName}, GOSA activities and stories
+              Keep up with {shortName}, NOSA activities and stories
               from our community.
             </p>
 

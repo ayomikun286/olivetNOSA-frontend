@@ -104,10 +104,22 @@ const StewardshipReportCard = ({
 }) => {
   const [showActions, setShowActions] = useState(false);
 
-  const creator = report.createdBy
-    ? `${report.createdBy.firstName || ""} ${report.createdBy.lastName || ""}`.trim()
-    : "Association";
+ const creator = report.createdBy
+  ? [
+      report.createdBy.firstName,
+      report.createdBy.lastName,
+    ].filter(Boolean).join(" ")
+  : "Association";
 
+const presidentName = report.president
+  ? [
+      report.president.firstName,
+      report.president.middleName,
+      report.president.lastName,
+    ].filter(Boolean).join(" ")
+  : "";
+
+const isGeneralReport = !report.president;
   return (
     <article className="overflow-visible rounded border border-(--border) bg-(--bg-white) transition hover:border-(--primary)/30">
       <div className="p-5">
@@ -123,14 +135,26 @@ const StewardshipReportCard = ({
           <div className="min-w-0 flex-1">
 
             <div className="flex flex-wrap items-center gap-2">
-              <h2 className="break-words text-base font-semibold text-(--primary)">
-                {report.title}
-              </h2>
+  <h2 className="break-words text-base font-semibold text-(--primary)">
+    {report.title}
+  </h2>
 
-              {isPresident && (
-                <StatusBadge status={report.status} />
-              )}
-            </div>
+  {isPresident && (
+    <StatusBadge status={report.status} />
+  )}
+</div>
+
+<div className="mt-2">
+  {isGeneralReport ? (
+    <span className="inline-flex items-center rounded bg-blue-500/10 px-2.5 py-1 text-[10px] font-semibold text-blue-700">
+      General Stewardship Report
+    </span>
+  ) : (
+    <span className="inline-flex items-center rounded bg-(--primary-light) px-2.5 py-1 text-[10px] font-semibold text-(--primary)">
+      Presidential Report · {presidentName || "President"}
+    </span>
+  )}
+</div>
 
             <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2">
 

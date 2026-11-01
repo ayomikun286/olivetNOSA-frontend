@@ -1,4 +1,3 @@
-
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
     History,
@@ -10,13 +9,15 @@ import {
     UserRound,
     Eye,
     ExternalLink,
+    Upload,
 } from "lucide-react";
 
 import {
     getAdminStewardshipReports,
+    getStewardshipPresidents,
+    createAdminStewardshipReport,
     archivePresidentStewardshipReports,
     restorePresidentStewardshipReports,
-    getAdminPresidentialTenures
 } from "../../services/adminService.js";
 
 const formatDate = (date) => {
@@ -36,10 +37,11 @@ const getMonthName = (month) => {
 };
 
 const getPresidentName = (president) => {
-    if (!president) return "Unknown President";
+    if (!president) return "General Stewardship Reports";
 
     return [
         president.firstName,
+        president.middleName,
         president.lastName,
     ].filter(Boolean).join(" ") || "Unknown President";
 };
@@ -52,17 +54,34 @@ const statusStyles = {
 
 const StewardshipManagement = () => {
     const [reports, setReports] = useState([]);
+    const [presidentUsers, setPresidentUsers] = useState([]);
+
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [presidentError, setPresidentError] = useState("");
 
-
-    const [currentPresidentId, setCurrentPresidentId] = useState("");
     const [selectedPresidentId, setSelectedPresidentId] = useState("");
 
     const [actionLoading, setActionLoading] = useState(false);
     const [actionError, setActionError] = useState("");
     const [actionSuccess, setActionSuccess] = useState("");
 
+    // Upload form state
+    const [uploadForm, setUploadForm] = useState({
+        president: "",
+        title: "",
+        reportingMonth: "",
+        reportingYear: new Date().getFullYear(),
+        content: "",
+        status: "draft",
+    });
+
+    const [pdfFile, setPdfFile] = useState(null);
+    const [uploadLoading, setUploadLoading] = useState(false);
+    const [uploadError, setUploadError] = useState("");
+    const [uploadSuccess, setUploadSuccess] = useState("");
+
+    // Load all stewardship reports.
     const loadReports = useCallback(async () => {
         try {
             setLoading(true);
@@ -82,63 +101,94 @@ const StewardshipManagement = () => {
         }
     }, []);
 
-    useEffect(() => {
-        loadReports();
-    }, [loadReports]);
+    // Load all users whose role is President.
+    // Former Presidents are included because their role remains "president".
+    const loadPresidents = useCallback(async () => {
+        try {
+            setPresidentError("");
 
+            const result = await getStewardshipPresidents();
 
-    useEffect(() => {
-        const loadCurrentPresident = async () => {
-            try {
-                const result = await getAdminPresidentialTenures();
-
-                const activeTenure = result.tenures?.find(
-                    (tenure) => tenure.status === "active"
-                );
-
-                setCurrentPresidentId(
-                    activeTenure?.president?._id || ""
-                );
-            } catch (error) {
-                console.error("Unable to identify current President:", error);
-            }
-        };
-
-        loadCurrentPresident();
+            setPresidentUsers(
+                Array.isArray(result.data) ? result.data : []
+            );
+        } catch (error) {
+            setPresidentError(
+                error.message || "Unable to load Presidents."
+            );
+        }
     }, []);
 
-    // Group reports by the President who created them.
+    useEffect(() => {
+        loadReports();
+        loadPresidents();
+    }, [loadReports, loadPresidents]);
+
+    // Group reports by their assigned President, not their uploader.
     const presidents = useMemo(() => {
-        const grouped = new Map();
+        const groups = new Map();
+
+        // Start with all Presidents, including those with zero reports.
+        presidentUsers.forEach((president) => {
+            groups.set(String(president._id), {
+                _id: String(president._id),
+                president,
+                reports: [],
+            });
+        });
+
+        const generalReports = [];
 
         reports.forEach((report) => {
-            const president = report.createdBy;
+            const presidentId =
+                report.president?._id || report.president;
 
-            if (!president?._id) return;
+            // Reports without an assigned President are general reports.
+            if (!presidentId) {
+                generalReports.push(report);
+                return;
+            }
 
-            const presidentId = president._id;
+            const normalizedId = String(presidentId);
 
-            if (!grouped.has(presidentId)) {
-                grouped.set(presidentId, {
-                    _id: presidentId,
-                    president,
+            // Normally the President will already exist in the loaded list.
+            // This fallback keeps reports visible if their President is
+            // missing from the current President list.
+            if (!groups.has(normalizedId)) {
+                groups.set(normalizedId, {
+                    _id: normalizedId,
+                    president:
+                        typeof report.president === "object"
+                            ? report.president
+                            : null,
                     reports: [],
                 });
             }
 
-            grouped.get(presidentId).reports.push(report);
+            groups.get(normalizedId).reports.push(report);
         });
 
-        return Array.from(grouped.values()).sort((a, b) => {
-            if (a._id === currentPresidentId) return -1;
-            if (b._id === currentPresidentId) return 1;
+        const result = Array.from(groups.values());
+
+        if (generalReports.length > 0) {
+            result.push({
+                _id: "general",
+                president: null,
+                reports: generalReports,
+            });
+        }
+
+        return result.sort((a, b) => {
+            if (a._id === "general") return 1;
+            if (b._id === "general") return -1;
 
             return getPresidentName(a.president).localeCompare(
                 getPresidentName(b.president)
             );
         });
-    }, [reports,currentPresidentId]);
+    }, [presidentUsers, reports]);
 
+    // Keep the selected President valid after reports refresh.
     useEffect(() => {
         if (!presidents.length) {
             setSelectedPresidentId("");
@@ -148,7 +198,9 @@ const StewardshipManagement = () => {
         setSelectedPresidentId((previousId) => {
             if (
                 previousId &&
-                presidents.some((item) => item._id === previousId)
+                presidents.some(
+                    (item) => item._id === previousId
+                )
             ) {
                 return previousId;
             }
@@ -163,15 +215,20 @@ const StewardshipManagement = () => {
 
     const selectedReports = selectedPresident?.reports || [];
 
+    const isGeneralGroup = selectedPresidentId === "general";
+
     const selectedStats = useMemo(() => {
         return {
             total: selectedReports.length,
+
             published: selectedReports.filter(
                 (report) => report.status === "published"
             ).length,
+
             draft: selectedReports.filter(
                 (report) => report.status === "draft"
             ).length,
+
             archived: selectedReports.filter(
                 (report) => report.status === "archived"
             ).length,
@@ -180,19 +237,129 @@ const StewardshipManagement = () => {
 
     const overviewStats = useMemo(() => ({
         total: reports.length,
+
         published: reports.filter(
             (report) => report.status === "published"
         ).length,
+
         draft: reports.filter(
             (report) => report.status === "draft"
         ).length,
+
         archived: reports.filter(
             (report) => report.status === "archived"
         ).length,
     }), [reports]);
 
+    // Upload a report as Super Admin.
+    const handleUploadReport = async (e) => {
+        e.preventDefault();
+
+        setUploadError("");
+        setUploadSuccess("");
+
+        if (
+            !uploadForm.title.trim() ||
+            !uploadForm.reportingMonth ||
+            !uploadForm.reportingYear ||
+            !uploadForm.content.trim() ||
+            !pdfFile
+        ) {
+            setUploadError(
+                "Please complete all required fields and select a PDF."
+            );
+            return;
+        }
+
+        if (
+            !pdfFile.name.toLowerCase().endsWith(".pdf")
+        ) {
+            setUploadError("Only PDF documents are allowed.");
+            return;
+        }
+
+        const reportingYear = Number(uploadForm.reportingYear);
+        const reportingMonth = Number(uploadForm.reportingMonth);
+
+        if (
+            !Number.isInteger(reportingYear) ||
+            reportingYear < 2020
+        ) {
+            setUploadError("Please enter a valid reporting year.");
+            return;
+        }
+
+        if (
+            !Number.isInteger(reportingMonth) ||
+            reportingMonth < 1 ||
+            reportingMonth > 12
+        ) {
+            setUploadError("Please select a valid reporting month.");
+            return;
+        }
+
+        try {
+            setUploadLoading(true);
+
+            const formData = new FormData();
+
+            formData.append("title", uploadForm.title.trim());
+            formData.append("reportingMonth", String(reportingMonth));
+            formData.append("reportingYear", String(reportingYear));
+            formData.append("content", uploadForm.content.trim());
+            formData.append("status", uploadForm.status);
+            formData.append("pdf", pdfFile);
+
+            // Only append president when a President is selected.
+            // Leaving it empty creates a general report.
+            if (uploadForm.president) {
+                formData.append("president", uploadForm.president);
+            }
+
+            const result = await createAdminStewardshipReport(formData);
+
+            setUploadSuccess(
+                result.message ||
+                "Stewardship report uploaded successfully."
+            );
+
+            setUploadForm({
+                president: "",
+                title: "",
+                reportingMonth: "",
+                reportingYear: new Date().getFullYear(),
+                content: "",
+                status: "draft",
+            });
+
+            setPdfFile(null);
+
+            const fileInput = document.getElementById(
+                "stewardship-pdf-upload"
+            );
+
+            if (fileInput) {
+                fileInput.value = "";
+            }
+
+            await loadReports();
+        } catch (error) {
+            setUploadError(
+                error.message || "Unable to upload stewardship report."
+            );
+        } finally {
+            setUploadLoading(false);
+        }
+    };
+
     const handleArchiveReports = async () => {
-        if (!selectedPresidentId || selectedStats.published === 0) return;
+        if (
+            !selectedPresidentId ||
+            isGeneralGroup ||
+            selectedStats.published === 0
+        ) {
+            return;
+        }
 
         const presidentName = getPresidentName(
             selectedPresident?.president
@@ -229,7 +396,13 @@ const StewardshipManagement = () => {
     };
 
     const handleRestoreReports = async () => {
-        if (!selectedPresidentId || selectedStats.archived === 0) return;
+        if (
+            !selectedPresidentId ||
+            isGeneralGroup ||
+            selectedStats.archived === 0
+        ) {
+            return;
+        }
 
         const presidentName = getPresidentName(
             selectedPresident?.president
@@ -340,12 +513,262 @@ const StewardshipManagement = () => {
 
                         <p className="mt-1 max-w-2xl text-xs leading-5 text-(--secondary)">
                             Review reports submitted by current and previous
-                            Presidents. Archive completed presidential reports
-                            when necessary or restore archived reports to make
-                            them visible to members again.
+                            Presidents. You can also upload reports on behalf
+                            of any President or submit general reports without
+                            assigning them to a President. Archived reports
+                            remain available to Super Admin but are hidden
+                            from members.
                         </p>
                     </div>
                 </div>
+            </div>
+
+            {/* Upload Stewardship Report */}
+            <div className="overflow-hidden rounded border border-(--border) bg-(--bg-white)">
+                <div className="border-b border-(--border) px-5 py-4">
+                    <div className="flex items-center gap-2">
+                        <Upload
+                            size={17}
+                            className="text-(--primary)"
+                        />
+
+                        <h2 className="text-sm font-semibold text-(--primary)">
+                            Upload Stewardship Report
+                        </h2>
+                    </div>
+
+                    <p className="mt-1 text-xs text-(--secondary)">
+                        Upload a report on behalf of a President or submit a general report.
+                    </p>
+                </div>
+
+                <form
+                    onSubmit={handleUploadReport}
+                    className="space-y-4 p-5"
+                >
+                    {uploadError && (
+                        <div className="rounded border border-(--danger) bg-(--danger-light) p-3">
+                            <p className="text-xs text-(--danger)">
+                                {uploadError}
+                            </p>
+                        </div>
+                    )}
+
+                    {uploadSuccess && (
+                        <div className="rounded border border-(--success) bg-(--success-light) p-3">
+                            <p className="text-xs text-(--success)">
+                                {uploadSuccess}
+                            </p>
+                        </div>
+                    )}
+
+                    {presidentError && (
+                        <div className="rounded border border-(--danger) bg-(--danger-light) p-3">
+                            <p className="text-xs text-(--danger)">
+                                {presidentError}
+                            </p>
+
+                            <button
+                                type="button"
+                                onClick={loadPresidents}
+                                className="mt-2 text-xs font-medium text-(--danger) underline"
+                            >
+                                Retry loading Presidents
+                            </button>
+                        </div>
+                    )}
+
+                    <div>
+                        <label className="mb-1.5 block text-xs font-medium text-(--primary)">
+                            Report Owner
+                        </label>
+
+                        <select
+                            value={uploadForm.president}
+                            onChange={(e) =>
+                                setUploadForm((prev) => ({
+                                    ...prev,
+                                    president: e.target.value,
+                                }))
+                            }
+                            className="h-10 w-full rounded border border-(--border) bg-(--bg-white) px-3 text-xs outline-none focus:border-(--primary)"
+                        >
+                            <option value="">
+                                General Stewardship Report (Unassigned)
+                            </option>
+
+                            {presidentUsers.map((president) => (
+                                <option
+                                    key={president._id}
+                                    value={president._id}
+                                >
+                                    {getPresidentName(president)}
+                                </option>
+                            ))}
+                        </select>
+
+                        <p className="mt-1 text-[11px] text-(--text-muted)">
+                            Select a President to assign ownership, or leave it unassigned for a general report.
+                        </p>
+                    </div>
+
+                    <div>
+                        <label className="mb-1.5 block text-xs font-medium text-(--primary)">
+                            Report Title
+                        </label>
+
+                        <input
+                            type="text"
+                            maxLength={150}
+                            required
+                            value={uploadForm.title}
+                            onChange={(e) =>
+                                setUploadForm((prev) => ({
+                                    ...prev,
+                                    title: e.target.value,
+                                }))
+                            }
+                            placeholder="Enter report title"
+                            className="h-10 w-full rounded border border-(--border) bg-(--bg-white) px-3 text-xs outline-none focus:border-(--primary)"
+                        />
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <div>
+                            <label className="mb-1.5 block text-xs font-medium text-(--primary)">
+                                Reporting Month
+                            </label>
+
+                            <select
+                                required
+                                value={uploadForm.reportingMonth}
+                                onChange={(e) =>
+                                    setUploadForm((prev) => ({
+                                        ...prev,
+                                        reportingMonth: e.target.value,
+                                    }))
+                                }
+                                className="h-10 w-full rounded border border-(--border) bg-(--bg-white) px-3 text-xs outline-none focus:border-(--primary)"
+                            >
+                                <option value="">Select month</option>
+
+                                {Array.from(
+                                    { length: 12 },
+                                    (_, i) => (
+                                        <option
+                                            key={i + 1}
+                                            value={i + 1}
+                                        >
+                                            {getMonthName(i + 1)}
+                                        </option>
+                                    )
+                                )}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label className="mb-1.5 block text-xs font-medium text-(--primary)">
+                                Reporting Year
+                            </label>
+
+                            <input
+                                type="number"
+                                required
+                                min="2020"
+                                value={uploadForm.reportingYear}
+                                onChange={(e) =>
+                                    setUploadForm((prev) => ({
+                                        ...prev,
+                                        reportingYear: e.target.value,
+                                    }))
+                                }
+                                className="h-10 w-full rounded border border-(--border) bg-(--bg-white) px-3 text-xs outline-none focus:border-(--primary)"
+                            />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label className="mb-1.5 block text-xs font-medium text-(--primary)">
+                            Report Description
+                        </label>
+
+                        <textarea
+                            required
+                            rows={4}
+                            value={uploadForm.content}
+                            onChange={(e) =>
+                                setUploadForm((prev) => ({
+                                    ...prev,
+                                    content: e.target.value,
+                                }))
+                            }
+                            placeholder="Enter a description of the stewardship report..."
+                            className="w-full rounded border border-(--border) bg-(--bg-white) p-3 text-xs outline-none focus:border-(--primary)"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="mb-1.5 block text-xs font-medium text-(--primary)">
+                            Report PDF
+                        </label>
+
+                        <input
+                            id="stewardship-pdf-upload"
+                            type="file"
+                            accept=".pdf,application/pdf"
+                            required
+                            onChange={(e) =>
+                                setPdfFile(e.target.files?.[0] || null)
+                            }
+                            className="block w-full rounded border border-(--border) bg-(--bg-white) p-2 text-xs"
+                        />
+
+                        {pdfFile && (
+                            <p className="mt-1 text-[11px] text-(--secondary)">
+                                Selected: {pdfFile.name}
+                            </p>
+                        )}
+                    </div>
+
+                    <div>
+                        <label className="mb-1.5 block text-xs font-medium text-(--primary)">
+                            Publication Status
+                        </label>
+
+                        <select
+                            value={uploadForm.status}
+                            onChange={(e) =>
+                                setUploadForm((prev) => ({
+                                    ...prev,
+                                    status: e.target.value,
+                                }))
+                            }
+                            className="h-10 w-full rounded border border-(--border) bg-(--bg-white) px-3 text-xs outline-none focus:border-(--primary)"
+                        >
+                            <option value="draft">Save as Draft</option>
+                            <option value="published">Publish Immediately</option>
+                        </select>
+                    </div>
+
+                    <div className="flex justify-end">
+                        <button
+                            type="submit"
+                            disabled={uploadLoading}
+                            className="inline-flex h-10 items-center justify-center gap-2 rounded bg-(--primary) px-5 text-xs font-medium text-white hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                            {uploadLoading ? (
+                                <RefreshCw
+                                    size={14}
+                                    className="animate-spin"
+                                />
+                            ) : (
+                                <FileCheck size={15} />
+                            )}
+
+                            {uploadLoading ? "Uploading..." : "Upload Report"}
+                        </button>
+                    </div>
+                </form>
             </div>
 
             {/* Overview */}
@@ -357,7 +780,7 @@ const StewardshipManagement = () => {
                         </h2>
 
                         <p className="mt-1 text-xs text-(--secondary)">
-                            Summary of all presidential stewardship reports.
+                            Summary of all stewardship reports.
                         </p>
                     </div>
 
@@ -371,6 +794,7 @@ const StewardshipManagement = () => {
                             size={14}
                             className={loading ? "animate-spin" : ""}
                         />
+
                         Refresh reports
                     </button>
                 </div>
@@ -443,14 +867,18 @@ const StewardshipManagement = () => {
                     </div>
 
                     <p className="mt-1 text-xs text-(--secondary)">
-                        Select a President to review and manage their stewardship reports.
+                        Select a President or the general reports group to review stewardship submissions.
                     </p>
                 </div>
 
                 <div className="p-4">
                     {loading ? (
                         <div className="flex items-center justify-center gap-2 py-10 text-xs text-(--secondary)">
-                            <RefreshCw size={15} className="animate-spin" />
+                            <RefreshCw
+                                size={15}
+                                className="animate-spin"
+                            />
+
                             Loading stewardship reports...
                         </div>
                     ) : presidents.length === 0 ? (
@@ -465,7 +893,7 @@ const StewardshipManagement = () => {
                             </p>
 
                             <p className="mt-1 text-xs text-(--secondary)">
-                                Reports submitted by Presidents will appear here.
+                                Reports and President records will appear here.
                             </p>
                         </div>
                     ) : (
@@ -491,10 +919,11 @@ const StewardshipManagement = () => {
                                             setActionError("");
                                             setActionSuccess("");
                                         }}
-                                        className={`w-full rounded border p-4 text-left transition ${isSelected
+                                        className={`w-full rounded border p-4 text-left transition ${
+                                            isSelected
                                                 ? "border-(--primary) bg-(--bg-soft)"
                                                 : "border-(--border) hover:border-(--primary) hover:bg-(--bg-soft)"
-                                            }`}
+                                        }`}
                                     >
                                         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                                             <div className="flex items-start gap-3">
@@ -508,7 +937,11 @@ const StewardshipManagement = () => {
                                                     </h3>
 
                                                     <p className="mt-1 text-xs text-(--secondary)">
-                                                        {item.president.email || "No email available"}
+                                                        {item.president?.email || (
+                                                            item._id === "general"
+                                                                ? "Reports without an assigned President"
+                                                                : "No email available"
+                                                        )}
                                                     </p>
 
                                                     <p className="mt-2 text-[11px] text-(--text-muted)">
@@ -553,37 +986,50 @@ const StewardshipManagement = () => {
                                 </div>
 
                                 <p className="mt-1 text-xs text-(--secondary)">
-                                    Stewardship report history and archive controls.
+                                    {isGeneralGroup
+                                        ? "General reports that are not assigned to a specific President."
+                                        : "Stewardship report history and archive controls."
+                                    }
                                 </p>
                             </div>
 
-                            <div className="flex flex-wrap gap-2">
-                                <button
-                                    type="button"
-                                    onClick={handleArchiveReports}
-                                    disabled={
-                                        actionLoading ||
-                                        selectedStats.published === 0
-                                    }
-                                    className="inline-flex h-9 items-center justify-center gap-2 rounded border border-(--danger) px-3 text-xs font-medium text-(--danger) hover:bg-(--danger-light) disabled:cursor-not-allowed disabled:opacity-50"
-                                >
-                                    <Archive size={14} />
-                                    {actionLoading ? "Processing..." : "Archive Published"}
-                                </button>
+                            {!isGeneralGroup && (
+                                <div className="flex flex-wrap gap-2">
+                                    <button
+                                        type="button"
+                                        onClick={handleArchiveReports}
+                                        disabled={
+                                            actionLoading ||
+                                            selectedStats.published === 0
+                                        }
+                                        className="inline-flex h-9 items-center justify-center gap-2 rounded border border-(--danger) px-3 text-xs font-medium text-(--danger) hover:bg-(--danger-light) disabled:cursor-not-allowed disabled:opacity-50"
+                                    >
+                                        <Archive size={14} />
 
-                                <button
-                                    type="button"
-                                    onClick={handleRestoreReports}
-                                    disabled={
-                                        actionLoading ||
-                                        selectedStats.archived === 0
-                                    }
-                                    className="inline-flex h-9 items-center justify-center gap-2 rounded border border-(--success) px-3 text-xs font-medium text-(--success) hover:bg-(--success-light) disabled:cursor-not-allowed disabled:opacity-50"
-                                >
-                                    <RefreshCw size={14} />
-                                    {actionLoading ? "Processing..." : "Restore Archived"}
-                                </button>
-                            </div>
+                                        {actionLoading
+                                            ? "Processing..."
+                                            : "Archive Published"
+                                        }
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        onClick={handleRestoreReports}
+                                        disabled={
+                                            actionLoading ||
+                                            selectedStats.archived === 0
+                                        }
+                                        className="inline-flex h-9 items-center justify-center gap-2 rounded border border-(--success) px-3 text-xs font-medium text-(--success) hover:bg-(--success-light) disabled:cursor-not-allowed disabled:opacity-50"
+                                    >
+                                        <RefreshCw size={14} />
+
+                                        {actionLoading
+                                            ? "Processing..."
+                                            : "Restore Archived"
+                                        }
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -637,7 +1083,10 @@ const StewardshipManagement = () => {
                         {selectedReports.length === 0 ? (
                             <div className="rounded border border-dashed border-(--border) py-8 text-center">
                                 <p className="text-xs text-(--secondary)">
-                                    This President has no stewardship reports.
+                                    {isGeneralGroup
+                                        ? "There are no general stewardship reports."
+                                        : "This President has no stewardship reports."
+                                    }
                                 </p>
                             </div>
                         ) : (
@@ -645,11 +1094,25 @@ const StewardshipManagement = () => {
                                 <table className="w-full min-w-[650px] text-left">
                                     <thead className="bg-(--bg-soft)">
                                         <tr className="text-[11px] text-(--secondary)">
-                                            <th className="px-4 py-3 font-medium">Report</th>
-                                            <th className="px-4 py-3 font-medium">Reporting Period</th>
-                                            <th className="px-4 py-3 font-medium">Status</th>
-                                            <th className="px-4 py-3 font-medium">Last Updated</th>
-                                            <th className="px-4 py-3 text-right font-medium">Document</th>
+                                            <th className="px-4 py-3 font-medium">
+                                                Report
+                                            </th>
+
+                                            <th className="px-4 py-3 font-medium">
+                                                Reporting Period
+                                            </th>
+
+                                            <th className="px-4 py-3 font-medium">
+                                                Status
+                                            </th>
+
+                                            <th className="px-4 py-3 font-medium">
+                                                Last Updated
+                                            </th>
+
+                                            <th className="px-4 py-3 text-right font-medium">
+                                                Document
+                                            </th>
                                         </tr>
                                     </thead>
 
@@ -670,16 +1133,30 @@ const StewardshipManagement = () => {
                                                         <p className="mt-1 text-[11px] text-(--text-muted)">
                                                             Created {formatDate(report.createdAt)}
                                                         </p>
+
+                                                        {report.createdBy && (
+                                                            <p className="mt-1 text-[11px] text-(--text-muted)">
+                                                                Uploaded by: {
+                                                                    typeof report.createdBy === "object"
+                                                                        ? getPresidentName(report.createdBy)
+                                                                        : "User"
+                                                                }
+                                                            </p>
+                                                        )}
                                                     </td>
 
                                                     <td className="px-4 py-3 text-xs text-(--text-primary)">
-                                                        {getMonthName(report.reportingMonth)} {report.reportingYear}
+                                                        {getMonthName(report.reportingMonth)}{" "}
+                                                        {report.reportingYear}
                                                     </td>
 
                                                     <td className="px-4 py-3">
-                                                        <span className={`rounded px-2 py-1 text-[10px] font-medium ${statusStyles[report.status] ||
-                                                            "bg-(--bg-soft) text-(--secondary)"
-                                                            }`}>
+                                                        <span
+                                                            className={`rounded px-2 py-1 text-[10px] font-medium ${
+                                                                statusStyles[report.status] ||
+                                                                "bg-(--bg-soft) text-(--secondary)"
+                                                            }`}
+                                                        >
                                                             {report.status}
                                                         </span>
                                                     </td>

@@ -2136,3 +2136,17 @@ export const restorePresidentStewardshipReports = async (presidentId) => {
     { method: "PATCH" }
   );
 };
+
+
+// Get all Presidents for stewardship assignment
+export const getStewardshipPresidents = async () => {
+    return adminStewardshipRequest("/admin/presidents");
+};
+
+// Create stewardship report as Super Admin
+export const createAdminStewardshipReport = async (formData) => {
+    return adminStewardshipRequest("/", {
+        method: "POST",
+        body: formData,
+    });
+};
