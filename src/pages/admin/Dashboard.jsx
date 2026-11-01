@@ -37,7 +37,7 @@ const Dashboard = () => {
   // NOTIFICATION POLLING
   // ========================================
   useEffect(() => {
-    if (!user?._id) return;
+    if (!user?.id) return;
 
     let isMounted = true;
 
@@ -86,7 +86,7 @@ const Dashboard = () => {
       isMounted = false;
       clearInterval(interval);
     };
-  }, [user?._id]);
+  }, [user?.id]);
 
   return (
    <div className="portal-layout flex h-dvh w-full overflow-hidden">

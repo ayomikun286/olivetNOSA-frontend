@@ -41,10 +41,15 @@ const Dashboard = () => {
 
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [isOpen, setIsOpen] = useState(false)
-  const [alertNotification, setAlertNotification] = useState(null);
+
   const [memberProfile, setMemberProfile] = useState(null);
   const [profileLoading, setProfileLoading] = useState(true);
-  const latestNotificationRef = useRef(null);
+
+  const [alertNotification, setAlertNotification] = useState(null);
+  const [notificationQueue, setNotificationQueue] = useState([]);
+
+  const seenNotificationsRef = useRef(new Set());
+  const hasLoadedNotificationsRef = useRef(false);
 
   const [showProfileWarning, setShowProfileWarning] = useState(true);
 
@@ -55,82 +60,109 @@ const Dashboard = () => {
 
 
 
-  useEffect(() => {
-    if (!user?._id) return;
+ useEffect(() => {
+    if (!user?.id) return;
 
     let isMounted = true;
+    let isChecking = false;
+
+    // Reset tracking when the logged-in user changes.
+    seenNotificationsRef.current = new Set();
+    hasLoadedNotificationsRef.current = false;
 
     const checkNotifications = async () => {
-      try {
-        const data = await getMyNotifications();
+        if (isChecking) return;
 
-        const notifications =
-          data.notifications || [];
+        isChecking = true;
 
-        if (!notifications.length) return;
+        try {
+            const data = await getMyNotifications();
 
-        const latest = notifications[0];
 
-        // First load — don't show an alert
-        if (!latestNotificationRef.current) {
-          latestNotificationRef.current =
-            latest._id;
+            if (!isMounted) return;
 
-          return;
+            const notifications = data.notifications || [];
+
+   
+
+            
+
+            // Find notifications we haven't seen before.
+            const newNotifications = notifications.filter(
+                (notification) =>
+                    !seenNotificationsRef.current.has(notification._id)
+            );
+
+            if (!newNotifications.length) return;
+
+            newNotifications.forEach((notification) => {
+                seenNotificationsRef.current.add(notification._id);
+            });
+
+            const unreadNotifications = newNotifications
+                .filter((notification) => !notification.isRead)
+                .reverse();
+
+            if (unreadNotifications.length) {
+                setNotificationQueue((previous) => [
+                    ...previous,
+                    ...unreadNotifications,
+                ]);
+            }
+        } catch (error) {
+            console.error("Notification polling error:", error);
+        } finally {
+            isChecking = false;
         }
-
-        // New notification detected
-        if (
-          latest._id !==
-          latestNotificationRef.current
-        ) {
-          latestNotificationRef.current =
-            latest._id;
-
-          if (isMounted && !latest.isRead) {
-            setAlertNotification(latest);
-          }
-        }
-      } catch (error) {
-        console.error(
-          "Notification polling error:",
-          error
-        );
-      }
     };
+
+   
 
     checkNotifications();
 
-    const interval = setInterval(
-      checkNotifications,
-      60000
-    );
+    const interval = setInterval(checkNotifications, 30000);
 
     return () => {
-      isMounted = false;
-      clearInterval(interval);
+        isMounted = false;
+        clearInterval(interval);
     };
-  }, [user?._id]);
+}, [user?.id]);
+
+
+
+ useEffect(() => {
+    const handlePaymentSuccess = (event) => {
+        const notification = event.detail;
+
+        if (!notification) return;
+
+        // Prevent the polling effect from detecting the same notification again.
+        if (notification._id) {
+            seenNotificationsRef.current.add(notification._id);
+        }
+
+        setNotificationQueue((previous) => [
+            ...previous,
+            notification,
+        ]);
+    };
+
+    window.addEventListener("nosa:payment-success", handlePaymentSuccess);
+
+    return () => {
+        window.removeEventListener("nosa:payment-success", handlePaymentSuccess);
+    };
+}, []);
+
+
 
   useEffect(() => {
-    const handlePaymentSuccess = (event) => {
-      const notification = event.detail;
+    if (!alertNotification && notificationQueue.length > 0) {
+        setAlertNotification(notificationQueue[0]);
 
-      setAlertNotification(notification);
-    };
-
-    window.addEventListener(
-      "nosa:payment-success",
-      handlePaymentSuccess
-    );
-
-    return () => {
-      window.removeEventListener(
-        "nosa:payment-success",
-        handlePaymentSuccess
-      );
-    };
-  }, []);
+        setNotificationQueue((previous) => previous.slice(1));
+    }
+}, [alertNotification, notificationQueue]);
 
 
   useEffect(() => {
@@ -156,23 +188,23 @@ const Dashboard = () => {
 
 
   useEffect(() => {
-  const handleAnnouncementViewed = () => {
-    setShowAnnouncementPopup(false);
-    setNewAnnouncement(null);
-  };
+    const handleAnnouncementViewed = () => {
+      setShowAnnouncementPopup(false);
+      setNewAnnouncement(null);
+    };
 
-  window.addEventListener(
-    "nosa:announcement-viewed",
-    handleAnnouncementViewed
-  );
-
-  return () => {
-    window.removeEventListener(
+    window.addEventListener(
       "nosa:announcement-viewed",
       handleAnnouncementViewed
     );
-  };
-}, []);
+
+    return () => {
+      window.removeEventListener(
+        "nosa:announcement-viewed",
+        handleAnnouncementViewed
+      );
+    };
+  }, []);
 
 
   useEffect(() => {
@@ -190,19 +222,19 @@ const Dashboard = () => {
 
 
   useEffect(() => {
-    console.log("Dashboard user:", user);
-   if (!user?.id) return;
+    
+    if (!user?.id) return;
 
     let isMounted = true;
 
     const checkAnnouncements = async () => {
-      console.log("Checking announcements...");
+     
       try {
         setAnnouncementLoading(true);
 
         const response = await getAnnouncements();
 
-        console.log("Dashboard announcement response:", response);
+        
         if (!isMounted || !response?.success) return;
 
         if (response.hasNewAnnouncement && response.newAnnouncement) {
@@ -221,12 +253,12 @@ const Dashboard = () => {
       }
     };
 
-    checkAnnouncements();
+    checkAnnouncements()
 
     return () => {
       isMounted = false;
     };
-  },  [user?.id]);
+  }, [user?.id]);
 
 
 

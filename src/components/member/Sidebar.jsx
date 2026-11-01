@@ -34,38 +34,38 @@ const Sidebar = ({ setIsOpen }) => {
   const [hasNewAnnouncement, setHasNewAnnouncement] = useState(false);
 
   useEffect(() => {
-  if (!user) return;
+    if (!user) return;
 
-  const checkAnnouncements = async () => {
-    try {
-      const response = await getAnnouncements();
+    const checkAnnouncements = async () => {
+      try {
+        const response = await getAnnouncements();
 
-      if (response?.success) {
-        setHasNewAnnouncement(response.hasNewAnnouncement);
+        if (response?.success) {
+          setHasNewAnnouncement(response.hasNewAnnouncement);
+        }
+      } catch (error) {
+        console.error("Check announcements error:", error);
       }
-    } catch (error) {
-      console.error("Check announcements error:", error);
-    }
-  };
+    };
 
-  const handleAnnouncementViewed = () => {
-    setHasNewAnnouncement(false);
-  };
+    const handleAnnouncementViewed = () => {
+      setHasNewAnnouncement(false);
+    };
 
-  checkAnnouncements();
+    checkAnnouncements();
 
-  window.addEventListener(
-    "nosa:announcement-viewed",
-    handleAnnouncementViewed
-  );
-
-  return () => {
-    window.removeEventListener(
+    window.addEventListener(
       "nosa:announcement-viewed",
       handleAnnouncementViewed
     );
-  };
-}, [user]);
+
+    return () => {
+      window.removeEventListener(
+        "nosa:announcement-viewed",
+        handleAnnouncementViewed
+      );
+    };
+  }, [user]);
 
   const handleLinkClick = () => {
     setIsOpen(false);
@@ -295,14 +295,16 @@ const Sidebar = ({ setIsOpen }) => {
               )}
             </NavLink>
 
-            <NavLink
-              to="/portal/member/dashboard/excom"
-              className={linkClass}
-              onClick={handleLinkClick}
-            >
-              <MessageSquare className={iconClass} />
-              <span>EXCOM Portal</span>
-            </NavLink>
+            {(user?.isExcomMember || user?.isPresident) && (
+              <NavLink
+                to="/portal/member/dashboard/excom"
+                className={linkClass}
+                onClick={handleLinkClick}
+              >
+                <MessageSquare className={iconClass} />
+                <span>EXCOM Portal</span>
+              </NavLink>
+            )}
 
             <NavLink
               to="/portal/member/dashboard/financial-reports"
