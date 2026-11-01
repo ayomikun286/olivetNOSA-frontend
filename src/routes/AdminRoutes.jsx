@@ -30,6 +30,11 @@ import MemorialSubmissions from "../pages/admin/MemorialSubmissions.jsx";
 import NOSALeadershipManagement from "../pages/admin/NOSALeadershipManagement.jsx";
 import ExcomManagement from "../pages/admin/ExcomManagement.jsx";
 import TreasurerDashboard from "../pages/admin/TreasurerDashboard.jsx";
+import StewardshipManagement from "../pages/admin/StewardshipManagement.jsx";
+
+
+
+
 const AdminRoutes = () => {
   return (
     <Routes>
@@ -44,7 +49,7 @@ const AdminRoutes = () => {
           <Route path="chapters" element={<AdminChapter />} />
           <Route path="financial-reports" element={<FinancialReports />} />
           <Route path="news-events" element={<NewsEvents />} />
-
+          <Route path="stewardship-management" element={<StewardshipManagement />} />
           <Route path="support" element={<AdminSupport />} />
           <Route path="nosa-leaders" element={<NOSALeadershipManagement />} />
           <Route

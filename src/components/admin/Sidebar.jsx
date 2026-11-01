@@ -368,6 +368,14 @@ const Sidebar = ({ setIsOpen }) => {
               <UsersRound className={iconClass} />
               <span>EXCOM Management</span>
             </NavLink>
+            <NavLink
+              to="/portal/admin/dashboard/stewardship-management"
+              className={linkClass}
+              onClick={handleLinkClick}
+            >
+              <History className={iconClass} />
+              <span>Stewardship Management</span>
+            </NavLink>
 
             <NavLink
               to="/portal/admin/dashboard/team"

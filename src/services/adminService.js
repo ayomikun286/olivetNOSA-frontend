@@ -2077,3 +2077,62 @@ export const removeAdminExcomMember = async (membershipId) => {
     method: "PATCH",
   });
 };
+
+
+
+
+
+
+
+
+// ============================================================
+// ADMIN STEWARDSHIP MANAGEMENT API
+// ============================================================
+
+const adminStewardshipRequest = async (path, options = {}) => {
+  const response = await fetch(`${API}/api/stewardship-reports${path}`, {
+    credentials: "include",
+    ...options,
+  });
+
+  const contentType = response.headers.get("content-type") || "";
+
+  const data = contentType.includes("application/json")
+    ? await response.json()
+    : { message: await response.text() };
+
+  if (!response.ok) {
+    throw new Error(data.message || "Unable to complete stewardship request.");
+  }
+
+  return data;
+};
+
+// Get all stewardship reports
+export const getAdminStewardshipReports = async () => {
+  return adminStewardshipRequest("/admin");
+};
+
+// Archive all published reports belonging to a President
+export const archivePresidentStewardshipReports = async (presidentId) => {
+  if (!presidentId) {
+    throw new Error("President ID is required.");
+  }
+
+  return adminStewardshipRequest(
+    `/admin/presidents/${presidentId}/archive`,
+    { method: "PATCH" }
+  );
+};
+
+// Restore all archived reports belonging to a President
+export const restorePresidentStewardshipReports = async (presidentId) => {
+  if (!presidentId) {
+    throw new Error("President ID is required.");
+  }
+
+  return adminStewardshipRequest(
+    `/admin/presidents/${presidentId}/restore`,
+    { method: "PATCH" }
+  );
+};
