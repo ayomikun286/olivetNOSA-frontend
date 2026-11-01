@@ -11,6 +11,7 @@ import {
   BriefcaseBusiness,
   Settings,
   LogOut,
+  Mail,
   Bell,
   Globe,
   CalendarDays,
@@ -393,6 +394,15 @@ const Sidebar = ({ setIsOpen }) => {
             >
               <ShieldCheck className={iconClass} />
               <span>Audit Logs</span>
+            </NavLink>
+
+            <NavLink
+              to="/portal/admin/dashboard/email-queue"
+              className={linkClass}
+              onClick={handleLinkClick}
+            >
+              <Mail className={iconClass} />
+              <span>Email Queue</span>
             </NavLink>
 
 

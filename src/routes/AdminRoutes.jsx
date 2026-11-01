@@ -31,7 +31,7 @@ import NOSALeadershipManagement from "../pages/admin/NOSALeadershipManagement.js
 import ExcomManagement from "../pages/admin/ExcomManagement.jsx";
 import TreasurerDashboard from "../pages/admin/TreasurerDashboard.jsx";
 import StewardshipManagement from "../pages/admin/StewardshipManagement.jsx";
-
+import EmailQueue from "../pages/admin/EmailQueue.jsx";
 
 
 
@@ -67,6 +67,7 @@ const AdminRoutes = () => {
             path="memorial-submissions"
             element={<MemorialSubmissions />}
           />
+          <Route path="email-queue" element={<EmailQueue />} />
             <Route path="donations" element={<AdminDonations />} />
           <Route path="settings" element={<AdminSettings />} />
           <Route path="team" element={<Team />} />

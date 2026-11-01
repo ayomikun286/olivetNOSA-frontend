@@ -2150,3 +2150,99 @@ export const createAdminStewardshipReport = async (formData) => {
         body: formData,
     });
 };
+
+
+
+
+
+
+
+
+
+
+
+
+// ============================================================
+// ADMIN EMAIL QUEUE API
+// ============================================================
+
+// Get queue summary
+export const getEmailQueueSummary = async () => {
+    return adminMemorialRequest("/email-queue/summary");
+};
+
+// Get email jobs
+export const getAdminEmailJobs = async ({
+    page = 1,
+    limit = 20,
+    search = "",
+    status = "",
+    category = "",
+} = {}) => {
+    const params = new URLSearchParams({
+        page: String(page),
+        limit: String(limit),
+    });
+
+    if (search.trim()) params.set("search", search.trim());
+    if (status) params.set("status", status);
+    if (category) params.set("category", category);
+
+    return adminMemorialRequest(
+        `/email-queue/jobs?${params.toString()}`
+    );
+};
+
+// Get one email job
+export const getEmailJobDetails = async (jobId) => {
+    if (!jobId) throw new Error("Email job ID is required.");
+
+    return adminMemorialRequest(`/email-queue/jobs/${jobId}`);
+};
+
+// Get worker history
+export const getEmailQueueRuns = async ({
+    page = 1,
+    limit = 20,
+} = {}) => {
+    const params = new URLSearchParams({
+        page: String(page),
+        limit: String(limit),
+    });
+
+    return adminMemorialRequest(
+        `/email-queue/runs?${params.toString()}`
+    );
+};
+
+// Retry failed job
+export const retryFailedEmailJob = async (jobId) => {
+    return adminMemorialRequest(
+        `/email-queue/jobs/${jobId}/retry`,
+        { method: "PATCH" }
+    );
+};
+
+// Cancel pending job
+export const cancelEmailJob = async (jobId) => {
+    return adminMemorialRequest(
+        `/email-queue/jobs/${jobId}/cancel`,
+        { method: "PATCH" }
+    );
+};
+
+// Mark uncertain job as sent
+export const markUncertainEmailAsSent = async (jobId) => {
+    return adminMemorialRequest(
+        `/email-queue/jobs/${jobId}/mark-sent`,
+        { method: "PATCH" }
+    );
+};
+
+// Retry uncertain job
+export const retryUncertainEmailJob = async (jobId) => {
+    return adminMemorialRequest(
+        `/email-queue/jobs/${jobId}/retry-uncertain`,
+        { method: "PATCH" }
+    );
+};
