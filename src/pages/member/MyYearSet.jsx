@@ -1654,6 +1654,65 @@ const MyYearSet = () => {
                                 </div>
                             </section>
 
+                            {/* APPROVAL INFORMATION */}
+                            <section>
+                                <h3 className="mb-3 font-bold text-gray-900">
+                                    Approval Information
+                                </h3>
+
+                                <div className="rounded-xl border border-gray-100 bg-gray-50 p-4 space-y-4">
+                                    <div>
+                                        <p className="text-xs text-gray-500">
+                                            Approved By
+                                        </p>
+
+                                        <p className="mt-1 text-sm font-semibold text-gray-800">
+                                            {selectedMember.approvedBy
+                                                ? [
+                                                    selectedMember.approvedBy.firstName,
+                                                    selectedMember.approvedBy.middleName,
+                                                    selectedMember.approvedBy.lastName,
+                                                ]
+                                                    .filter(Boolean)
+                                                    .join(" ")
+                                                : "Not available"}
+                                        </p>
+
+                                        {selectedMember.approvedBy?.alumniId && (
+                                            <p className="text-xs text-gray-500 mt-1">
+                                                {selectedMember.approvedBy.alumniId}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div>
+                                            <p className="text-xs text-gray-500">
+                                                Approval Authority
+                                            </p>
+
+                                            <p className="mt-1 text-sm font-medium text-gray-800">
+                                                {selectedMember.approvalAuthority === "yearSetLeader"
+                                                    ? "Year Set Leader"
+                                                    : selectedMember.approvalAuthority === "superAdmin"
+                                                        ? "Super Admin"
+                                                        : "Not available"}
+                                            </p>
+                                        </div>
+
+                                        <div>
+                                            <p className="text-xs text-gray-500">
+                                                Approval Date
+                                            </p>
+
+                                            <p className="mt-1 text-sm font-medium text-gray-800">
+                                                {formatDate(selectedMember.approvedAt)}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
                             {/* Mandatory financial summary */}
                             <section>
                                 <h3 className="mb-3 font-bold text-gray-900">

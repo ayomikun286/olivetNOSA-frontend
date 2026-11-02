@@ -235,6 +235,60 @@ const MemberDetailsDrawer = ({
                         </div>
                     </section>
 
+                    {/* APPROVAL INFORMATION */}
+                    <section className="px-5 py-5 border-b border-(--border)">
+                        <h4 className="text-xs font-semibold uppercase tracking-wide text-(--primary)">
+                            Approval Information
+                        </h4>
+
+                        <div className="mt-4 space-y-4">
+                            <InfoRow
+                                icon={UserCheck}
+                                label="Approved By"
+                                value={
+                                    member.approvedBy
+                                        ? [
+                                            member.approvedBy.firstName,
+                                            member.approvedBy.middleName,
+                                            member.approvedBy.lastName,
+                                        ]
+                                            .filter(Boolean)
+                                            .join(" ")
+                                        : "Not available"
+                                }
+                            />
+
+                            <InfoRow
+                                icon={ShieldCheck}
+                                label="Approval Authority"
+                                value={
+                                    member.approvalAuthority === "yearSetLeader"
+                                        ? "Year Set Leader"
+                                        : member.approvalAuthority === "superAdmin"
+                                            ? "Super Admin"
+                                            : "Not available"
+                                }
+                            />
+
+                            <InfoRow
+                                icon={CalendarDays}
+                                label="Approval Date"
+                                value={
+                                    member.approvedAt
+                                        ? new Date(member.approvedAt).toLocaleDateString(
+                                            "en-NG",
+                                            {
+                                                day: "numeric",
+                                                month: "short",
+                                                year: "numeric",
+                                            }
+                                        )
+                                        : "Not available"
+                                }
+                            />
+                        </div>
+                    </section>
+
                     {/* ACCOUNT */}
                     <section className="px-5 py-5">
                         <h4 className="text-xs font-semibold uppercase tracking-wide text-(--primary)">
