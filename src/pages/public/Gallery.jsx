@@ -39,9 +39,12 @@ export default function Gallery() {
   const [activeCategory, setActiveCategory] = useState(null);
   const [selectedAlbum, setSelectedAlbum] = useState(null);
 
-  // Album photographs
+
+  // Album and featured photographs
   const [albumImages, setAlbumImages] = useState([]);
+  const [featuredImages, setFeaturedImages] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImageSource, setSelectedImageSource] = useState("album");
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -143,6 +146,51 @@ export default function Gallery() {
     };
 
     fetchAlbums();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+
+  // =====================================================
+  // LOAD FEATURED PHOTOGRAPHS
+  // =====================================================
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchFeaturedImages = async () => {
+      try {
+        const response = await fetch(
+          `${API_BASE_URL}/api/gallery/featured`
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to load featured photographs.");
+        }
+
+        const result = await response.json();
+
+        if (!result.success) {
+          throw new Error(
+            result.message || "Failed to load featured photographs."
+          );
+        }
+
+        if (isMounted) {
+          setFeaturedImages(result.data || []);
+        }
+      } catch (err) {
+        console.error("Featured photographs error:", err);
+
+        if (isMounted) {
+          setFeaturedImages([]);
+        }
+      }
+    };
+
+    fetchFeaturedImages();
 
     return () => {
       isMounted = false;
@@ -263,36 +311,51 @@ export default function Gallery() {
     ? albums.filter((album) => album.category === activeCategory)
     : [];
 
+
+  // =====================================================
+  // FEATURED IMAGE HANDLER
+  // =====================================================
+
+  const openFeaturedImage = (image) => {
+    setSelectedImageSource("featured");
+    setSelectedImage(image);
+  };
+
   // =====================================================
   // LIGHTBOX NAVIGATION
   // =====================================================
 
+  const currentImages =
+    selectedImageSource === "featured"
+      ? featuredImages
+      : albumImages;
+
   const currentIndex = selectedImage
-    ? albumImages.findIndex(
-        (image) => image._id === selectedImage._id
-      )
+    ? currentImages.findIndex(
+      (image) => image._id === selectedImage._id
+    )
     : -1;
 
   const showPrevious = () => {
-    if (currentIndex === -1 || albumImages.length < 2) return;
+    if (currentIndex === -1 || currentImages.length < 2) return;
 
     const previousIndex =
       currentIndex === 0
-        ? albumImages.length - 1
+        ? currentImages.length - 1
         : currentIndex - 1;
 
-    setSelectedImage(albumImages[previousIndex]);
+    setSelectedImage(currentImages[previousIndex]);
   };
 
   const showNext = () => {
-    if (currentIndex === -1 || albumImages.length < 2) return;
+    if (currentIndex === -1 || currentImages.length < 2) return;
 
     const nextIndex =
-      currentIndex === albumImages.length - 1
+      currentIndex === currentImages.length - 1
         ? 0
         : currentIndex + 1;
 
-    setSelectedImage(albumImages[nextIndex]);
+    setSelectedImage(currentImages[nextIndex]);
   };
 
   // =====================================================
@@ -407,6 +470,80 @@ export default function Gallery() {
           </div>
         </div>
       </section>
+
+
+      {/* =====================================================
+    FEATURED MEMORIES
+====================================================== */}
+
+      {featuredImages.length > 0 && (
+        <section className="bg-[var(--primary-dark)] py-20 text-white sm:py-28">
+          <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
+
+            <div
+              className="mb-12 max-w-2xl"
+              data-aos="fade-up"
+            >
+              <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--secondary)]">
+                Selected Memories
+              </p>
+
+              <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">
+                A Glimpse of Our Memories.
+              </h2>
+
+              <p className="mt-5 text-base leading-8 text-white/60">
+                Every photograph tells a story. Explore some of the
+                memorable moments, reunions, and experiences that
+                celebrate the Olivetian spirit.
+              </p>
+            </div>
+
+            <div className="grid auto-rows-[190px] grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {featuredImages.map((item, index) => (
+                <button
+                  key={item._id}
+                  type="button"
+                  onClick={() => openFeaturedImage(item)}
+                  className={`group relative overflow-hidden bg-black text-left ${index === 0
+                      ? "sm:col-span-2 sm:row-span-2"
+                      : index === 3
+                        ? "sm:row-span-2"
+                        : ""
+                    }`}
+                  data-aos="fade-up"
+                  data-aos-delay={(index % 4) * 70}
+                >
+                  <img
+                    src={item.image}
+                    alt={item.album?.title || "Olivetian memory"}
+                    loading="lazy"
+                    className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                  />
+
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent opacity-80 transition group-hover:opacity-100" />
+
+                  <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
+                      {item.album?.category || "NOSA Memories"}
+                    </p>
+
+                    <h3 className="mt-2 text-lg font-semibold text-white sm:text-xl">
+                      {item.album?.title || "A Moment to Remember"}
+                    </h3>
+
+                    <div className="mt-3 flex items-center gap-2 text-xs font-medium uppercase tracking-[0.12em] text-white/65 opacity-0 transition group-hover:opacity-100">
+                      View photograph
+                      <ArrowRight size={14} />
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+
+          </div>
+        </section>
+      )}
 
       {/* =====================================================
           CATEGORY / ALBUM / PHOTOGRAPH ARCHIVE
@@ -679,7 +816,10 @@ export default function Gallery() {
                         <button
                           key={item._id}
                           type="button"
-                          onClick={() => setSelectedImage(item)}
+                          onClick={() => {
+                            setSelectedImageSource("album");
+                            setSelectedImage(item);
+                          }}
                           className={`group relative overflow-hidden bg-[var(--primary-dark)] text-left ${sizeClass}`}
                           data-aos="fade-up"
                           data-aos-delay={(index % 4) * 70}
@@ -892,18 +1032,22 @@ export default function Gallery() {
             />
 
             <div className="mt-5 text-center text-white">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
-                {selectedAlbum?.category}
-              </p>
+  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--secondary)]">
+    {selectedImageSource === "featured"
+      ? selectedImage.album?.category
+      : selectedAlbum?.category}
+  </p>
 
-              <h3 className="mt-2 text-xl font-semibold">
-                {selectedAlbum?.title}
-              </h3>
+  <h3 className="mt-2 text-xl font-semibold">
+    {selectedImageSource === "featured"
+      ? selectedImage.album?.title
+      : selectedAlbum?.title}
+  </h3>
 
-              <p className="mt-2 text-xs text-white/45">
-                {currentIndex + 1} / {albumImages.length}
-              </p>
-            </div>
+  <p className="mt-2 text-xs text-white/45">
+    {currentIndex + 1} / {currentImages.length}
+  </p>
+</div>
           </div>
 
           {/* NEXT */}

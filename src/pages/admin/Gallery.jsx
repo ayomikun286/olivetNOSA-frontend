@@ -15,6 +15,7 @@ import {
     FolderOpen,
     CalendarDays,
     UploadCloud,
+    Star,
 } from "lucide-react";
 
 import AdminStatCard from "../../components/admin/AdminStatCard.jsx";
@@ -139,7 +140,7 @@ const Gallery = () => {
     const [previewItem, setPreviewItem] = useState(null);
     const [deleteTarget, setDeleteTarget] = useState(null);
     const [deletingImage, setDeletingImage] = useState(false);
-
+    const [updatingFeaturedId, setUpdatingFeaturedId] = useState(null);
     const showAlert = (type, message) => {
         setAlert({ type, message });
     };
@@ -297,6 +298,57 @@ const Gallery = () => {
             [name]: type === "checkbox" ? checked : value,
         }));
     };
+
+    
+const handleToggleFeatured = async (item) => {
+    if (!item?._id || updatingFeaturedId) return;
+
+    const nextFeatured = !item.isFeatured;
+
+    try {
+        setUpdatingFeaturedId(item._id);
+
+        const response = await updateGalleryImage(item._id, {
+            isFeatured: nextFeatured,
+        });
+
+        // Update the gallery table.
+        setItems((current) =>
+            current.map((image) =>
+                image._id === item._id
+                    ? { ...image, isFeatured: nextFeatured }
+                    : image
+            )
+        );
+
+        // Keep an open preview synchronized.
+        setPreviewItem((current) =>
+            current?._id === item._id
+                ? { ...current, isFeatured: nextFeatured }
+                : current
+        );
+
+        showAlert(
+            "success",
+            response?.message ||
+                (nextFeatured
+                    ? "Image added to featured memories."
+                    : "Image removed from featured memories.")
+        );
+
+    } catch (error) {
+        console.error("Toggle featured image error:", error);
+
+        showAlert(
+            "error",
+            error?.message || "Failed to update featured image."
+        );
+
+    } finally {
+        setUpdatingFeaturedId(null);
+    }
+};
+
 
     const handleAlbumSubmit = async (event) => {
         event.preventDefault();
@@ -746,85 +798,117 @@ const Gallery = () => {
     ];
 
     const imageColumns = [
-        {
-            key: "image",
-            label: "Image",
-            render: (item) => (
-                <div className="flex min-w-[190px] items-center gap-3">
-                    <div className="h-12 w-14 shrink-0 overflow-hidden rounded border border-(--border) bg-(--bg-light)">
-                        <img
-                            src={item.image}
-                            alt={item.title || ""}
-                            loading="lazy"
-                            decoding="async"
-                            className="h-full w-full object-cover"
-                        />
-                    </div>
-
-                    <div className="min-w-0">
-                        <p className="line-clamp-2 text-xs font-semibold text-(--primary)">
-                            {item.title}
-                        </p>
-                        <p className="mt-1 text-[10px] text-(--text-muted)">
-                            {typeof item.album === "object"
-                                ? item.album?.title
-                                : "Album"}
-                        </p>
-                    </div>
+    {
+        key: "image",
+        label: "Image",
+        render: (item) => (
+            <div className="flex min-w-[190px] items-center gap-3">
+                <div className="h-12 w-14 shrink-0 overflow-hidden rounded border border-(--border) bg-(--bg-light)">
+                    <img
+                        src={item.image}
+                        alt={item.title || ""}
+                        loading="lazy"
+                        decoding="async"
+                        className="h-full w-full object-cover"
+                    />
                 </div>
-            ),
-        },
-        {
-            key: "size",
-            label: "Layout",
-            render: (item) => (
-                <span className="text-xs capitalize text-(--secondary)">
-                    {item.size || "normal"}
-                </span>
-            ),
-        },
-        {
-            key: "status",
-            label: "Status",
-            render: (item) => (
-                <StatusBadge published={item.isPublished} />
-            ),
-        },
-        {
-            key: "actions",
-            label: "Actions",
-            render: (item) => (
-                <div className="flex items-center gap-3">
-                    <button
-                        type="button"
-                        onClick={() => setPreviewItem(item)}
-                        className="inline-flex items-center gap-1 text-xs font-semibold text-(--primary) hover:underline"
-                    >
-                        <Eye size={14} />
-                        View
-                    </button>
 
-                    <button
-                        type="button"
-                        onClick={() => openEditImageModal(item)}
-                        className="inline-flex items-center gap-1 text-xs font-semibold text-(--secondary) hover:text-(--primary)"
-                    >
-                        <Pencil size={14} />
-                        Edit
-                    </button>
-
-                    <button
-                        type="button"
-                        onClick={() => setDeleteTarget(item)}
-                        className="inline-flex items-center gap-1 text-xs font-semibold text-(--danger) hover:underline"
-                    >
-                        <Trash2 size={14} />
-                        Delete
-                    </button>
+                <div className="min-w-0">
+                    <p className="line-clamp-2 text-xs font-semibold text-(--primary)">
+                        {item.title}
+                    </p>
+                    <p className="mt-1 text-[10px] text-(--text-muted)">
+                        {typeof item.album === "object"
+                            ? item.album?.title
+                            : "Album"}
+                    </p>
                 </div>
-            ),
-        },
-    ];
+            </div>
+        ),
+    },
+    {
+        key: "size",
+        label: "Layout",
+        render: (item) => (
+            <span className="text-xs capitalize text-(--secondary)">
+                {item.size || "normal"}
+            </span>
+        ),
+    },
+    {
+        key: "status",
+        label: "Status",
+        render: (item) => (
+            <StatusBadge published={item.isPublished} />
+        ),
+    },
+    {
+        key: "featured",
+        label: "Featured",
+        render: (item) => (
+            <button
+                type="button"
+                onClick={() => handleToggleFeatured(item)}
+                disabled={updatingFeaturedId !== null}
+                title={
+                    item.isFeatured
+                        ? "Remove from featured memories"
+                        : "Add to featured memories"
+                }
+                className={`inline-flex items-center gap-1.5 rounded border px-2.5 py-1.5 text-xs font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${
+                    item.isFeatured
+                        ? "border-(--warning) bg-(--warning-light) text-(--warning)"
+                        : "border-(--border) text-(--secondary) hover:border-(--warning) hover:text-(--warning)"
+                }`}
+            >
+                {updatingFeaturedId === item._id ? (
+                    <Loader2 size={13} className="animate-spin" />
+                ) : (
+                    <Star
+                        size={13}
+                        fill={item.isFeatured ? "currentColor" : "none"}
+                    />
+                )}
+
+                {item.isFeatured ? "Featured" : "Feature"}
+            </button>
+        ),
+    },
+    {
+        key: "actions",
+        label: "Actions",
+        render: (item) => (
+            <div className="flex items-center gap-3">
+                <button
+                    type="button"
+                    onClick={() => setPreviewItem(item)}
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-(--primary) hover:underline"
+                >
+                    <Eye size={14} />
+                    View
+                </button>
+
+                <button
+                    type="button"
+                    onClick={() => openEditImageModal(item)}
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-(--secondary) hover:text-(--primary)"
+                >
+                    <Pencil size={14} />
+                    Edit
+                </button>
+
+                <button
+                    type="button"
+                    onClick={() => setDeleteTarget(item)}
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-(--danger) hover:underline"
+                >
+                    <Trash2 size={14} />
+                    Delete
+                </button>
+            </div>
+        ),
+    },
+];
 
     // ============================================================
     // RENDER
