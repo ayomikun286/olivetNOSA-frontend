@@ -27,6 +27,10 @@ const MyYearSet = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
+
+    const [showAllMembers, setShowAllMembers] = useState(false);
+    const [memberSearch, setMemberSearch] = useState("");
+
     const [approvalLoading, setApprovalLoading] = useState(false);
     const [approvalError, setApprovalError] = useState("");
     const [approvalSuccess, setApprovalSuccess] = useState("");
@@ -43,7 +47,8 @@ const MyYearSet = () => {
 
                 const data = await getyearSetObligation();
 
-                console.log(data);
+                console.log("Total members:", data.summary?.memberCount);
+console.log("Members returned:", data.members?.length);
 
                 setYearSetData(data);
             } catch (err) {
@@ -356,6 +361,26 @@ const MyYearSet = () => {
         }
     };
 
+
+    const filteredMembers = members.filter((member) => {
+        const search = memberSearch.trim().toLowerCase();
+
+        if (!search) return true;
+
+        const fullName = [
+            member.firstName,
+            member.middleName,
+            member.lastName,
+        ]
+            .filter(Boolean)
+            .join(" ")
+            .toLowerCase();
+
+        return (
+            fullName.includes(search) ||
+            (member.alumniId || "").toLowerCase().includes(search)
+        );
+    });
 
 
     return (
@@ -1000,6 +1025,16 @@ const MyYearSet = () => {
                                                         <p className="text-xs text-(--text-muted) mt-1">
                                                             Class of {member.graduationYear || "—"}
                                                         </p>
+                                                        {member.status === "active" ? (
+                                                            <span className="inline-flex mt-2 text-[10px] font-semibold px-2 py-1 rounded bg-(--success-light) text-(--success)">
+                                                                Active
+                                                            </span>
+                                                        ) : (<span className="inline-flex mt-2 text-[10px] font-semibold px-2 py-1 rounded bg-(--warning-light) text-( --warning)">
+                                                            Pending
+                                                        </span>)}
+
+
+
                                                     </div>
                                                 </div>
 
@@ -1083,17 +1118,19 @@ const MyYearSet = () => {
                                 </div>
                             )}
 
-                            {members.length > 5 && (
+                            {memberCount > 5 && (
                                 <div className="border-t border-(--border) p-4 text-center">
 
                                     <button
                                         type="button"
+                                        onClick={() => {
+                                            setMemberSearch("");
+                                            setShowAllMembers(true);
+                                        }}
                                         className="inline-flex items-center gap-1.5 text-xs font-semibold text-(--primary) hover:text-(--secondary) transition"
                                     >
-                                        View all members
-                                        <ArrowUpRight
-                                            size={14}
-                                        />
+                                        View all {memberCount} members
+                                        <ArrowUpRight size={14} />
                                     </button>
 
                                 </div>
@@ -1510,6 +1547,157 @@ const MyYearSet = () => {
                     </div>
                 </div>
             )}
+
+            {showAllMembers && (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+
+        <div className="w-full max-w-2xl max-h-[90vh] flex flex-col rounded-xl bg-white shadow-2xl overflow-hidden">
+
+            {/* HEADER */}
+            <div className="p-5 border-b border-(--border) flex items-center justify-between">
+
+                <div>
+                    <h2 className="text-lg font-bold text-(--primary)">
+                        Year Set Members
+                    </h2>
+
+                    <p className="text-xs text-(--secondary) mt-1">
+                        {members.length} members available
+                    </p>
+                </div>
+
+                <button
+                    type="button"
+                    onClick={() => setShowAllMembers(false)}
+                    className="p-2 rounded-full hover:bg-(--bg-light) transition"
+                >
+                    <X size={19} />
+                </button>
+
+            </div>
+
+            {/* SEARCH */}
+            <div className="p-4 border-b border-(--border)">
+
+                <input
+                    type="search"
+                    value={memberSearch}
+                    onChange={(e) => setMemberSearch(e.target.value)}
+                    placeholder="Search by name or Alumni ID..."
+                    className="w-full border border-(--border) rounded-lg px-4 py-3 text-sm outline-none focus:border-(--primary)"
+                />
+
+            </div>
+
+            {/* MEMBERS */}
+            <div className="flex-1 overflow-y-auto divide-y divide-(--border)">
+
+                {filteredMembers.length > 0 ? (
+
+                    filteredMembers.map((member) => (
+
+                        <button
+                            key={member._id}
+                            type="button"
+                            onClick={() => {
+                                setShowAllMembers(false);
+                                setSelectedMember(member);
+                            }}
+                            className="w-full p-4 flex items-center justify-between gap-3 text-left hover:bg-(--bg-light)/60 transition"
+                        >
+
+                            <div className="flex items-center gap-3 min-w-0">
+
+                                <div className="w-10 h-10 shrink-0 rounded-lg bg-(--primary-light) text-(--primary) flex items-center justify-center">
+                                    <UserRound size={18} />
+                                </div>
+
+                                <div className="min-w-0">
+
+                                    <p className="text-sm font-semibold text-(--primary) break-words">
+                                        {[
+                                            member.firstName,
+                                            member.middleName,
+                                            member.lastName,
+                                        ]
+                                            .filter(Boolean)
+                                            .join(" ")}
+                                    </p>
+
+                                    <p className="text-xs text-(--secondary) mt-1">
+                                        {member.alumniId || "No Alumni ID"}
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                            <div className="flex items-center gap-2 shrink-0">
+
+                                <span className={`text-[10px] font-semibold px-2 py-1 rounded-full ${
+                                    member.status === "active"
+                                        ? "bg-green-50 text-green-700"
+                                        : "bg-amber-50 text-amber-700"
+                                }`}>
+                                    {member.status === "active"
+                                        ? "Active"
+                                        : "Pending"}
+                                </span>
+
+                                <ArrowUpRight
+                                    size={16}
+                                    className="text-(--text-muted)"
+                                />
+
+                            </div>
+
+                        </button>
+
+                    ))
+
+                ) : (
+
+                    <div className="p-10 text-center">
+
+                        <Users
+                            size={25}
+                            className="mx-auto text-(--text-muted)"
+                        />
+
+                        <p className="text-sm font-semibold text-(--primary) mt-3">
+                            No members found
+                        </p>
+
+                        <p className="text-xs text-(--secondary) mt-1">
+                            Try another name or Alumni ID.
+                        </p>
+
+                    </div>
+
+                )}
+
+            </div>
+
+            {/* FOOTER */}
+            <div className="p-4 border-t border-(--border) flex justify-between items-center">
+
+                <p className="text-xs text-(--secondary)">
+                    Showing {filteredMembers.length} of {members.length} members
+                </p>
+
+                <button
+                    type="button"
+                    onClick={() => setShowAllMembers(false)}
+                    className="px-4 py-2 rounded-lg bg-(--primary) text-white text-xs font-semibold"
+                >
+                    Close
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+)}
 
             {selectedMember && (
                 <div
