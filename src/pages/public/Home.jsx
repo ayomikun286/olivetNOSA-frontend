@@ -64,7 +64,7 @@ export default function Home() {
             description:
                 "Connecting Olivetians across generations through fellowship, shared memories and a commitment to our alma mater.",
             linkText: "Discover Olivet Alumni",
-            linkTo: "/about-gosa",
+            linkTo: "/about-nosa",
         },
         {
             image: pageContent.heroImage2 || "/images/olivetNOSA-2.jpg",
@@ -389,7 +389,7 @@ export default function Home() {
 
                             <div className="mt-10 flex flex-wrap gap-x-8 gap-y-4">
                                 <Link
-                                    to="/about-gosa"
+                                    to="/about-nosa"
                                     className="group inline-flex items-center gap-3 text-sm font-semibold text-[var(--primary)]"
                                 >
                                     About Olivet Alumni
@@ -608,7 +608,7 @@ export default function Home() {
             </section>
 
             {/* =========================================================
-                OLIVETGOSA TODAY
+                OLIVETnosa TODAY
             ========================================================== */}
             <section className="bg-[var(--primary-dark)] py-20 text-white sm:py-22 lg:py-20">
                 <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
@@ -629,7 +629,7 @@ export default function Home() {
                             </p>
 
                             <Link
-                                to="/about-gosa"
+                                to="/about-nosa"
                                 className="group mt-9 inline-flex items-center gap-3 border-b border-[var(--secondary)] pb-2 text-sm font-semibold text-white"
                             >
                                 Learn more about Olivetians

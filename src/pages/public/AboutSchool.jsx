@@ -1084,7 +1084,7 @@ const AboutSchool = () => {
             </div>
 
             <Link
-              to="/about-gosa"
+              to="/about-nosa"
               className="group inline-flex items-center gap-3 text-sm font-semibold text-[var(--primary)]"
             >
              Discover the Olivetian Community

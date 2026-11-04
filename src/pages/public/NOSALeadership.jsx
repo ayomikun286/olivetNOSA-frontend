@@ -483,7 +483,7 @@ export default function NOSALeadership() {
 
 
       {/* INTRODUCTION */}
-      <section className="py-20 sm:py-28">
+      {/* <section className="py-20 sm:py-28">
         <div className="mx-auto grid max-w-7xl gap-10 px-6 sm:px-10 lg:grid-cols-[0.7fr_1.3fr] lg:gap-24 lg:px-16">
           <div data-aos="fade-up">
             <p className="text-sm font-semibold uppercase tracking-[0.23em] text-(--secondary)">
@@ -514,7 +514,7 @@ export default function NOSALeadership() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* SERVICE */}
       <section className="bg-white py-20 sm:py-28">
@@ -599,7 +599,7 @@ export default function NOSALeadership() {
       </section>
 
       {/* FINAL CTA */}
-      <section className="relative overflow-hidden bg-(--primary-dark) py-20 text-white sm:py-28">
+      {/* <section className="relative overflow-hidden bg-(--primary-dark) py-20 text-white sm:py-28">
         <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-(--secondary)/15 blur-3xl" />
 
         <div className="relative mx-auto max-w-5xl px-6 text-center sm:px-10">
@@ -631,7 +631,7 @@ export default function NOSALeadership() {
             <ArrowUpRight size={18} />
           </a>
         </div>
-      </section>
+      </section> */}
 
       {/* LEADER DETAIL MODAL */}
       {selectedLeader && (
