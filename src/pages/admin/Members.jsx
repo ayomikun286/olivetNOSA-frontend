@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext.jsx";
 
 import ContentLoading from "../../components/admin/ContentLoading.jsx";
 
@@ -30,6 +31,13 @@ import {
 } from "../../services/adminService.js";
 
 const Members = () => {
+
+  const { user } = useAuth();
+
+  const navigate = useNavigate();
+  const isSuperAdmin = user?.role === "superAdmin";
+
+
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -57,6 +65,7 @@ const Members = () => {
   const [alert, setAlert] = useState(null);
 
 
+  
 
 
 
@@ -321,6 +330,9 @@ const Members = () => {
 
 
   const members = data?.members || {};
+
+
+  console.log(members, "pendingDuplicates");
 
 
   // TABLE COLUMNS
@@ -590,6 +602,63 @@ const Members = () => {
           /> */}
 
         </div>
+      </div>
+
+      {/* IDENTITY CONFLICT ALERT */}
+      {members.pendingDuplicates > 0 && (
+        <div className="
+            bg-(--warning-light)
+            border border-(--warning)
+            rounded
+            px-5 py-4
+            flex flex-col sm:flex-row
+            sm:items-center
+            sm:justify-between
+            gap-3
+          ">
+          <div className="flex items-start gap-3">
+            <div className="w-9 h-9 rounded bg-(--bg-white) flex items-center justify-center shrink-0">
+              <AlertCircle
+                size={19}
+                className="text-(--warning)"
+              />
+            </div>
+
+            <div>
+              <h2 className="text-sm font-semibold text-(--primary)">
+                Identity Conflicts
+              </h2>
+
+              <p className="text-xs text-(--secondary) mt-1">
+                {members.pendingDuplicates} account
+                {members.pendingDuplicates !== 1 ? "s" : ""} awaiting identity review.
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+             onClick={() => navigate("/portal/admin/dashboard/identity-review")}
+            className="
+                h-9 px-3.5
+                rounded
+                bg-(--primary)
+                text-white
+                text-xs font-semibold
+                inline-flex items-center justify-center gap-2
+                hover:opacity-90
+                transition-opacity
+                shrink-0
+              "
+          >
+            Review Accounts
+            <ArrowUpRight size={14} />
+          </button>
+        </div>
+      )}
+
+      {/* MEMBERS TABLE */}
+      <div className="bg-(--bg-white) border border-(--border) rounded overflow-hidden">
 
         {/* MEMBERS TABLE */}
         <div className="bg-(--bg-white) border border-(--border) rounded overflow-hidden">

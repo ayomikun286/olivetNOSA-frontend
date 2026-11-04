@@ -394,7 +394,7 @@ export default function LegacyLeadership() {
                         </div>
                       )}
 
-                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-5 pt-16">
+                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p pt-16">
                         <p className="text-xs font-semibold uppercase tracking-[0.17em] text-white/65">
                           {formatTenure(leader)}
                         </p>

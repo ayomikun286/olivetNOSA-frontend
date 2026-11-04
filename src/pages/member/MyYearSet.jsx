@@ -1029,7 +1029,7 @@ console.log("Members returned:", data.members?.length);
                                                             <span className="inline-flex mt-2 text-[10px] font-semibold px-2 py-1 rounded bg-(--success-light) text-(--success)">
                                                                 Active
                                                             </span>
-                                                        ) : (<span className="inline-flex mt-2 text-[10px] font-semibold px-2 py-1 rounded bg-(--warning-light) text-( --warning)">
+                                                        ) : (<span className="inline-flex mt-2 text-[10px] font-semibold px-2 py-1 rounded bg-(--warning-light) text-(--warning)">
                                                             Pending
                                                         </span>)}
 

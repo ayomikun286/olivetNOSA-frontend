@@ -59,6 +59,69 @@ export const getAdminMembers = async (
 };
 
 
+
+// ========================================
+// IDENTITY CONFLICT REVIEW
+// ========================================
+
+// Get accounts awaiting identity review
+export const getPendingDuplicateMembers = async () => {
+  const response = await fetch(
+    `${API}/api/admin/members/duplicate-review`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to load identity conflicts."
+    );
+  }
+
+  return data;
+};
+
+// Resolve an identity conflict
+export const resolveDuplicateMember = async (
+  userId,
+  decision
+) => {
+  if (!userId) {
+    throw new Error("Member ID is required.");
+  }
+
+  if (!["cleared", "confirmed"].includes(decision)) {
+    throw new Error("Invalid identity review decision.");
+  }
+
+  const response = await fetch(
+    `${API}/api/admin/members/${userId}/duplicate-review`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({ decision }),
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to resolve identity conflict."
+    );
+  }
+
+  return data;
+};
+
+
 export const createAdminMember = async (memberData) => {
   const response = await fetch(
     `${API}/api/admin/members`,

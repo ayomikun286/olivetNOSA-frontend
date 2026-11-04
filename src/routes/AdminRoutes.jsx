@@ -17,6 +17,7 @@ import Jobs from "../pages/admin/Jobs.jsx";
 import AdminNotifications from "../pages/admin/AdminNotifications.jsx";
 import AdminSupport from "../pages/admin/AdminSupport.jsx";
 
+import IdentityReview from "../pages/admin/IdentityReview.jsx";
 
 import AdminDonations from "../pages/admin/AdminDonations.jsx"
 import WebsiteContent from "../pages/admin/WebsiteContent.jsx";
@@ -56,8 +57,13 @@ const AdminRoutes = () => {
             path="notifications"
             element={<AdminNotifications />}
           />
+
+          <Route
+            path="identity-review"
+            element={<IdentityReview />}
+          />
           <Route path="treasurer" element={<TreasurerDashboard />} />
-            <Route path="excom-management" element={<ExcomManagement />} />
+          <Route path="excom-management" element={<ExcomManagement />} />
           <Route
             path="website-content"
             element={<WebsiteContent />}
@@ -68,7 +74,7 @@ const AdminRoutes = () => {
             element={<MemorialSubmissions />}
           />
           <Route path="email-queue" element={<EmailQueue />} />
-            <Route path="donations" element={<AdminDonations />} />
+          <Route path="donations" element={<AdminDonations />} />
           <Route path="settings" element={<AdminSettings />} />
           <Route path="team" element={<Team />} />
           < Route path="legacy-leadership" element={<LegacyLeadershipManagement />} />
