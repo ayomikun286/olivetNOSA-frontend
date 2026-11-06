@@ -34,7 +34,7 @@ import TreasurerDashboard from "../pages/admin/TreasurerDashboard.jsx";
 import StewardshipManagement from "../pages/admin/StewardshipManagement.jsx";
 import EmailQueue from "../pages/admin/EmailQueue.jsx";
 
-
+import Announcements from "../pages/admin/Announcements.jsx";
 
 const AdminRoutes = () => {
   return (
@@ -57,7 +57,7 @@ const AdminRoutes = () => {
             path="notifications"
             element={<AdminNotifications />}
           />
-
+          <Route path="announcements" element={<Announcements />} />
           <Route
             path="identity-review"
             element={<IdentityReview />}

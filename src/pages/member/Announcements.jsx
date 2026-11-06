@@ -341,7 +341,7 @@ const AnnouncementCard = ({
 const Announcements = () => {
   const { user } = useAuth();
 
-  const isPresident = user?.role === "president";
+  const isPresident = user?.role === "superAdmin";
 
   const [announcements, setAnnouncements] = useState([]);
 
@@ -939,7 +939,7 @@ const Announcements = () => {
                 : "There are currently no published announcements. Please check back later for updates."}
             </p>
 
-            {isPresident && activeFilter === "all" && (
+            {/* {isPresident && activeFilter === "all" && (
               <button
                 type="button"
                 onClick={openCreateDrawer}
@@ -948,7 +948,7 @@ const Announcements = () => {
                 <Plus size={16} />
                 Create Announcement
               </button>
-            )}
+            )} */}
           </div>
         )}
 

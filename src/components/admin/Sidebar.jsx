@@ -21,6 +21,7 @@ import {
   Images,
   UserPlus,
   HeartHandshake,
+  Megaphone,
   Crown,
   ChevronDown, ChevronRight,
   ClipboardCheck,
@@ -341,6 +342,16 @@ const Sidebar = ({ setIsOpen }) => {
         {/* ================= COMMUNICATION ================= */}
         <div>
           <p className={sectionTitle}>Communication</p>
+
+
+            <NavLink
+  to="/portal/admin/dashboard/announcements"
+  className={linkClass}
+  onClick={handleLinkClick}
+>
+  <Megaphone className={iconClass} />
+  <span>Announcements</span>
+</NavLink>
 
           <div className="space-y-1">
             <NavLink
