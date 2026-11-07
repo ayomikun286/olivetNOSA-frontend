@@ -125,7 +125,7 @@ const Contact = () => {
   const address =
     pageContent.address || "Olivet Baptist High School\nOyo, Nigeria";
 
-  const email = pageContent.email || "info@olivetnosa.org";
+  const email = pageContent.email || "customerservice@olivetbhsnosa.org";
   const phone = pageContent.phone || "";
   const mapUrl = pageContent.mapUrl || "";
 

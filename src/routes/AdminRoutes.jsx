@@ -26,7 +26,7 @@ import Team from "../pages/admin/Team.jsx";
 import Gallery from "../pages/admin/Gallery.jsx";
 import LegacyLeadershipManagement from "../pages/admin/LegacyLeadershipManagement.jsx";
 import MemorialManagement from "../pages/admin/MemorialManagement.jsx";
-
+import Analytics from "../pages/admin/Analytics.jsx";
 import MemorialSubmissions from "../pages/admin/MemorialSubmissions.jsx";
 import NOSALeadershipManagement from "../pages/admin/NOSALeadershipManagement.jsx";
 import ExcomManagement from "../pages/admin/ExcomManagement.jsx";
@@ -74,6 +74,10 @@ const AdminRoutes = () => {
             element={<MemorialSubmissions />}
           />
           <Route path="email-queue" element={<EmailQueue />} />
+          <Route
+  path="analytics"
+  element={<Analytics />}
+/>
           <Route path="donations" element={<AdminDonations />} />
           <Route path="settings" element={<AdminSettings />} />
           <Route path="team" element={<Team />} />

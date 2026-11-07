@@ -426,12 +426,12 @@ export default function LegacyLeadership() {
           {!loading && !error && currentPresident && (
             <article
               data-aos="fade-up"
-              className="relative mt-20 overflow-hidden border  p-6 border-(--secondary)/40 bg-(--primary-dark) text-white"
+              className="relative mt-20 overflow-hidden    border-(--secondary)/40 bg-(--primary-dark)  text-white"
             >
 
 
               <div className="grid md:grid-cols-2">
-                <div className="relative min-h-[360px] md:min-h-[480px]">
+                <div className="relative min-h-[400px] md:min-h-[480px]">
                   {currentPresident.portrait ? (
                     <img
                       src={currentPresident.portrait}

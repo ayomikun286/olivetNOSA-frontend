@@ -19,43 +19,50 @@ import History from "../pages/public/History.jsx";
 import TermsAndConditions from "../pages/public/TermsAndConditions";
 import LegacyLeadership from "../pages/public/LegacyLeadership.jsx";
 import DonationVerification from "../pages/public/DonationVerification.jsx";
+import PublicAnalytics from "../components/public/PublicAnalytics.jsx";
+
+
 export default function PublicRoutes() {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
+    <>
+    <PublicAnalytics />
+      <Routes>
+        <Route path="/" element={<Home />} />
 
-      <Route path="/about-school" element={<AboutSchool />} />
+        <Route path="/about-school" element={<AboutSchool />} />
 
-      <Route path="/about-nosa" element={<AboutNOSA />} />
-      <Route path="/nosa-leadership" element={<NOSALeadership />} />
-      <Route path="/nosa-chapters" element={<NOSAChapters />} />
+        <Route path="/about-nosa" element={<AboutNOSA />} />
+        <Route path="/nosa-leadership" element={<NOSALeadership />} />
+        <Route path="/nosa-chapters" element={<NOSAChapters />} />
 
-      <Route path="/olivetians" element={<Olivetians />} />
+        <Route path="/olivetians" element={<Olivetians />} />
 
-      <Route path="/news" element={<NewsEvents />} />
-      <Route
-        path="/news-events/:slug"
-        element={<NewsEventDetails />}
-      />
+        <Route path="/news" element={<NewsEvents />} />
+        <Route
+          path="/news-events/:slug"
+          element={<NewsEventDetails />}
+        />
 
-      <Route path="/in-loving-memory" element={<InLovingMemory />} />
-      <Route path="/gallery" element={<Gallery />} />
+        <Route path="/in-loving-memory" element={<InLovingMemory />} />
+        <Route path="/gallery" element={<Gallery />} />
 
-      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-      <Route
-        path="/terms-and-conditions"
-        element={<TermsAndConditions />}
-      />
-<Route path="/donation" element={<Donation />} />
-<Route
-  path="/donation/verify"
-  element={<DonationVerification />}
-/>
-<Route path="/history" element={<History />} />
-      <Route path="/legacy-leadership" element={<LegacyLeadership />} />
-      <Route path="/contact" element={<Contact />} />
-      <Route path="/programs" element={<Programs />} />
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route
+          path="/terms-and-conditions"
+          element={<TermsAndConditions />}
+        />
+        <Route path="/donation" element={<Donation />} />
+        <Route
+          path="/donation/verify"
+          element={<DonationVerification />}
+        />
+        <Route path="/history" element={<History />} />
+        <Route path="/legacy-leadership" element={<LegacyLeadership />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/programs" element={<Programs />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+
+    </>
   );
 }

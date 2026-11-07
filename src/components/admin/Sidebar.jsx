@@ -22,6 +22,7 @@ import {
   UserPlus,
   HeartHandshake,
   Megaphone,
+  ChartLine,
   Crown,
   ChevronDown, ChevronRight,
   ClipboardCheck,
@@ -397,6 +398,15 @@ const Sidebar = ({ setIsOpen }) => {
               <UserPlus className={iconClass} />
               <span>Team Management</span>
             </NavLink>
+
+            <NavLink
+  to="/portal/admin/dashboard/analytics"
+  className={linkClass}
+  onClick={handleLinkClick}
+>
+  <ChartLine className={iconClass} />
+  <span>Website Analytics</span>
+</NavLink>
 
             <NavLink
               to="/portal/admin/dashboard/audit-logs"
