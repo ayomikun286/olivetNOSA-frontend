@@ -431,7 +431,7 @@ export default function LegacyLeadership() {
 
 
               <div className="grid md:grid-cols-2">
-                <div className="relative min-h-[400px] md:min-h-[480px]">
+                <div className="relative min-h-[380px] md:min-h-[500px]">
                   {currentPresident.portrait ? (
                     <img
                       src={currentPresident.portrait}
