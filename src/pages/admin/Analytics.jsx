@@ -43,6 +43,7 @@ const Analytics = () => {
         return `${year}-${month}-${day}`;
     };
 
+    
     const getDateRange = (days) => {
         const end = new Date();
 
@@ -213,6 +214,15 @@ const Analytics = () => {
 
     const topClicks = analytics?.topClicks || [];
 
+    const visitorsByCountry = useMemo(() => {
+    return [...(analytics?.visitorsByCountry || [])]
+        .sort(
+            (a, b) =>
+                Number(b.uniqueVisitors || 0) -
+                Number(a.uniqueVisitors || 0)
+        );
+}, [analytics]);
+
     const dailyVisitors = useMemo(() => {
         return [
             ...(analytics?.dailyVisitors || []),
@@ -248,6 +258,19 @@ const Analytics = () => {
     // ========================================
     // FORMATTERS
     // ========================================
+
+    const getCountryFlag = (countryCode) => {
+    if (!/^[A-Z]{2}$/i.test(countryCode || "")) {
+        return "🌍";
+    }
+
+    return String.fromCodePoint(
+        ...countryCode
+            .toUpperCase()
+            .split("")
+            .map((char) => 127397 + char.charCodeAt(0))
+    );
+};
 
     const formatNumber = (value) => {
         return Number(
@@ -691,6 +714,179 @@ const Analytics = () => {
                         }
                     />
                 </div>
+
+
+                {/* TRAFFIC CHART. */}
+
+
+                        {/* VISITORS BY COUNTRY */}
+
+<div className="
+    bg-(--bg-white)
+    border
+    border-(--border)
+    rounded
+    overflow-hidden
+">
+    <div className="
+        px-5
+        py-4
+        border-b
+        border-(--border)
+    ">
+        <div className="flex items-center gap-2">
+            <Globe
+                size={17}
+                className="text-(--primary)"
+            />
+
+            <h2 className="text-sm font-semibold text-(--primary)">
+                Visitors by Country
+            </h2>
+        </div>
+
+        <p className="text-xs text-(--secondary) mt-1">
+            Geographic distribution of your public website visitors.
+        </p>
+    </div>
+
+    <div className="p-5">
+        {visitorsByCountry.length > 0 ? (
+            <div className="space-y-5">
+                {(() => {
+                    const maxVisitors = Math.max(
+                        1,
+                        ...visitorsByCountry.map(
+                            (item) => Number(item.uniqueVisitors || 0)
+                        )
+                    );
+
+                    return visitorsByCountry.map((country) => {
+                        const visitors = Number(
+                            country.uniqueVisitors || 0
+                        );
+
+                        const pageViews = Number(
+                            country.pageViews || 0
+                        );
+
+                        const percentage = (
+                            visitors / maxVisitors
+                        ) * 100;
+
+                        return (
+                            <div
+                                key={country.countryCode}
+                                className="space-y-2"
+                            >
+                                <div className="
+                                    flex
+                                    flex-col
+                                    sm:flex-row
+                                    sm:items-center
+                                    sm:justify-between
+                                    gap-2
+                                ">
+                                    <div className="
+                                        flex
+                                        items-center
+                                        gap-2
+                                    ">
+                                        <span className="text-xl">
+                                            {getCountryFlag(
+                                                country.countryCode
+                                            )}
+                                        </span>
+
+                                        <div>
+                                            <p className="
+                                                text-xs
+                                                font-semibold
+                                                text-(--primary)
+                                            ">
+                                                {country.country}
+                                            </p>
+
+                                            <p className="
+                                                text-[10px]
+                                                text-(--secondary)
+                                            ">
+                                                {country.countryCode}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="
+                                        flex
+                                        items-center
+                                        gap-4
+                                    ">
+                                        <div>
+                                            <p className="
+                                                text-xs
+                                                font-semibold
+                                                text-(--primary)
+                                            ">
+                                                {formatNumber(visitors)}
+                                            </p>
+
+                                            <p className="
+                                                text-[10px]
+                                                text-(--secondary)
+                                            ">
+                                                Visitors
+                                            </p>
+                                        </div>
+
+                                        <div>
+                                            <p className="
+                                                text-xs
+                                                font-semibold
+                                                text-(--primary)
+                                            ">
+                                                {formatNumber(pageViews)}
+                                            </p>
+
+                                            <p className="
+                                                text-[10px]
+                                                text-(--secondary)
+                                            ">
+                                                Page Views
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="
+                                    w-full
+                                    h-2
+                                    rounded-full
+                                    bg-(--bg-light)
+                                    overflow-hidden
+                                ">
+                                    <div
+                                        className="
+                                            h-full
+                                            rounded-full
+                                            bg-(--primary)
+                                            transition-all
+                                        "
+                                        style={{
+                                            width: `${percentage}%`,
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                        );
+                    });
+                })()}
+            </div>
+        ) : (
+            <EmptyState message="No geographic visitor data available for this period. Country information will appear when visitors access the public website from identifiable public IP addresses." />
+        )}
+    </div>
+</div>
+
 
                 {/* DAILY TRAFFIC CHART */}
 
