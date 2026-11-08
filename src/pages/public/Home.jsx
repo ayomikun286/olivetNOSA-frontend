@@ -54,10 +54,10 @@ export default function Home() {
         };
     }, []);
 
-    
+
     const heroSlides = [
         {
-            image: pageContent.heroImage || "/images/olivetNOSA-4.jpg",
+            image: "/images/Slider-MainWeb-1.jpg.jpeg",
             eyebrow: "Olivet NOSA Worldwide Website",
             title: pageContent.heroTitle || "Welcome to OBHS ",
             highlight: pageContent.heroSubtitle || "NOSA Worldwide Website",
@@ -67,7 +67,7 @@ export default function Home() {
             linkTo: "/about-nosa",
         },
         {
-            image: pageContent.heroImage2 || "/images/olivetNOSA-2.jpg",
+            image: "/images/Slider-MainWeb-2.jpg.jpeg",
             eyebrow: "National Old Students' Association",
             title: "A connection that began at Olivet",
             highlight: "continues across generations.",
@@ -77,7 +77,7 @@ export default function Home() {
             linkTo: "/about-school",
         },
         {
-            image: pageContent.heroImage3 || "/images/olivetNOSA-10.jpg",
+            image: "/images/Slider-MainWeb-1.jpg.jpeg",
             eyebrow: "Our Global Community",
             title: "One school brought us together,",
             highlight: "Olivet Alumni keeps us connected.",
@@ -87,7 +87,7 @@ export default function Home() {
             linkTo: "/olivetians",
         },
         {
-            image: pageContent.heroImage4 || "/images/olivetNOSA.jpg",
+            image: "/images/Slider-MainWeb-2.jpg.jpeg",
             eyebrow: "Impact & Service",
             title: "Empowering our alma mater",
             highlight: "through purposeful giving.",
@@ -97,7 +97,7 @@ export default function Home() {
             linkTo: "/portal/signup",
         },
         {
-            image: pageContent.heroImage5 || "/images/olivetNOSA-3.jpg",
+            image: "/images/Slider-MainWeb-1.jpg.jpeg",
             eyebrow: "Preserving Our Legacy",
             title: "Cum Christo Progredere",
             highlight: "Marching forward with Christ.",
@@ -109,7 +109,7 @@ export default function Home() {
     ];
 
 
-    
+
     const [currentSlide, setCurrentSlide] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
 
@@ -152,23 +152,31 @@ export default function Home() {
                 HERO SLIDER
             ========================================================== */}
             <section
-                className="relative flex min-h-[94vh] items-end overflow-hidden bg-[var(--primary-dark)]"
+                className="relative flex min-h-[100vh] items-end overflow-hidden bg-[var(--primary-dark)]"
                 onMouseEnter={() => setIsPaused(true)}
                 onMouseLeave={() => setIsPaused(false)}
             >
                 {/* Background slideshow */}
-                <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                {/* Fixed background for mobile */}
+                <div
+                    className="absolute inset-0 bg-cover bg-center bg-no-repeat pointer-events-none md:hidden"
+                    style={{
+                        backgroundImage: 'url("/images/Slider-Mobile-1.jpg.jpeg")',
+                    }}
+                />
+
+                {/* Background slideshow for desktop */}
+                <div className="absolute inset-0 pointer-events-none overflow-hidden hidden md:block">
                     {heroSlides.map((slide, index) => {
                         const isActive = index === currentSlide;
 
                         return (
                             <div
-                                key={slide.image}
-                                className={`absolute inset-0 bg-cover bg-center ${
-                                    isActive
+                                key={index}
+                                className={`absolute inset-0 bg-cover bg-center ${isActive
                                         ? "opacity-100 z-10"
                                         : "opacity-0 z-0"
-                                }`}
+                                    }`}
                                 style={{
                                     backgroundImage: `url("${slide.image}")`,
                                     transform: isActive
@@ -183,9 +191,9 @@ export default function Home() {
                 </div>
 
                 {/* Dark overlays */}
-                <div className="pointer-events-none absolute inset-0 bg-[var(--primary-dark)]/60 z-10" />
+                {/* <div className="pointer-events-none absolute inset-0 bg-[var(--primary-dark)]/60 z-10" />
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[var(--primary-dark)] via-[var(--primary-dark)]/40 to-transparent z-10" />
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[var(--primary-dark)]/50 via-transparent to-transparent z-10" />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[var(--primary-dark)]/50 via-transparent to-transparent z-10" /> */}
 
                 {/* Hero content */}
                 <div className="relative z-20 w-full px-6 pb-14 pt-10 md:pt-30 sm:px-10 lg:px-16 lg:pb-20">
@@ -197,19 +205,17 @@ export default function Home() {
                                 return (
                                     <div
                                         key={slide.image + index}
-                                        className={`col-start-1 row-start-1 flex flex-col justify-end transition-all duration-700 ease-out ${
-                                            isActive
+                                        className={`col-start-1 row-start-1 flex flex-col justify-end transition-all duration-700 ease-out ${isActive
                                                 ? "opacity-100 translate-y-0 pointer-events-auto z-10"
                                                 : "opacity-0 translate-y-6 pointer-events-none z-0"
-                                        }`}
+                                            }`}
                                     >
                                         {/* Eyebrow */}
                                         <div
-                                            className={`flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.28em] text-[var(--secondary-light)] transition-all duration-700 ease-out ${
-                                                isActive
+                                            className={`flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.28em] text-[var(--secondary-light)] transition-all duration-700 ease-out ${isActive
                                                     ? "opacity-100 translate-y-0 delay-100"
                                                     : "opacity-0 -translate-y-2 delay-0"
-                                            }`}
+                                                }`}
                                         >
                                             <span className="h-px w-10 bg-[var(--secondary)]" />
                                             {slide.eyebrow}
@@ -217,11 +223,10 @@ export default function Home() {
 
                                         {/* Main heading */}
                                         <h1
-                                            className={`mt-4 md:max-w-2xl font-semibold leading-[1.02] tracking-[-0.04em] text-white text-4xl md:text-[5rem] transition-all duration-700 ease-out ${
-                                                isActive
+                                            className={`mt-4 md:max-w-2xl font-semibold leading-[1.02] tracking-[-0.04em] text-white text-4xl md:text-[5rem] transition-all duration-700 ease-out ${isActive
                                                     ? "opacity-100 translate-y-0 delay-200"
                                                     : "opacity-0 translate-y-4 delay-0"
-                                            }`}
+                                                }`}
                                         >
                                             {slide.title}
                                             <span className="block text-[var(--secondary)]">
@@ -231,11 +236,10 @@ export default function Home() {
 
                                         {/* Supporting content */}
                                         <div
-                                            className={`mt-8 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between transition-all duration-700 ease-out ${
-                                                isActive
+                                            className={`mt-8 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between transition-all duration-700 ease-out ${isActive
                                                     ? "opacity-100 translate-y-0 delay-300"
                                                     : "opacity-0 translate-y-4 delay-0"
-                                            }`}
+                                                }`}
                                         >
                                             <p className="max-w-xl text-base leading-8 text-white/80 sm:text-lg">
                                                 {slide.description}
@@ -263,11 +267,10 @@ export default function Home() {
                                         key={idx}
                                         onClick={() => goToSlide(idx)}
                                         aria-label={`Go to slide ${idx + 1}`}
-                                        className={`relative h-2 rounded-full overflow-hidden transition-all duration-500 cursor-pointer ${
-                                            idx === currentSlide
+                                        className={`relative h-2 rounded-full overflow-hidden transition-all duration-500 cursor-pointer ${idx === currentSlide
                                                 ? "w-10 bg-white/25"
                                                 : "w-2.5 bg-white/40 hover:bg-white/70"
-                                        }`}
+                                            }`}
                                     >
                                         {idx === currentSlide && (
                                             <span
@@ -600,7 +603,7 @@ export default function Home() {
 
                             <p className="mt-7 text-xs uppercase tracking-[0.2em] text-[var(--text-muted)]">
                                 Draft statements — subject to official NOSA
-                                approval 
+                                approval
                             </p>
                         </div>
                     </div>
@@ -870,7 +873,7 @@ export default function Home() {
                             </h2>
 
                             <p className="mt-7 max-w-md text-base leading-8 text-[var(--text-muted)]">
-                               Keep up with announcements, community stories, reunions, and memorable moments from across the Olivetian community.
+                                Keep up with announcements, community stories, reunions, and memorable moments from across the Olivetian community.
                             </p>
 
                             <Link
