@@ -152,7 +152,7 @@ export default function Home() {
                 HERO SLIDER
             ========================================================== */}
             <section
-                className="relative flex  min-h-[95vh] items-end overflow-hidden bg-[var(--primary-dark)]"
+                className="relative flex  p-5 md:p-5 min-h-[80vh] items-center overflow-hidden bg-[var(--primary-dark)]"
                 onMouseEnter={() => setIsPaused(true)}
                 onMouseLeave={() => setIsPaused(false)}
             >
@@ -194,7 +194,7 @@ export default function Home() {
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[var(--primary-dark)]/50 via-transparent to-transparent z-10" /> */}
 
                 {/* Hero content */}
-                <div className="relative z-20 w-full px-6 pb-14 pt-10 md:pt-30 sm:px-10 lg:px-16 lg:pb-20">
+                <div className="relative z-20 w-full px-6 pb-14  md:pt-30 sm:px-10 lg:px-16 lg:pb-1">
                     <div className="mx-auto max-w-7xl">
                         <div className="max-w-5xl grid grid-cols-1 grid-rows-1">
                             {heroSlides.map((slide, index) => {
@@ -258,8 +258,8 @@ export default function Home() {
                         </div>
 
                         {/* Slider controls */}
-                        <div className="mt-12 flex items-center justify-between gap-6 border-t border-white/20 pt-6 sm:mt-16">
-                            <div className="flex items-center gap-2.5">
+                        {/* <div className="mt-12 flex items-center justify-between gap-6 border-t border-white/20 pt-6 sm:mt-16"> */}
+                            {/* <div className="flex items-center gap-2.5">
                                 {heroSlides.map((_, idx) => (
                                     <button
                                         key={idx}
@@ -286,9 +286,9 @@ export default function Home() {
                                         )}
                                     </button>
                                 ))}
-                            </div>
+                            </div> */}
 
-                            <div className="flex items-center gap-2">
+                            {/* <div className="flex items-center gap-2">
                                 <button
                                     onClick={prevSlide}
                                     aria-label="Previous slide"
@@ -304,11 +304,11 @@ export default function Home() {
                                 >
                                     <ChevronRight size={18} />
                                 </button>
-                            </div>
-                        </div>
+                            </div> */}
+                        {/* </div> */}
 
                         {/* Hero footer */}
-                        <div className="mt-6 hidden md:flex flex-col gap-3 border-t border-white/10 pt-4 sm:flex-row sm:items-center sm:justify-between">
+                        {/* <div className="mt-6 hidden md:flex flex-col gap-3 border-t border-white/10 pt-4 sm:flex-row sm:items-center sm:justify-between">
                             <p className="text-xs uppercase tracking-[0.25em] text-white/45">
                                 Olivet Baptist High School · Olivet Heights
                             </p>
@@ -316,7 +316,7 @@ export default function Home() {
                             <p className="text-sm italic text-white/50">
                                 Cum Christo Progredere
                             </p>
-                        </div>
+                        </div> */}
                     </div>
 
                     {/* <div className="absolute right-20 top-30 hidden h-35 w-35 items-center justify-center rounded-xl text-[var(--primary-dark)] md:flex">
@@ -329,7 +329,7 @@ export default function Home() {
                 </div>
 
                 {/* Scroll explore */}
-                <a
+                {/* <a
                     href="#who-we-are"
                     className="absolute bottom-4 left-1/2 z-20 hidden -translate-x-1/2 items-center gap-3 text-white/45 transition hover:text-white md:flex"
                 >
@@ -337,7 +337,7 @@ export default function Home() {
                         Explore
                     </span>
                     <ArrowDown size={14} />
-                </a>
+                </a> */}
             </section>
 
             {/* =========================================================
