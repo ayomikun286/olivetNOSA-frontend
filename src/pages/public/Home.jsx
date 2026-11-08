@@ -152,7 +152,7 @@ export default function Home() {
                 HERO SLIDER
             ========================================================== */}
             <section
-                className="relative flex  p-5 md:p-5 min-h-[80vh] items-center overflow-hidden bg-[var(--primary-dark)]"
+                className="relative flex  pt-15 md:pt-2 md:p-5 min-h-[80vh] items-center overflow-hidden bg-[var(--primary-dark)]"
                 onMouseEnter={() => setIsPaused(true)}
                 onMouseLeave={() => setIsPaused(false)}
             >
@@ -194,7 +194,7 @@ export default function Home() {
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[var(--primary-dark)]/50 via-transparent to-transparent z-10" /> */}
 
                 {/* Hero content */}
-                <div className="relative z-20 w-full px-6 pb-14  md:pt-30 sm:px-10 lg:px-16 lg:pb-1">
+                <div className="relative z-20 w-full px-6 pb-20  md:pt-30 sm:px-10 lg:px-16 lg:pb-1">
                     <div className="mx-auto max-w-7xl">
                         <div className="max-w-5xl grid grid-cols-1 grid-rows-1">
                             {heroSlides.map((slide, index) => {
