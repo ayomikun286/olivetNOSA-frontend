@@ -33,6 +33,8 @@ import FinancialReports from "../pages/member/FinancialReports.jsx";
 import Calendar from "../pages/member/Calendar.jsx";
 import Jobs from "../pages/member/Jobs.jsx";
 import Articles from "../pages/member/Articles.jsx";
+
+import PresidentMemberApprovals from "../pages/member/PresidentMemberApprovals.jsx";
 import MemberArticleDetails from "../pages/member/MemberArticleDetails.jsx";
 
 const ExcomRoutePage = () => {
@@ -94,6 +96,10 @@ const MemberRoutes = () => {
             element={<MemberArticleDetails />}
           />
           <Route path="calendar" element={<Calendar />} />
+          <Route
+  path="president/member-approvals"
+  element={<PresidentMemberApprovals />}
+/>
 
           <Route
             path="stewardship-reports"

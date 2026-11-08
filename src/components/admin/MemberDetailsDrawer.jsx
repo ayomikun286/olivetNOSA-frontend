@@ -1,3 +1,4 @@
+
 import React from "react";
 import {
     X,
@@ -21,6 +22,7 @@ const MemberDetailsDrawer = ({
     SuspendMember,
     ReactivateMember,
     DeleteMember,
+    presidentMode = false,
 }) => {
 
     if (!open || !member) return null;
@@ -39,11 +41,6 @@ const MemberDetailsDrawer = ({
         suspended: "bg-(--danger-light) text-(--danger)",
     };
 
-
-
-
-
-
     return (
         <>
             {/* BACKDROP */}
@@ -55,20 +52,12 @@ const MemberDetailsDrawer = ({
             {/* DRAWER */}
             <aside
                 className="
-                            fixed
-                            top-0
-                            right-0
-                            z-50
-                            h-full
-                            w-full
-                            max-w-md
-                            bg-(--bg-white)
-                            border-l
-                            border-(--border)
-                            shadow-xl
-                            flex
-                            flex-col
-                            "
+                    fixed top-0 right-0 z-50 h-full
+                    w-full max-w-md
+                    bg-(--bg-white)
+                    border-l border-(--border)
+                    shadow-xl flex flex-col
+                "
             >
                 {/* HEADER */}
                 <div className="px-5 py-4 border-b border-(--border) flex items-center justify-between">
@@ -86,17 +75,12 @@ const MemberDetailsDrawer = ({
                         type="button"
                         onClick={onClose}
                         className="
-                                        w-8
-                                        h-8
-                                        rounded-lg
-                                        flex
-                                        items-center
-                                        justify-center
-                                        text-(--secondary)
-                                        hover:bg-(--bg-soft)
-                                        hover:text-(--primary)
-                                        transition-colors
-                                        "
+                            w-8 h-8 rounded-lg flex items-center justify-center
+                            text-(--secondary)
+                            hover:bg-(--bg-soft)
+                            hover:text-(--primary)
+                            transition-colors
+                        "
                         aria-label="Close"
                     >
                         <X size={18} />
@@ -110,20 +94,14 @@ const MemberDetailsDrawer = ({
                     <div className="px-5 py-6 border-b border-(--border)">
                         <div className="flex items-start gap-3">
 
-                            {/* INITIALS */}
                             <div
                                 className="
-                                                    w-12
-                                                    h-12
-                                                    shrink-0
-                                                    rounded-full
-                                                    bg-(--primary-light)
-                                                    text-(--primary)
-                                                    flex
-                                                    items-center
-                                                    justify-center
-                                                    font-semibold
-                        "
+                                    w-12 h-12 shrink-0 rounded-full
+                                    bg-(--primary-light)
+                                    text-(--primary)
+                                    flex items-center justify-center
+                                    font-semibold
+                                "
                             >
                                 {member.firstName?.charAt(0)}
                                 {member.lastName?.charAt(0)}
@@ -139,11 +117,11 @@ const MemberDetailsDrawer = ({
                                 </p>
 
                                 <div className="flex flex-wrap items-center gap-2 mt-2">
-
                                     <span
-                                        className={`inline-flex items-center px-2.5 py-1 rounded text-xs font-medium capitalize ${statusStyles[member.status] ||
+                                        className={`inline-flex items-center px-2.5 py-1 rounded text-xs font-medium capitalize ${
+                                            statusStyles[member.status] ||
                                             "bg-(--bg-soft) text-(--secondary)"
-                                            }`}
+                                        }`}
                                     >
                                         {member.status}
                                     </span>
@@ -154,7 +132,6 @@ const MemberDetailsDrawer = ({
                                             Email verified
                                         </span>
                                     )}
-
                                 </div>
                             </div>
                         </div>
@@ -178,7 +155,6 @@ const MemberDetailsDrawer = ({
                         </h4>
 
                         <div className="mt-4 space-y-4">
-
                             <InfoRow
                                 icon={Users}
                                 label="Full Name"
@@ -208,7 +184,6 @@ const MemberDetailsDrawer = ({
                                 label="Graduation Year"
                                 value={member.graduationYear}
                             />
-
                         </div>
                     </section>
 
@@ -219,7 +194,6 @@ const MemberDetailsDrawer = ({
                         </h4>
 
                         <div className="mt-4 space-y-4">
-
                             <InfoRow
                                 icon={MapPin}
                                 label="Chapter"
@@ -231,7 +205,6 @@ const MemberDetailsDrawer = ({
                                 label="Year Set"
                                 value={member.yearSet?.year || "Not assigned"}
                             />
-
                         </div>
                     </section>
 
@@ -266,7 +239,9 @@ const MemberDetailsDrawer = ({
                                         ? "Year Set Leader"
                                         : member.approvalAuthority === "superAdmin"
                                             ? "Super Admin"
-                                            : "Not available"
+                                            : member.approvalAuthority === "president"
+                                                ? "President"
+                                                : "Not available"
                                 }
                             />
 
@@ -296,7 +271,6 @@ const MemberDetailsDrawer = ({
                         </h4>
 
                         <div className="mt-4 space-y-4">
-
                             <InfoRow
                                 icon={CalendarDays}
                                 label="Registered"
@@ -318,110 +292,145 @@ const MemberDetailsDrawer = ({
                                 icon={ShieldCheck}
                                 label="Email Verified"
                                 value={
-                                    member.isEmailVerified
-                                        ? "Yes"
-                                        : "No"
+                                    member.isEmailVerified ? "Yes" : "No"
                                 }
                             />
 
                             <InfoRow
                                 icon={UserCheck}
                                 label="Account Status"
-                                value={
-                                    member.status
-                                        ? member.status
-                                        : "—"
-                                }
+                                value={member.status || "—"}
                             />
-
                         </div>
                     </section>
                 </div>
 
-
                 {/* ACTIONS */}
                 <div className="px-5 py-4 border-t border-(--border) bg-(--bg-white)">
-                    {member.status === "active" && (
-                        <button
-                            type="button"
-                            onClick={() => SuspendMember(member._id)}
-                            disabled={loading}
-                            className="
-        w-full inline-flex items-center justify-center gap-2
-        px-4 py-2.5 rounded border border-(--danger)
-        text-(--danger) text-sm font-semibold
-        hover:bg-(--danger-light)
-        disabled:opacity-50 disabled:cursor-not-allowed
-        transition-colors
-      "
-                        >
-                            <UserX size={16} />
-                            {loading ? "Suspending..." : "Suspend Member"}
-                        </button>
-                    )}
 
-                    {member.status === "suspended" && (
-                        <button
-                            type="button"
-                            onClick={() => ReactivateMember(member._id)}
-                            disabled={loading}
-                            className="
-        w-full inline-flex items-center justify-center gap-2
-        px-4 py-2.5 rounded bg-(--primary)
-        text-white text-sm font-semibold
-        hover:bg-(--primary-dark)
-        disabled:opacity-50 disabled:cursor-not-allowed
-        transition-colors
-      "
-                        >
-                            <UserCheck size={16} />
-                            {loading ? "Reactivating..." : "Reactivate Member"}
-                        </button>
-                    )}
+                    {/* PRESIDENT ACTIONS */}
+                    {presidentMode ? (
+                        member.status === "pending" && (
+                            <>
+                                {(!member.isEmailVerified ||
+                                    member.possibleDuplicate?.isDuplicate) && (
+                                    <p className="text-xs text-(--warning) mb-3">
+                                        {!member.isEmailVerified
+                                            ? "This member's email has not been verified."
+                                            : "This member has been flagged as a possible duplicate and cannot be approved yet."}
+                                    </p>
+                                )}
 
-                    {member.status === "pending" && (
-                        <button
-                            type="button"
-                            onClick={() => ApproveMember(member._id)}
-                            disabled={loading}
-                            className="
-        w-full inline-flex items-center justify-center gap-2
-        px-4 py-2.5 rounded bg-(--primary)
-        text-white text-sm font-semibold
-        hover:bg-(--primary-dark)
-        disabled:opacity-50 disabled:cursor-not-allowed
-        transition-colors
-      "
-                        >
-                            <UserCheck size={16} />
-                            {loading ? "Approving..." : "Approve Member"}
-                        </button>
-                    )}
+                                <button
+                                    type="button"
+                                    onClick={() => ApproveMember?.(member._id)}
+                                    disabled={
+                                        loading ||
+                                        !member.isEmailVerified ||
+                                        member.possibleDuplicate?.isDuplicate
+                                    }
+                                    className="
+                                        w-full inline-flex items-center justify-center gap-2
+                                        px-4 py-2.5 rounded bg-(--primary)
+                                        text-white text-sm font-semibold
+                                        hover:bg-(--primary-dark)
+                                        disabled:opacity-50 disabled:cursor-not-allowed
+                                        transition-colors
+                                    "
+                                >
+                                    <UserCheck size={16} />
+                                    {loading ? "Approving..." : "Approve Member"}
+                                </button>
+                            </>
+                        )
+                    ) : (
+                        <>
+                            {/* ADMIN: SUSPEND */}
+                            {member.status === "active" && (
+                                <button
+                                    type="button"
+                                    onClick={() => SuspendMember(member._id)}
+                                    disabled={loading}
+                                    className="
+                                        w-full inline-flex items-center justify-center gap-2
+                                        px-4 py-2.5 rounded border border-(--danger)
+                                        text-(--danger) text-sm font-semibold
+                                        hover:bg-(--danger-light)
+                                        disabled:opacity-50 disabled:cursor-not-allowed
+                                        transition-colors
+                                    "
+                                >
+                                    <UserX size={16} />
+                                    {loading ? "Suspending..." : "Suspend Member"}
+                                </button>
+                            )}
 
+                            {/* ADMIN: REACTIVATE */}
+                            {member.status === "suspended" && (
+                                <button
+                                    type="button"
+                                    onClick={() => ReactivateMember(member._id)}
+                                    disabled={loading}
+                                    className="
+                                        w-full inline-flex items-center justify-center gap-2
+                                        px-4 py-2.5 rounded bg-(--primary)
+                                        text-white text-sm font-semibold
+                                        hover:bg-(--primary-dark)
+                                        disabled:opacity-50 disabled:cursor-not-allowed
+                                        transition-colors
+                                    "
+                                >
+                                    <UserCheck size={16} />
+                                    {loading ? "Reactivating..." : "Reactivate Member"}
+                                </button>
+                            )}
 
-                    {member.status === "pending" && !member.alumniId && (
-                        <button
-                            type="button"
-                            onClick={() => DeleteMember(member._id)}
-                            disabled={loading}
-                            className="
-                                mt-3 w-full inline-flex items-center justify-center gap-2
-                                px-4 py-2.5 rounded border border-(--danger)
-                                text-(--danger) text-sm font-semibold
-                                hover:bg-(--danger-light)
-                                disabled:opacity-50 disabled:cursor-not-allowed
-                                transition-colors
-                                "
-                        >
-                            <UserX size={16} />
-                            {loading ? "Deleting..." : "Delete Pending Applicant"}
-                        </button>
-                    )}
+                            {/* ADMIN: APPROVE */}
+                            {member.status === "pending" && (
+                                <button
+                                    type="button"
+                                    onClick={() => ApproveMember(member._id)}
+                                    disabled={loading}
+                                    className="
+                                        w-full inline-flex items-center justify-center gap-2
+                                        px-4 py-2.5 rounded bg-(--primary)
+                                        text-white text-sm font-semibold
+                                        hover:bg-(--primary-dark)
+                                        disabled:opacity-50 disabled:cursor-not-allowed
+                                        transition-colors
+                                    "
+                                >
+                                    <UserCheck size={16} />
+                                    {loading ? "Approving..." : "Approve Member"}
+                                </button>
+                            )}
 
-                    {["inactive", "deactivated"].includes(member.status) && (
-                        <p className="text-sm text-(--secondary) text-center">
-                            This account has a status of {member.status}. No action is available here.
-                        </p>
+                            {/* ADMIN: DELETE */}
+                            {member.status === "pending" && !member.alumniId && (
+                                <button
+                                    type="button"
+                                    onClick={() => DeleteMember(member._id)}
+                                    disabled={loading}
+                                    className="
+                                        mt-3 w-full inline-flex items-center justify-center gap-2
+                                        px-4 py-2.5 rounded border border-(--danger)
+                                        text-(--danger) text-sm font-semibold
+                                        hover:bg-(--danger-light)
+                                        disabled:opacity-50 disabled:cursor-not-allowed
+                                        transition-colors
+                                    "
+                                >
+                                    <UserX size={16} />
+                                    {loading ? "Deleting..." : "Delete Pending Applicant"}
+                                </button>
+                            )}
+
+                            {["inactive", "deactivated"].includes(member.status) && (
+                                <p className="text-sm text-(--secondary) text-center">
+                                    This account has a status of {member.status}. No action is available here.
+                                </p>
+                            )}
+                        </>
                     )}
                 </div>
             </aside>
@@ -429,14 +438,9 @@ const MemberDetailsDrawer = ({
     );
 };
 
-const InfoRow = ({
-    icon: Icon,
-    label,
-    value,
-}) => {
+const InfoRow = ({ icon: Icon, label, value }) => {
     return (
         <div className="flex items-start gap-3">
-
             <div className="w-8 h-8 shrink-0 rounded-lg bg-(--bg-soft) flex items-center justify-center">
                 <Icon
                     size={15}
@@ -453,7 +457,6 @@ const InfoRow = ({
                     {value || "Not provided"}
                 </p>
             </div>
-
         </div>
     );
 };

@@ -152,7 +152,7 @@ export default function Home() {
                 HERO SLIDER
             ========================================================== */}
             <section
-                className="relative flex min-h-[100vh] items-end overflow-hidden bg-[var(--primary-dark)]"
+                className="relative flex  min-h-[95vh] items-end overflow-hidden bg-[var(--primary-dark)]"
                 onMouseEnter={() => setIsPaused(true)}
                 onMouseLeave={() => setIsPaused(false)}
             >
@@ -173,15 +173,13 @@ export default function Home() {
                         return (
                             <div
                                 key={index}
-                                className={`absolute inset-0 bg-cover bg-center ${isActive
+                                className={`absolute inset-0 bg-500 bg-center ${isActive
                                         ? "opacity-100 z-10"
                                         : "opacity-0 z-0"
                                     }`}
                                 style={{
                                     backgroundImage: `url("${slide.image}")`,
-                                    transform: isActive
-                                        ? "scale(1.06)"
-                                        : "scale(1)",
+                                    
                                     transition:
                                         "opacity 1400ms cubic-bezier(0.4, 0, 0.2, 1), transform 8000ms cubic-bezier(0.25, 1, 0.5, 1)",
                                 }}
@@ -310,7 +308,7 @@ export default function Home() {
                         </div>
 
                         {/* Hero footer */}
-                        <div className="mt-6 flex flex-col gap-3 border-t border-white/10 pt-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="mt-6 hidden md:flex flex-col gap-3 border-t border-white/10 pt-4 sm:flex-row sm:items-center sm:justify-between">
                             <p className="text-xs uppercase tracking-[0.25em] text-white/45">
                                 Olivet Baptist High School · Olivet Heights
                             </p>
@@ -321,13 +319,13 @@ export default function Home() {
                         </div>
                     </div>
 
-                    <div className="absolute right-20 top-30 hidden h-35 w-35 items-center justify-center rounded-xl text-[var(--primary-dark)] md:flex">
+                    {/* <div className="absolute right-20 top-30 hidden h-35 w-35 items-center justify-center rounded-xl text-[var(--primary-dark)] md:flex">
                         <img
                             src="/images/Logo-NOSA.png"
                             alt="Olivet NOSA"
                             className="h-full w-full object-contain"
                         />
-                    </div>
+                    </div> */}
                 </div>
 
                 {/* Scroll explore */}

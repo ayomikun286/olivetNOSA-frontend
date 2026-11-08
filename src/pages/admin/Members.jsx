@@ -35,7 +35,8 @@ const Members = () => {
   const { user } = useAuth();
 
   const navigate = useNavigate();
-  const isSuperAdmin = user?.role === "superAdmin";
+  const isPresident = user?.role === "president";
+const canManageMembers = ["admin", "superAdmin"].includes(user?.role);
 
 
   const [data, setData] = useState(null);
