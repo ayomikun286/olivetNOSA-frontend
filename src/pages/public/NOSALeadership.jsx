@@ -462,7 +462,7 @@ export default function NOSALeadership() {
                           </div>
 
                           <div className="flex items-center justify-between gap-3 border-b border-black/10 py-4">
-                            <span className="text-sm text-(--text-muted)">
+                            <span className="text-md font-semibold text-(--primary)">
                               {leader.position}
                             </span>
 
