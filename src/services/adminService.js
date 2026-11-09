@@ -147,6 +147,36 @@ export const createAdminMember = async (memberData) => {
 };
 
 
+// ========================================
+// CREATE MEMBER WITHOUT EMAIL
+// ========================================
+
+export const createAdminMemberWithoutEmail = async (memberData) => {
+  const response = await fetch(
+    `${API}/api/admin/members/without-email`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(memberData),
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to create member."
+    );
+  }
+
+  return data;
+};
+
+
+
 
 export const ApproveMember = async (userId) => {
   const response = await 
@@ -2309,3 +2339,5 @@ export const retryUncertainEmailJob = async (jobId) => {
         { method: "PATCH" }
     );
 };
+
+

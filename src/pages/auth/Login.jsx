@@ -135,40 +135,40 @@ const Login = () => {
       // BACKEND ERROR
       // Same pattern as Signup
       // ========================================
-if (!response?.ok) {
-  const responseData = response?.data;
+      if (!response?.ok) {
+        const responseData = response?.data;
 
-  const message =
-    responseData?.message ||
-    "Invalid email/Alumni ID or password.";
+        const message =
+          responseData?.message ||
+          "Invalid email/Alumni ID or password.";
 
-  if (responseData?.verifyRequired === true) {
-    navigate("/portal/verifyEmail", {
-      state: {
-        email: responseData.email,
-      },
-      replace: true,
-    });
+        if (responseData?.verifyRequired === true) {
+          navigate("/portal/verifyEmail", {
+            state: {
+              email: responseData.email,
+            },
+            replace: true,
+          });
 
-    return;
-  }
+          return;
+        }
 
-  
 
-  setError({
-    server: message,
-  });
 
-  showAlert(
-    "error",
-    "Login failed",
-    message
-  );
+        setError({
+          server: message,
+        });
 
-  return;
-}
+        showAlert(
+          "error",
+          "Login failed",
+          message
+        );
 
-       
+        return;
+      }
+
+
 
       // ========================================
       // SUCCESS
@@ -181,17 +181,27 @@ if (!response?.ok) {
       );
 
       setRedirect(true);
+
       const authenticated = await checkAuth();
 
-if (authenticated) {
-  navigate(
-    location.state?.redirectTo ||
-      "/portal/dashboard",
-    { replace: true }
-  );
-} else {
-  setRedirect(false);
-}
+      if (authenticated) {
+        const mustChangePassword =
+          response?.data?.data?.mustChangePassword === true;
+
+        if (mustChangePassword) {
+          navigate("/change-password", {
+            replace: true,
+          });
+          return;
+        }
+
+        navigate(
+          location.state?.redirectTo || "/portal/dashboard",
+          { replace: true }
+        );
+      } else {
+        setRedirect(false);
+      }
     } catch (err) {
       console.error("Login error:", err);
 
@@ -250,15 +260,15 @@ if (authenticated) {
 
         <section className="relative hidden min-h-screen overflow-hidden lg:block">
 
-         <a href="/" >
-          <img
-            src="/images/olivetNOSA-6.jpg"
-            alt="Olivet Baptist High School"
-            className="absolute inset-0 h-full w-full object-cover"
-          />
+          <a href="/" >
+            <img
+              src="/images/olivetNOSA-6.jpg"
+              alt="Olivet Baptist High School"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
 
-         
-         </a>
+
+          </a>
           {/* Overlay */}
           <div className="absolute inset-0 bg-black/60" />
 

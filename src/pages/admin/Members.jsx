@@ -28,7 +28,10 @@ import {
   getAdminDashboard,
   getAdminMembers,
   createAdminMember,
+  createAdminMemberWithoutEmail,
 } from "../../services/adminService.js";
+import AddMemberWithoutEmailModal from "../../components/admin/AddMemberWithoutEmailModal.jsx";
+
 
 const Members = () => {
 
@@ -36,9 +39,14 @@ const Members = () => {
 
   const navigate = useNavigate();
   const isPresident = user?.role === "president";
-const canManageMembers = ["admin", "superAdmin"].includes(user?.role);
+  const canManageMembers = ["admin", "superAdmin"].includes(user?.role);
 
 
+
+
+  const [addMemberWithoutEmailOpen, setAddMemberWithoutEmailOpen] = useState(false);
+
+  const [addingMemberWithoutEmail, setAddingMemberWithoutEmail] = useState(false);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -66,7 +74,7 @@ const canManageMembers = ["admin", "superAdmin"].includes(user?.role);
   const [alert, setAlert] = useState(null);
 
 
-  
+
 
 
 
@@ -129,6 +137,40 @@ const canManageMembers = ["admin", "superAdmin"].includes(user?.role);
       console.error("Admin members error:", error);
     } finally {
       setMembersLoading(false);
+    }
+
+
+
+  };
+
+
+  const handleCreateMemberWithoutEmail = async (formData) => {
+    try {
+      setAddingMemberWithoutEmail(true);
+
+      const result = await createAdminMemberWithoutEmail(formData);
+
+      await Promise.all([
+        loadDashboard({ showLoader: false }),
+        loadMembers(1),
+      ]);
+
+      setAlert({
+        type: "success",
+        title: "Member Created Successfully",
+        message: result.message,
+      });
+
+      return result;
+    } catch (error) {
+      console.error(
+        "Create member without email error:",
+        error
+      );
+
+      throw error;
+    } finally {
+      setAddingMemberWithoutEmail(false);
     }
   };
 
@@ -533,29 +575,41 @@ const canManageMembers = ["admin", "superAdmin"].includes(user?.role);
               Manage and monitor OlivetNOSA members.
             </p>
           </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setAddMemberOpen(true)}
+              className="
+      h-9 px-3.5 rounded
+      bg-(--primary) text-white
+      text-xs font-semibold
+      inline-flex items-center justify-center gap-2
+      hover:opacity-90 transition-opacity
+    "
+            >
+              <UserPlus size={15} />
+              Add Member
+            </button>
 
-          <button
-            type="button"
-            onClick={() => setAddMemberOpen(true)}
-            className="
-                          h-9
-                          px-3.5
-                          rounded
-                          bg-(--primary)
-                          text-white
-                          text-xs
-                          font-semibold
-                          inline-flex
-                          items-center
-                          justify-center
-                          gap-2
-                          hover:opacity-90
-                          transition-opacity
-                        "
-          >
-            <UserPlus size={15} />
-            Add Member
-          </button>
+            {canManageMembers && (
+              <button
+                type="button"
+                onClick={() => setAddMemberWithoutEmailOpen(true)}
+                className="
+        h-9 px-3.5 rounded
+        border border-(--primary)
+        text-(--primary)
+        text-xs font-semibold
+        inline-flex items-center justify-center gap-2
+        hover:bg-(--bg-soft)
+        transition-colors
+      "
+              >
+                <UserPlus size={15} />
+                Add Without Email
+              </button>
+            )}
+          </div>
 
         </div>
 
@@ -639,7 +693,7 @@ const canManageMembers = ["admin", "superAdmin"].includes(user?.role);
 
           <button
             type="button"
-             onClick={() => navigate("/portal/admin/dashboard/identity-review")}
+            onClick={() => navigate("/portal/admin/dashboard/identity-review")}
             className="
                 h-9 px-3.5
                 rounded
@@ -826,6 +880,18 @@ const canManageMembers = ["admin", "superAdmin"].includes(user?.role);
         </div>
 
       </div>
+
+      <AddMemberWithoutEmailModal
+        open={addMemberWithoutEmailOpen}
+        onClose={() => {
+          if (!addingMemberWithoutEmail) {
+            setAddMemberWithoutEmailOpen(false);
+          }
+        }}
+        onSubmit={handleCreateMemberWithoutEmail}
+        chapters={chapters}
+        loading={addingMemberWithoutEmail}
+      />
 
       <MemberDetailsDrawer
         member={selectedMember}

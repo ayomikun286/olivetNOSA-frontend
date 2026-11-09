@@ -1670,3 +1670,59 @@ export const deleteExcomConversation = async (conversationId) => {
 
   return data;
 };
+
+
+
+
+// ============================================================
+// CHANGE TEMPORARY PASSWORD — FIRST LOGIN
+// ============================================================
+
+export const changePassword = async ({
+  currentPassword,
+  newPassword,
+  confirmPassword,
+}) => {
+  try {
+    const response = await fetch(`${API}/auth/change-password`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        currentPassword,
+        newPassword,
+        confirmPassword,
+      }),
+    });
+
+    const contentType = response.headers.get("content-type") || "";
+
+    let data;
+
+    if (contentType.includes("application/json")) {
+      data = await response.json();
+    } else {
+      const text = await response.text();
+
+      data = {
+        message: text || "Server returned an invalid response.",
+      };
+    }
+
+    return {
+      ok: response.ok,
+      data,
+    };
+  } catch (error) {
+    console.error("Change password error:", error);
+
+    return {
+      ok: false,
+      data: {
+        message: error.message || "Unable to connect to the server.",
+      },
+    };
+  }
+};

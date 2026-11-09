@@ -10,6 +10,7 @@ import VerifyEmail from "./pages/auth/VerifyEmail.jsx";
 import Resetpassword from "./pages/auth/Resetpassword.jsx";
 import ForgotPassword from "./pages/auth/ForgetPassword.jsx";
 
+import ChangePassword from "./pages/auth/ChangePassword.jsx";
 import DashboardGateway from "./routes/DashboardGateway.jsx";
 import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 import AdminRoutes from "./routes/AdminRoutes.jsx";
@@ -46,6 +47,7 @@ function App() {
       <Route path="/portal/reset-password" element={<Resetpassword />} />
       <Route path="/portal/forgot-password" element={<ForgotPassword />} />
       <Route path="/set-password" element={<SetPassword />} />
+      <Route path="/change-password" element={<ChangePassword />} />
 
       {/* ========================================
           ROLE GATEWAY

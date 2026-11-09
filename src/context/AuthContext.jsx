@@ -96,6 +96,9 @@ const logout = async () => {
         data = null;
       }
 
+      console.log(data)
+
+      
       if (response.status === 401) {
         setUser(null);
         localStorage.removeItem(ACTIVITY_KEY);
