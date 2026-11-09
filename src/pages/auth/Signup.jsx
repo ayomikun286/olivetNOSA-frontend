@@ -817,30 +817,42 @@ const Signup = () => {
                     </label>
 
                     <select
-                      id="chapter"
-                      name="chapter"
-                      value={formData.chapter}
-                      onChange={handleChange}
-                      required
-                      className="h-13 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm outline-none transition focus:border-[var(--secondary)] focus:ring-4 focus:ring-[var(--secondary)]/10"
-                    >
+  id="chapter"
+  name="chapter"
+  value={formData.chapter}
+  onChange={handleChange}
+  required
+  className="h-13 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm outline-none transition focus:border-[var(--secondary)] focus:ring-4 focus:ring-[var(--secondary)]/10"
+>
+  <option value="">
+    Select your chapter
+  </option>
 
-                      <option value="">
-                        Select your chapter
-                      </option>
+  
+  {chapters
+    .filter((chapter) => chapter.code !== "OTH")
+    .map((chapter) => (
+      <option key={chapter._id} value={chapter._id}>
+        {chapter.name}
+      </option>
+    ))}
 
-                      {chapters.map((chapter) => (
+ 
+  {chapters.some((chapter) => chapter.code === "OTH") && (
+    <option disabled>
+      ──────────────
+    </option>
+  )}
 
-                        <option
-                          key={chapter._id}
-                          value={chapter._id}
-                        >
-                          {chapter.name}
-                        </option>
 
-                      ))}
-
-                    </select>
+  {chapters
+    .filter((chapter) => chapter.code === "OTH")
+    .map((chapter) => (
+      <option key={chapter._id} value={chapter._id}>
+        Others 
+      </option>
+    ))}
+</select>
 
                     {error.chapter && (
                       <p className="mt-1 text-xs text-red-500">
