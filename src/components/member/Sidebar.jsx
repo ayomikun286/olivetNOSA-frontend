@@ -9,6 +9,7 @@ import {
   CreditCard,
   Users,
   MapPin,
+   Vote,
   Bell,
   CalendarDays,
   HelpCircle,
@@ -294,6 +295,32 @@ const Sidebar = ({ setIsOpen }) => {
                 <span className="h-2.5 w-2.5 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.7)]" />
               )}
             </NavLink>
+
+            {/* ================= ELECTION ================= */}
+<NavLink
+  to="/portal/member/dashboard/election"
+  className={({ isActive }) =>
+    `
+      group flex items-center gap-4
+      px-3 py-2.5 rounded
+      border font-medium text-[0.88rem]
+      transition-all duration-300 ease-out
+      ${
+        isActive
+          ? "bg-red-500/15 text-red-300 border-red-400/30 shadow-sm"
+          : "border-transparent text-red-300 hover:text-red-200 hover:bg-red-500/10"
+      }
+    `
+  }
+  onClick={handleLinkClick}
+>
+  <Vote className={iconClass} />
+  <span className="flex-1">Election</span>
+
+  <span className="rounded-full bg-red-500/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-red-300">
+    Soon
+  </span>
+</NavLink>
 
             {(user?.role === "president" ||
               user?.role === "assistantGeneralSecretary") && (
