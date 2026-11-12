@@ -3,7 +3,8 @@ import {
   ChevronDown,
   LogOut,
   User,
-  Settings,
+
+  Vote,
 } from "lucide-react";
 import { NavLink, useNavigate, } from "react-router-dom";
 import NotificationDropdown from "../common/NotificationDropdown.jsx";
@@ -11,7 +12,7 @@ import NotificationDropdown from "../common/NotificationDropdown.jsx";
 const Navbar = ({
   setIsOpen,
   firstName,
- profilePhoto,
+  profilePhoto,
   logout,
   alumniId,
 }) => {
@@ -58,6 +59,26 @@ const Navbar = ({
 
       {/* ================= RIGHT ================= */}
       <div className="flex items-center gap-5">
+        {/* ================= ELECTION ================= */}
+        <NavLink
+          to="/portal/member/dashboard/election"
+          className="
+    inline-flex items-center gap-2
+    rounded-md
+    bg-red-600
+    px-3 py-2
+    text-sm font-semibold text-white
+    shadow-sm
+    transition-colors
+    hover:bg-red-700
+    focus-visible:outline-2
+    focus-visible:outline-offset-2
+    focus-visible:outline-red-600
+  "
+        >
+          <Vote size={17} />
+          <span>Election</span>
+        </NavLink>
 
         {/* ================= NOTIFICATIONS ================= */}
         <NotificationDropdown />
@@ -76,11 +97,11 @@ const Navbar = ({
             {/* Avatar */}
             <span className="flex h-9 w-9 overflow-hidden shrink-0 items-center justify-center rounded-full bg-(--secondary) font-bold text-(--primary)">
               {profilePhoto ? (<img
-                  src={profilePhoto}
-                  alt={firstName || "Profile photo"}
-                  className="h-full w-full rounded-full object-cover"
-                />):(initial)}
-             
+                src={profilePhoto}
+                alt={firstName || "Profile photo"}
+                className="h-full w-full rounded-full object-cover"
+              />) : (initial)}
+
             </span>
 
             {/* Name + Alumni ID */}
@@ -131,11 +152,11 @@ const Navbar = ({
 
                 {/* Avatar */}
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-(--secondary) text-base font-bold text-(--primary)">
-                   {profilePhoto ? (<img
-                  src={profilePhoto}
-                  alt={firstName || "Profile photo"}
-                  className="h-full w-full rounded-full object-cover"
-                />):( initial)}
+                  {profilePhoto ? (<img
+                    src={profilePhoto}
+                    alt={firstName || "Profile photo"}
+                    className="h-full w-full rounded-full object-cover"
+                  />) : (initial)}
                 </span>
 
                 {/* Identity */}
@@ -194,7 +215,7 @@ const Navbar = ({
                 onClick={async () => {
                   setDropDown(false);
                   await logout();
-                 
+
                 }}
                 className="
                   flex w-full items-center gap-3

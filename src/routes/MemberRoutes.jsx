@@ -33,7 +33,7 @@ import FinancialReports from "../pages/member/FinancialReports.jsx";
 import Calendar from "../pages/member/Calendar.jsx";
 import Jobs from "../pages/member/Jobs.jsx";
 import Articles from "../pages/member/Articles.jsx";
-
+import Election from "../pages/member/Election.jsx";
 import PresidentMemberApprovals from "../pages/member/PresidentMemberApprovals.jsx";
 import MemberArticleDetails from "../pages/member/MemberArticleDetails.jsx";
 
@@ -63,6 +63,11 @@ const MemberRoutes = () => {
           <Route path="year-set" element={<MyYearSet />} />
 
           <Route path="chapter" element={<MyChapter />} />
+
+            <Route
+  path="election"
+  element={<Election />}
+/>
 
           <Route path="my-obligation" element={<Obligations />} />
 
