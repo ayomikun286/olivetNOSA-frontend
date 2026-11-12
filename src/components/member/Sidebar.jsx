@@ -295,16 +295,17 @@ const Sidebar = ({ setIsOpen }) => {
               )}
             </NavLink>
 
-            {user?.role === "president" && (
-  <NavLink
-    to="/portal/member/dashboard/president/member-approvals"
-    className={linkClass}
-    onClick={handleLinkClick}
-  >
-    <ClipboardList className={iconClass} />
-    <span>Member Approvals</span>
-  </NavLink>
-)}
+            {(user?.role === "president" ||
+              user?.role === "assistantGeneralSecretary") && (
+                <NavLink
+                  to="/portal/member/dashboard/president/member-approvals"
+                  className={linkClass}
+                  onClick={handleLinkClick}
+                >
+                  <ClipboardList className={iconClass} />
+                  <span>Member Approvals</span>
+                </NavLink>
+              )}
 
             {(user?.isExcomMember || user?.isPresident) && (
               <NavLink

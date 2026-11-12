@@ -37,6 +37,16 @@ const TEAM_ROLES = [
         label: "Secretary",
         description: "Handle assigned records and secretarial duties.",
     },
+    {
+        value: "assistantGeneralSecretary",
+        label: "Assistant General Secretary",
+        description: "Support the President and perform assigned member approval responsibilities.",
+    },
+    {
+        value: "superAdmin",
+        label: "Super Administrator",
+        description: "Highest administrative access for managing and overseeing the platform.",
+    },
 ];
 
 const Team = () => {
@@ -310,154 +320,154 @@ const Team = () => {
                 </div>
             </div>
 
-           
-{/* President Management */}
-<div className="max-w-2xl overflow-hidden rounded border border-(--border) bg-(--bg-white)">
-    {/* Section header */}
-    <div className="border-b border-(--border) px-5 py-4">
-        <div className="flex items-center gap-2">
-            <ShieldCheck
-                size={17}
-                className="text-(--primary)"
-            />
 
-            <h2 className="text-sm font-semibold text-(--primary)">
-                President Management
-            </h2>
-        </div>
+            {/* President Management */}
+            <div className="max-w-2xl overflow-hidden rounded border border-(--border) bg-(--bg-white)">
+                {/* Section header */}
+                <div className="border-b border-(--border) px-5 py-4">
+                    <div className="flex items-center gap-2">
+                        <ShieldCheck
+                            size={17}
+                            className="text-(--primary)"
+                        />
 
-        <p className="mt-1 text-xs text-(--secondary)">
-            Appoint or replace the current NOSA President.
-        </p>
-    </div>
-
-    <div className="space-y-5 p-5">
-        {/* Current President */}
-        <div className="rounded border border-(--border) bg-(--bg-soft) p-4">
-            <p className="text-[11px] font-semibold uppercase tracking-wide text-(--secondary)">
-                Current President
-            </p>
-
-            {currentPresident ? (
-                <div className="mt-3 flex items-center gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-(--primary-light) text-(--primary)">
-                        <Users size={18} />
+                        <h2 className="text-sm font-semibold text-(--primary)">
+                            President Management
+                        </h2>
                     </div>
 
-                    <div className="min-w-0">
-                        <p className="text-sm font-semibold text-(--primary)">
-                            {currentPresident.firstName}{" "}
-                            {currentPresident.lastName}
-                        </p>
-
-                        <p className="mt-1 truncate text-xs text-(--secondary)">
-                            {currentPresident.email}
-                        </p>
-                    </div>
-
-                    <span className="ml-auto shrink-0 rounded border border-(--success) bg-(--success-light) px-2 py-1 text-[10px] font-medium text-(--success)">
-                        Active
-                    </span>
+                    <p className="mt-1 text-xs text-(--secondary)">
+                        Appoint or replace the current NOSA President.
+                    </p>
                 </div>
-            ) : (
-                <p className="mt-3 text-xs text-(--secondary)">
-                    No President has been appointed yet.
-                </p>
-            )}
-        </div>
 
-        {/* Appointment form */}
-        <form
-            onSubmit={handleAssignPresident}
-            className="space-y-4"
-        >
-            <div>
-                <label
-                    htmlFor="president-member"
-                    className="mb-2 block text-xs font-medium text-(--primary)"
-                >
-                    Select Active Member
-                </label>
+                <div className="space-y-5 p-5">
+                    {/* Current President */}
+                    <div className="rounded border border-(--border) bg-(--bg-soft) p-4">
+                        <p className="text-[11px] font-semibold uppercase tracking-wide text-(--secondary)">
+                            Current President
+                        </p>
 
-                <div className="relative">
-                    <select
-                        id="president-member"
-                        value={selectedPresident}
-                        onChange={(event) =>
-                            setSelectedPresident(event.target.value)
-                        }
-                        disabled={
-                            presidentLoading ||
-                            appointingPresident
-                        }
-                        className="h-11 w-full appearance-none rounded border border-(--border) bg-(--bg-white) px-3 pr-10 text-sm text-(--primary) outline-none transition-colors focus:border-(--primary) disabled:opacity-60"
+                        {currentPresident ? (
+                            <div className="mt-3 flex items-center gap-3">
+                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-(--primary-light) text-(--primary)">
+                                    <Users size={18} />
+                                </div>
+
+                                <div className="min-w-0">
+                                    <p className="text-sm font-semibold text-(--primary)">
+                                        {currentPresident.firstName}{" "}
+                                        {currentPresident.lastName}
+                                    </p>
+
+                                    <p className="mt-1 truncate text-xs text-(--secondary)">
+                                        {currentPresident.email}
+                                    </p>
+                                </div>
+
+                                <span className="ml-auto shrink-0 rounded border border-(--success) bg-(--success-light) px-2 py-1 text-[10px] font-medium text-(--success)">
+                                    Active
+                                </span>
+                            </div>
+                        ) : (
+                            <p className="mt-3 text-xs text-(--secondary)">
+                                No President has been appointed yet.
+                            </p>
+                        )}
+                    </div>
+
+                    {/* Appointment form */}
+                    <form
+                        onSubmit={handleAssignPresident}
+                        className="space-y-4"
                     >
-                        <option value="">
-                            {presidentLoading
-                                ? "Loading members..."
-                                : "Choose a member"}
-                        </option>
-
-                        {activeMembers.map((member) => (
-                            <option
-                                key={member._id}
-                                value={member._id}
+                        <div>
+                            <label
+                                htmlFor="president-member"
+                                className="mb-2 block text-xs font-medium text-(--primary)"
                             >
-                                {member.firstName} {member.lastName} —{" "}
-                                {member.email}
-                            </option>
-                        ))}
-                    </select>
+                                Select Active Member
+                            </label>
 
-                    <ChevronDown
-                        size={16}
-                        className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-(--text-muted)"
-                    />
+                            <div className="relative">
+                                <select
+                                    id="president-member"
+                                    value={selectedPresident}
+                                    onChange={(event) =>
+                                        setSelectedPresident(event.target.value)
+                                    }
+                                    disabled={
+                                        presidentLoading ||
+                                        appointingPresident
+                                    }
+                                    className="h-11 w-full appearance-none rounded border border-(--border) bg-(--bg-white) px-3 pr-10 text-sm text-(--primary) outline-none transition-colors focus:border-(--primary) disabled:opacity-60"
+                                >
+                                    <option value="">
+                                        {presidentLoading
+                                            ? "Loading members..."
+                                            : "Choose a member"}
+                                    </option>
+
+                                    {activeMembers.map((member) => (
+                                        <option
+                                            key={member._id}
+                                            value={member._id}
+                                        >
+                                            {member.firstName} {member.lastName} —{" "}
+                                            {member.email}
+                                        </option>
+                                    ))}
+                                </select>
+
+                                <ChevronDown
+                                    size={16}
+                                    className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-(--text-muted)"
+                                />
+                            </div>
+
+                            {!presidentLoading &&
+                                activeMembers.length === 0 && (
+                                    <p className="mt-2 text-[11px] text-(--danger)">
+                                        No active members are currently available for appointment.
+                                    </p>
+                                )}
+                        </div>
+
+                        <div className="flex flex-col gap-3 border-t border-(--border) pt-4 sm:flex-row sm:items-center sm:justify-between">
+                            <p className="text-[11px] leading-5 text-(--text-muted)">
+                                Appointing a new President will replace the current appointment.
+                            </p>
+
+                            <button
+                                type="submit"
+                                disabled={
+                                    !selectedPresident ||
+                                    presidentLoading ||
+                                    appointingPresident
+                                }
+                                className="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded bg-(--primary) px-5 text-xs font-semibold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                            >
+                                {appointingPresident ? (
+                                    <>
+                                        <LoaderCircle
+                                            size={14}
+                                            className="animate-spin"
+                                        />
+                                        Appointing...
+                                    </>
+                                ) : (
+                                    <>
+                                        <ShieldCheck size={14} />
+                                        {currentPresident
+                                            ? "Replace President"
+                                            : "Appoint President"}
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                    </form>
                 </div>
-
-                {!presidentLoading &&
-                    activeMembers.length === 0 && (
-                        <p className="mt-2 text-[11px] text-(--danger)">
-                            No active members are currently available for appointment.
-                        </p>
-                    )}
             </div>
-
-            <div className="flex flex-col gap-3 border-t border-(--border) pt-4 sm:flex-row sm:items-center sm:justify-between">
-                <p className="text-[11px] leading-5 text-(--text-muted)">
-                    Appointing a new President will replace the current appointment.
-                </p>
-
-                <button
-                    type="submit"
-                    disabled={
-                        !selectedPresident ||
-                        presidentLoading ||
-                        appointingPresident
-                    }
-                    className="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded bg-(--primary) px-5 text-xs font-semibold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                    {appointingPresident ? (
-                        <>
-                            <LoaderCircle
-                                size={14}
-                                className="animate-spin"
-                            />
-                            Appointing...
-                        </>
-                    ) : (
-                        <>
-                            <ShieldCheck size={14} />
-                            {currentPresident
-                                ? "Replace President"
-                                : "Appoint President"}
-                        </>
-                    )}
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
 
 
             {/* Assignment form */}
@@ -576,11 +586,10 @@ const Team = () => {
                         <div
                             role="status"
                             aria-live="polite"
-                            className={`flex items-start gap-2 rounded border p-3 ${
-                                feedback.type === "success"
+                            className={`flex items-start gap-2 rounded border p-3 ${feedback.type === "success"
                                     ? "border-(--success) bg-(--success-light)"
                                     : "border-(--danger) bg-(--danger-light)"
-                            }`}
+                                }`}
                         >
                             {feedback.type === "success" ? (
                                 <CheckCircle2
@@ -595,11 +604,10 @@ const Team = () => {
                             )}
 
                             <p
-                                className={`text-xs leading-5 ${
-                                    feedback.type === "success"
+                                className={`text-xs leading-5 ${feedback.type === "success"
                                         ? "text-(--success)"
                                         : "text-(--danger)"
-                                }`}
+                                    }`}
                             >
                                 {feedback.message}
                             </p>
@@ -841,18 +849,16 @@ const Team = () => {
 
                                             <td className="px-5 py-4">
                                                 <span
-                                                    className={`inline-flex items-center gap-1.5 rounded px-2.5 py-1 text-xs font-medium ${
-                                                        active
+                                                    className={`inline-flex items-center gap-1.5 rounded px-2.5 py-1 text-xs font-medium ${active
                                                             ? "bg-(--success-light) text-(--success)"
                                                             : "bg-(--bg-soft) text-(--secondary)"
-                                                    }`}
+                                                        }`}
                                                 >
                                                     <span
-                                                        className={`h-1.5 w-1.5 rounded-full ${
-                                                            active
+                                                        className={`h-1.5 w-1.5 rounded-full ${active
                                                                 ? "bg-(--success)"
                                                                 : "bg-(--text-muted)"
-                                                        }`}
+                                                            }`}
                                                     />
 
                                                     {member.status || "Unknown"}
