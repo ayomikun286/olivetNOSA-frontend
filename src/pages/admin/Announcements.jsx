@@ -873,7 +873,7 @@ const Announcements = () => {
                   </span>
 
                   <span className="text-xs text-(--secondary)">
-                    PDF only · Maximum 20 MB
+                    PDF only · Maximum 10 MB
                   </span>
 
                   <input
