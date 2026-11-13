@@ -118,10 +118,9 @@ const MemberDetailsDrawer = ({
 
                                 <div className="flex flex-wrap items-center gap-2 mt-2">
                                     <span
-                                        className={`inline-flex items-center px-2.5 py-1 rounded text-xs font-medium capitalize ${
-                                            statusStyles[member.status] ||
+                                        className={`inline-flex items-center px-2.5 py-1 rounded text-xs font-medium capitalize ${statusStyles[member.status] ||
                                             "bg-(--bg-soft) text-(--secondary)"
-                                        }`}
+                                            }`}
                                     >
                                         {member.status}
                                     </span>
@@ -194,6 +193,22 @@ const MemberDetailsDrawer = ({
                         </h4>
 
                         <div className="mt-4 space-y-4">
+                            <InfoRow
+                                icon={ShieldCheck}
+                                label="Association Role"
+                                value={
+                                    {
+                                        member: "Member",
+                                        president: "President",
+                                        assistantGeneralSecretary: "Assistant General Secretary",
+                                        admin: "Administrator",
+                                        superAdmin: "Super Administrator",
+                                        treasurer: "Treasurer",
+                                        secretary: "Secretary",
+                                        owner: "Owner",
+                                    }[member.role] || member.role || "Not assigned"
+                                }
+                            />
                             <InfoRow
                                 icon={MapPin}
                                 label="Chapter"
@@ -314,12 +329,12 @@ const MemberDetailsDrawer = ({
                             <>
                                 {(!member.isEmailVerified ||
                                     member.possibleDuplicate?.isDuplicate) && (
-                                    <p className="text-xs text-(--warning) mb-3">
-                                        {!member.isEmailVerified
-                                            ? "This member's email has not been verified."
-                                            : "This member has been flagged as a possible duplicate and cannot be approved yet."}
-                                    </p>
-                                )}
+                                        <p className="text-xs text-(--warning) mb-3">
+                                            {!member.isEmailVerified
+                                                ? "This member's email has not been verified."
+                                                : "This member has been flagged as a possible duplicate and cannot be approved yet."}
+                                        </p>
+                                    )}
 
                                 <button
                                     type="button"

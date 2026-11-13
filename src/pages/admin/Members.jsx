@@ -131,6 +131,7 @@ const Members = () => {
 
 
       setMembersData(result);
+  
       setMembersPagination(result.pagination);
       setCurrentPage(result.pagination.page);
     } catch (error) {
