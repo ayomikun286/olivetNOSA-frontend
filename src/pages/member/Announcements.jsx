@@ -17,11 +17,12 @@ import {
   RotateCcw,
   Eye,
   MoreVertical,
-  Clock3,
+  Download,
+  
 } from "lucide-react";
 
 import { useAuth } from "../../context/AuthContext";
-
+import { Link } from "react-router-dom";
 import {
   getAnnouncements,
   markAnnouncementAsViewed,
@@ -40,6 +41,8 @@ import ContentLoading from "../../components/admin/ContentLoading";
 // ============================================================
 // HELPERS
 // ============================================================
+
+const MAX_PDF_SIZE = 20 * 1024 * 1024;
 
 const formatDate = (date) => {
   if (!date) return "Not published";
@@ -63,6 +66,9 @@ const statusLabels = {
   archived: "Archived",
 };
 
+const getFileName = (attachment) =>
+  attachment?.fileName || "Announcement attachment.pdf";
+
 // ============================================================
 // STATUS BADGE
 // ============================================================
@@ -79,7 +85,6 @@ const StatusBadge = ({ status }) => (
 // ============================================================
 // ANNOUNCEMENT CARD
 // ============================================================
-
 
 const AnnouncementCard = ({
   announcement,
@@ -98,13 +103,16 @@ const AnnouncementCard = ({
   const isStewardship = announcement.sourceType === "stewardship";
 
   const author = announcement.createdBy
-    ? `${announcement.createdBy.firstName || ""} ${announcement.createdBy.lastName || ""}`.trim()
+    ? `${announcement.createdBy.firstName || ""} ${announcement.createdBy.lastName || ""
+      }`.trim()
     : "Association";
+
+  const hasAnnouncementPdf =
+    !isStewardship && announcement.attachment?.url;
 
   return (
     <article className="overflow-visible rounded border border-(--border) bg-(--bg-white) transition hover:border-(--primary)/30">
       <div className="p-5">
-
         {/* CARD HEADER */}
 
         <div className="flex items-start gap-3">
@@ -122,25 +130,19 @@ const AnnouncementCard = ({
                 {announcement.title}
               </h2>
 
-              {/* ITEM TYPE */}
-
               <span
                 className={`inline-flex items-center rounded border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide ${isStewardship
-                  ? "border-blue-500/20 bg-blue-500/10 text-blue-700"
-                  : "border-(--primary)/20 bg-(--primary)/5 text-(--primary)"
+                    ? "border-blue-500/20 bg-blue-500/10 text-blue-700"
+                    : "border-(--primary)/20 bg-(--primary)/5 text-(--primary)"
                   }`}
               >
                 {isStewardship ? "Stewardship Report" : "Announcement"}
               </span>
 
-              {/* MANAGEMENT STATUS */}
-
               {canManage && !isStewardship && (
                 <StatusBadge status={announcement.status} />
               )}
             </div>
-
-            {/* STEWARDSHIP REPORTING PERIOD */}
 
             {isStewardship && (
               <p className="mt-1 text-xs text-(--text-muted)">
@@ -149,12 +151,10 @@ const AnnouncementCard = ({
               </p>
             )}
 
-            {/* AUTHOR AND DATE */}
-
             <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2">
               <span className="flex items-center gap-1.5 text-xs text-(--text-muted)">
                 <UserRound size={13} />
-                {author}
+                {author || "Association"}
               </span>
 
               <span className="flex items-center gap-1.5 text-xs text-(--text-muted)">
@@ -166,7 +166,7 @@ const AnnouncementCard = ({
             </div>
           </div>
 
-          {/* GENERAL ANNOUNCEMENT MANAGEMENT ACTIONS */}
+          {/* MANAGEMENT ACTIONS */}
 
           {canManage && !isStewardship && (
             <div className="relative shrink-0">
@@ -190,9 +190,6 @@ const AnnouncementCard = ({
                   />
 
                   <div className="absolute right-0 top-9 z-20 w-48 overflow-hidden rounded border border-(--border) bg-(--bg-white) py-1 shadow-lg">
-
-                    {/* EDIT */}
-
                     {announcement.status !== "archived" && (
                       <button
                         type="button"
@@ -206,8 +203,6 @@ const AnnouncementCard = ({
                         Edit announcement
                       </button>
                     )}
-
-                    {/* PUBLISH */}
 
                     {announcement.status === "draft" && (
                       <button
@@ -223,8 +218,6 @@ const AnnouncementCard = ({
                       </button>
                     )}
 
-                    {/* ARCHIVE */}
-
                     {announcement.status !== "archived" && (
                       <button
                         type="button"
@@ -239,8 +232,6 @@ const AnnouncementCard = ({
                       </button>
                     )}
 
-                    {/* RESTORE */}
-
                     {announcement.status === "archived" && (
                       <button
                         type="button"
@@ -254,8 +245,6 @@ const AnnouncementCard = ({
                         Restore as draft
                       </button>
                     )}
-
-                    {/* SUPER ADMIN DELETE */}
 
                     {canDelete && (
                       <>
@@ -285,7 +274,7 @@ const AnnouncementCard = ({
 
         <div className="mt-5 border-t border-(--border) pt-4">
           <p
-            className={`whitespace-pre-line break-words text-sm leading-7 text-(--secondary) ${expanded ? "" : "line-clamp-4"
+            className={`whitespace-pre-line break-words text-sm leading-7 text-black ${expanded ? "" : "line-clamp-4"
               }`}
           >
             {announcement.content}
@@ -300,8 +289,64 @@ const AnnouncementCard = ({
               {expanded ? "Show less" : "Read more"}
             </button>
           )}
+          {!isStewardship && announcement.status === "published" && (
+            <Link
+              to={`/portal/member/dashboard/announcements/${announcement._id}`}
+              className="mt-3 inline-flex items-center gap-2 text-xs font-semibold text-(--primary) hover:underline"
+            >
+              Read Full Announcement
+              <span aria-hidden="true">→</span>
+            </Link>
+          )}
 
-          {/* STEWARDSHIP PDF ACTIONS */}
+          {/* ANNOUNCEMENT PDF ATTACHMENT */}
+
+          {hasAnnouncementPdf && (
+            <div className="mt-5 rounded border border-(--border) bg-(--bg-light) p-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex min-w-0 items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-red-500/10 text-red-600">
+                    <FileText size={19} />
+                  </div>
+
+                  <div className="min-w-0">
+                    <p className="text-xs font-semibold text-(--primary)">
+                      PDF Attachment
+                    </p>
+
+                    <p className="mt-1 break-all text-xs text-(--text-muted)">
+                      {getFileName(announcement.attachment)}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex shrink-0 flex-wrap gap-2">
+                  <a
+                    href={announcement.attachment.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded border border-(--primary) px-3 py-2 text-xs font-medium text-(--primary) transition hover:bg-(--primary) hover:text-white"
+                  >
+                    <Eye size={14} />
+                    View PDF
+                  </a>
+
+                  <a
+                    href={announcement.attachment.url}
+                    download={getFileName(announcement.attachment)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded border border-(--border) bg-(--bg-white) px-3 py-2 text-xs font-medium text-(--secondary) transition hover:bg-(--bg-light)"
+                  >
+                    <Download size={14} />
+                    Download
+                  </a>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* EXISTING STEWARDSHIP PDF ACTIONS */}
 
           {isStewardship && announcement.pdfUrl && (
             <div className="mt-5 flex flex-wrap gap-3 border-t border-(--border) pt-4">
@@ -333,7 +378,6 @@ const AnnouncementCard = ({
   );
 };
 
-
 // ============================================================
 // MAIN COMPONENT
 // ============================================================
@@ -341,6 +385,7 @@ const AnnouncementCard = ({
 const Announcements = () => {
   const { user } = useAuth();
 
+  // Preserving your existing role logic.
   const isPresident = user?.role === "superAdmin";
 
   const [announcements, setAnnouncements] = useState([]);
@@ -362,6 +407,10 @@ const Announcements = () => {
     content: "",
   });
 
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [removeExistingAttachment, setRemoveExistingAttachment] =
+    useState(false);
+
   const [formError, setFormError] = useState("");
   const [saving, setSaving] = useState(false);
 
@@ -371,114 +420,111 @@ const Announcements = () => {
   // LOAD ANNOUNCEMENTS
   // ==========================================================
 
-  const loadAnnouncements = useCallback(async (isRefresh = false) => {
-    try {
-      if (isRefresh) {
-        setRefreshing(true);
-      } else {
-        setLoading(true);
-      }
-
-      setError("");
-
-      let combinedItems = [];
-      let unreadAnnouncement = null;
-
-      if (isPresident) {
-        const [response, memberResponse] = await Promise.all([
-          getAllAnnouncements(),
-          getAnnouncements(),
-        ]);
-
-        if (!response?.success) {
-          throw new Error(
-            response?.message || "Unable to load announcements."
-          );
+  const loadAnnouncements = useCallback(
+    async (isRefresh = false) => {
+      try {
+        if (isRefresh) {
+          setRefreshing(true);
+        } else {
+          setLoading(true);
         }
 
-        unreadAnnouncement = memberResponse?.newAnnouncement || null;
+        setError("");
 
-        combinedItems = response.announcements || [];
-      } else {
-        const [announcementResponse, stewardshipResponse] =
-          await Promise.all([
+        let combinedItems = [];
+        let unreadAnnouncement = null;
+
+        if (isPresident) {
+          const [response, memberResponse] = await Promise.all([
+            getAllAnnouncements(),
             getAnnouncements(),
-            getPublishedStewardshipReports(),
           ]);
 
-        if (!announcementResponse?.success) {
-          throw new Error(
-            announcementResponse?.message ||
-            "Unable to load announcements."
+          if (!response?.success) {
+            throw new Error(
+              response?.message || "Unable to load announcements."
+            );
+          }
+
+          unreadAnnouncement = memberResponse?.newAnnouncement || null;
+          combinedItems = response.announcements || [];
+        } else {
+          const [announcementResponse, stewardshipResponse] =
+            await Promise.all([
+              getAnnouncements(),
+              getPublishedStewardshipReports(),
+            ]);
+
+          if (!announcementResponse?.success) {
+            throw new Error(
+              announcementResponse?.message || "Unable to load announcements."
+            );
+          }
+
+          if (!stewardshipResponse?.success) {
+            throw new Error(
+              stewardshipResponse?.message ||
+              "Unable to load stewardship reports."
+            );
+          }
+
+          unreadAnnouncement = announcementResponse.newAnnouncement || null;
+
+          const generalAnnouncements = (
+            announcementResponse.announcements || []
+          ).map((item) => ({
+            ...item,
+            sourceType: "announcement",
+          }));
+
+          const stewardshipReports = (stewardshipResponse.data || []).map(
+            (item) => ({
+              ...item,
+              sourceType: "stewardship",
+            })
+          );
+
+          combinedItems = [
+            ...generalAnnouncements,
+            ...stewardshipReports,
+          ].sort(
+            (a, b) =>
+              new Date(b.publishedAt || b.createdAt) -
+              new Date(a.publishedAt || a.createdAt)
           );
         }
 
-        if (!stewardshipResponse?.success) {
-          throw new Error(
-            stewardshipResponse?.message ||
-            "Unable to load stewardship reports."
-          );
+        setAnnouncements(combinedItems);
+
+        // Mark the latest outstanding announcement as viewed.
+
+        if (unreadAnnouncement?._id) {
+          try {
+            await markAnnouncementAsViewed(
+              unreadAnnouncement._id,
+              unreadAnnouncement.sourceType
+            );
+
+            window.dispatchEvent(
+              new Event("nosa:announcement-viewed")
+            );
+          } catch (viewError) {
+            console.error(
+              "Announcement view update error:",
+              viewError
+            );
+          }
         }
-
-        unreadAnnouncement =
-          announcementResponse.newAnnouncement || null;
-
-        const generalAnnouncements = (
-          announcementResponse.announcements || []
-        ).map((item) => ({
-          ...item,
-          sourceType: "announcement",
-        }));
-
-        const stewardshipReports = (
-          stewardshipResponse.data || []
-        ).map((item) => ({
-          ...item,
-          sourceType: "stewardship",
-        }));
-
-        combinedItems = [
-          ...generalAnnouncements,
-          ...stewardshipReports,
-        ].sort(
-          (a, b) =>
-            new Date(b.publishedAt || b.createdAt) -
-            new Date(a.publishedAt || a.createdAt)
-        );
+      } catch (error) {
+        console.error("Load announcements error:", error);
+        setError(error.message || "Unable to load announcements.");
+      } finally {
+        setLoading(false);
+        setRefreshing(false);
       }
-
-      setAnnouncements(combinedItems);
-
-
-      // Mark the latest outstanding announcement as viewed
-
-      if (unreadAnnouncement?._id) {
-  try {
-    await markAnnouncementAsViewed(
-      unreadAnnouncement._id,
-      unreadAnnouncement.sourceType
-    );
-
-    window.dispatchEvent(
-      new Event("nosa:announcement-viewed")
-    );
-  } catch (viewError) {
-    console.error(
-      "Announcement view update error:",
-      viewError
-    );
-  }
-}
-
-    } catch (error) {
-      console.error("Load announcements error:", error);
-
-      setError(error.message || "Unable to load announcements.");
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, [isPresident]);
+    },
+    [isPresident]
+  );
 
   useEffect(() => {
     loadAnnouncements();
@@ -498,18 +544,21 @@ const Announcements = () => {
     );
   }, [announcements, activeFilter, isPresident]);
 
-  const counts = useMemo(() => ({
-    all: announcements.length,
-    published: announcements.filter(
-      (item) => item.status === "published"
-    ).length,
-    draft: announcements.filter(
-      (item) => item.status === "draft"
-    ).length,
-    archived: announcements.filter(
-      (item) => item.status === "archived"
-    ).length,
-  }), [announcements]);
+  const counts = useMemo(
+    () => ({
+      all: announcements.length,
+      published: announcements.filter(
+        (item) => item.status === "published"
+      ).length,
+      draft: announcements.filter(
+        (item) => item.status === "draft"
+      ).length,
+      archived: announcements.filter(
+        (item) => item.status === "archived"
+      ).length,
+    }),
+    [announcements]
+  );
 
   // ==========================================================
   // FORM HANDLERS
@@ -526,6 +575,37 @@ const Announcements = () => {
     setFormError("");
   };
 
+  const resetAttachmentFields = () => {
+    setSelectedFile(null);
+    setRemoveExistingAttachment(false);
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    const isPdf =
+      file.type === "application/pdf" ||
+      file.name.toLowerCase().endsWith(".pdf");
+
+    if (!isPdf) {
+      setFormError("Only PDF files are allowed.");
+      e.target.value = "";
+      return;
+    }
+
+    if (file.size > MAX_PDF_SIZE) {
+      setFormError("The PDF file must not exceed 20 MB.");
+      e.target.value = "";
+      return;
+    }
+
+    setSelectedFile(file);
+    setRemoveExistingAttachment(false);
+    setFormError("");
+  };
+
   const openCreateDrawer = () => {
     setEditingAnnouncement(null);
 
@@ -534,6 +614,7 @@ const Announcements = () => {
       content: "",
     });
 
+    resetAttachmentFields();
     setFormError("");
     setShowDrawer(true);
   };
@@ -542,10 +623,11 @@ const Announcements = () => {
     setEditingAnnouncement(announcement);
 
     setFormData({
-      title: announcement.title,
-      content: announcement.content,
+      title: announcement.title || "",
+      content: announcement.content || "",
     });
 
+    resetAttachmentFields();
     setFormError("");
     setShowDrawer(true);
   };
@@ -561,6 +643,7 @@ const Announcements = () => {
       content: "",
     });
 
+    resetAttachmentFields();
     setFormError("");
   };
 
@@ -574,7 +657,9 @@ const Announcements = () => {
     if (!isPresident) return;
 
     if (!formData.title.trim() || !formData.content.trim()) {
-      setFormError("Please provide both a title and announcement content.");
+      setFormError(
+        "Please provide both a title and announcement content."
+      );
       return;
     }
 
@@ -582,19 +667,30 @@ const Announcements = () => {
       setSaving(true);
       setFormError("");
 
+      const payload = new FormData();
+
+      payload.append("title", formData.title.trim());
+      payload.append("content", formData.content.trim());
+
+      if (selectedFile) {
+        payload.append("attachment", selectedFile);
+      }
+
       let response;
 
       if (editingAnnouncement) {
-        response = await updateAnnouncement(editingAnnouncement._id, {
-          title: formData.title.trim(),
-          content: formData.content.trim(),
-        });
+        if (removeExistingAttachment && !selectedFile) {
+          payload.append("removeAttachment", "true");
+        }
+
+        response = await updateAnnouncement(
+          editingAnnouncement._id,
+          payload
+        );
       } else {
-        response = await createAnnouncement({
-          title: formData.title.trim(),
-          content: formData.content.trim(),
-          status,
-        });
+        payload.append("status", status);
+
+        response = await createAnnouncement(payload);
       }
 
       if (!response?.success) {
@@ -603,10 +699,20 @@ const Announcements = () => {
         );
       }
 
-      closeDrawer();
+      const wasEditing = Boolean(editingAnnouncement);
+
+      setShowDrawer(false);
+      setEditingAnnouncement(null);
+
+      setFormData({
+        title: "",
+        content: "",
+      });
+
+      resetAttachmentFields();
 
       setSuccessMessage(
-        editingAnnouncement
+        wasEditing
           ? "Announcement updated successfully."
           : status === "published"
             ? "Announcement published successfully."
@@ -616,7 +722,6 @@ const Announcements = () => {
       await loadAnnouncements(true);
     } catch (error) {
       console.error("Save announcement error:", error);
-
       setFormError(error.message || "Unable to save announcement.");
     } finally {
       setSaving(false);
@@ -636,7 +741,9 @@ const Announcements = () => {
       const response = await publishAnnouncement(announcement._id);
 
       if (!response?.success) {
-        throw new Error(response?.message || "Unable to publish announcement.");
+        throw new Error(
+          response?.message || "Unable to publish announcement."
+        );
       }
 
       setSuccessMessage("Announcement published successfully.");
@@ -662,7 +769,9 @@ const Announcements = () => {
       const response = await archiveAnnouncement(announcement._id);
 
       if (!response?.success) {
-        throw new Error(response?.message || "Unable to archive announcement.");
+        throw new Error(
+          response?.message || "Unable to archive announcement."
+        );
       }
 
       setSuccessMessage("Announcement archived successfully.");
@@ -680,7 +789,8 @@ const Announcements = () => {
   // ==========================================================
 
   const handleRestore = async (announcement) => {
-    if (!window.confirm(`Restore "${announcement.title}" as a draft?`)) return;
+    if (!window.confirm(`Restore "${announcement.title}" as a draft?`))
+      return;
 
     try {
       setBusy(true);
@@ -688,7 +798,9 @@ const Announcements = () => {
       const response = await restoreAnnouncement(announcement._id);
 
       if (!response?.success) {
-        throw new Error(response?.message || "Unable to restore announcement.");
+        throw new Error(
+          response?.message || "Unable to restore announcement."
+        );
       }
 
       setSuccessMessage("Announcement restored as draft.");
@@ -714,7 +826,9 @@ const Announcements = () => {
       const response = await deleteAnnouncement(deleteTarget._id);
 
       if (!response?.success) {
-        throw new Error(response?.message || "Unable to delete announcement.");
+        throw new Error(
+          response?.message || "Unable to delete announcement."
+        );
       }
 
       setDeleteTarget(null);
@@ -743,7 +857,6 @@ const Announcements = () => {
   return (
     <div className="p-4">
       <div className="space-y-5">
-
         {/* PAGE HEADER */}
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -765,7 +878,10 @@ const Announcements = () => {
               <span>
                 {isPresident
                   ? `${counts.all} total`
-                  : `${announcements.length} ${announcements.length === 1 ? "announcement" : "announcements"}`}
+                  : `${announcements.length} ${announcements.length === 1
+                    ? "announcement"
+                    : "announcements"
+                  }`}
               </span>
             </div>
 
@@ -812,9 +928,7 @@ const Announcements = () => {
               />
 
               <div className="flex-1">
-                <p className="text-sm text-(--danger)">
-                  {error}
-                </p>
+                <p className="text-sm text-(--danger)">{error}</p>
 
                 <button
                   type="button"
@@ -843,17 +957,25 @@ const Announcements = () => {
             <div className="flex flex-wrap gap-2">
               {[
                 { key: "all", label: "All", count: counts.all },
-                { key: "published", label: "Published", count: counts.published },
+                {
+                  key: "published",
+                  label: "Published",
+                  count: counts.published,
+                },
                 { key: "draft", label: "Drafts", count: counts.draft },
-                { key: "archived", label: "Archived", count: counts.archived },
+                {
+                  key: "archived",
+                  label: "Archived",
+                  count: counts.archived,
+                },
               ].map((filter) => (
                 <button
                   key={filter.key}
                   type="button"
                   onClick={() => setActiveFilter(filter.key)}
                   className={`rounded border px-3 py-2 text-xs font-medium transition ${activeFilter === filter.key
-                    ? "border-(--primary) bg-(--primary) text-white"
-                    : "border-(--border) text-(--secondary) hover:border-(--primary)/40"
+                      ? "border-(--primary) bg-(--primary) text-white"
+                      : "border-(--border) text-(--secondary) hover:border-(--primary)/40"
                     }`}
                 >
                   {filter.label}
@@ -938,20 +1060,8 @@ const Announcements = () => {
                 ? "There are no announcements in this category yet."
                 : "There are currently no published announcements. Please check back later for updates."}
             </p>
-
-            {/* {isPresident && activeFilter === "all" && (
-              <button
-                type="button"
-                onClick={openCreateDrawer}
-                className="mt-5 inline-flex items-center gap-2 rounded border border-(--primary) px-4 py-2 text-sm font-medium text-(--primary) transition hover:bg-(--primary) hover:text-white"
-              >
-                <Plus size={16} />
-                Create Announcement
-              </button>
-            )} */}
           </div>
         )}
-
       </div>
 
       {/* ======================================================
@@ -960,7 +1070,6 @@ const Announcements = () => {
 
       {showDrawer && isPresident && (
         <div className="fixed inset-0 z-50">
-
           <button
             type="button"
             aria-label="Close announcement form"
@@ -969,7 +1078,6 @@ const Announcements = () => {
           />
 
           <aside className="absolute right-0 top-0 flex h-full w-full max-w-xl flex-col overflow-hidden bg-(--bg-white) shadow-xl">
-
             {/* DRAWER HEADER */}
 
             <div className="flex shrink-0 items-center justify-between border-b border-(--border) px-5 py-4">
@@ -1008,7 +1116,6 @@ const Announcements = () => {
               className="flex min-h-0 flex-1 flex-col"
             >
               <div className="flex-1 space-y-5 overflow-y-auto p-5">
-
                 {formError && (
                   <div className="flex items-start gap-2 rounded border border-(--danger)/20 bg-(--danger)/5 p-3">
                     <AlertCircle
@@ -1081,6 +1188,128 @@ const Announcements = () => {
                   </p>
                 </div>
 
+                {/* OPTIONAL PDF ATTACHMENT */}
+
+                <div className="rounded border border-(--border) p-4">
+                  <div className="flex items-center gap-2">
+                    <FileText size={17} className="text-(--primary)" />
+
+                    <h3 className="text-xs font-semibold text-(--primary)">
+                      PDF Attachment
+                      <span className="ml-1 font-normal text-(--text-muted)">
+                        (Optional)
+                      </span>
+                    </h3>
+                  </div>
+
+                  {editingAnnouncement?.attachment?.url &&
+                    !removeExistingAttachment &&
+                    !selectedFile && (
+                      <div className="mt-3 flex items-center justify-between gap-3 rounded border border-(--border) bg-(--bg-light) p-3">
+                        <div className="flex min-w-0 items-center gap-2">
+                          <FileText
+                            size={18}
+                            className="shrink-0 text-red-600"
+                          />
+
+                          <span className="break-all text-xs text-(--secondary)">
+                            {getFileName(editingAnnouncement.attachment)}
+                          </span>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setRemoveExistingAttachment(true);
+                            setSelectedFile(null);
+                            setFormError("");
+                          }}
+                          disabled={saving}
+                          className="shrink-0 text-xs font-medium text-(--danger) hover:underline"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    )}
+
+                  {removeExistingAttachment &&
+                    !selectedFile && (
+                      <div className="mt-3 rounded border border-amber-500/20 bg-amber-500/5 p-3">
+                        <p className="text-xs text-amber-700">
+                          The existing PDF will be removed when you save
+                          your changes.
+                        </p>
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setRemoveExistingAttachment(false)
+                          }
+                          disabled={saving}
+                          className="mt-2 text-xs font-semibold text-(--primary) hover:underline"
+                        >
+                          Undo removal
+                        </button>
+                      </div>
+                    )}
+
+                  {selectedFile && (
+                    <div className="mt-3 flex items-center justify-between gap-3 rounded border border-(--border) bg-(--bg-light) p-3">
+                      <div className="flex min-w-0 items-center gap-2">
+                        <FileText
+                          size={18}
+                          className="shrink-0 text-red-600"
+                        />
+
+                        <div className="min-w-0">
+                          <p className="break-all text-xs font-medium text-(--secondary)">
+                            {selectedFile.name}
+                          </p>
+
+                          <p className="mt-1 text-[11px] text-(--text-muted)">
+                            {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
+                          </p>
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => setSelectedFile(null)}
+                        disabled={saving}
+                        className="shrink-0 text-xs font-medium text-(--danger) hover:underline"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  )}
+
+                  <label
+                    htmlFor="announcement-pdf"
+                    className="mt-3 flex cursor-pointer flex-col items-center justify-center rounded border border-dashed border-(--border) px-4 py-5 text-center transition hover:border-(--primary)/50 hover:bg-(--bg-light)"
+                  >
+                    <Plus size={20} className="text-(--primary)" />
+
+                    <span className="mt-2 text-xs font-medium text-(--primary)">
+                      {selectedFile || editingAnnouncement?.attachment?.url
+                        ? "Choose another PDF"
+                        : "Choose a PDF file"}
+                    </span>
+
+                    <span className="mt-1 text-[11px] text-(--text-muted)">
+                      PDF only · Maximum size 20 MB
+                    </span>
+
+                    <input
+                      id="announcement-pdf"
+                      type="file"
+                      accept=".pdf,application/pdf"
+                      onChange={handleFileChange}
+                      disabled={saving}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
+
                 {/* NOTICE */}
 
                 <div className="flex items-start gap-3 rounded border border-(--border) bg-(--bg-light) p-3">
@@ -1092,7 +1321,7 @@ const Announcements = () => {
                   <p className="text-xs leading-5 text-(--secondary)">
                     Published announcements become immediately visible
                     to all authenticated members. Drafts remain visible
-                    only in the President's management view.
+                    only in the management view.
                   </p>
                 </div>
               </div>
@@ -1100,7 +1329,6 @@ const Announcements = () => {
               {/* FOOTER */}
 
               <div className="flex shrink-0 flex-wrap items-center justify-end gap-3 border-t border-(--border) bg-(--bg-white) px-5 py-4">
-
                 <button
                   type="button"
                   onClick={closeDrawer}
@@ -1169,7 +1397,6 @@ const Announcements = () => {
       {deleteTarget && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 p-4">
           <div className="w-full max-w-md rounded border border-(--border) bg-(--bg-white) p-5 shadow-xl">
-
             <div className="flex items-start gap-3">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-(--danger)/10 text-(--danger)">
                 <Trash2 size={19} />
@@ -1182,8 +1409,8 @@ const Announcements = () => {
 
                 <p className="mt-2 text-sm leading-6 text-(--secondary)">
                   You are about to permanently delete{" "}
-                  <strong>{deleteTarget.title}</strong>.
-                  This action cannot be undone.
+                  <strong>{deleteTarget.title}</strong>. This action
+                  cannot be undone.
                 </p>
               </div>
             </div>

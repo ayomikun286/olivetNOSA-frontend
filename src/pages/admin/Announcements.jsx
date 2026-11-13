@@ -13,6 +13,9 @@ import {
   CalendarDays,
   UserRound,
   RefreshCw,
+  FileText,
+  Upload,
+  Copy,
 } from "lucide-react";
 
 import AdminStatCard from "../../components/admin/AdminStatCard";
@@ -33,6 +36,8 @@ const initialForm = {
   title: "",
   content: "",
 };
+
+const MAX_PDF_SIZE = 20 * 1024 * 1024;
 
 const statusStyles = {
   draft: "bg-gray-100 text-gray-700",
@@ -90,6 +95,10 @@ const Announcements = () => {
   const [editingAnnouncement, setEditingAnnouncement] = useState(null);
   const [form, setForm] = useState(initialForm);
 
+  // PDF attachment state
+  const [selectedPdf, setSelectedPdf] = useState(null);
+  const [removeExistingPdf, setRemoveExistingPdf] = useState(false);
+
   const [alert, setAlert] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
 
@@ -106,6 +115,24 @@ const Announcements = () => {
 
   const showAlert = (type, message) => {
     setAlert({ type, message });
+  };
+
+  const handleCopyAnnouncementLink = async (announcement) => {
+    try {
+      const link = `${window.location.origin}/portal/member/dashboard/announcements/${announcement._id}`;
+
+      await navigator.clipboard.writeText(link);
+
+      showAlert(
+        "success",
+        "Announcement link copied successfully. You can now share it."
+      );
+    } catch (error) {
+      showAlert(
+        "error",
+        "Unable to copy the announcement link. Please try again."
+      );
+    }
   };
 
   const loadAnnouncements = async () => {
@@ -159,9 +186,15 @@ const Announcements = () => {
     });
   }, [announcements, search, statusFilter]);
 
+  const resetAttachmentState = () => {
+    setSelectedPdf(null);
+    setRemoveExistingPdf(false);
+  };
+
   const openCreateModal = () => {
     setEditingAnnouncement(null);
     setForm(initialForm);
+    resetAttachmentState();
     setModalOpen(true);
   };
 
@@ -173,6 +206,7 @@ const Announcements = () => {
       content: announcement.content || "",
     });
 
+    resetAttachmentState();
     setModalOpen(true);
   };
 
@@ -182,6 +216,7 @@ const Announcements = () => {
     setModalOpen(false);
     setEditingAnnouncement(null);
     setForm(initialForm);
+    resetAttachmentState();
   };
 
   const handleChange = (event) => {
@@ -191,6 +226,41 @@ const Announcements = () => {
       ...current,
       [name]: value,
     }));
+  };
+
+  const handlePdfChange = (event) => {
+    const file = event.target.files?.[0];
+
+    // Allow selecting the same file again after clearing it.
+    event.target.value = "";
+
+    if (!file) return;
+
+    const isPdf =
+      file.type === "application/pdf" &&
+      file.name.toLowerCase().endsWith(".pdf");
+
+    if (!isPdf) {
+      showAlert("error", "Only PDF files are allowed.");
+      return;
+    }
+
+    if (file.size > MAX_PDF_SIZE) {
+      showAlert("error", "PDF file must not exceed 20 MB.");
+      return;
+    }
+
+    setSelectedPdf(file);
+    setRemoveExistingPdf(false);
+  };
+
+  const handleRemoveSelectedPdf = () => {
+    setSelectedPdf(null);
+  };
+
+  const handleRemoveExistingPdf = () => {
+    setRemoveExistingPdf(true);
+    setSelectedPdf(null);
   };
 
   const handleSubmit = async (event) => {
@@ -204,10 +274,16 @@ const Announcements = () => {
     try {
       setSaving(true);
 
-      const payload = {
-        title: form.title.trim(),
-        content: form.content.trim(),
-      };
+      const payload = new FormData();
+
+      payload.append("title", form.title.trim());
+      payload.append("content", form.content.trim());
+
+      if (selectedPdf) {
+        payload.append("attachment", selectedPdf);
+      } else if (editingAnnouncement && removeExistingPdf) {
+        payload.append("removeAttachment", "true");
+      }
 
       if (editingAnnouncement) {
         await updateAnnouncement(editingAnnouncement._id, payload);
@@ -220,6 +296,7 @@ const Announcements = () => {
       setModalOpen(false);
       setEditingAnnouncement(null);
       setForm(initialForm);
+      resetAttachmentState();
 
       await loadAnnouncements();
     } catch (error) {
@@ -240,7 +317,21 @@ const Announcements = () => {
 
       if (action === "publish") {
         await publishAnnouncement(announcement._id);
-        showAlert("success", "Announcement published successfully.");
+
+        try {
+          const link = `${window.location.origin}/portal/member/dashboard/announcements/${announcement._id}`;
+          await navigator.clipboard.writeText(link);
+
+          showAlert(
+            "success",
+            "Announcement published successfully. Its link has been copied!"
+          );
+        } catch {
+          showAlert(
+            "success",
+            "Announcement published successfully. Use Copy Link to share it."
+          );
+        }
       }
 
       if (action === "archive") {
@@ -304,6 +395,13 @@ const Announcements = () => {
           <p className="mt-1 text-xs text-(--secondary) line-clamp-2">
             {item.content}
           </p>
+
+          {item.attachment?.url && (
+            <span className="mt-1 inline-flex items-center gap-1 text-xs text-blue-600">
+              <FileText size={13} />
+              PDF attached
+            </span>
+          )}
         </div>
       ),
     },
@@ -337,9 +435,8 @@ const Announcements = () => {
       label: "STATUS",
       render: (item) => (
         <span
-          className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium capitalize ${
-            statusStyles[item.status] || statusStyles.draft
-          }`}
+          className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium capitalize ${statusStyles[item.status] || statusStyles.draft
+            }`}
         >
           {item.status}
         </span>
@@ -389,6 +486,17 @@ const Announcements = () => {
                 ) : (
                   <Send size={16} />
                 )}
+              </button>
+            )}
+            {item.status === "published" && (
+              <button
+                type="button"
+                title="Copy announcement link"
+                onClick={() => handleCopyAnnouncementLink(item)}
+                disabled={Boolean(actionLoading)}
+                className="rounded-lg p-2 text-blue-600 hover:bg-blue-50 disabled:opacity-50"
+              >
+                <Copy size={16} />
               </button>
             )}
 
@@ -443,6 +551,8 @@ const Announcements = () => {
 
   const inputClass =
     "w-full rounded border border-(--border) bg-(--bg-white) px-3 py-2.5 text-sm text-(--primary) outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500";
+
+  const existingAttachment = editingAnnouncement?.attachment;
 
   return (
     <div className="space-y-6 p-4">
@@ -560,11 +670,10 @@ const Announcements = () => {
                 type="button"
                 key={value}
                 onClick={() => setStatusFilter(value)}
-                className={`rounded px-3 py-2 text-xs font-medium transition-colors ${
-                  statusFilter === value
-                    ? "bg-(--primary) text-white"
-                    : "bg-(--bg-soft) text-(--secondary) hover:text-(--primary)"
-                }`}
+                className={`rounded px-3 py-2 text-xs font-medium transition-colors ${statusFilter === value
+                  ? "bg-(--primary) text-white"
+                  : "bg-(--bg-soft) text-(--secondary) hover:text-(--primary)"
+                  }`}
               >
                 {label}
               </button>
@@ -653,6 +762,129 @@ const Announcements = () => {
                   placeholder="Write your announcement here..."
                 />
               </label>
+
+              {/* PDF attachment */}
+              <div className="space-y-3">
+                <div>
+                  <p className="text-sm font-medium text-(--primary)">
+                    PDF Attachment <span className="font-normal text-(--secondary)">(Optional)</span>
+                  </p>
+
+                  <p className="mt-1 text-xs text-(--secondary)">
+                    Attach one PDF document. Maximum file size: 20 MB.
+                  </p>
+                </div>
+
+                {/* Existing attachment */}
+                {existingAttachment?.url && !removeExistingPdf && !selectedPdf && (
+                  <div className="flex flex-col gap-3 rounded border border-(--border) bg-(--bg-soft) p-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex min-w-0 items-center gap-3">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-red-50 text-red-600">
+                        <FileText size={20} />
+                      </div>
+
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-medium text-(--primary)">
+                          {existingAttachment.fileName || "Attached PDF"}
+                        </p>
+                        <p className="text-xs text-(--secondary)">
+                          Current attachment
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex shrink-0 items-center gap-3">
+                      <a
+                        href={existingAttachment.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs font-medium text-blue-600 hover:underline"
+                      >
+                        View PDF
+                      </a>
+
+                      <button
+                        type="button"
+                        onClick={handleRemoveExistingPdf}
+                        className="text-xs font-medium text-red-600 hover:underline"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Existing attachment marked for removal */}
+                {existingAttachment?.url && removeExistingPdf && !selectedPdf && (
+                  <div className="flex items-center justify-between gap-3 rounded border border-amber-200 bg-amber-50 p-3">
+                    <div className="flex items-center gap-2 text-sm text-amber-800">
+                      <FileText size={18} />
+                      <span>Existing PDF will be removed when you save.</span>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setRemoveExistingPdf(false)}
+                      className="shrink-0 text-xs font-semibold text-amber-800 hover:underline"
+                    >
+                      Undo
+                    </button>
+                  </div>
+                )}
+
+                {/* Newly selected PDF */}
+                {selectedPdf && (
+                  <div className="flex flex-col gap-3 rounded border border-blue-200 bg-blue-50 p-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex min-w-0 items-center gap-3">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-white text-blue-600">
+                        <FileText size={20} />
+                      </div>
+
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-medium text-blue-900">
+                          {selectedPdf.name}
+                        </p>
+                        <p className="text-xs text-blue-700">
+                          {(selectedPdf.size / (1024 * 1024)).toFixed(2)} MB
+                          {" · "}Ready to upload
+                        </p>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={handleRemoveSelectedPdf}
+                      className="flex shrink-0 items-center gap-1 text-xs font-medium text-red-600 hover:underline"
+                    >
+                      <X size={14} />
+                      Remove file
+                    </button>
+                  </div>
+                )}
+
+                {/* File picker */}
+                <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded border border-dashed border-(--border) bg-(--bg-soft) px-4 py-5 text-center transition hover:border-blue-400 hover:bg-blue-50">
+                  <Upload size={22} className="text-(--secondary)" />
+
+                  <span className="text-sm font-medium text-(--primary)">
+                    {selectedPdf || (existingAttachment?.url && !removeExistingPdf)
+                      ? "Choose a different PDF"
+                      : "Choose PDF file"}
+                  </span>
+
+                  <span className="text-xs text-(--secondary)">
+                    PDF only · Maximum 20 MB
+                  </span>
+
+                  <input
+                    type="file"
+                    accept=".pdf,application/pdf"
+                    onChange={handlePdfChange}
+                    disabled={saving}
+                    className="hidden"
+                  />
+                </label>
+              </div>
 
               <div className="rounded border border-blue-100 bg-blue-50 p-3">
                 <p className="text-xs leading-relaxed text-blue-800">

@@ -36,6 +36,8 @@ import Articles from "../pages/member/Articles.jsx";
 import Election from "../pages/member/Election.jsx";
 import PresidentMemberApprovals from "../pages/member/PresidentMemberApprovals.jsx";
 import MemberArticleDetails from "../pages/member/MemberArticleDetails.jsx";
+import AnnouncementDetails from "../pages/member/AnnouncementDetails.jsx";
+
 
 const ExcomRoutePage = () => {
   const { user } = useAuth();
@@ -64,10 +66,12 @@ const MemberRoutes = () => {
 
           <Route path="chapter" element={<MyChapter />} />
 
-            <Route
-  path="election"
-  element={<Election />}
-/>
+          <Route
+            path="election"
+            element={<Election />}
+          />
+
+          <Route path="announcements" element={<Announcements />} />
 
           <Route path="my-obligation" element={<Obligations />} />
 
@@ -95,16 +99,19 @@ const MemberRoutes = () => {
           />
 
           <Route path="articles" element={<Articles />} />
-          <Route path="announcements" element={<Announcements />} />
+         <Route
+  path="announcements/:id"
+  element={<AnnouncementDetails />}
+/>
           <Route
             path="articles/:slug"
             element={<MemberArticleDetails />}
           />
           <Route path="calendar" element={<Calendar />} />
           <Route
-  path="president/member-approvals"
-  element={<PresidentMemberApprovals />}
-/>
+            path="president/member-approvals"
+            element={<PresidentMemberApprovals />}
+          />
 
           <Route
             path="stewardship-reports"

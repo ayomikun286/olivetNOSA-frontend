@@ -1037,17 +1037,18 @@ export const markAnnouncementAsViewed = async (
 
 export const createAnnouncement = async (announcementData) => {
   try {
-    const response = await fetch(
-      `${API}/api/announcements`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(announcementData),
-      }
-    );
+    const isFormData = announcementData instanceof FormData;
+
+    const response = await fetch(`${API}/api/announcements`, {
+      method: "POST",
+      headers: isFormData
+        ? {}
+        : { "Content-Type": "application/json" },
+      credentials: "include",
+      body: isFormData
+        ? announcementData
+        : JSON.stringify(announcementData),
+    });
 
     const data = await response.json();
 
@@ -1092,6 +1093,31 @@ export const getAllAnnouncements = async () => {
   }
 };
 
+export const getPublishedAnnouncementById = async (id) => {
+  try {
+    const response = await fetch(
+      `${API}/api/announcements/${id}`,
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || "Unable to fetch announcement."
+      );
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Get announcement error:", error);
+    throw error;
+  }
+};
+
 
 // ============================================================
 // UPDATE ANNOUNCEMENT
@@ -1099,13 +1125,17 @@ export const getAllAnnouncements = async () => {
 
 export const updateAnnouncement = async (id, announcementData) => {
   try {
+    const isFormData = announcementData instanceof FormData;
+
     const response = await fetch(`${API}/api/announcements/${id}`, {
       method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: isFormData
+        ? {}
+        : { "Content-Type": "application/json" },
       credentials: "include",
-      body: JSON.stringify(announcementData),
+      body: isFormData
+        ? announcementData
+        : JSON.stringify(announcementData),
     });
 
     const data = await response.json();
