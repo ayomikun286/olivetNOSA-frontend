@@ -37,7 +37,7 @@ const initialForm = {
   content: "",
 };
 
-const MAX_PDF_SIZE = 20 * 1024 * 1024;
+const MAX_PDF_SIZE = 50 * 1024 * 1024;
 
 const statusStyles = {
   draft: "bg-gray-100 text-gray-700",
