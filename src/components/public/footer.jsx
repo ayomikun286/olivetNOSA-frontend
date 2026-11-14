@@ -125,7 +125,7 @@ const Footer = () => {
 
               <li>
                 <Link
-                  to="/about-gosa"
+                  to="/about-nosa"
                   className="text-sm text-white/55 transition hover:text-[var(--secondary)]"
                 >
                   About NOSA
