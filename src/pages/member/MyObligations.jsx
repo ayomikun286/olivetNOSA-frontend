@@ -17,6 +17,8 @@ import {
     ShieldCheck,
 } from "lucide-react";
 
+import CombinedPaymentModal from "../../components/member/CombinedPaymentModal";
+
 import { getMyObligation } from "../../services/obligationService.js";
 import ContentLoading from "../../components/admin/ContentLoading.jsx";
 
@@ -28,7 +30,7 @@ const Obligations = () => {
     const [paymentAmount, setPaymentAmount] = useState("");
     const [paymentLoading, setPaymentLoading] = useState(false);
     const [paymentError, setPaymentError] = useState("");
-
+const [showCombinedPaymentModal, setShowCombinedPaymentModal] = useState(false);
     // ========================================
     // FETCH OBLIGATIONS
     // ========================================
@@ -144,6 +146,23 @@ const Obligations = () => {
         (item) =>
             item.obligation?.isActive === false
     );
+
+
+
+    // ========================================
+// COMBINED PAYMENT ELIGIBLE OBLIGATIONS
+// ========================================
+
+const combinedPayableObligations = obligations.filter((item) => {
+    const isActive = item.obligation?.isActive === true;
+
+    const outstanding =
+        Number(item.amountDue || 0) -
+        Number(item.amountPaid || 0);
+
+    return isActive && outstanding > 0;
+});
+
 
     // ========================================
     // MANDATORY FINANCIAL CALCULATIONS
@@ -782,38 +801,39 @@ const Obligations = () => {
 
                         {isActive &&
                             remaining > 0 && (
-                                <button
-                                    type="button"
-                                    onClick={() =>
-                                        handlePayNow(
-                                            item
-                                        )
-                                    }
-                                    className={`
-                                        inline-flex
-                                        items-center
-                                        justify-center
-                                        gap-1.5
-                                        text-white
-                                        px-4 py-2
-                                        rounded-(--radius-sm)
-                                        text-xs
-                                        font-semibold
-                                        transition
-                                        shrink-0
-                                        ${
-                                            isOptional
-                                                ? "bg-amber-600 hover:bg-amber-700"
-                                                : "bg-(--primary) hover:bg-(--primary-dark)"
-                                        }
-                                    `}
-                                >
-                                    Pay now
+                                // <button
+                                //     type="button"
+                                //     onClick={() =>
+                                //         handlePayNow(
+                                //             item
+                                //         )
+                                //     }
+                                //     className={`
+                                //         inline-flex
+                                //         items-center
+                                //         justify-center
+                                //         gap-1.5
+                                //         text-white
+                                //         px-4 py-2
+                                //         rounded-(--radius-sm)
+                                //         text-xs
+                                //         font-semibold
+                                //         transition
+                                //         shrink-0
+                                //         ${
+                                //             isOptional
+                                //                 ? "bg-amber-600 hover:bg-amber-700"
+                                //                 : "bg-(--primary) hover:bg-(--primary-dark)"
+                                //         }
+                                //     `}
+                                // >
+                                //     Pay now
 
-                                    <ArrowUpRight
-                                        size={14}
-                                    />
-                                </button>
+                                //     <ArrowUpRight
+                                //         size={14}
+                                //     />
+                                // </button>
+                                <></>
                             )}
                     </div>
                 </div>
@@ -828,16 +848,29 @@ const Obligations = () => {
                     PAGE HEADER
                 ======================================== */}
 
-                <div>
-                    <h1 className="text-xl font-semibold text-(--primary)">
-                        My Obligations
-                    </h1>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+        <h1 className="text-xl font-semibold text-(--primary)">
+            My Obligations
+        </h1>
 
-                    <p className="text-sm text-(--secondary) mt-1">
-                        View your assigned membership
-                        contributions and payment status.
-                    </p>
-                </div>
+        <p className="text-sm text-(--secondary) mt-1">
+            View your assigned membership
+            contributions and payment status.
+        </p>
+    </div>
+
+    {combinedPayableObligations.length > 0 && (
+        <button
+            type="button"
+            onClick={() => setShowCombinedPaymentModal(true)}
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-(--primary) hover:bg-(--primary-dark) text-white text-sm font-semibold transition"
+        >
+            <CreditCard size={17} />
+            Pay Multiple Obligations
+        </button>
+    )}
+</div>
 
                 {/* ========================================
                     SUMMARY
@@ -1394,6 +1427,17 @@ const Obligations = () => {
                     </div>
                 </div>
             )}
+
+            {/* ========================================
+    COMBINED PAYMENT MODAL
+======================================== */}
+
+{showCombinedPaymentModal && (
+    <CombinedPaymentModal
+        obligations={combinedPayableObligations}
+        onClose={() => setShowCombinedPaymentModal(false)}
+    />
+)}
         </div>
     );
 };

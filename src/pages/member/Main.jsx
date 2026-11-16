@@ -831,7 +831,7 @@ const Main = () => {
 
                             {/* ACTION */}
 
-                            {!isPaid && (
+                            {/* {!isPaid && (
                               <button
                                 type="button"
                                 onClick={() =>
@@ -842,7 +842,7 @@ const Main = () => {
                                 Pay now
                                 <ArrowUpRight size={14} />
                               </button>
-                            )}
+                            )} */}
 
                           </div>
                         </div>
@@ -964,16 +964,17 @@ const Main = () => {
                                 Covered
                               </span>
                             ) : (
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  handlePayNow(item)
-                                }
-                                className="inline-flex items-center justify-center gap-1.5 bg-(--secondary) text-(--primary) px-4 py-2 rounded-(--radius-sm) text-xs font-semibold hover:opacity-90 transition"
-                              >
-                                Pay insurance
-                                <ArrowUpRight size={14} />
-                              </button>
+                              // <button
+                              //   type="button"
+                              //   onClick={() =>
+                              //     handlePayNow(item)
+                              //   }
+                              //   className="inline-flex items-center justify-center gap-1.5 bg-(--secondary) text-(--primary) px-4 py-2 rounded-(--radius-sm) text-xs font-semibold hover:opacity-90 transition"
+                              // >
+                              //   Pay insurance
+                              //   <ArrowUpRight size={14} />
+                              // </button>
+                              <></>
                             )}
 
                           </div>

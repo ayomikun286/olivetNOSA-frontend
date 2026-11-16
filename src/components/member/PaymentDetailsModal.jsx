@@ -1,3 +1,4 @@
+
 import React from "react";
 import {
     X,
@@ -14,8 +15,65 @@ import {
 const PaymentDetailsModal = ({ payment, onClose }) => {
     if (!payment) return null;
 
+    const isCombinedPayment =
+        payment.metadata?.paymentType === "combined" ||
+        (Array.isArray(payment.allocations) &&
+            payment.allocations.length > 0);
+
     const obligation =
         payment.obligationAssignment?.obligation;
+
+    // MEMBER INFORMATION
+    const memberName = [
+        payment.user?.firstName,
+        payment.user?.middleName,
+        payment.user?.lastName,
+    ]
+        .filter(Boolean)
+        .join(" ") || "—";
+
+    const memberAlumniId =
+        payment.user?.alumniId || "—";
+
+    const memberEmail =
+        payment.user?.email || "—";
+
+    // MULTIPLE PAYMENT ALLOCATIONS
+    const allocations = (payment.allocations || []).map(
+        (allocation) => {
+            const paidObligation =
+                allocation.obligationAssignment?.obligation;
+
+            return {
+                name: paidObligation?.name || "Obligation",
+                category: paidObligation?.category || "—",
+                year: paidObligation?.year || null,
+                amount: Number(allocation.amount || 0),
+            };
+        }
+    );
+
+    const categories = [
+        ...new Set(
+            allocations
+                .map((item) => item.category)
+                .filter((category) => category !== "—")
+        ),
+    ];
+
+    // RECEIPT BREAKDOWN
+    // Single payment: use its linked obligation.
+    // Multiple payment: use every saved allocation.
+    const receiptItems = isCombinedPayment
+        ? allocations
+        : [
+              {
+                  name: obligation?.name || "Payment",
+                  category: obligation?.category || "—",
+                  year: obligation?.year || null,
+                  amount: Number(payment.amount || 0),
+              },
+          ];
 
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat("en-NG", {
@@ -90,20 +148,28 @@ const PaymentDetailsModal = ({ payment, onClose }) => {
     const status = getStatus();
     const StatusIcon = status.icon;
 
-    const amountDue =
-        Number(
-            payment.obligationAssignment?.amountDue || 0
-        );
+    const amountDue = Number(
+        payment.obligationAssignment?.amountDue || 0
+    );
 
-    const amountPaid =
-        Number(
-            payment.obligationAssignment?.amountPaid || 0
-        );
+    const amountPaid = Number(
+        payment.obligationAssignment?.amountPaid || 0
+    );
 
     const amountRemaining = Math.max(
         amountDue - amountPaid,
         0
     );
+
+    const paymentTitle = isCombinedPayment
+        ? "Combined Payment"
+        : obligation?.name || "Payment";
+
+    const paymentCategory = isCombinedPayment
+        ? categories.length
+            ? categories.join(", ")
+            : "—"
+        : obligation?.category || "—";
 
     const handlePrint = () => {
         window.print();
@@ -111,52 +177,52 @@ const PaymentDetailsModal = ({ payment, onClose }) => {
 
     return (
         <div
-            className="fixed inset-0 z-50 flex overflow-y-scroll items-start justify-center bg-black/40 p-4"
+            className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-3 sm:p-5"
             onClick={onClose}
         >
+            {/* PAYMENT DETAILS MODAL */}
             <div
-                className="w-full max-w-lg bg-(--bg-white) rounded shadow-xl overflow-hidden"
+                className="my-auto w-full max-w-xl overflow-hidden rounded bg-(--bg-white) shadow-2xl"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* HEADER */}
-                <div className="p-5 border-b border-(--border) flex items-center justify-between">
+                <div className="flex items-center justify-between border-b border-(--border) bg-(--bg-white) px-5 py-4 sm:px-6">
                     <div>
-                        <h2 className="text-lg font-semibold text-(--primary)">
+                        <h2 className="text-base font-semibold text-(--primary)">
                             Payment Details
                         </h2>
 
-                        <p className="text-xs text-(--secondary) mt-1">
-                            Transaction information
+                        <p className="mt-1 text-xs text-(--text-muted)">
+                            View your transaction information and receipt
                         </p>
                     </div>
 
                     <button
                         type="button"
                         onClick={onClose}
-                        className="w-9 h-9 rounded-lg flex items-center justify-center text-(--text-muted) hover:bg-(--bg-light) hover:text-(--primary) transition"
+                        className="flex h-9 w-9 items-center justify-center rounded text-(--text-muted) transition hover:bg-(--bg-light) hover:text-(--primary)"
                     >
                         <X size={19} />
                     </button>
                 </div>
 
                 {/* CONTENT */}
-                <div className="p-5 space-y-5">
-
-                    {/* STATUS + AMOUNT */}
-                    <div className="rounded-lg border border-(--border) p-5">
-                        <div className="flex items-center justify-between gap-4">
+                <div className="space-y-5 p-5 sm:p-6">
+                    {/* AMOUNT AND STATUS */}
+                    <div className="rounded border border-(--border) bg-(--bg-light) p-5">
+                        <div className="flex flex-wrap items-center justify-between gap-4">
                             <div>
-                                <p className="text-xs text-(--text-muted)">
+                                <p className="text-xs font-medium text-(--text-muted)">
                                     Amount Paid
                                 </p>
 
-                                <h3 className="text-2xl font-bold text-(--primary) mt-1">
+                                <h3 className="mt-1 text-2xl font-bold text-(--primary)">
                                     {formatCurrency(payment.amount)}
                                 </h3>
                             </div>
 
                             <span
-                                className={`inline-flex items-center gap-1.5 text-xs font-medium px-3 py-2 rounded-full ${status.className}`}
+                                className={`inline-flex items-center gap-1.5 rounded px-3 py-2 text-xs font-semibold ${status.className}`}
                             >
                                 <StatusIcon size={14} />
                                 {status.label}
@@ -166,50 +232,106 @@ const PaymentDetailsModal = ({ payment, onClose }) => {
 
                     {/* PAYMENT INFORMATION */}
                     <div>
-                        <h3 className="text-sm font-semibold text-(--primary) mb-3">
+                        <h3 className="mb-3 text-sm font-semibold text-(--primary)">
                             Payment Information
                         </h3>
 
-                        <div className="border border-(--border) rounded-lg divide-y divide-(--border)">
-
-                            {/* OBLIGATION */}
-                            <div className="p-4 flex items-center justify-between gap-4">
+                        <div className="overflow-hidden rounded border border-(--border) divide-y divide-(--border)">
+                            {/* PAYMENT TYPE */}
+                            <div className="flex items-center justify-between gap-4 p-4">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-(--primary-light) text-(--primary) flex items-center justify-center">
-                                        <ReceiptIcon />
-                                    </div>
-
-                                    <span className="text-sm text-(--secondary)">
-                                        Obligation
-                                    </span>
-                                </div>
-
-                                <span className="text-sm font-medium text-(--primary) text-right">
-                                    {obligation?.name || "—"}
-                                </span>
-                            </div>
-
-                            {/* CATEGORY */}
-                            <div className="p-4 flex items-center justify-between gap-4">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-(--primary-light) text-(--primary) flex items-center justify-center">
+                                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded bg-(--primary-light) text-(--primary)">
                                         <Wallet size={16} />
                                     </div>
 
                                     <span className="text-sm text-(--secondary)">
-                                        Category
+                                        Payment Type
                                     </span>
                                 </div>
 
-                                <span className="text-sm font-medium text-(--primary) capitalize">
-                                    {obligation?.category || "—"}
+                                <span className="text-right text-sm font-semibold text-(--primary)">
+                                    {paymentTitle}
                                 </span>
                             </div>
 
-                            {/* DATE */}
-                            <div className="p-4 flex items-center justify-between gap-4">
+                            {/* MULTIPLE OBLIGATIONS */}
+                            {isCombinedPayment ? (
+                                <div className="p-4">
+                                    <div className="mb-3">
+                                        <p className="text-sm font-semibold text-(--primary)">
+                                            Obligations Paid
+                                        </p>
+
+                                        <p className="mt-1 text-xs text-(--text-muted)">
+                                            Breakdown of this transaction
+                                        </p>
+                                    </div>
+
+                                    <div className="overflow-hidden rounded border border-(--border)">
+                                        {allocations.length > 0 ? (
+                                            allocations.map((item, index) => (
+                                                <div
+                                                    key={index}
+                                                    className={`flex items-start justify-between gap-3 p-3 ${
+                                                        index !== allocations.length - 1
+                                                            ? "border-b border-(--border)"
+                                                            : ""
+                                                    }`}
+                                                >
+                                                    <div className="min-w-0">
+                                                        <p className="text-sm font-medium text-(--primary)">
+                                                            {item.name}
+                                                        </p>
+
+                                                        <p className="mt-1 text-xs capitalize text-(--text-muted)">
+                                                            {item.category}
+                                                        </p>
+                                                    </div>
+
+                                                    <span className="shrink-0 text-sm font-semibold text-(--primary)">
+                                                        {formatCurrency(item.amount)}
+                                                    </span>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <p className="p-3 text-sm text-(--text-muted)">
+                                                Allocation details unavailable.
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    <div className="mt-3 flex items-center justify-between gap-3">
+                                        <span className="text-xs font-medium text-(--secondary)">
+                                            Total Transaction
+                                        </span>
+
+                                        <span className="text-sm font-bold text-(--primary)">
+                                            {formatCurrency(payment.amount)}
+                                        </span>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="flex items-center justify-between gap-4 p-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded bg-(--primary-light) text-(--primary)">
+                                            <Wallet size={16} />
+                                        </div>
+
+                                        <span className="text-sm text-(--secondary)">
+                                            Category
+                                        </span>
+                                    </div>
+
+                                    <span className="text-right text-sm font-semibold capitalize text-(--primary)">
+                                        {paymentCategory}
+                                    </span>
+                                </div>
+                            )}
+
+                            {/* PAYMENT DATE */}
+                            <div className="flex items-center justify-between gap-4 p-4">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-(--primary-light) text-(--primary) flex items-center justify-center">
+                                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded bg-(--primary-light) text-(--primary)">
                                         <CalendarDays size={16} />
                                     </div>
 
@@ -218,18 +340,17 @@ const PaymentDetailsModal = ({ payment, onClose }) => {
                                     </span>
                                 </div>
 
-                                <span className="text-sm font-medium text-(--primary)">
+                                <span className="text-right text-sm font-medium text-(--primary)">
                                     {formatDate(
-                                        payment.paidAt ||
-                                        payment.createdAt
+                                        payment.paidAt || payment.createdAt
                                     )}
                                 </span>
                             </div>
 
                             {/* PAYMENT METHOD */}
-                            <div className="p-4 flex items-center justify-between gap-4">
+                            <div className="flex items-center justify-between gap-4 p-4">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-(--primary-light) text-(--primary) flex items-center justify-center">
+                                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded bg-(--primary-light) text-(--primary)">
                                         <CreditCard size={16} />
                                     </div>
 
@@ -238,17 +359,18 @@ const PaymentDetailsModal = ({ payment, onClose }) => {
                                     </span>
                                 </div>
 
-                                <span className="text-sm font-medium text-(--primary) capitalize">
-                                    {payment.paymentMethod
-                                        ?.replace("_", " ") ||
-                                        "—"}
+                                <span className="text-right text-sm font-medium capitalize text-(--primary)">
+                                    {payment.paymentMethod?.replace(
+                                        "_",
+                                        " "
+                                    ) || "—"}
                                 </span>
                             </div>
 
                             {/* REFERENCE */}
-                            <div className="p-4 flex items-center justify-between gap-4">
+                            <div className="flex items-center justify-between gap-4 p-4">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-(--primary-light) text-(--primary) flex items-center justify-center">
+                                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded bg-(--primary-light) text-(--primary)">
                                         <Hash size={16} />
                                     </div>
 
@@ -257,24 +379,22 @@ const PaymentDetailsModal = ({ payment, onClose }) => {
                                     </span>
                                 </div>
 
-                                <span className="text-xs font-medium text-(--primary) text-right break-all">
-                                    {payment.gatewayReference ||
-                                        "—"}
+                                <span className="max-w-[55%] break-all text-right text-xs font-medium text-(--primary)">
+                                    {payment.gatewayReference || "—"}
                                 </span>
                             </div>
 
-                            {/* REMAINING */}
-                            {payment.status === "successful" &&
+                            {/* REMAINING BALANCE */}
+                            {!isCombinedPayment &&
+                                payment.status === "successful" &&
                                 amountDue > 0 && (
-                                    <div className="p-4 flex items-center justify-between gap-4">
+                                    <div className="flex items-center justify-between gap-4 p-4">
                                         <span className="text-sm text-(--secondary)">
                                             Remaining Balance
                                         </span>
 
                                         <span className="text-sm font-semibold text-(--primary)">
-                                            {formatCurrency(
-                                                amountRemaining
-                                            )}
+                                            {formatCurrency(amountRemaining)}
                                         </span>
                                     </div>
                                 )}
@@ -283,11 +403,11 @@ const PaymentDetailsModal = ({ payment, onClose }) => {
                 </div>
 
                 {/* FOOTER */}
-                <div className="p-5 border-t border-(--border) flex items-center justify-end gap-3">
+                <div className="flex items-center justify-end gap-3 border-t border-(--border) bg-(--bg-white) p-5 sm:px-6">
                     <button
                         type="button"
                         onClick={onClose}
-                        className="px-4 py-2.5 text-sm font-medium text-(--secondary) border border-(--border) rounded hover:bg-(--bg-light) transition"
+                        className="rounded border border-(--border) px-4 py-2.5 text-sm font-medium text-(--secondary) transition hover:bg-(--bg-light)"
                     >
                         Close
                     </button>
@@ -296,7 +416,7 @@ const PaymentDetailsModal = ({ payment, onClose }) => {
                         <button
                             type="button"
                             onClick={handlePrint}
-                            className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium bg-(--primary) text-white rounded hover:opacity-90 transition"
+                            className="inline-flex items-center gap-2 rounded bg-(--primary) px-4 py-2.5 text-sm font-medium text-white transition hover:opacity-90"
                         >
                             <Printer size={16} />
                             Print Receipt
@@ -304,6 +424,8 @@ const PaymentDetailsModal = ({ payment, onClose }) => {
                     )}
                 </div>
             </div>
+
+            {/* PRINT RECEIPT */}
             <div className="print-receipt">
                 {/* HEADER */}
                 <div className="receipt-header">
@@ -315,8 +437,9 @@ const PaymentDetailsModal = ({ payment, onClose }) => {
                         />
 
                         <div>
-                            <h1>OLIVET OLD BOYS' HIGH SCHOOL</h1>
-                            <h2>NATIONAL OLD STUDENTS ASSOCIATION</h2>
+                           
+
+                            <h1>NATIONAL OLD STUDENTS ASSOCIATION</h1>
                             <p>OLIVET NOSA</p>
                         </div>
                     </div>
@@ -348,43 +471,32 @@ const PaymentDetailsModal = ({ payment, onClose }) => {
                     </div>
                 </div>
 
-                {/* SUCCESS */}
-                <div className="receipt-status">
-                    <span>✓ PAYMENT SUCCESSFUL</span>
-                </div>
-
                 {/* MEMBER INFORMATION */}
-                {/* <div className="receipt-section">
+                <div className="receipt-section">
                     <h4>MEMBER INFORMATION</h4>
 
                     <div className="receipt-grid">
                         <div>
                             <span>Member Name</span>
-                            <strong>
-                                {payment.user?.firstName ||
-                                    payment.member?.firstName
-                                    ? `${payment.user?.firstName || payment.member?.firstName || ""} ${payment.user?.middleName ||
-                                        payment.member?.middleName ||
-                                        ""
-                                        } ${payment.user?.lastName ||
-                                        payment.member?.lastName ||
-                                        ""
-                                        }`.replace(/\s+/g, " ").trim()
-                                    : payment.memberName || "—"}
-                            </strong>
+                            <strong>{memberName}</strong>
                         </div>
 
                         <div>
                             <span>Alumni ID</span>
-                            <strong>
-                                {payment.user?.alumniId ||
-                                    payment.member?.alumniId ||
-                                    payment.alumniId ||
-                                    "—"}
-                            </strong>
+                            <strong>{memberAlumniId}</strong>
+                        </div>
+
+                        <div>
+                            <span>Email Address</span>
+                            <strong>{memberEmail}</strong>
                         </div>
                     </div>
-                </div> */}
+                </div>
+
+                {/* PAYMENT STATUS */}
+                <div className="receipt-status">
+                    <span>✓ PAYMENT SUCCESSFUL</span>
+                </div>
 
                 {/* PAYMENT INFORMATION */}
                 <div className="receipt-section">
@@ -392,16 +504,11 @@ const PaymentDetailsModal = ({ payment, onClose }) => {
 
                     <div className="receipt-grid">
                         <div>
-                            <span>Obligation</span>
+                            <span>Payment Type</span>
                             <strong>
-                                {obligation?.name || "—"}
-                            </strong>
-                        </div>
-
-                        <div>
-                            <span>Category</span>
-                            <strong className="capitalize">
-                                {obligation?.category || "—"}
+                                {isCombinedPayment
+                                    ? "Multiple Obligations Payment"
+                                    : "Single Obligation Payment"}
                             </strong>
                         </div>
 
@@ -424,9 +531,56 @@ const PaymentDetailsModal = ({ payment, onClose }) => {
                     </div>
                 </div>
 
-                {/* AMOUNT */}
+                {/* PAYMENT BREAKDOWN */}
+                <div className="receipt-section">
+                    <h4>PAYMENT BREAKDOWN</h4>
+
+                    <table className="receipt-items-table">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Category</th>
+                                <th>Amount Paid</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {receiptItems.length > 0 ? (
+                                receiptItems.map((item, index) => (
+                                    <tr key={index}>
+                                        <td>
+                                            <strong>{item.name}</strong>
+
+                                            {item.year && (
+                                                <small className="receipt-item-year">
+                                                    {item.year}
+                                                </small>
+                                            )}
+                                        </td>
+
+                                        <td className="capitalize">
+                                            {item.category}
+                                        </td>
+
+                                        <td className="receipt-item-amount">
+                                            {formatCurrency(item.amount)}
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="3">
+                                        Payment allocation details unavailable.
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+
+                {/* TOTAL */}
                 <div className="receipt-total">
-                    <span>AMOUNT PAID</span>
+                    <span>TOTAL AMOUNT PAID</span>
 
                     <strong>
                         {formatCurrency(payment.amount)}
@@ -452,23 +606,5 @@ const PaymentDetailsModal = ({ payment, onClose }) => {
         </div>
     );
 };
-
-const ReceiptIcon = () => (
-    <svg
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-    >
-        <path d="M4 2v20l2-2 2 2 2-2 2 2 2-2 2 2 2-2 2 2V2z" />
-        <path d="M8 6h8" />
-        <path d="M8 10h8" />
-        <path d="M8 14h5" />
-    </svg>
-);
 
 export default PaymentDetailsModal;
