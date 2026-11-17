@@ -647,7 +647,7 @@ export default function Home() {
                         >
                             {/* Chapters */}
                             <Link
-                                to="/leaders-chapters"
+                                to="/portal/signup"
                                 className="group grid gap-5 py-9 sm:grid-cols-[auto_0.3fr_1fr] sm:items-start"
                             >
                                 <Network
@@ -679,7 +679,7 @@ export default function Home() {
 
                             {/* Year sets */}
                             <Link
-                                to="/leaders-chapters"
+                                to="/portal/login"
                                 className="group grid gap-5 py-9 sm:grid-cols-[auto_0.3fr_1fr] sm:items-start"
                             >
                                 <GraduationCap
@@ -713,7 +713,7 @@ export default function Home() {
 
                             {/* Leadership */}
                             <Link
-                                to="/leaders-chapters"
+                                to="/nosa-leadership"
                                 className="group grid gap-5 py-9 sm:grid-cols-[auto_0.3fr_1fr] sm:items-start"
                             >
                                 <Landmark
