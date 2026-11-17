@@ -151,10 +151,14 @@ const handleExportPaymentHistory = async () => {
   try {
     setExportLoading(true);
 
-    const report = await getAdminPaymentHistoryExport({
-      startDate,
-      endDate,
-    });
+   const report = await getAdminPaymentHistoryExport({
+    search,
+    status: statusFilter,
+    gateway: gatewayFilter,
+    paymentMethod: paymentMethodFilter,
+    startDate,
+    endDate,
+});
 
     exportAdminPaymentHistoryToExcel(report);
 

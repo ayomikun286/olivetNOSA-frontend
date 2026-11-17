@@ -1822,40 +1822,48 @@ export const deleteAdminLegacyLeader = async (id) => {
 // ========================================
 
 export const getAdminPaymentHistoryExport = async ({
-  startDate,
-  endDate,
-} = {}) => {
-  if (!startDate || !endDate) {
-    throw new Error("Both start and end dates are required.");
-  }
-
-  if (startDate > endDate) {
-    throw new Error("Start date cannot be after end date.");
-  }
-
-  const params = new URLSearchParams({
     startDate,
     endDate,
-  });
-
-  const response = await fetch(
-    `${API}/api/admin/payments/export-history?${params.toString()}`,
-    {
-      method: "GET",
-      credentials: "include",
+    search = "",
+    status = "",
+    gateway = "",
+    paymentMethod = "",
+} = {}) => {
+    if (!startDate || !endDate) {
+        throw new Error("Both start and end dates are required.");
     }
-  );
 
-  const data = await response.json();
+    if (startDate > endDate) {
+        throw new Error("Start date cannot be after end date.");
+    }
 
-  if (!response.ok) {
-    throw new Error(
-      data.message || "Failed to export payment history."
+    const params = new URLSearchParams({
+        startDate,
+        endDate,
+    });
+
+    if (search.trim()) params.set("search", search.trim());
+    if (status) params.set("status", status);
+    if (gateway) params.set("gateway", gateway);
+    if (paymentMethod) params.set("paymentMethod", paymentMethod);
+
+    const response = await fetch(
+        `${API}/api/admin/payments/export-history?${params.toString()}`,
+        {
+            method: "GET",
+            credentials: "include",
+        }
     );
-  }
 
-  // Adjust this return only if your controller uses a different response shape.
-  return data.data;
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(
+            data.message || "Failed to export payment history."
+        );
+    }
+
+    return data.data;
 };
 
 
