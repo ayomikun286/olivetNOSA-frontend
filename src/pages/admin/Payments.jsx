@@ -23,7 +23,8 @@ import {
     getAdminPayments,
     getAdminPaymentById,
     recoverAdminPayment,
-    getAdminPaymentHistoryExport,
+    verifyAdminPendingPayment,
+      getAdminPaymentHistoryExport,
 } from "../../services/adminService.js";
 
 import {
@@ -70,6 +71,7 @@ const AdminPayments = () => {
 
     const [alert, setAlert] = useState(null);
     const [recoveringPayment, setRecoveringPayment] = useState(false);
+const [verifyingPayment, setVerifyingPayment] = useState(false);
 
     // ========================================
     // LOAD PAYMENTS
@@ -173,6 +175,63 @@ const handleExportPaymentHistory = async () => {
   } finally {
     setExportLoading(false);
   }
+};
+
+
+// ========================================
+// VERIFY PENDING PAYMENT
+// ========================================
+
+const handleVerifyPayment = async (payment) => {
+    if (!payment?._id) return;
+
+    let verificationResult = null;
+    let verificationError = null;
+
+    try {
+        setVerifyingPayment(true);
+
+        verificationResult = await verifyAdminPendingPayment(
+            payment._id
+        );
+    } catch (error) {
+        console.error("Payment verification error:", error);
+        verificationError = error;
+    }
+
+    // Refresh the payment list and collection totals.
+    await loadPayments(currentPage);
+
+    // Refresh the open payment details.
+    try {
+        const updatedPayment = await getAdminPaymentById(
+            payment._id
+        );
+
+        setSelectedPayment(updatedPayment);
+    } catch (error) {
+        console.error("Payment refresh error:", error);
+    }
+
+    if (verificationError) {
+        setAlert({
+            type: "error",
+            title: "Payment Verification Failed",
+            message:
+                verificationError.message ||
+                "Unable to verify this payment.",
+        });
+    } else {
+        setAlert({
+            type: "success",
+            title: "Verification Checked",
+            message:
+                verificationResult?.message ||
+                "Paystack verification completed.",
+        });
+    }
+
+    setVerifyingPayment(false);
 };
     // ========================================
     // RECOVER FAILED PAYMENT
@@ -532,29 +591,44 @@ const handleExportPaymentHistory = async () => {
         },
 
         {
-            key: "obligation",
+    key: "obligation",
+    label: "Obligation",
 
-            label: "Obligation",
+    render: (payment) => {
+        const isCombined =
+            payment.metadata?.paymentType === "combined" &&
+            payment.allocations?.length > 0;
 
-            render: (payment) => (
+        if (isCombined) {
+            return (
                 <div>
-                    <p className="font-medium text-(--primary)">
-                        {payment
-                            .obligationAssignment
-                            ?.obligation?.name ||
-                            "—"}
+                    <p className="font-semibold text-(--primary)">
+                        Combined Payment
                     </p>
 
-                    <p className="text-xs text-(--text-muted) mt-0.5 capitalize">
-                        {payment
-                            .obligationAssignment
-                            ?.obligation
-                            ?.category || "—"}
+                    <p className="text-xs text-(--text-muted) mt-0.5">
+                        {payment.allocations.length} obligations
                     </p>
                 </div>
-            ),
-        },
+            );
+        }
 
+        const obligation =
+            payment.obligationAssignment?.obligation;
+
+        return (
+            <div>
+                <p className="font-medium text-(--primary)">
+                    {obligation?.name || "—"}
+                </p>
+
+                <p className="text-xs text-(--text-muted) mt-0.5 capitalize">
+                    {obligation?.category || "—"}
+                </p>
+            </div>
+        );
+    },
+},
         {
             key: "amount",
 
@@ -1304,6 +1378,8 @@ const handleExportPaymentHistory = async () => {
                 isSuperAdmin={isSuperAdmin}
                 onRecover={handleRecoverPayment}
                 recovering={recoveringPayment}
+                onVerify={handleVerifyPayment}
+verifying={verifyingPayment}
             />
         </div>
     );

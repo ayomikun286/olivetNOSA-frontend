@@ -26,6 +26,8 @@ import MembershipStatus from "../../components/member/MembershipStatus.jsx";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { getMyObligation } from "../../services/obligationService.js";
 import NotificationsCard from "../../components/member/NotificationsCard.jsx";
+import CombinedPaymentModal from "../../components/member/CombinedPaymentModal";
+
 
 const Main = () => {
   const { user } = useAuth();
@@ -38,7 +40,7 @@ const Main = () => {
   const [paymentAmount, setPaymentAmount] = useState("");
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [paymentError, setPaymentError] = useState("");
-
+const [showCombinedPaymentModal, setShowCombinedPaymentModal] = useState(false);
   // ========================================
   // HELPERS
   // ========================================
@@ -91,6 +93,17 @@ const Main = () => {
   const chapter = user?.chapter?.name;
   const yearSet = user?.yearSet?.name;
   const alumniId = user?.alumniId;
+
+
+  const combinedPayableObligations = obligations.filter((item) => {
+    const isActive = item.obligation?.isActive === true;
+
+    const outstanding =
+        Number(item.amountDue || 0) -
+        Number(item.amountPaid || 0);
+
+    return isActive && outstanding > 0;
+});
 
   // ========================================
   // INDIVIDUAL OBLIGATIONS
@@ -635,6 +648,10 @@ const Main = () => {
                   </p>
                 </div>
 
+
+
+
+
                 <div className="flex items-center gap-2 text-xs text-(--secondary)">
                   <CircleDollarSign size={16} />
 
@@ -644,6 +661,17 @@ const Main = () => {
                     ? "s"
                     : ""}
                 </div>
+
+                    {combinedPayableObligations.length > 0 && (
+                        <button
+                            type="button"
+                            onClick={() => setShowCombinedPaymentModal(true)}
+                            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded bg-(--primary) hover:bg-(--primary-dark) text-white text-sm font-semibold transition"
+                        >
+                            <CreditCard size={17} />
+                            Pay Multiple Obligations
+                        </button>
+                    )}
 
               </div>
 
@@ -1243,6 +1271,14 @@ const Main = () => {
             </div>
           </div>
         </div>
+      )}
+
+      
+      {showCombinedPaymentModal && (
+          <CombinedPaymentModal
+              obligations={combinedPayableObligations}
+              onClose={() => setShowCombinedPaymentModal(false)}
+          />
       )}
     </div>
   );

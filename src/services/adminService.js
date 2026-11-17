@@ -512,6 +512,35 @@ export const getAdminPaymentById = async (paymentId) => {
 };
 
 
+// ========================================
+// VERIFY PENDING ADMIN PAYMENT
+// ========================================
+
+export const verifyAdminPendingPayment = async (paymentId) => {
+    if (!paymentId) {
+        throw new Error("Payment ID is required.");
+    }
+
+    const response = await fetch(
+        `${API}/api/admin/payments/${paymentId}/verify`,
+        {
+            method: "PATCH",
+            credentials: "include",
+        }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(
+            data.message || "Failed to verify payment."
+        );
+    }
+
+    return data;
+};
+
+
 
 export const recoverAdminPayment = async (paymentId, reason) => {
   if (!paymentId) {

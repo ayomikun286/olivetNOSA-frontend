@@ -30,7 +30,7 @@ const Obligations = () => {
     const [paymentAmount, setPaymentAmount] = useState("");
     const [paymentLoading, setPaymentLoading] = useState(false);
     const [paymentError, setPaymentError] = useState("");
-const [showCombinedPaymentModal, setShowCombinedPaymentModal] = useState(false);
+    const [showCombinedPaymentModal, setShowCombinedPaymentModal] = useState(false);
     // ========================================
     // FETCH OBLIGATIONS
     // ========================================
@@ -150,18 +150,18 @@ const [showCombinedPaymentModal, setShowCombinedPaymentModal] = useState(false);
 
 
     // ========================================
-// COMBINED PAYMENT ELIGIBLE OBLIGATIONS
-// ========================================
+    // COMBINED PAYMENT ELIGIBLE OBLIGATIONS
+    // ========================================
 
-const combinedPayableObligations = obligations.filter((item) => {
-    const isActive = item.obligation?.isActive === true;
+    const combinedPayableObligations = obligations.filter((item) => {
+        const isActive = item.obligation?.isActive === true;
 
-    const outstanding =
-        Number(item.amountDue || 0) -
-        Number(item.amountPaid || 0);
+        const outstanding =
+            Number(item.amountDue || 0) -
+            Number(item.amountPaid || 0);
 
-    return isActive && outstanding > 0;
-});
+        return isActive && outstanding > 0;
+    });
 
 
     // ========================================
@@ -447,7 +447,7 @@ const combinedPayableObligations = obligations.filter((item) => {
             ) {
                 throw new Error(
                     data.message ||
-                        "Failed to initialize payment."
+                    "Failed to initialize payment."
                 );
             }
 
@@ -462,7 +462,7 @@ const combinedPayableObligations = obligations.filter((item) => {
 
             setPaymentError(
                 error.message ||
-                    "Unable to initialize payment."
+                "Unable to initialize payment."
             );
 
             setPaymentLoading(false);
@@ -509,9 +509,9 @@ const combinedPayableObligations = obligations.filter((item) => {
 
         const progress = due
             ? Math.min(
-                  (paid / due) * 100,
-                  100
-              )
+                (paid / due) * 100,
+                100
+            )
             : 0;
 
         const status = getStatus(item);
@@ -529,17 +529,15 @@ const combinedPayableObligations = obligations.filter((item) => {
                 className={`
                     p-5 sm:p-6
                     transition
-                    ${
-                        isOptional &&
+                    ${isOptional &&
                         isActive &&
                         !historical
-                            ? "bg-amber-50/60 border-l-4 border-amber-400"
-                            : ""
+                        ? "bg-amber-50/60 border-l-4 border-amber-400"
+                        : ""
                     }
-                    ${
-                        isInactive
-                            ? "bg-slate-50/60"
-                            : ""
+                    ${isInactive
+                        ? "bg-slate-50/60"
+                        : ""
                     }
                 `}
             >
@@ -551,18 +549,17 @@ const combinedPayableObligations = obligations.filter((item) => {
                             className={`
                                 w-10 h-10 shrink-0 rounded-lg
                                 flex items-center justify-center
-                                ${
-                                    isOptional &&
+                                ${isOptional &&
                                     isActive
-                                        ? "bg-amber-100 text-amber-700"
-                                        : isInactive
+                                    ? "bg-amber-100 text-amber-700"
+                                    : isInactive
                                         ? "bg-slate-100 text-slate-500"
                                         : "bg-(--primary-light) text-(--primary)"
                                 }
                             `}
                         >
                             {isOptional &&
-                            isActive ? (
+                                isActive ? (
                                 <ShieldCheck
                                     size={18}
                                 />
@@ -580,11 +577,10 @@ const combinedPayableObligations = obligations.filter((item) => {
                                 <h3
                                     className={`
                                         text-sm font-semibold
-                                        ${
-                                            isOptional &&
+                                        ${isOptional &&
                                             isActive
-                                                ? "text-amber-800"
-                                                : isInactive
+                                            ? "text-amber-800"
+                                            : isInactive
                                                 ? "text-slate-600"
                                                 : "text-(--primary)"
                                         }
@@ -691,11 +687,10 @@ const combinedPayableObligations = obligations.filter((item) => {
                             <p
                                 className={`
                                     text-sm font-semibold mt-0.5
-                                    ${
-                                        isOptional &&
+                                    ${isOptional &&
                                         isActive
-                                            ? "text-amber-700"
-                                            : isInactive
+                                        ? "text-amber-700"
+                                        : isInactive
                                             ? "text-slate-600"
                                             : "text-(--primary)"
                                     }
@@ -735,8 +730,8 @@ const combinedPayableObligations = obligations.filter((item) => {
                                 <span className="text-xs text-(--secondary)">
                                     {paid > 0
                                         ? `${formatCurrency(
-                                              paid
-                                          )} paid`
+                                            paid
+                                        )} paid`
                                         : "No payment recorded"}
                                 </span>
 
@@ -752,11 +747,10 @@ const combinedPayableObligations = obligations.filter((item) => {
                                 <div
                                     className={`
                                         h-full rounded-full transition-all
-                                        ${
-                                            isOptional &&
+                                        ${isOptional &&
                                             isActive
-                                                ? "bg-amber-400"
-                                                : "bg-(--success)"
+                                            ? "bg-amber-400"
+                                            : "bg-(--success)"
                                         }
                                     `}
                                     style={{
@@ -773,21 +767,20 @@ const combinedPayableObligations = obligations.filter((item) => {
                                 {isInactive
                                     ? "Historical balance"
                                     : isOptional
-                                    ? "Optional balance"
-                                    : "Outstanding"}
+                                        ? "Optional balance"
+                                        : "Outstanding"}
                             </p>
 
                             <p
                                 className={`
                                     text-sm font-semibold mt-0.5
-                                    ${
-                                        remaining > 0
-                                            ? isInactive
-                                                ? "text-slate-500"
-                                                : isOptional
+                                    ${remaining > 0
+                                        ? isInactive
+                                            ? "text-slate-500"
+                                            : isOptional
                                                 ? "text-amber-700"
                                                 : "text-(--primary)"
-                                            : "text-(--success)"
+                                        : "text-(--success)"
                                     }
                                 `}
                             >
@@ -849,28 +842,28 @@ const combinedPayableObligations = obligations.filter((item) => {
                 ======================================== */}
 
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-    <div>
-        <h1 className="text-xl font-semibold text-(--primary)">
-            My Obligations
-        </h1>
+                    <div>
+                        <h1 className="text-xl font-semibold text-(--primary)">
+                            My Obligations
+                        </h1>
 
-        <p className="text-sm text-(--secondary) mt-1">
-            View your assigned membership
-            contributions and payment status.
-        </p>
-    </div>
+                        <p className="text-sm text-(--secondary) mt-1">
+                            View your assigned membership
+                            contributions and payment status.
+                        </p>
+                    </div>
 
-    {combinedPayableObligations.length > 0 && (
-        <button
-            type="button"
-            onClick={() => setShowCombinedPaymentModal(true)}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-(--primary) hover:bg-(--primary-dark) text-white text-sm font-semibold transition"
-        >
-            <CreditCard size={17} />
-            Pay Multiple Obligations
-        </button>
-    )}
-</div>
+                    {combinedPayableObligations.length > 0 && (
+                        <button
+                            type="button"
+                            onClick={() => setShowCombinedPaymentModal(true)}
+                            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded bg-(--primary) hover:bg-(--primary-dark) text-white text-sm font-semibold transition"
+                        >
+                            <CreditCard size={17} />
+                            Pay Multiple Obligations
+                        </button>
+                    )}
+                </div>
 
                 {/* ========================================
                     SUMMARY
@@ -909,7 +902,7 @@ const combinedPayableObligations = obligations.filter((item) => {
                             }{" "}
                             required obligation
                             {activeMandatoryObligations.length !==
-                            1
+                                1
                                 ? "s"
                                 : ""}
                         </p>
@@ -1016,16 +1009,27 @@ const combinedPayableObligations = obligations.filter((item) => {
                             }{" "}
                             obligation
                             {activeMandatoryObligations.length !==
-                            1
+                                1
                                 ? "s"
                                 : ""}
                         </div>
+
+                        {combinedPayableObligations.length > 0 && (
+                            <button
+                                type="button"
+                                onClick={() => setShowCombinedPaymentModal(true)}
+                                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded bg-(--primary) hover:bg-(--primary-dark) text-white text-sm font-semibold transition"
+                            >
+                                <CreditCard size={17} />
+                                Pay Multiple Obligations
+                            </button>
+                        )}
                     </div>
 
                     {/* CONTENT */}
 
                     {activeMandatoryObligations.length ===
-                    0 ? (
+                        0 ? (
                         <div className="p-10 text-center">
                             <div className="w-12 h-12 mx-auto rounded-full bg-(--primary-light) text-(--primary) flex items-center justify-center">
                                 <CheckCircle2
@@ -1061,65 +1065,65 @@ const combinedPayableObligations = obligations.filter((item) => {
 
                 {activeOptionalObligations.length >
                     0 && (
-                    <div className="bg-amber-50/50 border border-amber-200 rounded overflow-hidden">
-                        {/* OPTIONAL HEADER */}
+                        <div className="bg-amber-50/50 border border-amber-200 rounded overflow-hidden">
+                            {/* OPTIONAL HEADER */}
 
-                        <div className="p-5 border-b border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                            <div>
-                                <div className="flex items-center gap-2">
-                                    <div className="w-9 h-9 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center">
-                                        <ShieldCheck
-                                            size={18}
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <div className="flex items-center gap-2">
-                                            <h2 className="font-semibold text-amber-900">
-                                                Optional Contributions
-                                            </h2>
-
-                                            <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-amber-100 text-amber-700 border border-amber-200">
-                                                Optional
-                                            </span>
+                            <div className="p-5 border-b border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                <div>
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-9 h-9 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center">
+                                            <ShieldCheck
+                                                size={18}
+                                            />
                                         </div>
 
-                                        <p className="text-sm text-amber-800/70 mt-1">
-                                            These contributions
-                                            are available to
-                                            you but are not
-                                            part of your
-                                            mandatory dues.
-                                        </p>
+                                        <div>
+                                            <div className="flex items-center gap-2">
+                                                <h2 className="font-semibold text-amber-900">
+                                                    Optional Contributions
+                                                </h2>
+
+                                                <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-amber-100 text-amber-700 border border-amber-200">
+                                                    Optional
+                                                </span>
+                                            </div>
+
+                                            <p className="text-sm text-amber-800/70 mt-1">
+                                                These contributions
+                                                are available to
+                                                you but are not
+                                                part of your
+                                                mandatory dues.
+                                            </p>
+                                        </div>
                                     </div>
+                                </div>
+
+                                <div className="text-left sm:text-right">
+                                    <p className="text-[11px] text-amber-700">
+                                        Optional balance
+                                    </p>
+
+                                    <p className="text-lg font-bold text-amber-800">
+                                        {formatCurrency(
+                                            optionalOutstanding
+                                        )}
+                                    </p>
                                 </div>
                             </div>
 
-                            <div className="text-left sm:text-right">
-                                <p className="text-[11px] text-amber-700">
-                                    Optional balance
-                                </p>
+                            {/* OPTIONAL ITEMS */}
 
-                                <p className="text-lg font-bold text-amber-800">
-                                    {formatCurrency(
-                                        optionalOutstanding
-                                    )}
-                                </p>
+                            <div className="divide-y divide-amber-200">
+                                {activeOptionalObligations.map(
+                                    (item) =>
+                                        renderObligationCard(
+                                            item
+                                        )
+                                )}
                             </div>
                         </div>
-
-                        {/* OPTIONAL ITEMS */}
-
-                        <div className="divide-y divide-amber-200">
-                            {activeOptionalObligations.map(
-                                (item) =>
-                                    renderObligationCard(
-                                        item
-                                    )
-                            )}
-                        </div>
-                    </div>
-                )}
+                    )}
 
                 {/* ========================================
                     INACTIVE / HISTORY
@@ -1180,20 +1184,19 @@ const combinedPayableObligations = obligations.filter((item) => {
                             <p className="text-lg font-bold text-(--primary) mt-1">
                                 {nextDueDate
                                     ? formatDate(
-                                          nextDueDate
-                                      )
+                                        nextDueDate
+                                    )
                                     : "All settled"}
                             </p>
 
                             <p className="text-xs text-(--text-muted) mt-1">
                                 {unpaidMandatoryObligations.length >
-                                0
-                                    ? `${unpaidMandatoryObligations.length} mandatory obligation${
-                                          unpaidMandatoryObligations.length !==
-                                          1
-                                              ? "s"
-                                              : ""
-                                      } outstanding`
+                                    0
+                                    ? `${unpaidMandatoryObligations.length} mandatory obligation${unpaidMandatoryObligations.length !==
+                                        1
+                                        ? "s"
+                                        : ""
+                                    } outstanding`
                                     : "You're all caught up on mandatory contributions."}
                             </p>
                         </div>
@@ -1221,10 +1224,10 @@ const combinedPayableObligations = obligations.filter((item) => {
                                         .obligation
                                         ?.isOptional ===
                                         true && (
-                                        <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-amber-100 text-amber-700">
-                                            Optional
-                                        </span>
-                                    )}
+                                            <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-amber-100 text-amber-700">
+                                                Optional
+                                            </span>
+                                        )}
                                 </div>
 
                                 <p className="text-sm text-slate-500 mt-1">
@@ -1263,21 +1266,21 @@ const combinedPayableObligations = obligations.filter((item) => {
                             {paymentModal.obligation
                                 ?.isOptional ===
                                 true && (
-                                <div className="flex items-start gap-2 rounded-(--radius-sm) bg-amber-50 border border-amber-200 p-4">
-                                    <ShieldCheck
-                                        size={17}
-                                        className="text-amber-600 mt-0.5 shrink-0"
-                                    />
+                                    <div className="flex items-start gap-2 rounded-(--radius-sm) bg-amber-50 border border-amber-200 p-4">
+                                        <ShieldCheck
+                                            size={17}
+                                            className="text-amber-600 mt-0.5 shrink-0"
+                                        />
 
-                                    <p className="text-xs text-amber-800">
-                                        This is an optional
-                                        contribution. Payment
-                                        here will not reduce
-                                        your mandatory
-                                        outstanding balance.
-                                    </p>
-                                </div>
-                            )}
+                                        <p className="text-xs text-amber-800">
+                                            This is an optional
+                                            contribution. Payment
+                                            here will not reduce
+                                            your mandatory
+                                            outstanding balance.
+                                        </p>
+                                    </div>
+                                )}
 
                             {/* OUTSTANDING */}
 
@@ -1285,13 +1288,12 @@ const combinedPayableObligations = obligations.filter((item) => {
                                 className={`
                                     rounded-(--radius-sm)
                                     p-4
-                                    ${
-                                        paymentModal
-                                            .obligation
-                                            ?.isOptional ===
+                                    ${paymentModal
+                                        .obligation
+                                        ?.isOptional ===
                                         true
-                                            ? "bg-amber-50"
-                                            : "bg-(--primary-light)"
+                                        ? "bg-amber-50"
+                                        : "bg-(--primary-light)"
                                     }
                                 `}
                             >
@@ -1302,13 +1304,12 @@ const combinedPayableObligations = obligations.filter((item) => {
                                 <p
                                     className={`
                                         text-2xl font-bold mt-1
-                                        ${
-                                            paymentModal
-                                                .obligation
-                                                ?.isOptional ===
+                                        ${paymentModal
+                                            .obligation
+                                            ?.isOptional ===
                                             true
-                                                ? "text-amber-700"
-                                                : "text-(--primary-dark)"
+                                            ? "text-amber-700"
+                                            : "text-(--primary-dark)"
                                         }
                                     `}
                                 >
@@ -1394,13 +1395,12 @@ const combinedPayableObligations = obligations.filter((item) => {
                                     transition
                                     disabled:opacity-60
                                     disabled:cursor-not-allowed
-                                    ${
-                                        paymentModal
-                                            .obligation
-                                            ?.isOptional ===
+                                    ${paymentModal
+                                        .obligation
+                                        ?.isOptional ===
                                         true
-                                            ? "bg-amber-600 hover:bg-amber-700"
-                                            : "bg-(--primary) hover:bg-(--primary-dark)"
+                                        ? "bg-amber-600 hover:bg-amber-700"
+                                        : "bg-(--primary) hover:bg-(--primary-dark)"
                                     }
                                 `}
                             >
@@ -1432,12 +1432,12 @@ const combinedPayableObligations = obligations.filter((item) => {
     COMBINED PAYMENT MODAL
 ======================================== */}
 
-{showCombinedPaymentModal && (
-    <CombinedPaymentModal
-        obligations={combinedPayableObligations}
-        onClose={() => setShowCombinedPaymentModal(false)}
-    />
-)}
+            {showCombinedPaymentModal && (
+                <CombinedPaymentModal
+                    obligations={combinedPayableObligations}
+                    onClose={() => setShowCombinedPaymentModal(false)}
+                />
+            )}
         </div>
     );
 };
